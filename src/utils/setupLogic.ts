@@ -3,10 +3,10 @@ import {
   TERRAIN_TYPES,
   PIECES,
   INITIAL_ARMY,
-  MAX_TERRAIN_PER_PLAYER,
   TERRAIN_CARDS_PER_TYPE,
 } from "../constants";
 import type { GameMode, BoardPiece, TerrainType, PieceType } from "../types";
+import { TerraForm } from "./TerraForm";
 
 export interface SetupResult {
   board: (BoardPiece | null)[][];
@@ -111,54 +111,46 @@ export const createInitialState = (
 };
 
 export const randomizeTerrain = (
-  currentTerrain: TerrainType[][],
+  _currentTerrain: TerrainType[][],
   currentBoard: (BoardPiece | null)[][],
-  terrainInventory: Record<string, TerrainType[]>,
+  _terrainInventory: Record<string, TerrainType[]>,
   players: string[],
   mode: GameMode,
 ) => {
-  const nextTerrain = currentTerrain.map((row) => [...row]);
-  const nextTInv = { ...terrainInventory };
-
-  const maxPlacement =
-    players.length === 2
-      ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-      : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
-
-  players.forEach((p) => {
-    const myCells = getPlayerCells(p, mode);
-    const playerCards = [...(nextTInv[p] || [])];
-
-    // 1. Collect all non-flat terrain back to inventory
-    for (const [r, c] of myCells) {
-      if (nextTerrain[r][c] !== TERRAIN_TYPES.FLAT) {
-        playerCards.push(nextTerrain[r][c]);
-        nextTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
-      }
-    }
-
-    shuffle(playerCards); // Randomize preference order
-
-    const available = myCells.filter(
-      ([r, c]) =>
-        nextTerrain[r][c] === TERRAIN_TYPES.FLAT && !currentBoard[r][c],
-    );
-    shuffle(available);
-
-    const remaining: TerrainType[] = [];
-    let placedCount = 0;
-
-    for (const card of playerCards) {
-      if (available.length > 0 && placedCount < maxPlacement) {
-        const [r, c] = available.pop()!;
-        nextTerrain[r][c] = card;
-        placedCount++;
-      } else {
-        remaining.push(card);
-      }
-    }
-    nextTInv[p] = remaining;
+  // Use TerraForm for sophisticated generation
+  const nextTerrain = TerraForm.generate({
+    mode,
+    seed: Math.random(),
+    symmetry: "rotational", // Default to fair symmetry
   });
+
+  // Calculate terrain inventory (should be empty if we place everything,
+  // but let's just return empty inventories as TerraForm places pieces directly)
+  const nextTInv: Record<string, TerrainType[]> = {};
+  players.forEach((p) => {
+    nextTInv[p] = [];
+  });
+
+  // Safety check: Avoid placing terrain on existing units
+  // (Though usually randomizeTerrain happens before units or clears them?
+  // In 'terrainiffic' preset, units might be manually placed later, or it's a fresh start.
+  // In 'quick' preset, units are randomized after.
+  // Existing logic filtered available cells checking !currentBoard[r][c].
+  // We should respect that if possible, but TerraForm generates a whole grid.
+  // Let's iterate and clear terrain if it lands on a unit.
+  for (let r = 0; r < BOARD_SIZE; r++) {
+    for (let c = 0; c < BOARD_SIZE; c++) {
+      if (currentBoard[r][c]) {
+        // If there is a unit here, we can't have terrain usually
+        // Check compatibility
+        const unit = currentBoard[r][c]!;
+        const terr = nextTerrain[r][c];
+        if (terr !== TERRAIN_TYPES.FLAT && !canPlaceUnit(unit.type, terr)) {
+          nextTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+        }
+      }
+    }
+  }
 
   return { terrain: nextTerrain, terrainInventory: nextTInv };
 };

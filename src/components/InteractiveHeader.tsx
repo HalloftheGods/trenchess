@@ -145,7 +145,7 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
       {/* Back Button */}
       <button
         onClick={onBack}
-        className={`absolute left-6 top-6 md:static flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
+        className={`absolute left-6 top-6 md:static flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all cursor-pointer ${
           darkMode
             ? "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/5"
             : "bg-white hover:bg-slate-50 text-slate-700 shadow-sm border border-slate-200"

@@ -12,6 +12,7 @@ import type { GameMode, ArmyUnit, PieceType, TerrainType } from "../types";
 import { Edit } from "lucide-react";
 import { deserializeGame, adaptSeedToMode } from "../utils/gameUrl";
 import { TERRAIN_INTEL } from "../constants";
+import { TerraForm } from "../utils/TerraForm";
 
 interface BoardPreviewProps {
   selectedMode: GameMode | null;
@@ -31,6 +32,7 @@ interface BoardPreviewProps {
   onTogglePlayerType?: (pid: string) => void;
   showTerrainIcons?: boolean;
   hideUnits?: boolean;
+  forcedTerrain?: TerrainType | null;
 }
 
 const BoardPreview: React.FC<BoardPreviewProps> = ({
@@ -44,6 +46,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
   onTogglePlayerType,
   showTerrainIcons,
   hideUnits,
+  forcedTerrain,
 }) => {
   // Parse custom seed if present
   const seedData = React.useMemo(() => {
@@ -115,72 +118,77 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
     );
   };
 
+  // Generate terrain using TerraForm if needed
+  const generatedTerrain = React.useMemo(() => {
+    // 0. Forced Terrain (Menu Hover Mode)
+    if (forcedTerrain) {
+      return TerraForm.generate({
+        mode: selectedMode || "2p-ns", // Default to 2p-ns for preview if no mode
+        seed: terrainSeed, // Use existing seed prop for consistency or animation
+        symmetry: "rotational",
+        allowedTypes: [forcedTerrain], // <--- RESTRICTION
+      });
+    }
+
+    if (seedData && seedData.terrain) return seedData.terrain; // Custom seed
+
+    // Only generate for classic/quick/default modes
+    if (
+      selectedProtocol &&
+      selectedProtocol !== "classic" &&
+      selectedProtocol !== "quick" &&
+      selectedProtocol !== "terrainiffic"
+    )
+      return null;
+
+    // Use TerraForm
+    // We use the terrainSeed prop for the seed
+    return TerraForm.generate({
+      mode: selectedMode || "2p-ns",
+      seed: terrainSeed,
+      symmetry: "rotational",
+    });
+  }, [selectedMode, selectedProtocol, terrainSeed, seedData, forcedTerrain]);
+
   // Deterministic pseudo-random terrain generator
   const getTerrainAt = (
     row: number,
     col: number,
     pieceAt: { pieceType: PieceType; player: string } | null,
   ): TerrainType | null => {
-    // 1. Custom Seed (Chi Mode)
-    if (seedData && seedData.terrain) {
-      const t = seedData.terrain[row]?.[col];
-      return t !== "flat" ? t : null;
+    // 1. Custom Seed (Chi Mode) or TerraForm
+    // If we have a generated grid, use it
+    if (generatedTerrain) {
+      const t = generatedTerrain[row][col];
+      if (t === TERRAIN_TYPES.FLAT) return null;
+
+      // Logic: terrain cant be placed on a unit that cant traverse it
+      // TerraForm doesn't know about unit placement, so we filter valid placements here
+      // similar to before
+      if (pieceAt) {
+        if (
+          pieceAt.pieceType === PIECES.TANK &&
+          (t === TERRAIN_TYPES.RUBBLE || t === TERRAIN_TYPES.TREES)
+        )
+          return null;
+        if (
+          pieceAt.pieceType === PIECES.SNIPER &&
+          (t === TERRAIN_TYPES.PONDS || t === TERRAIN_TYPES.RUBBLE)
+        )
+          return null;
+        if (
+          pieceAt.pieceType === PIECES.HORSEMAN &&
+          (t === TERRAIN_TYPES.TREES || t === TERRAIN_TYPES.PONDS)
+        )
+          return null;
+        if (pieceAt.pieceType === PIECES.BOT) return t;
+        if (pieceAt.pieceType === PIECES.COMMANDER) return null;
+        if (pieceAt.pieceType === PIECES.BATTLEKNIGHT) return t;
+      }
+      return t;
     }
 
-    if (selectedProtocol !== "classic" && selectedProtocol !== "quick")
-      return null;
-
-    // Prevent terrain in the center 4 squares for Capture the Flag (2v2)
-    if (
-      selectedMode === "2v2" &&
-      row >= 5 &&
-      row <= 6 &&
-      col >= 5 &&
-      col <= 6
-    ) {
-      return null;
-    }
-
-    // Seed based on coordinates + terrainSeed for re-randomization
-    const seed = Math.sin(row * 12 + col + terrainSeed * 100) * 10000;
-    const rand = seed - Math.floor(seed);
-
-    // Chance for terrain (~24 pieces on 144 squares is ~16%)
-    if (rand > 0.17) return null;
-
-    // Pick terrain type
-    const terrainOptions = [
-      TERRAIN_TYPES.TREES,
-      TERRAIN_TYPES.PONDS,
-      TERRAIN_TYPES.RUBBLE,
-      TERRAIN_TYPES.DESERT,
-    ];
-    const typeIndex = Math.floor(rand * 100) % terrainOptions.length;
-    const terrain = terrainOptions[typeIndex];
-
-    // Logic: terrain cant be placed on a unit that cant traverse it
-    if (pieceAt) {
-      if (
-        pieceAt.pieceType === PIECES.TANK &&
-        (terrain === TERRAIN_TYPES.RUBBLE || terrain === TERRAIN_TYPES.TREES)
-      )
-        return null;
-      if (
-        pieceAt.pieceType === PIECES.SNIPER &&
-        (terrain === TERRAIN_TYPES.PONDS || terrain === TERRAIN_TYPES.RUBBLE)
-      )
-        return null;
-      if (
-        pieceAt.pieceType === PIECES.HORSEMAN &&
-        (terrain === TERRAIN_TYPES.TREES || terrain === TERRAIN_TYPES.PONDS)
-      )
-        return null;
-      if (pieceAt.pieceType === PIECES.BOT) return terrain; // Bots can usually traverse all (slowly), assume OK for now
-      if (pieceAt.pieceType === PIECES.COMMANDER) return null; // Keep Commander clear
-      if (pieceAt.pieceType === PIECES.BATTLEKNIGHT) return terrain; // Knight/Queen hybrid usually mobile
-    }
-
-    return terrain;
+    return null;
   };
 
   const getPlayerAt = (row: number, col: number): string | null => {

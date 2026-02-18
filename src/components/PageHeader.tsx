@@ -15,6 +15,7 @@ interface PageHeaderProps {
   pieceStyle: PieceStyle;
   toggleTheme: () => void;
   togglePieceStyle: () => void;
+  onTutorial?: () => void;
   logoText?: string;
   topText?: string;
   onLogoClick?: () => void;
@@ -27,6 +28,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   pieceStyle,
   toggleTheme,
   togglePieceStyle,
+  onTutorial,
   logoText,
   topText,
   onLogoClick,
@@ -38,7 +40,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
       {onBack && (
         <button
           onClick={onBack}
-          className={`fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-2xl font-bold transition-all backdrop-blur-xl border shadow-lg hover:scale-110 ${
+          className={`fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-2xl font-bold transition-all backdrop-blur-xl border shadow-lg hover:scale-110 cursor-pointer ${
             darkMode
               ? "bg-slate-800/80 hover:bg-slate-700/90 text-slate-200 border-white/10"
               : "bg-white/80 hover:bg-white/95 text-slate-700 border-slate-200"
@@ -54,6 +56,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         pieceStyle={pieceStyle}
         toggleTheme={toggleTheme}
         togglePieceStyle={togglePieceStyle}
+        onTutorial={onTutorial}
       />
 
       <div className="w-full max-w-7xl mt-4 mb-8 flex flex-col lg:flex-row items-center justify-between gap-8 px-4 z-10 relative">

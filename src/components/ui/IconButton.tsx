@@ -17,7 +17,7 @@ export const IconButton = ({
   return (
     <button
       onClick={onClick}
-      className={`w-12 h-12 rounded-2xl bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-white/5 shadow-2xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:border-amber-500/50 hover:scale-105 active:scale-95 transition-all flex items-center justify-center group relative ${className}`}
+      className={`w-12 h-12 rounded-2xl bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-white/5 shadow-2xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:border-amber-500/50 hover:scale-105 active:scale-95 transition-all flex items-center justify-center group relative cursor-pointer ${className}`}
       title={label}
     >
       {icon}

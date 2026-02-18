@@ -19,10 +19,15 @@ import {
   Swords,
   Users,
   Sofa,
+  ChessPawn,
+  Trees,
+  Waves,
+  Mountain,
 } from "lucide-react";
-import type { GameMode } from "../types";
+import type { GameMode, TerrainType } from "../types";
 import type { PieceStyle } from "../constants";
 import { DualToneNS, DualToneEW, QuadTone, AllianceTone } from "./MenuIcons";
+import { DesertIcon } from "../UnitIcons";
 import MenuCard from "./MenuCard";
 import BoardPreview from "./BoardPreview";
 import { DEFAULT_SEEDS } from "../data/defaultSeeds";
@@ -30,6 +35,7 @@ import HeaderLobby from "./HeaderLobby";
 import ChiLayoutModal from "./ChiLayoutModal";
 import PageLayout from "./PageLayout";
 import PageHeader from "./PageHeader";
+import SectionDivider from "./ui/SectionDivider";
 
 interface MenuScreenProps {
   darkMode: boolean;
@@ -46,6 +52,7 @@ interface MenuScreenProps {
   onHowToPlay: () => void;
   onTutorial: () => void;
   onCtfGuide: () => void;
+  onTrenchGuide: (terrain?: TerrainType) => void;
   onOpenLibrary: () => void;
   multiplayer: any;
 }
@@ -59,6 +66,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
   onHowToPlay,
   onTutorial,
   onCtfGuide,
+  onTrenchGuide,
   onOpenLibrary,
   multiplayer,
 }) => {
@@ -80,7 +88,12 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
   });
   const [chiModalOpen, setChiModalOpen] = useState(false);
   const [showLearnMenu, setShowLearnMenu] = useState(false);
+  const [showPlayMenu, setShowPlayMenu] = useState(false);
+  const [showTrenchMenu, setShowTrenchMenu] = useState(false);
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
+  const [hoveredTerrain, setHoveredTerrain] = useState<TerrainType | null>(
+    null,
+  );
 
   const togglePlayerType = (pid: string) => {
     setPlayerConfig((prev) => ({
@@ -130,85 +143,6 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
     // Reverse user seeds so newest are first, then defaults
     // Use functional update to avoid dependency issues if needed, or just set it
     setSeeds([...loadedSeeds.reverse(), ...DEFAULT_SEEDS]);
-  }, []);
-
-  const cycleSeed = (direction: -1 | 1) => {
-    setPreviewSeedIndex((prev) => {
-      const next = prev + direction;
-      if (next < 0) return seeds.length - 1;
-      if (next >= seeds.length) return 0;
-      return next;
-    });
-  };
-
-  // Derived state for the persistent BoardPreview
-  const getPreviewState = () => {
-    // 1. Hover: How to Play -> Terrain Only, Bland Board, Icons, No Units, Random Seed
-    if (hoveredMenu === "how-to-play") {
-      return {
-        mode: null, // Neutral board
-        protocol: "terrainiffic", // Use custom seed
-        showIcons: true,
-        hideUnits: true,
-      };
-    }
-    // 2. Hover: Couch -> 2p-ns Board Only, No Terrain, No Units
-    if (hoveredMenu === "couch") {
-      return {
-        mode: "2p-ns" as GameMode,
-        protocol: null, // No protocol = No terrain/units logic usually (unless custom seed passed)
-        showIcons: false,
-        hideUnits: true,
-      };
-    }
-    // 3. Hover: Worldwide -> 2v2 Board Only, No Terrain, No Units
-    if (hoveredMenu === "worldwide") {
-      return {
-        mode: "2v2" as GameMode,
-        protocol: null,
-        showIcons: false,
-        hideUnits: true,
-      };
-    }
-    // 4. Default Flow
-    if (currentStep >= 2) {
-      return {
-        mode: selectedBoard || "2p-ns",
-        protocol: selectedPreset,
-        showIcons: false,
-        hideUnits: false, // Show units if selected
-      };
-    }
-    return {
-      mode: null,
-      protocol: null,
-      showIcons: false,
-      hideUnits: true,
-    };
-  };
-
-  const previewState = getPreviewState();
-  const isPreviewReady =
-    currentStep < 2
-      ? false
-      : !!selectedBoard && !!selectedPreset && currentStep !== 2;
-
-  const currentSeed = seeds[previewSeedIndex];
-
-  // For How to Play, we want a random seed from the library.
-  const getRandomLibrarySeed = () => {
-    if (seeds.length === 0) return undefined;
-    // Hash terrainSeed to pick an index
-    const idx = Math.floor(Math.abs(terrainSeed) * seeds.length) % seeds.length;
-    return seeds[idx]?.seed;
-  };
-
-  const activeCustomSeed =
-    hoveredMenu === "how-to-play"
-      ? getRandomLibrarySeed()
-      : !hoveredMenu && selectedPreset === "terrainiffic"
-        ? currentSeed?.seed
-        : undefined;
 
   const boardPreviewNode = (
     <>
@@ -224,6 +158,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
         onTogglePlayerType={currentStep < 2 ? undefined : togglePlayerType}
         showTerrainIcons={previewState.showIcons}
         hideUnits={previewState.hideUnits}
+        forcedTerrain={previewState.forcedTerrain}
       />
       {/* Layout Switcher */}
       {selectedPreset === "terrainiffic" && currentStep >= 3 && (
@@ -233,7 +168,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               e.stopPropagation();
               cycleSeed(-1);
             }}
-            className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-700 transition-all text-slate-600 dark:text-slate-400 hover:text-amber-500"
+            className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-700 transition-all text-slate-600 dark:text-slate-400 hover:text-amber-500 cursor-pointer"
           >
             <ChevronLeft size={20} />
           </button>
@@ -252,7 +187,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               e.stopPropagation();
               cycleSeed(1);
             }}
-            className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-700 transition-all text-slate-600 dark:text-slate-400 hover:text-amber-500"
+            className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-700 transition-all text-slate-600 dark:text-slate-400 hover:text-amber-500 cursor-pointer"
           >
             <ChevronRight size={20} />
           </button>
@@ -270,9 +205,12 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
           pieceStyle={pieceStyle}
           toggleTheme={toggleTheme}
           togglePieceStyle={togglePieceStyle}
+          onTutorial={onTutorial}
           onLogoClick={() => {
             setCurrentStep(0);
             setShowLearnMenu(false);
+            setShowPlayMenu(false);
+            setShowTrenchMenu(false);
             setIsJoining(false);
             setHoveredMenu(null);
           }}
@@ -281,17 +219,11 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
       }
     >
       {/* Step 0: Main Menu (Landing) */}
-      {currentStep === 0 && !showLearnMenu && (
+      {currentStep === 0 && !showLearnMenu && !showPlayMenu && (
         <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-          <div className="flex items-center justify-center gap-4 mb-8 w-full max-w-md">
-            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
-            <h2 className="text-sm font-bold text-center text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">
-              Main Menu
-            </h2>
-            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
-          </div>
+          <SectionDivider label="Main Menu" className="mb-8 max-w-md" />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
             <MenuCard
               onClick={() => setShowLearnMenu(true)}
               onMouseEnter={() => {
@@ -308,23 +240,73 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full"
             />
             <MenuCard
+              onClick={() => setShowPlayMenu(true)}
+              onMouseEnter={() => setHoveredMenu("play-menu")}
+              onMouseLeave={() => setHoveredMenu(null)}
+              isSelected={false}
+              darkMode={darkMode}
+              title="Play Trenchress"
+              description="Choose your battleground"
+              Icon={Swords}
+              color="red"
+              className="border-2 border-red-500/20 hover:border-red-500/50 h-full"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Step 0.25: Play Sub-Menu */}
+      {currentStep === 0 && showPlayMenu && (
+        <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
+          <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-md">
+            <button
+              onClick={() => setShowPlayMenu(false)}
+              className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+              title="Back to Menu"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <SectionDivider label="Play Trenchress" className="ml-12" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">
+            <MenuCard
               onClick={() => {
-                setSelectedPreset("quick"); // Default for quick start
                 setCurrentStep(2);
+                setShowPlayMenu(false);
+              }}
+              onMouseEnter={() => setHoveredMenu("practice")}
+              onMouseLeave={() => setHoveredMenu(null)}
+              isSelected={false}
+              darkMode={darkMode}
+              title="Practice Mode"
+              description="Local Play"
+              Icon={Rocket}
+              color="slate"
+              className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full"
+            />
+            <MenuCard
+              onClick={() => {
+                setSelectedPreset("quick");
+                setCurrentStep(2);
+                setShowPlayMenu(false);
               }}
               onMouseEnter={() => setHoveredMenu("couch")}
               onMouseLeave={() => setHoveredMenu(null)}
               isSelected={false}
               darkMode={darkMode}
               title="Couch Mode"
-              description="Local Lobby"
+              description="Local play with friends"
               Icon={Sofa}
               color="red"
               className="border-2 border-red-500/20 hover:border-red-500/50 h-full"
             />
             <HeaderLobby
               multiplayer={multiplayer}
-              onClick={() => setCurrentStep(1)}
+              onClick={() => {
+                setCurrentStep(1);
+                setShowPlayMenu(false);
+              }}
               onMouseEnter={() => setHoveredMenu("worldwide")}
               onMouseLeave={() => setHoveredMenu(null)}
             />
@@ -333,46 +315,51 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
       )}
 
       {/* Step 0.5: Learn Menu */}
-      {currentStep === 0 && showLearnMenu && (
+      {currentStep === 0 && showLearnMenu && !showTrenchMenu && (
         <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
           <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-md">
             <button
               onClick={() => setShowLearnMenu(false)}
-              className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800"
+              className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer"
               title="Back to Menu"
             >
               <ChevronLeft size={24} />
             </button>
-            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-12" />
-            <h2 className="text-sm font-bold text-center text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">
-              How to Play
-            </h2>
-            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-12" />
+            <SectionDivider label="How to Play" className="ml-12" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
             <MenuCard
-              onClick={onHowToPlay}
+              onClick={() => setShowTrenchMenu(true)}
+              onMouseEnter={() => {
+                setHoveredMenu("how-to-play");
+                setTerrainSeed(Math.random());
+              }}
+              onMouseLeave={() => setHoveredMenu(null)}
               isSelected={false}
               darkMode={darkMode}
-              title="Field Manual"
-              description="Read the Rules"
-              Icon={BookOpen}
+              title="The Trench"
+              description="Trials & Tribulations"
+              Icon={MapIcon}
               color="slate"
               className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full"
             />
             <MenuCard
-              onClick={onTutorial}
+              onClick={onHowToPlay}
+              onMouseEnter={() => setHoveredMenu("how-to-play")}
+              onMouseLeave={() => setHoveredMenu(null)}
               isSelected={false}
               darkMode={darkMode}
-              title="Learn Interactively"
-              description="Learn by Doing"
-              Icon={MapIcon}
-              color="emerald"
-              className="bg-emerald-100/50 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full"
+              title="The Chess"
+              description="Field Manual"
+              Icon={ChessPawn}
+              color="blue"
+              className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-800/50 dark:hover:bg-blue-800 h-full !border-blue-500/20 hover:!border-blue-500/50"
             />
             <MenuCard
               onClick={onCtfGuide}
+              onMouseEnter={() => setHoveredMenu("worldwide")}
+              onMouseLeave={() => setHoveredMenu(null)}
               isSelected={false}
               darkMode={darkMode}
               title="Capture the Flag(s)"
@@ -385,35 +372,120 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
         </div>
       )}
 
+      {/* Step 0.75: The Trench Sub-Menu */}
+      {currentStep === 0 && showLearnMenu && showTrenchMenu && (
+        <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
+          <div className="relative flex items-center justify-center gap-4 mb-4 w-full max-w-md">
+            <button
+              onClick={() => setShowTrenchMenu(false)}
+              className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+              title="Back to How to Play"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <SectionDivider
+              label="The Trench: Trials & Tribulations"
+              className="ml-12"
+              color="amber"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+            <MenuCard
+              onClick={() => onTrenchGuide("trees" as any)}
+              onMouseEnter={() => {
+                setHoveredMenu("how-to-play");
+                setHoveredTerrain("trees" as any);
+                setTerrainSeed(Math.random());
+              }}
+              onMouseLeave={() => {
+                setHoveredMenu(null);
+                setHoveredTerrain(null);
+              }}
+              isSelected={false}
+              darkMode={darkMode}
+              title="Forests"
+              description="Sanctuary of Mages"
+              Icon={Trees}
+              color="emerald"
+              className="bg-emerald-100/30 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full"
+            />
+            <MenuCard
+              onClick={() => onTrenchGuide("ponds" as any)}
+              onMouseEnter={() => {
+                setHoveredMenu("how-to-play");
+                setHoveredTerrain("ponds" as any);
+                setTerrainSeed(Math.random());
+              }}
+              onMouseLeave={() => {
+                setHoveredMenu(null);
+                setHoveredTerrain(null);
+              }}
+              isSelected={false}
+              darkMode={darkMode}
+              title="Swamp"
+              description="Sanctuary of Paladins"
+              Icon={Waves}
+              color="blue"
+              className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full"
+            />
+            <MenuCard
+              onClick={() => onTrenchGuide("rubble" as any)}
+              onMouseEnter={() => {
+                setHoveredMenu("how-to-play");
+                setHoveredTerrain("rubble" as any);
+                setTerrainSeed(Math.random());
+              }}
+              onMouseLeave={() => {
+                setHoveredMenu(null);
+                setHoveredTerrain(null);
+              }}
+              isSelected={false}
+              darkMode={darkMode}
+              title="Mountains"
+              description="Sanctuary of Dark Knights"
+              Icon={Mountain}
+              color="slate"
+              className="bg-slate-100/30 hover:bg-slate-200/50 dark:bg-slate-900/20 dark:hover:bg-slate-900/40 border-2 border-slate-500/20 hover:border-slate-500/50 h-full"
+            />
+            <MenuCard
+              onClick={() => onTrenchGuide("desert" as any)}
+              onMouseEnter={() => {
+                setHoveredMenu("how-to-play");
+                setHoveredTerrain("desert" as any);
+                setTerrainSeed(Math.random());
+              }}
+              onMouseLeave={() => {
+                setHoveredMenu(null);
+                setHoveredTerrain(null);
+              }}
+              isSelected={false}
+              darkMode={darkMode}
+              title="Desert"
+              description="Sanctuary of Sacred"
+              Icon={DesertIcon}
+              color="amber"
+              className="bg-amber-100/30 hover:bg-amber-200/50 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 border-2 border-amber-500/20 hover:border-amber-500/50 h-full"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Step 1: Mode Selection (Play Menu) */}
       {currentStep === 1 && !isJoining && (
         <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
           <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-md">
             <button
               onClick={() => setCurrentStep(0)}
-              className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800"
-              title="Back to Main Menu"
+              className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+              title="Back to Play Menu"
             >
               <ChevronLeft size={24} />
             </button>
-            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-12" />
-            <h2 className="text-sm font-bold text-center text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">
-              Worldwide Mode
-            </h2>
-            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-12" />
+            <SectionDivider label="Worldwide Mode" className="ml-12" />
           </div>
 
-          <div className="grid gap-6 grid-cols-1 md:grid-cols-3 w-full max-w-7xl">
-            <MenuCard
-              onClick={() => setCurrentStep(2)}
-              isSelected={false}
-              darkMode={darkMode}
-              title="Practice Mode"
-              description="Local Play"
-              Icon={Rocket}
-              color="slate"
-              className="border-2 border-slate-500/20 hover:border-slate-500/50"
-            />
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 w-full max-w-4xl">
             <MenuCard
               onClick={() => {
                 multiplayer?.onOpenHost();
@@ -446,7 +518,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
         <div className="w-full max-w-md animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
           <button
             onClick={() => setIsJoining(false)}
-            className="mb-8 flex items-center gap-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+            className="mb-8 flex items-center gap-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
           >
             <ChevronLeft size={20} />
             <span className="text-sm font-bold uppercase tracking-widest">
@@ -523,7 +595,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                 className={`py-4 rounded-2xl font-bold transition-all flex items-center justify-center shadow-lg ${
                   currentStep === 2
                     ? "bg-slate-100 dark:bg-slate-800/50 text-slate-300 dark:text-slate-700 cursor-not-allowed"
-                    : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700 hover:scale-[1.02]"
+                    : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700 hover:scale-[1.02] cursor-pointer"
                 }`}
                 title="Back"
               >
@@ -532,7 +604,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
 
               <button
                 onClick={onHowToPlay}
-                className="py-4 rounded-2xl font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700 hover:scale-[1.02] transition-all flex items-center justify-center shadow-lg"
+                className="py-4 rounded-2xl font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700 hover:scale-[1.02] transition-all flex items-center justify-center shadow-lg cursor-pointer"
                 title="Field Manual"
               >
                 <BookOpen size={24} />
@@ -540,7 +612,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
 
               <button
                 onClick={onOpenLibrary}
-                className="py-4 rounded-2xl font-bold bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/40 hover:scale-[1.02] transition-all flex items-center justify-center shadow-lg border-2 border-amber-500/20"
+                className="py-4 rounded-2xl font-bold bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/40 hover:scale-[1.02] transition-all flex items-center justify-center shadow-lg border-2 border-amber-500/20 cursor-pointer"
                 title="Seed Library"
               >
                 <Database size={24} />
@@ -550,7 +622,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                 onClick={() =>
                   onStartGame(selectedBoard || "2p-ns", "zen-garden")
                 }
-                className="py-4 rounded-2xl font-bold bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-900/40 hover:scale-[1.02] transition-all flex items-center justify-center shadow-lg border-2 border-emerald-500/20"
+                className="py-4 rounded-2xl font-bold bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-900/40 hover:scale-[1.02] transition-all flex items-center justify-center shadow-lg border-2 border-emerald-500/20 cursor-pointer"
                 title="Zen Garden (Editor)"
               >
                 <Sparkles size={24} />
@@ -564,7 +636,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                     ? "bg-slate-100 dark:bg-slate-800/50 text-slate-300 dark:text-slate-700 cursor-not-allowed hidden"
                     : !selectedBoard
                       ? "bg-slate-100 dark:bg-slate-800/50 text-slate-300 dark:text-slate-700 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700 text-white hover:scale-[1.02] shadow-blue-500/25"
+                      : "bg-blue-600 hover:bg-blue-700 text-white hover:scale-[1.02] shadow-blue-500/25 cursor-pointer"
                 }`}
                 title="Next Step"
               >
@@ -594,15 +666,13 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
 
           <div className="flex-1 w-full flex flex-col gap-8">
             <div className="flex flex-col mb-4">
-              <div className="flex items-center justify-center gap-4">
-                <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
-                <h2 className="text-sm font-bold text-center text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">
-                  {currentStep === 2
+              <SectionDivider
+                label={
+                  currentStep === 2
                     ? "Step 1: Choose The Board"
-                    : "Step 2: Choose The Layout"}
-                </h2>
-                <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
-              </div>
+                    : "Step 2: Choose The Layout"
+                }
+              />
             </div>
 
             <div className="grid gap-6 grid-cols-1 md:grid-cols-2">

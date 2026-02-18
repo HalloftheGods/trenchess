@@ -13,7 +13,6 @@ import {
   Crosshair,
   ShieldPlus,
   Zap,
-  Sparkles,
 } from "lucide-react";
 import BoardPreview from "./BoardPreview";
 import TerrainIntelTool from "./TerrainIntelTool";
@@ -24,12 +23,15 @@ import type { PieceStyle } from "../constants";
 import PageLayout from "./PageLayout";
 import PageHeader from "./PageHeader";
 
+import SectionDivider from "./ui/SectionDivider";
+
 interface HowToPlayProps {
   onBack: () => void;
   darkMode: boolean;
   pieceStyle: PieceStyle;
   toggleTheme?: () => void;
   togglePieceStyle?: () => void;
+  onTutorial?: () => void;
 }
 
 const HowToPlay: React.FC<HowToPlayProps> = ({
@@ -38,6 +40,7 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
   pieceStyle,
   toggleTheme,
   togglePieceStyle,
+  onTutorial,
 }) => {
   const textColor = darkMode ? "text-slate-100" : "text-slate-800";
   const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";
@@ -183,12 +186,15 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
 
   const boardPreviewNode = (
     <BoardPreview
-      selectedMode="2p-ns"
-      selectedProtocol="classic"
+      key="how-to-play-preview"
+      selectedMode={null}
+      selectedProtocol={"terrainiffic" as any}
       darkMode={darkMode}
       pieceStyle={pieceStyle}
-      isReady={true}
+      isReady={false}
       terrainSeed={12345}
+      showTerrainIcons={true}
+      hideUnits={true}
     />
   );
 
@@ -201,6 +207,7 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
           pieceStyle={pieceStyle}
           toggleTheme={toggleTheme || (() => {})}
           togglePieceStyle={togglePieceStyle || (() => {})}
+          onTutorial={onTutorial}
           onLogoClick={onBack}
           onBack={onBack}
           boardPreview={boardPreviewNode}
@@ -208,61 +215,17 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
       }
     >
       <div className="max-w-5xl mx-auto w-full">
-        {/* Introduction */}
-        <div className="mb-12">
-          <div
-            className={`w-full p-8 rounded-3xl border-4 ${cardBg} ${borderColor} backdrop-blur-xl shadow-xl flex flex-col justify-center`}
-          >
-            <div
-              className={`flex flex-col items-center font-black uppercase tracking-[0.2em] mb-6 ${darkMode ? "text-slate-400" : "text-slate-500"}`}
-            >
-              {/* Stacked Equation */}
-              <div className="flex flex-col items-center gap-4">
-                <span className="text-4xl md:text-5xl">Chess</span>
-
-                <div className="flex items-center gap-4">
-                  <span className="text-3xl md:text-4xl">+</span>
-                  <div className="flex items-center gap-2">
-                    <div className="p-2 px-3 rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-                      <Trees size={24} />
-                    </div>
-                    <div className="p-2 px-3 rounded-2xl bg-blue-500/10 text-blue-500 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
-                      <Waves size={24} />
-                    </div>
-                    <div className="p-2 px-3 rounded-2xl bg-stone-500/10 text-stone-500 dark:text-stone-400 border border-stone-500/20 shadow-[0_0_15px_rgba(120,113,108,0.1)]">
-                      <Mountain size={24} />
-                    </div>
-                    <div className="p-2 px-3 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]">
-                      <DesertIcon className="w-6 h-6" />
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  className={`w-full h-1 rounded-full ${darkMode ? "bg-slate-700" : "bg-slate-300"}`}
-                />
-
-                <div className="text-5xl md:text-6xl lg:text-7xl flex items-center justify-center">
-                  <span className="text-red-600">TREN</span>
-                  <span className="text-blue-600">CHESS</span>
-                </div>
-              </div>
-            </div>
-            <p
-              className={`text-xl text-center leading-relaxed ${textColor} font-bold tracking-tight mb-4`}
-            >
-              What? Chess is Evolving!
-            </p>
-          </div>
+        {/* New Classes & Abilities Header */}
+        <div className="flex flex-col items-center mb-16">
+          <SectionDivider
+            label="You've Unlocked New Classes & Abilities!"
+            color="amber"
+            animate={true}
+          />
         </div>
 
-        {/* New Classes Unlocked! Section */}
+        {/* New Classes Section */}
         <div className="mb-12">
-          {renderSectionTitle(
-            "New Classes Unlocked!",
-            <ShieldPlus size={32} />,
-            true,
-          )}
           <div className="grid grid-cols-1 gap-8">
             {[PIECES.HORSEMAN, PIECES.SNIPER, PIECES.TANK].map((type) => {
               const unit = INITIAL_ARMY.find((u) => u.type === type);
@@ -387,11 +350,6 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
 
         {/* New Abilities Section */}
         <div className="mb-12">
-          {renderSectionTitle(
-            "New Abilities Unlocked!",
-            <Sparkles size={24} />,
-            true,
-          )}
           <div className="grid grid-cols-1 gap-8">
             {[PIECES.BOT, PIECES.BATTLEKNIGHT, PIECES.COMMANDER].map((type) => {
               const unit = INITIAL_ARMY.find((u) => u.type === type);

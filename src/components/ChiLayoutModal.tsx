@@ -54,7 +54,7 @@ const ChiLayoutModal: React.FC<ChiLayoutModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all hover:rotate-90"
+            className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all hover:rotate-90 cursor-pointer"
           >
             <X size={24} />
           </button>
@@ -70,7 +70,7 @@ const ChiLayoutModal: React.FC<ChiLayoutModalProps> = ({
                   onSelect(index);
                   onClose();
                 }}
-                className={`flex flex-col text-left group transition-all duration-300 ${
+                className={`flex flex-col text-left group transition-all duration-300 cursor-pointer ${
                   selectedIndex === index
                     ? "ring-4 ring-emerald-500/30 scale-[1.02]"
                     : "hover:scale-[1.02]"

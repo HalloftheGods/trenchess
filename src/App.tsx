@@ -18,10 +18,16 @@ import Header from "./components/Header";
 import { GameLayout } from "./components/GameLayout";
 import InteractiveTutorial from "./components/InteractiveTutorial";
 import CaptureTheFlagGuide from "./components/CaptureTheFlagGuide";
+import TrenchGuide from "./components/TrenchGuide";
+
+import type { TerrainType } from "./types";
 
 const App = () => {
   const game = useGameState();
   const [prevState, setPrevState] = useState<string>("menu");
+  const [selectedTerrain, setSelectedTerrain] = useState<TerrainType | null>(
+    null,
+  );
 
   const localPlayerId =
     game.multiplayer?.isConnected &&
@@ -60,6 +66,11 @@ const App = () => {
           setPrevState("menu");
           game.setGameState("ctf-guide");
         }}
+        onTrenchGuide={(terrain) => {
+          setPrevState("menu");
+          setSelectedTerrain(terrain || null);
+          game.setGameState("trench-guide");
+        }}
         onOpenLibrary={() => {
           setPrevState("menu");
           game.setGameState("library");
@@ -72,7 +83,7 @@ const App = () => {
   if (game.gameState === "tutorial") {
     return (
       <InteractiveTutorial
-        onBack={() => game.setGameState("menu")}
+        onBack={() => game.setGameState(prevState as any)}
         darkMode={game.darkMode}
       />
     );
@@ -86,6 +97,7 @@ const App = () => {
         pieceStyle={game.pieceStyle}
         toggleTheme={game.toggleTheme}
         togglePieceStyle={game.togglePieceStyle}
+        onTutorial={() => game.setGameState("tutorial")}
       />
     );
   }
@@ -96,6 +108,23 @@ const App = () => {
         onBack={() => game.setGameState(prevState as any)}
         darkMode={game.darkMode}
         pieceStyle={game.pieceStyle}
+        toggleTheme={game.toggleTheme}
+        togglePieceStyle={game.togglePieceStyle}
+        onTutorial={() => game.setGameState("tutorial")}
+      />
+    );
+  }
+
+  if (game.gameState === "trench-guide") {
+    return (
+      <TrenchGuide
+        onBack={() => game.setGameState(prevState as any)}
+        darkMode={game.darkMode}
+        pieceStyle={game.pieceStyle}
+        toggleTheme={game.toggleTheme}
+        togglePieceStyle={game.togglePieceStyle}
+        onTutorial={() => game.setGameState("tutorial")}
+        initialTerrain={selectedTerrain}
       />
     );
   }

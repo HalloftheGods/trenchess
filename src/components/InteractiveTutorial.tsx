@@ -542,47 +542,70 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
           {/* Column 3: Terrain Details */}
           <TerrainDetailsPanel
             darkMode={darkMode}
-            terrainTypeKey={TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey}
+            terrainTypeKey={
+              selectedTerrainIdx >= 0
+                ? TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey
+                : ""
+            }
             selectedUnit={selectedUnit}
             onUnitSelect={setSelectedUnit}
             onPrev={handlePrevTerrain}
             onNext={handleNextTerrain}
-            prevTerrainIcon={React.cloneElement(
-              TERRAIN_LIST[
-                (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
-                  TERRAIN_LIST.length
-              ].icon as React.ReactElement<any>,
-              { size: 20 },
-            )}
-            nextTerrainIcon={React.cloneElement(
-              TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
-                .icon as React.ReactElement<any>,
-              { size: 20 },
-            )}
-            prevTerrainColors={{
-              bg: TERRAIN_LIST[
-                (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
-                  TERRAIN_LIST.length
-              ].bg,
-              text: TERRAIN_LIST[
-                (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
-                  TERRAIN_LIST.length
-              ].text,
-              border:
-                TERRAIN_LIST[
-                  (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
-                    TERRAIN_LIST.length
-                ].border,
-            }}
-            nextTerrainColors={{
-              bg: TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
-                .bg,
-              text: TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
-                .text,
-              border:
-                TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
-                  .border,
-            }}
+            prevTerrainIcon={
+              selectedTerrainIdx >= 0
+                ? React.cloneElement(
+                    TERRAIN_LIST[
+                      (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
+                        TERRAIN_LIST.length
+                    ].icon as React.ReactElement<any>,
+                    { size: 20 },
+                  )
+                : undefined
+            }
+            nextTerrainIcon={
+              selectedTerrainIdx >= 0
+                ? React.cloneElement(
+                    TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
+                      .icon as React.ReactElement<any>,
+                    { size: 20 },
+                  )
+                : undefined
+            }
+            prevTerrainColors={
+              selectedTerrainIdx >= 0
+                ? {
+                    bg: TERRAIN_LIST[
+                      (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
+                        TERRAIN_LIST.length
+                    ].bg,
+                    text: TERRAIN_LIST[
+                      (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
+                        TERRAIN_LIST.length
+                    ].text,
+                    border:
+                      TERRAIN_LIST[
+                        (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
+                          TERRAIN_LIST.length
+                      ].border,
+                  }
+                : undefined
+            }
+            nextTerrainColors={
+              selectedTerrainIdx >= 0
+                ? {
+                    bg: TERRAIN_LIST[
+                      (selectedTerrainIdx + 1) % TERRAIN_LIST.length
+                    ].bg,
+                    text: TERRAIN_LIST[
+                      (selectedTerrainIdx + 1) % TERRAIN_LIST.length
+                    ].text,
+                    border:
+                      TERRAIN_LIST[
+                        (selectedTerrainIdx + 1) % TERRAIN_LIST.length
+                      ].border,
+                  }
+                : undefined
+            }
           />
 
           {/* Column 4: = Divider */}

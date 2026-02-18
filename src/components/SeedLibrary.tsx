@@ -158,7 +158,7 @@ const SeedLibrary: React.FC<SeedLibraryProps> = ({
           <div className="flex items-center gap-6">
             <button
               onClick={onBack}
-              className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all text-slate-500 hover:text-slate-900 dark:hover:text-white"
+              className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
             >
               <ChevronLeft size={24} />
             </button>
@@ -239,13 +239,13 @@ const SeedLibrary: React.FC<SeedLibraryProps> = ({
                 <div className="mt-6 grid grid-cols-2 gap-2">
                   <button
                     onClick={() => onLoadSeed(item.seed)}
-                    className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-red-500/20"
+                    className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-red-500/20 cursor-pointer"
                   >
                     <Play size={14} /> Play
                   </button>
                   <button
                     onClick={() => onEditInZen(item.seed)}
-                    className="flex items-center justify-center gap-2 bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-600 dark:text-emerald-400 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-emerald-500/20"
+                    className="flex items-center justify-center gap-2 bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-600 dark:text-emerald-400 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-emerald-500/20 cursor-pointer"
                   >
                     <Pencil size={14} /> Edit
                   </button>
@@ -254,7 +254,7 @@ const SeedLibrary: React.FC<SeedLibraryProps> = ({
                 <div className="mt-2 grid grid-cols-2 gap-2">
                   <button
                     onClick={() => handleCopyLink(item.seed, item.id)}
-                    className={`flex items-center justify-center gap-2 ${copiedId === item.id ? "bg-amber-500 text-white" : "bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400"} py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all`}
+                    className={`flex items-center justify-center gap-2 ${copiedId === item.id ? "bg-amber-500 text-white cursor-default" : "bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 cursor-pointer"} py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all`}
                   >
                     {copiedId === item.id ? (
                       <>
@@ -268,7 +268,7 @@ const SeedLibrary: React.FC<SeedLibraryProps> = ({
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="flex items-center justify-center gap-2 bg-slate-100 dark:bg-white/5 hover:bg-red-500/10 hover:text-red-500 text-slate-500 dark:text-slate-400 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                    className="flex items-center justify-center gap-2 bg-slate-100 dark:bg-white/5 hover:bg-red-500/10 hover:text-red-500 text-slate-500 dark:text-slate-400 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer"
                   >
                     <Trash2 size={14} /> Delete
                   </button>

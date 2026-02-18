@@ -119,7 +119,7 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
 
           <button
             onClick={leaveGame}
-            className="group flex items-center gap-2 text-xs font-black text-red-500 hover:text-red-400 uppercase tracking-[0.2em] transition-all"
+            className="group flex items-center gap-2 text-xs font-black text-red-500 hover:text-red-400 uppercase tracking-[0.2em] transition-all cursor-pointer"
           >
             <LogOut
               size={14}

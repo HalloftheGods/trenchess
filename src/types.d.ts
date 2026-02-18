@@ -11,7 +11,8 @@ export type GameState =
   | "zen-garden"
   | "library"
   | "tutorial"
-  | "ctf-guide";
+  | "ctf-guide"
+  | "trench-guide";
 export type SetupMode = "terrain" | "pieces";
 export type GameOverReason = "checkmate" | "stalemate" | "forfeit" | null;
 

@@ -6,7 +6,6 @@
  */
 import React, { useMemo } from "react";
 import {
-  ArrowLeft,
   Flag,
   Crown,
   Crosshair,
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 import GameLogo from "./GameLogo";
 import BoardPreview from "./BoardPreview";
+import PageHeader from "./PageHeader";
 import CopyrightFooter from "./CopyrightFooter";
 import { DEFAULT_SEEDS } from "../data/defaultSeeds";
 import type { PieceStyle } from "../constants";
@@ -24,12 +24,18 @@ interface CaptureTheFlagGuideProps {
   onBack: () => void;
   darkMode: boolean;
   pieceStyle: PieceStyle;
+  toggleTheme: () => void;
+  togglePieceStyle: () => void;
+  onTutorial?: () => void;
 }
 
 const CaptureTheFlagGuide: React.FC<CaptureTheFlagGuideProps> = ({
   onBack,
   darkMode,
   pieceStyle,
+  toggleTheme,
+  togglePieceStyle,
+  onTutorial,
 }) => {
   const textColor = darkMode ? "text-slate-100" : "text-slate-800";
   const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";
@@ -67,53 +73,41 @@ const CaptureTheFlagGuide: React.FC<CaptureTheFlagGuideProps> = ({
       className={`min-h-screen w-full ${darkMode ? "bg-[#050b15]" : "bg-stone-100"} p-4 md:p-8 overflow-y-auto`}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Fixed Back Button (mirrors ThemeControls on opposite side) */}
-        <button
-          onClick={onBack}
-          className={`fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-2xl font-bold transition-all backdrop-blur-xl border shadow-lg hover:scale-110 ${
-            darkMode
-              ? "bg-slate-800/80 hover:bg-slate-700/90 text-slate-200 border-white/10"
-              : "bg-white/80 hover:bg-white/95 text-slate-700 border-slate-200"
-          }`}
-          title="Back to Menu"
-        >
-          <ArrowLeft size={20} />
-        </button>
-
-        {/* Introduction / Header Layout (Matching Main Menu) */}
-        <div className="w-full max-w-7xl mt-4 mb-20 flex flex-col lg:flex-row items-center justify-between gap-8 px-4 z-10 relative">
-          <div className="cursor-pointer hover:scale-105 transition-transform flex-1 flex justify-center w-full">
-            <GameLogo
-              size="medium"
-              logoText="Capture the Flag(s)"
-              topText="Trenchess"
-            />
-          </div>
-
-          {/* Persistent Board Preview */}
-          <div className="w-full max-w-[400px] lg:w-[400px] shrink-0">
-            <BoardPreview
-              selectedMode="2v2" // CTF Mode
-              selectedProtocol="terrainiffic" // To allow custom seed
-              customSeed={randomSeed}
-              darkMode={darkMode}
-              pieceStyle={pieceStyle}
-              isReady={true}
-              terrainSeed={0} // Not used when customSeed is provided
-              showTerrainIcons={true}
-              hideUnits={false}
-            />
-            <div className="flex flex-col items-center mt-4">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                Terrain Layout
-              </span>
-              <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">
-                {DEFAULT_SEEDS.find((s) => s.seed === randomSeed)?.name ||
-                  "Random"}
-              </span>
-            </div>
-          </div>
-        </div>
+        <PageHeader
+          darkMode={darkMode}
+          pieceStyle={pieceStyle}
+          toggleTheme={toggleTheme}
+          togglePieceStyle={togglePieceStyle}
+          onTutorial={onTutorial}
+          onLogoClick={onBack}
+          onBack={onBack}
+          logoText="Capture the Flag(s)"
+          topText="Trenchess"
+          boardPreview={
+            <>
+              <BoardPreview
+                selectedMode="2v2" // CTF Mode
+                selectedProtocol="terrainiffic" // To allow custom seed
+                customSeed={randomSeed}
+                darkMode={darkMode}
+                pieceStyle={pieceStyle}
+                isReady={true}
+                terrainSeed={0} // Not used when customSeed is provided
+                showTerrainIcons={true}
+                hideUnits={false}
+              />
+              <div className="flex flex-col items-center mt-4">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  Terrain Layout
+                </span>
+                <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">
+                  {DEFAULT_SEEDS.find((s) => s.seed === randomSeed)?.name ||
+                    "Random"}
+                </span>
+              </div>
+            </>
+          }
+        />
 
         {/* Rules Cards */}
         <div className="mb-12">

@@ -227,8 +227,8 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                 onClick={() => setTurn(pid)}
                 className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
                   turn === pid
-                    ? "bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white"
-                    : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                    ? "bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white cursor-default"
+                    : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
                 }`}
               >
                 {pid === "player1"
@@ -399,7 +399,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                   setPlacementPiece(null);
                   setPlacementTerrain(null);
                 }}
-                className="w-full py-3 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 border border-slate-200 dark:border-white/5 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all"
+                className="w-full py-3 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 border border-slate-200 dark:border-white/5 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all cursor-pointer"
               >
                 <RotateCcw size={16} /> Next Commander
               </button>
@@ -413,7 +413,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                   setSelectedCell(null);
                   setValidMoves([]);
                 }}
-                className={`w-full py-4 rounded-xl font-black text-lg uppercase tracking-tighter transition-all ${isAllPlaced ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg" : "bg-slate-100 dark:bg-white/5 opacity-20 cursor-not-allowed"}`}
+                className={`w-full py-4 rounded-xl font-black text-lg uppercase tracking-tighter transition-all ${isAllPlaced ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg cursor-pointer" : "bg-slate-100 dark:bg-white/5 opacity-20 cursor-not-allowed"}`}
               >
                 Commence War
               </button>
@@ -468,7 +468,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                       setValidMoves([]);
                       // Broadcast start is handled by sync in useGameState
                     }}
-                    className="w-full py-4 rounded-xl font-black text-lg uppercase tracking-tighter transition-all bg-amber-500 hover:bg-amber-400 text-white shadow-lg animate-pulse"
+                    className="w-full py-4 rounded-xl font-black text-lg uppercase tracking-tighter transition-all bg-amber-500 hover:bg-amber-400 text-white shadow-lg animate-pulse cursor-pointer"
                   >
                     START GAME
                   </button>
