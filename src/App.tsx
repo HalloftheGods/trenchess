@@ -17,6 +17,7 @@ import SeedLibrary from "./components/SeedLibrary";
 import Header from "./components/Header";
 import { GameLayout } from "./components/GameLayout";
 import InteractiveTutorial from "./components/InteractiveTutorial";
+import CaptureTheFlagGuide from "./components/CaptureTheFlagGuide";
 
 const App = () => {
   const game = useGameState();
@@ -55,6 +56,10 @@ const App = () => {
           setPrevState("menu");
           game.setGameState("tutorial");
         }}
+        onCtfGuide={() => {
+          setPrevState("menu");
+          game.setGameState("ctf-guide");
+        }}
         onOpenLibrary={() => {
           setPrevState("menu");
           game.setGameState("library");
@@ -76,6 +81,16 @@ const App = () => {
   if (game.gameState === "how-to-play") {
     return (
       <HowToPlay
+        onBack={() => game.setGameState(prevState as any)}
+        darkMode={game.darkMode}
+        pieceStyle={game.pieceStyle}
+      />
+    );
+  }
+
+  if (game.gameState === "ctf-guide") {
+    return (
+      <CaptureTheFlagGuide
         onBack={() => game.setGameState(prevState as any)}
         darkMode={game.darkMode}
         pieceStyle={game.pieceStyle}

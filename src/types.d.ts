@@ -10,7 +10,8 @@ export type GameState =
   | "finished"
   | "zen-garden"
   | "library"
-  | "tutorial";
+  | "tutorial"
+  | "ctf-guide";
 export type SetupMode = "terrain" | "pieces";
 export type GameOverReason = "checkmate" | "stalemate" | "forfeit" | null;
 

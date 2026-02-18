@@ -11,6 +11,7 @@ import {
 import type { GameMode, ArmyUnit, PieceType, TerrainType } from "../types";
 import { Edit } from "lucide-react";
 import { deserializeGame, adaptSeedToMode } from "../utils/gameUrl";
+import { TERRAIN_INTEL } from "../constants";
 
 interface BoardPreviewProps {
   selectedMode: GameMode | null;
@@ -28,6 +29,8 @@ interface BoardPreviewProps {
   customSeed?: string;
   playerConfig?: Record<string, "human" | "computer">;
   onTogglePlayerType?: (pid: string) => void;
+  showTerrainIcons?: boolean;
+  hideUnits?: boolean;
 }
 
 const BoardPreview: React.FC<BoardPreviewProps> = ({
@@ -39,6 +42,8 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
   customSeed,
   playerConfig,
   onTogglePlayerType,
+  showTerrainIcons,
+  hideUnits,
 }) => {
   // Parse custom seed if present
   const seedData = React.useMemo(() => {
@@ -397,16 +402,21 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
         }}
       >
         {grid.map(({ row, col }) => {
-          if (!selectedMode) {
+          const blandStyle = getQuadrantBaseStyle(row, col, "neutral");
+
+          // Standard Bland Mode - only if no mode AND no terrain icons requested
+          if (!selectedMode && !showTerrainIcons) {
             return (
               <div
                 key={`${row}-${col}`}
-                className="bg-slate-700/50 rounded-[1px]"
+                className={`${blandStyle} rounded-[1px] transition-all duration-500`}
               />
             );
           }
 
-          const baseStyle = getQuadrantBaseStyle(row, col, selectedMode);
+          const baseStyle = selectedMode
+            ? getQuadrantBaseStyle(row, col, selectedMode)
+            : blandStyle;
           const pieceInfo = getPieceAt(row, col);
           const terrain = getTerrainAt(row, col, pieceInfo);
 
@@ -424,14 +434,26 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
               cellStyle = "bg-amber-200/80 border-amber-300/50"; // Desert
           }
 
+          const TerrainIcon =
+            terrain && showTerrainIcons ? TERRAIN_INTEL[terrain]?.icon : null;
+
           return (
             <div
               key={`${row}-${col}`}
               className={`${cellStyle} rounded-[1px] transition-all duration-500 relative flex items-center justify-center`}
             >
+              {TerrainIcon && (
+                <div className="absolute inset-0 flex items-center justify-center opacity-40">
+                  <TerrainIcon
+                    size="60%"
+                    className="text-white drop-shadow-md"
+                  />
+                </div>
+              )}
               {
                 /* Render the unit if present */
                 pieceInfo &&
+                  !hideUnits &&
                   (() => {
                     const unit = INITIAL_ARMY.find(
                       (u) => u.type === pieceInfo.pieceType,

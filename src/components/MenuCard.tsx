@@ -20,6 +20,8 @@ interface MenuCardProps {
   hoverText?: string;
   className?: string;
   darkMode?: boolean;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
 const COLOR_STYLES: Record<
@@ -101,6 +103,8 @@ const MenuCard = ({
   isSelected,
   isDisabled,
   darkMode,
+  onMouseEnter,
+  onMouseLeave,
 }: MenuCardProps & { isSelected?: boolean; isDisabled?: boolean }) => {
   const styles = COLOR_STYLES[color];
 
@@ -108,7 +112,9 @@ const MenuCard = ({
     <button
       onClick={isDisabled ? undefined : onClick}
       disabled={isDisabled}
-      className={`group bg-white dark:bg-slate-900 border-4 p-8 rounded-[2.5rem] transition-all flex flex-col items-center gap-6 shadow-2xl relative overflow-hidden ${
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className={`group bg-white dark:bg-slate-900 border-4 p-8 rounded-[2.5rem] transition-all flex flex-col items-center gap-6 shadow-2xl relative overflow-hidden cursor-pointer ${
         isDisabled
           ? "opacity-50 cursor-not-allowed grayscale"
           : "hover:-translate-y-2"

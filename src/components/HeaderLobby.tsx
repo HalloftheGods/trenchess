@@ -4,9 +4,16 @@ import { Users, Copy, Wifi, LogOut, GlobeLock } from "lucide-react";
 interface HeaderLobbyProps {
   multiplayer: any;
   onClick?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
-const HeaderLobby: React.FC<HeaderLobbyProps> = ({ multiplayer, onClick }) => {
+const HeaderLobby: React.FC<HeaderLobbyProps> = ({
+  multiplayer,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+}) => {
   if (!multiplayer) return null;
 
   const { isConnected, roomId, players, leaveGame, isHost } = multiplayer;
@@ -19,7 +26,7 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({ multiplayer, onClick }) => {
 
   // CONTAINER STYLE (Matching MenuCard)
   const containerClass =
-    "group flex flex-col items-center gap-6 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border-2 border-blue-500/20 hover:border-blue-500/50 shadow-2xl w-full h-full animate-in fade-in slide-in-from-bottom-8 duration-700 relative overflow-hidden transition-all hover:-translate-y-2";
+    "group flex flex-col items-center gap-6 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border-2 border-blue-500/20 hover:border-blue-500/50 shadow-2xl w-full h-full animate-in fade-in slide-in-from-bottom-8 duration-700 relative overflow-hidden transition-all hover:-translate-y-2 cursor-pointer";
 
   if (!isConnected) {
     return (
@@ -130,6 +137,8 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({ multiplayer, onClick }) => {
     <div
       className={`${containerClass} cursor-pointer group hover:scale-[1.02]`}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-blue-500/10" />
 

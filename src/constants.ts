@@ -293,14 +293,15 @@ export const getQuadrantBaseStyle = (
         ? "bg-emerald-300/60 dark:bg-emerald-800/40"
         : "bg-emerald-200/60 dark:bg-emerald-700/40";
     }
-    // Fallback slate
+    // Fallback slate (Neutral - Bland Mode)
+    // Matches Main Board Pattern: Inner = Dark/Saturated, Outer = Light/Desaturated
     if (isInner)
       return isAlt
-        ? "bg-slate-700 dark:bg-slate-800"
-        : "bg-slate-600 dark:bg-slate-700";
+        ? "bg-slate-800/90 dark:bg-slate-700"
+        : "bg-slate-700/90 dark:bg-slate-600";
     return isAlt
-      ? "bg-slate-400/60 dark:bg-slate-900/60"
-      : "bg-slate-300/60 dark:bg-slate-800/60";
+      ? "bg-slate-300/60 dark:bg-slate-800/40"
+      : "bg-slate-200/60 dark:bg-slate-700/40";
   };
 
   if (mode === "2p-ns") {
