@@ -11,7 +11,7 @@ import {
   Mountain,
   X,
   Sparkles,
-  Footprints,
+  ShieldPlus,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -97,16 +97,16 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
             >
               <IconComp size={28} className="fill-current" />
 
-              {/* Footprints Badge for Traversal/Protection */}
+              {/* Shield Badge for Protection */}
               {isProtected && (
                 <div
-                  className={`absolute -top-2 -right-2 p-1 rounded-full bg-white dark:bg-slate-900 border-2 ${colors.border} shadow-lg z-10 flex items-center justify-center`}
-                  title="Unit has affinity with this terrain"
+                  className={`absolute -top-2 -right-2 p-1 rounded-full bg-white dark:bg-slate-900 border-2 ${colors.border} shadow-lg z-10 flex items-center justify-center animate-pulse`}
+                  title="Protected in this terrain"
                 >
-                  <Footprints
+                  <ShieldPlus
                     size={12}
-                    className={`${colors.text} fill-current/20`}
-                    strokeWidth={3}
+                    className={`${colors.text}`}
+                    strokeWidth={4}
                   />
                 </div>
               )}
