@@ -67,30 +67,18 @@ const CaptureTheFlagGuide: React.FC<CaptureTheFlagGuideProps> = ({
       className={`min-h-screen w-full ${darkMode ? "bg-[#050b15]" : "bg-stone-100"} p-4 md:p-8 overflow-y-auto`}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-12">
-          <button
-            onClick={onBack}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
-              darkMode
-                ? "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/5"
-                : "bg-white hover:bg-slate-50 text-slate-700 shadow-sm border border-slate-200"
-            }`}
-          >
-            <ArrowLeft size={20} />
-            Back to Menu
-          </button>
-          <div className="text-right">
-            <h1 className={`text-4xl font-black tracking-tighter ${textColor}`}>
-              TRENCHESS
-            </h1>
-            <p
-              className={`text-xs font-bold uppercase tracking-widest ${subtextColor}`}
-            >
-              Capture the Flag Guide
-            </p>
-          </div>
-        </div>
+        {/* Fixed Back Button (mirrors ThemeControls on opposite side) */}
+        <button
+          onClick={onBack}
+          className={`fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-2xl font-bold transition-all backdrop-blur-xl border shadow-lg hover:scale-110 ${
+            darkMode
+              ? "bg-slate-800/80 hover:bg-slate-700/90 text-slate-200 border-white/10"
+              : "bg-white/80 hover:bg-white/95 text-slate-700 border-slate-200"
+          }`}
+          title="Back to Menu"
+        >
+          <ArrowLeft size={20} />
+        </button>
 
         {/* Introduction / Header Layout (Matching Main Menu) */}
         <div className="w-full max-w-7xl mt-4 mb-20 flex flex-col lg:flex-row items-center justify-between gap-8 px-4 z-10 relative">

@@ -22,15 +22,14 @@ import {
 } from "lucide-react";
 import type { GameMode } from "../types";
 import type { PieceStyle } from "../constants";
-import ThemeControls from "./ThemeControls";
 import { DualToneNS, DualToneEW, QuadTone, AllianceTone } from "./MenuIcons";
-import GameLogo from "./GameLogo";
 import MenuCard from "./MenuCard";
 import BoardPreview from "./BoardPreview";
-import CopyrightFooter from "./CopyrightFooter";
 import { DEFAULT_SEEDS } from "../data/defaultSeeds";
 import HeaderLobby from "./HeaderLobby";
 import ChiLayoutModal from "./ChiLayoutModal";
+import PageLayout from "./PageLayout";
+import PageHeader from "./PageHeader";
 
 interface MenuScreenProps {
   darkMode: boolean;
@@ -211,79 +210,76 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
         ? currentSeed?.seed
         : undefined;
 
-  return (
-    <div className="min-h-screen bg-stone-100 dark:bg-[#050b15] text-slate-900 dark:text-slate-100 flex flex-col items-center p-8 transition-colors overflow-y-auto w-full">
-      <ThemeControls
+  const boardPreviewNode = (
+    <>
+      <BoardPreview
+        selectedMode={previewState.mode}
+        selectedProtocol={previewState.protocol as any}
         darkMode={darkMode}
         pieceStyle={pieceStyle}
-        toggleTheme={toggleTheme}
-        togglePieceStyle={togglePieceStyle}
+        isReady={isPreviewReady}
+        terrainSeed={terrainSeed}
+        customSeed={activeCustomSeed}
+        playerConfig={currentStep < 2 ? undefined : playerConfig}
+        onTogglePlayerType={currentStep < 2 ? undefined : togglePlayerType}
+        showTerrainIcons={previewState.showIcons}
+        hideUnits={previewState.hideUnits}
       />
+      {/* Layout Switcher */}
+      {selectedPreset === "terrainiffic" && currentStep >= 3 && (
+        <div className="flex items-center justify-between gap-4 px-4 py-2 bg-slate-200/50 dark:bg-slate-800/50 rounded-2xl backdrop-blur-sm mt-4">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              cycleSeed(-1);
+            }}
+            className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-700 transition-all text-slate-600 dark:text-slate-400 hover:text-amber-500"
+          >
+            <ChevronLeft size={20} />
+          </button>
 
-      <div className="w-full max-w-7xl mt-4 mb-8 flex flex-col lg:flex-row items-center justify-between gap-8 px-4 z-10 relative">
-        <div
-          className="cursor-pointer hover:scale-105 transition-transform flex-1 flex justify-center w-full"
-          onClick={() => {
+          <div className="flex flex-col items-center">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              Active Layout
+            </span>
+            <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">
+              {currentSeed?.name || "Unknown"}
+            </span>
+          </div>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              cycleSeed(1);
+            }}
+            className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-700 transition-all text-slate-600 dark:text-slate-400 hover:text-amber-500"
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      )}
+    </>
+  );
+
+  return (
+    <PageLayout
+      darkMode={darkMode}
+      header={
+        <PageHeader
+          darkMode={darkMode}
+          pieceStyle={pieceStyle}
+          toggleTheme={toggleTheme}
+          togglePieceStyle={togglePieceStyle}
+          onLogoClick={() => {
             setCurrentStep(0);
             setShowLearnMenu(false);
             setIsJoining(false);
             setHoveredMenu(null);
           }}
-        >
-          <GameLogo size="medium" />
-        </div>
-
-        {/* Persistent Board Preview */}
-        <div className="w-full max-w-[400px] lg:w-[400px] shrink-0">
-          <BoardPreview
-            selectedMode={previewState.mode}
-            selectedProtocol={previewState.protocol as any}
-            darkMode={darkMode}
-            pieceStyle={pieceStyle}
-            isReady={isPreviewReady}
-            terrainSeed={terrainSeed}
-            customSeed={activeCustomSeed}
-            playerConfig={currentStep < 2 ? undefined : playerConfig}
-            onTogglePlayerType={currentStep < 2 ? undefined : togglePlayerType}
-            showTerrainIcons={previewState.showIcons}
-            hideUnits={previewState.hideUnits}
-          />
-          {/* Layout Switcher (Moved from Preview) */}
-          {selectedPreset === "terrainiffic" && currentStep >= 3 && (
-            <div className="flex items-center justify-between gap-4 px-4 py-2 bg-slate-200/50 dark:bg-slate-800/50 rounded-2xl backdrop-blur-sm mt-4">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  cycleSeed(-1);
-                }}
-                className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-700 transition-all text-slate-600 dark:text-slate-400 hover:text-amber-500"
-              >
-                <ChevronLeft size={20} />
-              </button>
-
-              <div className="flex flex-col items-center">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  Active Layout
-                </span>
-                <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">
-                  {currentSeed?.name || "Unknown"}
-                </span>
-              </div>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  cycleSeed(1);
-                }}
-                className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-700 transition-all text-slate-600 dark:text-slate-400 hover:text-amber-500"
-              >
-                <ChevronRight size={20} />
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
+          boardPreview={boardPreviewNode}
+        />
+      }
+    >
       {/* Step 0: Main Menu (Landing) */}
       {currentStep === 0 && !showLearnMenu && (
         <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
@@ -754,7 +750,6 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
           </div>
         </div>
       )}
-      <CopyrightFooter />
       <ChiLayoutModal
         isOpen={chiModalOpen}
         onClose={() => setChiModalOpen(false)}
@@ -763,7 +758,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
         selectedIndex={previewSeedIndex}
         activeMode={selectedBoard}
       />
-    </div>
+    </PageLayout>
   );
 };
 

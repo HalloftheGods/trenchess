@@ -6,7 +6,6 @@
  */
 import React from "react";
 import {
-  ArrowLeft,
   Map as MapIcon,
   Trees,
   Waves,
@@ -16,25 +15,29 @@ import {
   Zap,
   Sparkles,
 } from "lucide-react";
-import GameLogo from "./GameLogo";
 import BoardPreview from "./BoardPreview";
-import CopyrightFooter from "./CopyrightFooter";
 import TerrainIntelTool from "./TerrainIntelTool";
 import { PIECES, INITIAL_ARMY } from "../constants";
 import { DesertIcon } from "../UnitIcons";
 import { UNIT_DETAILS, unitColorMap } from "../data/unitDetails";
 import type { PieceStyle } from "../constants";
+import PageLayout from "./PageLayout";
+import PageHeader from "./PageHeader";
 
 interface HowToPlayProps {
   onBack: () => void;
   darkMode: boolean;
   pieceStyle: PieceStyle;
+  toggleTheme?: () => void;
+  togglePieceStyle?: () => void;
 }
 
 const HowToPlay: React.FC<HowToPlayProps> = ({
   onBack,
   darkMode,
   pieceStyle,
+  toggleTheme,
+  togglePieceStyle,
 }) => {
   const textColor = darkMode ? "text-slate-100" : "text-slate-800";
   const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";
@@ -178,37 +181,33 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
     );
   };
 
-  return (
-    <div
-      className={`min-h-screen w-full ${darkMode ? "bg-[#050b15]" : "bg-stone-100"} p-4 md:p-8 overflow-y-auto`}
-    >
-      <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-12">
-          <button
-            onClick={onBack}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
-              darkMode
-                ? "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/5"
-                : "bg-white hover:bg-slate-50 text-slate-700 shadow-sm border border-slate-200"
-            }`}
-          >
-            <ArrowLeft size={20} />
-            Back to Menu
-          </button>
-          <div className="text-right">
-            {/* todo: add logo */}
-            <h1 className={`text-4xl font-black tracking-tighter ${textColor}`}>
-              TRENCHESS
-            </h1>
-            <p
-              className={`text-xs font-bold uppercase tracking-widest ${subtextColor}`}
-            >
-              How to Play Guide
-            </p>
-          </div>
-        </div>
+  const boardPreviewNode = (
+    <BoardPreview
+      selectedMode="2p-ns"
+      selectedProtocol="classic"
+      darkMode={darkMode}
+      pieceStyle={pieceStyle}
+      isReady={true}
+      terrainSeed={12345}
+    />
+  );
 
+  return (
+    <PageLayout
+      darkMode={darkMode}
+      header={
+        <PageHeader
+          darkMode={darkMode}
+          pieceStyle={pieceStyle}
+          toggleTheme={toggleTheme || (() => {})}
+          togglePieceStyle={togglePieceStyle || (() => {})}
+          onLogoClick={onBack}
+          onBack={onBack}
+          boardPreview={boardPreviewNode}
+        />
+      }
+    >
+      <div className="max-w-5xl mx-auto w-full">
         {/* Introduction */}
         <div className="mb-12">
           <div
@@ -626,27 +625,8 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
             </div>
           </div>
         </div>
-
-        <div className="flex justify-center mb-12">
-          <div className="w-full">
-            <BoardPreview
-              selectedMode="2p-ns"
-              selectedProtocol="classic"
-              darkMode={darkMode}
-              pieceStyle={pieceStyle}
-              isReady={true}
-              terrainSeed={12345} // Consistent seed for manual
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-center mb-12">
-          <GameLogo size="small" />
-        </div>
-
-        <CopyrightFooter />
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

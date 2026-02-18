@@ -84,6 +84,8 @@ const App = () => {
         onBack={() => game.setGameState(prevState as any)}
         darkMode={game.darkMode}
         pieceStyle={game.pieceStyle}
+        toggleTheme={game.toggleTheme}
+        togglePieceStyle={game.togglePieceStyle}
       />
     );
   }
