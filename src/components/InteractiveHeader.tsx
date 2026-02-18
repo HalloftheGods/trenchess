@@ -95,9 +95,9 @@ const UNIT_COLORS: Record<
     border: "border-red-500/40",
   },
   [PIECES.HORSEMAN]: {
-    text: "text-emerald-500",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/40",
+    text: "text-stone-500",
+    bg: "bg-stone-500/10",
+    border: "border-stone-500/40",
   },
   [PIECES.BOT]: {
     text: "text-blue-500",

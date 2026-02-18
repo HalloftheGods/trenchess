@@ -43,11 +43,11 @@ export const unitColorMap: Record<
     ribbonBg: "bg-red-500",
   },
   [PIECES.HORSEMAN]: {
-    text: "text-emerald-500",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/40",
-    shadow: "shadow-[0_0_10px_rgba(16,185,129,0.1)]",
-    ribbonBg: "bg-emerald-500",
+    text: "text-stone-500",
+    bg: "bg-stone-500/10",
+    border: "border-stone-500/40",
+    shadow: "shadow-[0_0_10px_rgba(120,113,108,0.1)]",
+    ribbonBg: "bg-stone-500",
   },
   [PIECES.BOT]: {
     text: "text-blue-500",
