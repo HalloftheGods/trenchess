@@ -199,7 +199,7 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
           <div className="text-right">
             {/* todo: add logo */}
             <h1 className={`text-4xl font-black tracking-tighter ${textColor}`}>
-              TRENCHES
+              TRENCHESS
             </h1>
             <p
               className={`text-xs font-bold uppercase tracking-widest ${subtextColor}`}
@@ -521,6 +521,54 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
             <ShieldPlus size={24} />,
             true,
           )}
+
+          {/* Key Terrain Rules Note */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div
+              className={`p-6 rounded-3xl border-2 border-amber-500/30 ${cardBg} backdrop-blur-xl shadow-lg relative overflow-hidden group`}
+            >
+              <div className="absolute -right-8 -top-8 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-all" />
+              <h4
+                className={`text-lg font-black uppercase tracking-tight mb-3 flex items-center gap-2 ${darkMode ? "text-amber-500" : "text-amber-600"}`}
+              >
+                <DesertIcon className="w-6 h-6" />
+                The Desert Rule
+              </h4>
+              <p
+                className={`text-sm leading-relaxed ${subtextColor} font-bold`}
+              >
+                Deserts are dead-ends.{" "}
+                <span className="text-slate-900 dark:text-white underline decoration-amber-500/50 underline-offset-4">
+                  Deserts end movement immediately on entry
+                </span>
+                . Units trapped in the desert must exit on their very next turn
+                or they are lost to the sands.
+              </p>
+            </div>
+
+            <div
+              className={`p-6 rounded-3xl border-2 border-blue-500/30 ${cardBg} backdrop-blur-xl shadow-lg relative overflow-hidden group`}
+            >
+              <div className="absolute -right-8 -top-8 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all" />
+              <h4
+                className={`text-lg font-black uppercase tracking-tight mb-3 flex items-center gap-2 ${darkMode ? "text-blue-400" : "text-blue-600"}`}
+              >
+                <Waves size={24} />
+                Strategic Sanctuary
+              </h4>
+              <p
+                className={`text-sm leading-relaxed ${subtextColor} font-bold`}
+              >
+                Use forests, swamps, and mountains to shield your units. When a
+                unit is in its{" "}
+                <span className="text-slate-900 dark:text-white underline decoration-blue-500/50 underline-offset-4">
+                  Sanctuary Terrain
+                </span>
+                , it becomes invisible to specific enemy classes.
+              </p>
+            </div>
+          </div>
+
           <TerrainIntelTool darkMode={darkMode} />
         </div>
 

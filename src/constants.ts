@@ -243,7 +243,7 @@ export const TERRAIN_INTEL: Record<string, TerrainIntelEntry> = {
     label: "Desert",
     icon: DesertIcon,
     color: "text-amber-500",
-    desc: "Exclusive zone for Rooks. Immune to non-Rook attacks. Must stop on entry, and move next turn or lose unit.",
+    desc: "Exclusive zone for Rooks. Immune to non-Rook attacks. Deserts end movement; must exit next turn.",
   },
 };
 

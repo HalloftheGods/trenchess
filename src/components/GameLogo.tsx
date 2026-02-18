@@ -70,7 +70,7 @@ const GameLogo: React.FC<GameLogoProps> = ({
             <div className="w-full h-1 md:h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 opacity-60 mb-2 md:mb-4" />
 
             {/* Bottom: The Result */}
-            <h1 className="text-7xl md:text-9xl lg:text-[11rem]  leading-none whitespace-nowrap">
+            <h1 className="text-7xl md:text-xl lg:text-[11rem]  leading-none whitespace-nowrap">
               <span className="text-red-600">TREN</span>
               <span className="text-blue-600">CHESS</span>
             </h1>

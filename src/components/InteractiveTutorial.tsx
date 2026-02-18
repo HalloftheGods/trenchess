@@ -18,12 +18,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { DesertIcon } from "../UnitIcons";
-import {
-  PIECES,
-  TERRAIN_TYPES,
-  INITIAL_ARMY,
-  isUnitProtected,
-} from "../constants";
+import { TERRAIN_TYPES, INITIAL_ARMY, isUnitProtected } from "../constants";
 import { canUnitTraverseTerrain } from "../utils/terrainCompat";
 import { UNIT_DETAILS, unitColorMap } from "../data/unitDetails";
 import type { PieceType, TerrainType } from "../types";
@@ -53,6 +48,7 @@ const TERRAIN_LIST = [
     bg: "bg-emerald-500/10",
     text: "text-emerald-500",
     border: "border-emerald-500/40",
+    ring: "ring-emerald-500/50",
     terrainTypeKey: TERRAIN_TYPES.TREES,
     key: "tr",
   },
@@ -62,6 +58,7 @@ const TERRAIN_LIST = [
     bg: "bg-blue-500/10",
     text: "text-blue-500",
     border: "border-blue-500/40",
+    ring: "ring-blue-500/50",
     terrainTypeKey: TERRAIN_TYPES.PONDS,
     key: "wv",
   },
@@ -71,6 +68,7 @@ const TERRAIN_LIST = [
     bg: "bg-stone-500/10",
     text: "text-stone-500",
     border: "border-stone-500/40",
+    ring: "ring-stone-500/50",
     terrainTypeKey: TERRAIN_TYPES.RUBBLE,
     key: "mt",
   },
@@ -80,6 +78,7 @@ const TERRAIN_LIST = [
     bg: "bg-amber-500/10",
     text: "text-amber-500",
     border: "border-amber-500/40",
+    ring: "ring-amber-500/50",
     terrainTypeKey: TERRAIN_TYPES.DESERT,
     key: "ds",
   },
@@ -89,8 +88,8 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
   onBack,
   darkMode,
 }) => {
-  const [selectedUnit, setSelectedUnit] = useState<string>(PIECES.SNIPER);
-  const [selectedTerrainIdx, setSelectedTerrainIdx] = useState<number>(0);
+  const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
+  const [selectedTerrainIdx, setSelectedTerrainIdx] = useState<number>(-1);
   const [allSeeds, setAllSeeds] = useState<SeedItem[]>([]);
   const [activeLayoutIdx, setActiveLayoutIdx] = useState<number>(-1);
 
@@ -108,7 +107,10 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
   }, []);
 
   // Filter seeds that contain the active terrain type
-  const activeTerrainTypeKey = TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey;
+  const activeTerrainTypeKey =
+    selectedTerrainIdx >= 0
+      ? TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey
+      : null;
   const filteredSeeds = useMemo(() => {
     return allSeeds.filter((item) => {
       const data = deserializeGame(item.seed);
@@ -152,7 +154,11 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
 
   // Compute terrain positions from the active seed layout
   const terrainPositions = useMemo<Set<string> | undefined>(() => {
-    if (activeLayoutIdx === -1 || !filteredSeeds[activeLayoutIdx])
+    if (
+      activeLayoutIdx === -1 ||
+      !filteredSeeds[activeLayoutIdx] ||
+      !activeTerrainTypeKey
+    )
       return undefined;
     const data = deserializeGame(filteredSeeds[activeLayoutIdx].seed);
     if (!data) return undefined;
@@ -176,13 +182,13 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
   const unitTypes = Object.keys(UNIT_DETAILS);
 
   const handlePrevUnit = () => {
-    const idx = unitTypes.indexOf(selectedUnit);
+    const idx = selectedUnit ? unitTypes.indexOf(selectedUnit) : 0;
     const newIdx = (idx - 1 + unitTypes.length) % unitTypes.length;
     setSelectedUnit(unitTypes[newIdx]);
   };
 
   const handleNextUnit = () => {
-    const idx = unitTypes.indexOf(selectedUnit);
+    const idx = selectedUnit ? unitTypes.indexOf(selectedUnit) : 0;
     const newIdx = (idx + 1) % unitTypes.length;
     setSelectedUnit(unitTypes[newIdx]);
   };
@@ -198,6 +204,27 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
   };
 
   const renderPortfolioView = () => {
+    if (!selectedUnit) {
+      // Empty State for Portfolio
+      return (
+        <div className="h-full flex flex-col relative group/panel">
+          <div
+            className={`flex-1 p-8 rounded-3xl border-4 ${borderColor} ${cardBg} flex flex-col gap-6 shadow-xl relative overflow-hidden transition-all items-center justify-center text-center opacity-60`}
+          >
+            <div className="p-6 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
+              <UserPlus size={48} className={subtextColor} />
+            </div>
+            <h3 className={`text-2xl font-black uppercase ${textColor}`}>
+              Select A Unit
+            </h3>
+            <p className={`text-sm font-bold ${subtextColor} max-w-[200px]`}>
+              Choose a unit from the top bar to view its capabilities.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
     const details = UNIT_DETAILS[selectedUnit];
     const colors = unitColorMap[selectedUnit];
     const unit = INITIAL_ARMY.find((u) => u.type === selectedUnit);
@@ -205,14 +232,16 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
     if (!details || !unit || !colors) return null;
 
     // Dynamic border style based on terrain affinity
-    const unitIsProtected = isUnitProtected(
-      selectedUnit,
-      activeTerrainTypeKey as any,
-    );
-    const unitCanTraverse = canUnitTraverseTerrain(
-      selectedUnit as PieceType,
-      TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey as TerrainType,
-    );
+    const unitIsProtected =
+      selectedTerrainIdx >= 0 &&
+      isUnitProtected(selectedUnit, activeTerrainTypeKey as any);
+    const unitCanTraverse =
+      selectedTerrainIdx >= 0
+        ? canUnitTraverseTerrain(
+            selectedUnit as PieceType,
+            TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey as TerrainType,
+          )
+        : true;
     const panelBorderStyle = unitIsProtected
       ? "border-8 border-double"
       : !unitCanTraverse
@@ -252,7 +281,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
               <div
                 key={idx}
                 onClick={() => setSelectedTerrainIdx(idx)}
-                className={`p-2.5 rounded-2xl ${t.bg} ${t.text} border ${t.border} shadow-sm backdrop-blur-md relative transition-all group/t cursor-pointer hover:scale-110 hover:shadow-lg hover:border-white/20 ${!canTraverse ? "opacity-50 grayscale-[0.5]" : ""} ${isActive ? "ring-2 ring-white/40 scale-110 shadow-lg" : ""}`}
+                className={`p-2.5 rounded-2xl ${t.bg} ${t.text} border ${t.border} shadow-sm backdrop-blur-md relative transition-all group/t cursor-pointer hover:scale-110 hover:shadow-lg hover:border-white/20 ${isActive ? "opacity-100" : !canTraverse ? "opacity-[0.42] grayscale-[0.5]" : "opacity-[0.85]"} ${isActive ? `ring-2 ${t.ring} scale-110 shadow-lg` : ""} ${isProtected ? "border-double border-4" : !canTraverse ? "border-dotted border-4" : ""}`}
               >
                 {React.cloneElement(t.icon as React.ReactElement<any>, {
                   size: 24,
@@ -467,7 +496,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
                 <span
                   className={`text-[10px] font-black uppercase tracking-widest ${subtextColor}`}
                 >
-                  Terrain Affinity
+                  Trench Affinity
                 </span>
                 <div
                   className={`h-px flex-1 ${darkMode ? "bg-white/20" : "bg-slate-900/10"}`}
@@ -489,7 +518,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
         {/* 1. Interactive Header */}
         <InteractiveHeader
           darkMode={darkMode}
-          selectedUnit={selectedUnit}
+          selectedUnit={selectedUnit || ""}
           onUnitSelect={setSelectedUnit}
           selectedTerrainIdx={selectedTerrainIdx}
           onTerrainSelect={setSelectedTerrainIdx}
@@ -581,7 +610,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
               <div className="h-full">
                 <TerrainMovePreview
                   darkMode={darkMode}
-                  selectedUnit={selectedUnit}
+                  selectedUnit={selectedUnit || ""}
                   selectedTerrainIdx={selectedTerrainIdx}
                   terrainPositions={terrainPositions}
                 />
@@ -599,7 +628,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
 
                 <div className="flex flex-col items-center min-w-0">
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    Active Layout
+                    Active Formation
                   </span>
                   <span className="text-sm font-black text-slate-200 uppercase tracking-widest truncate max-w-[120px]">
                     {activeLayoutLabel}
@@ -631,47 +660,70 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
           </div>
           <TerrainDetailsPanel
             darkMode={darkMode}
-            terrainTypeKey={TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey}
-            selectedUnit={selectedUnit}
+            terrainTypeKey={
+              selectedTerrainIdx >= 0
+                ? TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey
+                : ""
+            }
+            selectedUnit={selectedUnit || undefined}
             onUnitSelect={setSelectedUnit}
             onPrev={handlePrevTerrain}
             onNext={handleNextTerrain}
-            prevTerrainIcon={React.cloneElement(
-              TERRAIN_LIST[
-                (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
-                  TERRAIN_LIST.length
-              ].icon as React.ReactElement<any>,
-              { size: 20 },
-            )}
-            nextTerrainIcon={React.cloneElement(
-              TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
-                .icon as React.ReactElement<any>,
-              { size: 20 },
-            )}
-            prevTerrainColors={{
-              bg: TERRAIN_LIST[
-                (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
-                  TERRAIN_LIST.length
-              ].bg,
-              text: TERRAIN_LIST[
-                (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
-                  TERRAIN_LIST.length
-              ].text,
-              border:
-                TERRAIN_LIST[
-                  (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
-                    TERRAIN_LIST.length
-                ].border,
-            }}
-            nextTerrainColors={{
-              bg: TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
-                .bg,
-              text: TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
-                .text,
-              border:
-                TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
-                  .border,
-            }}
+            prevTerrainIcon={
+              selectedTerrainIdx >= 0
+                ? React.cloneElement(
+                    TERRAIN_LIST[
+                      (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
+                        TERRAIN_LIST.length
+                    ].icon as React.ReactElement<any>,
+                    { size: 20 },
+                  )
+                : undefined
+            }
+            nextTerrainIcon={
+              selectedTerrainIdx >= 0
+                ? React.cloneElement(
+                    TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
+                      .icon as React.ReactElement<any>,
+                    { size: 20 },
+                  )
+                : undefined
+            }
+            prevTerrainColors={
+              selectedTerrainIdx >= 0
+                ? {
+                    bg: TERRAIN_LIST[
+                      (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
+                        TERRAIN_LIST.length
+                    ].bg,
+                    text: TERRAIN_LIST[
+                      (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
+                        TERRAIN_LIST.length
+                    ].text,
+                    border:
+                      TERRAIN_LIST[
+                        (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
+                          TERRAIN_LIST.length
+                      ].border,
+                  }
+                : undefined
+            }
+            nextTerrainColors={
+              selectedTerrainIdx >= 0
+                ? {
+                    bg: TERRAIN_LIST[
+                      (selectedTerrainIdx + 1) % TERRAIN_LIST.length
+                    ].bg,
+                    text: TERRAIN_LIST[
+                      (selectedTerrainIdx + 1) % TERRAIN_LIST.length
+                    ].text,
+                    border:
+                      TERRAIN_LIST[
+                        (selectedTerrainIdx + 1) % TERRAIN_LIST.length
+                      ].border,
+                  }
+                : undefined
+            }
           />
           <div className="text-center text-4xl font-black text-slate-700/20 dark:text-white/10">
             =
@@ -692,7 +744,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
               <div className="mt-12 flex flex-col items-center justify-center">
                 <TerrainMovePreview
                   darkMode={darkMode}
-                  selectedUnit={selectedUnit}
+                  selectedUnit={selectedUnit || ""}
                   selectedTerrainIdx={selectedTerrainIdx}
                   className="min-h-[400px]"
                   terrainPositions={terrainPositions}
@@ -711,7 +763,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
 
                 <div className="flex flex-col items-center min-w-0">
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    Active Layout
+                    Active Formation
                   </span>
                   <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest truncate max-w-[160px]">
                     {activeLayoutLabel}

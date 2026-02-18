@@ -135,7 +135,8 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
   const cardBg = darkMode ? "bg-slate-900/50" : "bg-white/70";
   const borderColor = darkMode ? "border-white/10" : "border-slate-200";
   const textColor = darkMode ? "text-slate-100" : "text-slate-800";
-  const terrain = TERRAIN_LIST[selectedTerrainIdx];
+  const terrain =
+    selectedTerrainIdx >= 0 ? TERRAIN_LIST[selectedTerrainIdx] : null;
 
   return (
     <div
@@ -167,14 +168,15 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
               const isActive = selectedUnit === uType;
 
               // Check if unit is protected or blocked by CURRENT terrain
-              const uProtected = isUnitProtected(
-                uType,
-                terrain.terrainTypeKey as any,
-              );
-              const uBlocked = !canUnitTraverseTerrain(
-                uType as PieceType,
-                terrain.terrainTypeKey as TerrainType,
-              );
+              const uProtected =
+                terrain &&
+                isUnitProtected(uType, terrain.terrainTypeKey as any);
+              const uBlocked =
+                terrain &&
+                !canUnitTraverseTerrain(
+                  uType as PieceType,
+                  terrain.terrainTypeKey as TerrainType,
+                );
 
               return (
                 <button
@@ -208,14 +210,15 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
           <div className="grid grid-cols-2 md:flex gap-2">
             {TERRAIN_LIST.map((t, idx) => {
               const isActive = selectedTerrainIdx === idx;
-              const tProtected = isUnitProtected(
-                selectedUnit,
-                t.terrainTypeKey as any,
-              );
-              const tBlocked = !canUnitTraverseTerrain(
-                selectedUnit as PieceType,
-                t.terrainTypeKey as TerrainType,
-              );
+              const tProtected =
+                selectedUnit &&
+                isUnitProtected(selectedUnit, t.terrainTypeKey as any);
+              const tBlocked =
+                selectedUnit &&
+                !canUnitTraverseTerrain(
+                  selectedUnit as PieceType,
+                  t.terrainTypeKey as TerrainType,
+                );
 
               return (
                 <button

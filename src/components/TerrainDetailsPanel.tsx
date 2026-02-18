@@ -55,6 +55,26 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
   const subtextColor = darkMode ? "text-slate-300" : "text-slate-600";
   const cardBg = darkMode ? "bg-slate-900/80" : "bg-white/90";
 
+  if (!terrainTypeKey) {
+    return (
+      <div className="h-full flex flex-col relative group/panel">
+        <div
+          className={`flex-1 p-8 rounded-3xl border-4 border-dashed ${darkMode ? "border-slate-800 bg-slate-900/50" : "border-slate-200 bg-white/70"} flex flex-col gap-6 shadow-xl relative overflow-hidden transition-all items-center justify-center text-center opacity-60`}
+        >
+          <div className="p-6 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
+            <Sparkles size={48} className={subtextColor} />
+          </div>
+          <h3 className={`text-2xl font-black uppercase ${textColor}`}>
+            Select Terrain
+          </h3>
+          <p className={`text-sm font-bold ${subtextColor} max-w-[200px]`}>
+            Choose a terrain type from the top bar to view its strategic intel.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const intel = TERRAIN_INTEL[terrainTypeKey];
 
   // Dynamic border style based on unit affinity
@@ -93,7 +113,7 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
             <div
               key={idx}
               onClick={() => onUnitSelect?.(unit.type)}
-              className={`p-2.5 rounded-xl ${colors.bg} ${colors.text} border ${colors.border} shadow-sm backdrop-blur-sm relative transition-all cursor-pointer hover:scale-110 hover:shadow-lg ${canTraverse ? "opacity-50" : "opacity-100"} ${isActive ? "ring-2 ring-white/40 scale-110 shadow-lg opacity-100" : ""}`}
+              className={`p-2.5 rounded-xl ${colors.bg} ${colors.text} border ${colors.border} shadow-sm backdrop-blur-sm relative transition-all cursor-pointer hover:scale-110 hover:shadow-lg ${isActive ? "opacity-100" : !canTraverse ? "opacity-[0.42] grayscale-[0.5]" : "opacity-[0.85]"} ${isActive ? `ring-2 ${colors.ring} scale-110 shadow-lg opacity-100` : ""} ${isProtected ? "border-dotted border-4" : !canTraverse ? "border-double border-4" : ""}`}
             >
               <IconComp size={28} className="fill-current" />
 
@@ -193,7 +213,7 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
             className={`absolute top-0 left-0 right-0 z-20 pointer-events-none ${colors.ribbonBg} py-2.5 shadow-lg border-b border-white/10 flex justify-center items-center`}
           >
             <span className="text-white text-xl font-black uppercase tracking-[0.4em] drop-shadow-md">
-              Terrain Data
+              Trench Intel
             </span>
           </div>
 
@@ -203,7 +223,7 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
             <span
               className={`text-sm font-bold uppercase tracking-[0.2em] ${colors.text}`}
             >
-              You Discovered New Terrain!
+              You discovered a new Trench!
             </span>
           </div>
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Users, Copy, Wifi, LogOut } from "lucide-react";
+import { Users, Copy, Wifi, LogOut, GlobeLock } from "lucide-react";
 
 interface HeaderLobbyProps {
   multiplayer: any;
@@ -134,12 +134,12 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({ multiplayer, onClick }) => {
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-blue-500/10" />
 
       <div className="relative w-16 h-16 flex items-center justify-center">
-        <Users size={64} className="text-blue-500" />
+        <GlobeLock size={64} className="text-blue-500" />
       </div>
 
       <div className="text-center relative z-10">
         <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
-          Battle <span className="text-blue-500">Online</span>
+          Worldwide <span className="text-blue-500">Mode</span>
         </h3>
         <p className="text-slate-400 dark:text-slate-500 mt-2 font-medium leading-relaxed">
           Online Lobbies

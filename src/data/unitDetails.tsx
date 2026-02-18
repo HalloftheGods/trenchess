@@ -12,7 +12,14 @@ import { PIECES } from "../constants";
 
 export const unitColorMap: Record<
   string,
-  { text: string; bg: string; border: string; shadow: string; ribbonBg: string }
+  {
+    text: string;
+    bg: string;
+    border: string;
+    shadow: string;
+    ribbonBg: string;
+    ring: string;
+  }
 > = {
   [PIECES.COMMANDER]: {
     text: "text-yellow-500",
@@ -20,6 +27,7 @@ export const unitColorMap: Record<
     border: "border-yellow-500/40",
     shadow: "shadow-[0_0_10px_rgba(234,179,8,0.1)]",
     ribbonBg: "bg-yellow-500",
+    ring: "ring-yellow-500/50",
   },
   [PIECES.BATTLEKNIGHT]: {
     text: "text-purple-500",
@@ -27,6 +35,7 @@ export const unitColorMap: Record<
     border: "border-purple-500/40",
     shadow: "shadow-[0_0_10px_rgba(168,85,247,0.1)]",
     ribbonBg: "bg-purple-500",
+    ring: "ring-purple-500/50",
   },
   [PIECES.TANK]: {
     text: "text-yellow-500",
@@ -34,6 +43,7 @@ export const unitColorMap: Record<
     border: "border-yellow-500/40",
     shadow: "shadow-[0_0_10px_rgba(234,179,8,0.1)]",
     ribbonBg: "bg-yellow-500",
+    ring: "ring-yellow-500/50",
   },
   [PIECES.SNIPER]: {
     text: "text-red-500",
@@ -41,6 +51,7 @@ export const unitColorMap: Record<
     border: "border-red-500/40",
     shadow: "shadow-[0_0_10px_rgba(239,68,68,0.1)]",
     ribbonBg: "bg-red-500",
+    ring: "ring-red-500/50",
   },
   [PIECES.HORSEMAN]: {
     text: "text-stone-500",
@@ -48,6 +59,7 @@ export const unitColorMap: Record<
     border: "border-stone-500/40",
     shadow: "shadow-[0_0_10px_rgba(120,113,108,0.1)]",
     ribbonBg: "bg-stone-500",
+    ring: "ring-stone-500/50",
   },
   [PIECES.BOT]: {
     text: "text-blue-500",
@@ -55,6 +67,7 @@ export const unitColorMap: Record<
     border: "border-blue-500/40",
     shadow: "shadow-[0_0_10px_rgba(59,130,246,0.1)]",
     ribbonBg: "bg-blue-500",
+    ring: "ring-blue-500/50",
   },
 };
 

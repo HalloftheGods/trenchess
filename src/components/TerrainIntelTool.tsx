@@ -12,6 +12,7 @@ import {
   INITIAL_ARMY,
   isUnitProtected,
   TERRAIN_TYPES,
+  TERRAIN_INTEL,
 } from "../constants";
 import { DesertIcon } from "../UnitIcons";
 import type { PieceType } from "../types";
@@ -605,6 +606,31 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
                 },
               )}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── 6. Terrain Intel Text Overlay ────────────────────────── */}
+      <div className="mt-8 pt-8 border-t border-slate-200 dark:border-white/5">
+        <div className="flex flex-col sm:flex-row items-center gap-6 max-w-4xl mx-auto">
+          <div
+            className={`w-16 h-16 rounded-2xl ${terrain.bg} ${terrain.text} flex items-center justify-center shadow-inner border ${terrain.border} shrink-0`}
+          >
+            {React.cloneElement(terrain.icon as React.ReactElement<any>, {
+              className: "w-8 h-8",
+            })}
+          </div>
+          <div className="flex-1 text-center sm:text-left">
+            <h4
+              className={`text-lg font-black uppercase tracking-tight ${textColor} mb-1`}
+            >
+              {terrain.name} Rules
+            </h4>
+            <p
+              className={`text-[13px] font-medium ${subtextColor} leading-relaxed`}
+            >
+              {TERRAIN_INTEL[terrain.terrainTypeKey]?.desc}
+            </p>
           </div>
         </div>
       </div>

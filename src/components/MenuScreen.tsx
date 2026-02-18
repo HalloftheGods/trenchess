@@ -78,6 +78,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
     player4: "computer", // Default Opponent
   });
   const [chiModalOpen, setChiModalOpen] = useState(false);
+  const [showLearnMenu, setShowLearnMenu] = useState(false);
 
   const togglePlayerType = (pid: string) => {
     setPlayerConfig((prev) => ({
@@ -150,13 +151,20 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
       />
 
       <div className="mt-8 mb-4 relative w-full flex flex-col items-center justify-center">
-        <div className="animate-in zoom-in-95 duration-700">
+        <div
+          className="animate-in zoom-in-95 duration-700 cursor-pointer hover:scale-105 transition-transform"
+          onClick={() => {
+            setCurrentStep(0);
+            setShowLearnMenu(false);
+            setIsJoining(false);
+          }}
+        >
           <GameLogo size="large" />
         </div>
       </div>
 
       {/* Step 0: Main Menu (Landing) */}
-      {currentStep === 0 && (
+      {currentStep === 0 && !showLearnMenu && (
         <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
           <div className="flex items-center justify-center gap-4 mb-8 w-full max-w-md">
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
@@ -166,26 +174,16 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">
             <MenuCard
-              onClick={onHowToPlay}
+              onClick={() => setShowLearnMenu(true)}
               isSelected={false}
               darkMode={darkMode}
               title="How to Play"
-              description="Field Manual"
+              description="Learn the Basics"
               Icon={BookOpen}
               color="slate"
               className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full"
-            />
-            <MenuCard
-              onClick={onTutorial}
-              isSelected={false}
-              darkMode={darkMode}
-              title="Level-Up Your Chess Game"
-              description="Learn by Doing"
-              Icon={MapIcon}
-              color="emerald"
-              className="bg-emerald-100/50 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full"
             />
             <MenuCard
               onClick={() => {
@@ -208,28 +206,68 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
         </div>
       )}
 
+      {/* Step 0.5: Learn Menu */}
+      {currentStep === 0 && showLearnMenu && (
+        <div className="w-full max-w-4xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
+          <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-md">
+            <button
+              onClick={() => setShowLearnMenu(false)}
+              className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800"
+              title="Back to Menu"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-12" />
+            <h2 className="text-sm font-bold text-center text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">
+              How to Play
+            </h2>
+            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-12" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+            <MenuCard
+              onClick={onHowToPlay}
+              isSelected={false}
+              darkMode={darkMode}
+              title="Field Manual"
+              description="Read the Rules"
+              Icon={BookOpen}
+              color="slate"
+              className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full"
+            />
+            <MenuCard
+              onClick={onTutorial}
+              isSelected={false}
+              darkMode={darkMode}
+              title="Learn Interactively"
+              description="Learn by Doing"
+              Icon={MapIcon}
+              color="emerald"
+              className="bg-emerald-100/50 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Step 1: Mode Selection (Play Menu) */}
       {currentStep === 1 && !isJoining && (
         <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-          <button
-            onClick={() => setCurrentStep(0)}
-            className="mb-8 flex items-center gap-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
-          >
-            <ChevronLeft size={20} />
-            <span className="text-sm font-bold uppercase tracking-widest">
-              Back to Main Menu
-            </span>
-          </button>
-
-          <div className="flex items-center justify-center gap-4 mb-8 w-full max-w-md">
-            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
+          <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-md">
+            <button
+              onClick={() => setCurrentStep(0)}
+              className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800"
+              title="Back to Main Menu"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-12" />
             <h2 className="text-sm font-bold text-center text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">
-              Battle Online
+              Worldwide Mode
             </h2>
-            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
+            <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-12" />
           </div>
 
-          <div className="grid gap-6 grid-cols-1 md:grid-cols-3 w-full max-w-4xl">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-3 w-full max-w-7xl">
             <MenuCard
               onClick={() => setCurrentStep(2)}
               isSelected={false}
@@ -250,8 +288,8 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               title="Create Lobby Code"
               description="Host Game"
               Icon={Swords}
-              color="amber"
-              className="border-2 border-amber-500/20 hover:border-amber-500/50"
+              color="red"
+              className="border-2 border-red-500/20 hover:border-red-500/50"
             />
             <MenuCard
               onClick={() => setIsJoining(true)}

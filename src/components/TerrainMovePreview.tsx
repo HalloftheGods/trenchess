@@ -203,6 +203,37 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
   terrainPositions,
 }) => {
   const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";
+
+  if (!selectedUnit || selectedTerrainIdx < 0) {
+    return (
+      <div
+        className={`h-full relative transition-all flex flex-col items-center justify-center group/card ${
+          className || ""
+        }`}
+      >
+        <div className="flex flex-col items-center justify-center gap-6 opacity-60">
+          <div
+            className={`p-6 rounded-full ${darkMode ? "bg-slate-800" : "bg-slate-100"}`}
+          >
+            <ShieldPlus size={48} className={subtextColor} />
+          </div>
+          <div className="text-center">
+            <h3
+              className={`text-xl font-black uppercase ${darkMode ? "text-slate-200" : "text-slate-800"}`}
+            >
+              Live Simulation
+            </h3>
+            <p
+              className={`text-sm font-bold ${subtextColor} max-w-[200px] mt-2`}
+            >
+              Select a unit and a terrain to simulate interaction.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const terrain = TERRAIN_LIST[selectedTerrainIdx];
 
   // ── Compatibility result ──────────────────────────────────────────
@@ -228,6 +259,7 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
   const allMoves = [
     ...(pattern?.move(centerRow, centerCol) || []),
     ...(pattern?.newMove ? pattern.newMove(centerRow, centerCol) : []),
+    ...(pattern?.attack ? pattern.attack(centerRow, centerCol) : []),
   ];
 
   const validMoves: number[][] = [];
