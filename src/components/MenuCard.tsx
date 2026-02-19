@@ -1,4 +1,5 @@
 import { type LucideIcon } from "lucide-react";
+import { type PreviewConfig, useMenuContext } from "./menu/MenuContext";
 
 type ColorVariant =
   | "red"
@@ -24,6 +25,8 @@ interface MenuCardProps {
   onMouseLeave?: () => void;
   /** Optional: override the title rendering with custom JSX */
   titleNode?: React.ReactNode;
+  /** Optional: configuration for the board preview when this card is hovered */
+  preview?: PreviewConfig;
 }
 
 const COLOR_STYLES: Record<
@@ -108,15 +111,37 @@ const MenuCard = ({
   onMouseEnter,
   onMouseLeave,
   titleNode,
+  preview,
 }: MenuCardProps & { isSelected?: boolean; isDisabled?: boolean }) => {
   const styles = COLOR_STYLES[color];
+  const { setPreviewConfig } = useMenuContext();
+
+  const handleMouseEnter = () => {
+    if (onMouseEnter) onMouseEnter();
+    if (preview) {
+      setPreviewConfig(preview);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (onMouseLeave) onMouseLeave();
+    if (preview) {
+      // Revert to default or empty?
+      // For now, let's set it to default empty state if strictly needed,
+      // but usually the next card will set it, or it lingers which might be fine.
+      // Actually, better to clear it to avoid stale previews.
+      setPreviewConfig({
+        mode: null,
+      });
+    }
+  };
 
   return (
     <button
       onClick={isDisabled ? undefined : onClick}
       disabled={isDisabled}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={`group bg-white dark:bg-slate-900 border-4 p-8 rounded-[2.5rem] transition-all flex flex-col items-center gap-6 shadow-2xl relative overflow-hidden cursor-pointer ${
         isDisabled
           ? "opacity-50 cursor-not-allowed grayscale"

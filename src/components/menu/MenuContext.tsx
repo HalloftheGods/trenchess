@@ -2,6 +2,20 @@ import React, { createContext, useContext } from "react";
 import type { GameMode, TerrainType } from "../../types";
 import type { PieceStyle } from "../../constants";
 
+export interface PreviewConfig {
+  mode: GameMode | null;
+  protocol?:
+    | "classic"
+    | "quick"
+    | "terrainiffic"
+    | "custom"
+    | "zen-garden"
+    | null;
+  showIcons?: boolean;
+  hideUnits?: boolean;
+  forcedTerrain?: TerrainType | null;
+}
+
 export interface MenuContextType {
   darkMode: boolean;
   pieceStyle: PieceStyle;
@@ -18,12 +32,13 @@ export interface MenuContextType {
   seeds: any[];
   previewSeedIndex: number;
   setPreviewSeedIndex: React.Dispatch<React.SetStateAction<number>>;
+  previewConfig: PreviewConfig;
+  setPreviewConfig: React.Dispatch<React.SetStateAction<PreviewConfig>>;
   playerConfig: Record<string, "human" | "computer">;
   setPlayerConfig: React.Dispatch<
     React.SetStateAction<Record<string, "human" | "computer">>
   >;
   togglePlayerType: (pid: string) => void;
-  setCtkBoardMode: (mode: GameMode) => void;
   multiplayer: any;
   onStartGame: (
     mode: GameMode,

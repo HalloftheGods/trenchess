@@ -1,5 +1,6 @@
 import React from "react";
 import { Users, Copy, Wifi, LogOut, GlobeLock } from "lucide-react";
+import MenuCard from "./MenuCard";
 
 interface HeaderLobbyProps {
   multiplayer: any;
@@ -26,23 +27,22 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
 
   // CONTAINER STYLE (Matching MenuCard)
   const containerClass =
-    "group flex flex-col items-center gap-6 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border-2 border-blue-500/20 hover:border-blue-500/50 shadow-2xl w-full h-full animate-in fade-in slide-in-from-bottom-8 duration-700 relative overflow-hidden transition-all hover:-translate-y-2 cursor-pointer";
+    "group flex flex-col items-center gap-6 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border-4 border-slate-200/30 dark:border-white/5 hover:border-blue-500 shadow-2xl w-full h-full animate-in fade-in slide-in-from-bottom-8 duration-700 relative overflow-hidden transition-all hover:-translate-y-2 cursor-pointer";
 
   if (!isConnected) {
     return (
-      <div className={containerClass}>
-        <div className="relative w-16 h-16 flex items-center justify-center">
-          <Wifi size={64} className="text-blue-500 animate-pulse" />
-        </div>
-        <div className="text-center">
-          <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
-            Connecting<span className="text-blue-500">...</span>
-          </h3>
-          <p className="text-slate-400 dark:text-slate-500 mt-2 font-medium leading-relaxed">
-            Establishing server uplink
-          </p>
-        </div>
-      </div>
+      <MenuCard
+        onClick={() => {}}
+        title="Connecting"
+        description="Establishing server uplink"
+        Icon={() => (
+          <div className="relative w-16 h-16 flex items-center justify-center">
+            <Wifi size={64} className="text-blue-500 animate-pulse" />
+          </div>
+        )}
+        color="blue"
+        className="w-full h-full"
+      />
     );
   }
 
@@ -57,7 +57,7 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
         </div>
 
         <div className="text-center relative z-10">
-          <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
+          <h3 className="text-2xl font-black uppercase tracking-widest text-slate-900 dark:text-white">
             Battle <span className="text-blue-500">Lobby</span>
           </h3>
           <p className="text-slate-400 dark:text-slate-500 mt-2 font-medium leading-relaxed">
@@ -134,27 +134,16 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
 
   // NO LOBBY - CLEAN CARD
   return (
-    <div
-      className={`${containerClass} cursor-pointer group hover:scale-[1.02]`}
-      onClick={onClick}
+    <MenuCard
+      onClick={onClick || (() => {})}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-    >
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-blue-500/10" />
-
-      <div className="relative w-16 h-16 flex items-center justify-center">
-        <GlobeLock size={64} className="text-blue-500" />
-      </div>
-
-      <div className="text-center relative z-10">
-        <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
-          Worldwide <span className="text-blue-500">Change</span>
-        </h3>
-        <p className="text-slate-400 dark:text-slate-500 mt-2 font-medium leading-relaxed">
-          Borders become Barbeques.
-        </p>
-      </div>
-    </div>
+      title="Worldwide Change"
+      description="Borders become Barbeques."
+      Icon={GlobeLock}
+      color="blue"
+      className="w-full h-full"
+    />
   );
 };
 

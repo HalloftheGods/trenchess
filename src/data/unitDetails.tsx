@@ -92,7 +92,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.COMMANDER]: {
     title: "Lead Lancer",
     subtitle: "You Learned a New Job!",
-    role: "Nothing blocked the Kings to push 2 steps foward.",
+    role: "The Kings cleared 2 steps foward.",
     desc: [],
     levelUp: {
       title: "Sovereign Lancer",
@@ -132,7 +132,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.BATTLEKNIGHT]: {
     title: "Royal Knight",
     subtitle: "You Learned a New Job!",
-    role: "The Queens rode on their steeds into battle.",
+    role: "The Queens rode their steeds.",
     desc: [],
     levelUp: {
       title: "Royal Battle Knight",

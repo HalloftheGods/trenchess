@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import PageLayout from "../PageLayout";
 import PageHeader from "../PageHeader";
 import BoardPreview from "../BoardPreview";
 import { DEFAULT_SEEDS } from "../../data/defaultSeeds";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { GameMode, TerrainType } from "../../types";
 import type { PieceStyle } from "../../constants";
-
-import { MenuContext, type MenuContextType } from "./MenuContext";
+import {
+  MenuContext,
+  type MenuContextType,
+  type PreviewConfig,
+} from "./MenuContext";
 
 interface MenuLayoutProps {
   darkMode: boolean;
@@ -47,19 +49,20 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
   onOpenLibrary,
 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   // State lifted from MenuScreen
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
   const [hoveredTerrain, setHoveredTerrain] = useState<TerrainType | null>(
     null,
   );
+  const [previewConfig, setPreviewConfig] = useState<PreviewConfig>({
+    mode: null,
+  });
   const [terrainSeed, setTerrainSeed] = useState<number>(0);
   const [selectedPreset, setSelectedPreset] = useState<
     "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden" | null
   >(null);
   const [selectedBoard, setSelectedBoard] = useState<GameMode | null>(null); // Might track this for setup
-  const [ctkBoardMode, setCtkBoardMode] = useState<GameMode>("2p-ns");
 
   const [playerConfig, setPlayerConfig] = useState<
     Record<string, "human" | "computer">
@@ -100,102 +103,11 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
 
   // Logic to determine what to show on the preview
   // Based on MenuScreen.tsx getPreviewState
-  const getPreviewState = () => {
-    // 1. Hover trench terrain items
-    if (hoveredMenu === "how-to-play" && hoveredTerrain) {
-      return {
-        mode: null as GameMode | null,
-        protocol: "terrainiffic",
-        showIcons: true,
-        hideUnits: true,
-        forcedTerrain: hoveredTerrain,
-      };
-    }
-    // 1b. Hover how-to-play (general) - Random
-    if (hoveredMenu === "how-to-play") {
-      return {
-        mode: null as GameMode | null,
-        protocol: "terrainiffic",
-        showIcons: true,
-        hideUnits: true,
-        forcedTerrain: null,
-      };
-    }
-    // 2. Hover "The Chess"
-    if (hoveredMenu === "chess") {
-      return {
-        mode: "2p-ns" as GameMode,
-        protocol: "classic",
-        showIcons: false,
-        hideUnits: false, // Show units
-        forcedTerrain: null,
-      };
-    }
-    // 3. Hover "Capture the King"
-    if (hoveredMenu === "ctk") {
-      return {
-        mode: ctkBoardMode,
-        protocol: null,
-        showIcons: false,
-        hideUnits: true,
-        forcedTerrain: null,
-      };
-    }
-    // 4. Hover "Capture the Board"
-    if (hoveredMenu === "ctboard") {
-      return {
-        mode: "4p" as GameMode,
-        protocol: null,
-        showIcons: false,
-        hideUnits: true,
-        forcedTerrain: null,
-      };
-    }
-    // 5. Hover "Capture the World" / "Worldwide"
-    if (hoveredMenu === "ctf" || hoveredMenu === "worldwide") {
-      return {
-        mode: "2v2" as GameMode,
-        protocol: null,
-        showIcons: false,
-        hideUnits: true,
-        forcedTerrain: null,
-      };
-    }
-    // 6. Hover Play Menu -> 2p-ns Board
-    if (
-      hoveredMenu === "play-menu" ||
-      hoveredMenu === "practice" ||
-      hoveredMenu === "couch"
-    ) {
-      return {
-        mode: "2p-ns" as GameMode,
-        protocol: null,
-        showIcons: false,
-        hideUnits: true,
-        forcedTerrain: null,
-      };
-    }
-
-    // 7. Route based defaults (if we are in setup)
-    // If we are at /play/setup (which we haven't fully defined yet, but assuming)
-    // For now, default to empty/logo state if nothing hovered.
-    return {
-      mode: null as GameMode | null,
-      protocol: null,
-      showIcons: false,
-      hideUnits: true,
-      forcedTerrain: null,
-    };
-  };
-
-  const previewState = getPreviewState();
   const activeCustomSeed =
-    hoveredMenu === "how-to-play" && seeds.length > 0
+    previewConfig.protocol === "terrainiffic"
       ? seeds[Math.floor(Math.abs(terrainSeed) * seeds.length) % seeds.length]
           ?.seed
-      : !hoveredMenu && selectedPreset === "terrainiffic"
-        ? currentSeed?.seed
-        : undefined;
+      : currentSeed?.seed;
 
   // We are "Ready" (showing the interactive board) if the user is in a "Setup" phase.
   // In the original, this was currentStep >= 2.
@@ -205,8 +117,8 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
   const boardPreviewNode = (
     <>
       <BoardPreview
-        selectedMode={previewState.mode}
-        selectedProtocol={previewState.protocol as any}
+        selectedMode={previewConfig.mode}
+        selectedProtocol={previewConfig.protocol as any}
         darkMode={darkMode}
         pieceStyle={pieceStyle}
         isReady={isPreviewReady}
@@ -214,9 +126,9 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
         customSeed={activeCustomSeed}
         playerConfig={isPreviewReady ? playerConfig : undefined}
         onTogglePlayerType={isPreviewReady ? togglePlayerType : undefined}
-        showTerrainIcons={previewState.showIcons}
-        hideUnits={previewState.hideUnits}
-        forcedTerrain={previewState.forcedTerrain}
+        showTerrainIcons={previewConfig.showIcons}
+        hideUnits={previewConfig.hideUnits}
+        forcedTerrain={previewConfig.forcedTerrain}
       />
       {/* Layout Switcher (Only if in Terrainiffic setup, which we might handle later) */}
     </>
@@ -238,10 +150,11 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
     seeds,
     previewSeedIndex,
     setPreviewSeedIndex,
+    previewConfig,
+    setPreviewConfig,
     playerConfig,
     setPlayerConfig,
     togglePlayerType,
-    setCtkBoardMode,
     multiplayer,
     onStartGame,
     onTutorial,
@@ -271,6 +184,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
           onZenGarden={onZenGarden}
           onLogoClick={handleLogoClick}
           boardPreview={boardPreviewNode}
+          showTerrain={true}
         />
       }
     >

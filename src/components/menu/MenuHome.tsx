@@ -48,6 +48,12 @@ const MenuHome: React.FC = () => {
             setTerrainSeed(Math.random());
           }}
           onMouseLeave={() => setHoveredMenu(null)}
+          preview={{
+            mode: null,
+            protocol: "terrainiffic",
+            showIcons: true,
+            hideUnits: true,
+          }}
           isSelected={false}
           darkMode={darkMode}
           title="How to Play"
@@ -60,18 +66,22 @@ const MenuHome: React.FC = () => {
           onClick={() => navigate("/play")}
           onMouseEnter={() => setHoveredMenu("play-menu")}
           onMouseLeave={() => setHoveredMenu(null)}
+          preview={{
+            mode: "2p-ns",
+            hideUnits: true,
+          }}
           isSelected={false}
           darkMode={darkMode}
-          title="Enter Trenchess"
+          title="Enter The Trenchess"
           titleNode={
             <>
-              Enter <TrenchessText />
+              Enter the <TrenchessText />
             </>
           }
-          description="Choose the Battleground"
+          description="Master its Wisdom"
           Icon={DualColorSwordsIcon}
           color="red"
-          className="border-2 border-red-500/20 hover:border-blue-500/30 h-full w-full"
+          className="hover:border-blue-500/30 h-full w-full"
         />
       </div>
     </div>

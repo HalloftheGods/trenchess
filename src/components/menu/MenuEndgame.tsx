@@ -8,7 +8,7 @@ import { useMenuContext } from "./MenuContext";
 
 const MenuEndgame: React.FC = () => {
   const navigate = useNavigate();
-  const { setHoveredMenu, setCtkBoardMode, darkMode } = useMenuContext();
+  const { setHoveredMenu, darkMode } = useMenuContext();
 
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
@@ -33,13 +33,16 @@ const MenuEndgame: React.FC = () => {
           }}
           onMouseEnter={() => {
             setHoveredMenu("ctk");
-            setCtkBoardMode(Math.random() > 0.5 ? "2p-ns" : "2p-ew");
           }}
           onMouseLeave={() => setHoveredMenu(null)}
+          preview={{
+            mode: Math.random() > 0.5 ? "2p-ns" : "2p-ew",
+            hideUnits: true,
+          }}
           isSelected={false}
           darkMode={darkMode}
           title="Capture the King"
-          description="Classic Checkmate"
+          description="Some Stayed True to the Classic Checkmate"
           Icon={ChessKing}
           color="red"
           className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
@@ -52,10 +55,14 @@ const MenuEndgame: React.FC = () => {
           }}
           onMouseEnter={() => setHoveredMenu("ctboard")}
           onMouseLeave={() => setHoveredMenu(null)}
+          preview={{
+            mode: "4p",
+            hideUnits: true,
+          }}
           isSelected={false}
           darkMode={darkMode}
           title="Capture the Army"
-          description="4 Player Domination"
+          description="Others Wanted to be the Last Army Standing"
           Icon={ChessQueen}
           color="blue"
           className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full w-full"
@@ -70,10 +77,14 @@ const MenuEndgame: React.FC = () => {
           }}
           onMouseEnter={() => setHoveredMenu("ctf")}
           onMouseLeave={() => setHoveredMenu(null)}
+          preview={{
+            mode: "2v2",
+            hideUnits: true,
+          }}
           isSelected={false}
           darkMode={darkMode}
           title="Capture the World"
-          description="Team Co-Op Objective"
+          description="And most wanted to Capture the World"
           Icon={Earth}
           color="emerald"
           className="bg-emerald-100/50 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"

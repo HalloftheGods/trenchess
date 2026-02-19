@@ -73,11 +73,11 @@ const MenuSetup: React.FC = () => {
               navigate("/play/local");
             }
           }}
-          label={step === 2 ? "Choose Board" : "Local Mode"}
+          label={step === 2 ? "Choose Board" : "Local Gathering"}
           className="absolute left-0"
         />
         <SectionDivider
-          label={step === 1 ? "Choose The Game" : "Step 2: Choose The Field"}
+          label={step === 1 ? "They Discussed Colors" : "Choose The Field"}
           className="ml-24"
           color="amber"
           animate
@@ -96,6 +96,10 @@ const MenuSetup: React.FC = () => {
                 <MenuCard
                   onClick={() => handleBoardSelect("2p-ns")}
                   isSelected={selectedBoard === "2p-ns"}
+                  preview={{
+                    mode: "2p-ns",
+                    hideUnits: true,
+                  }}
                   darkMode={darkMode}
                   title="North vs South"
                   description="2 Player • Red vs Blue"
@@ -106,6 +110,10 @@ const MenuSetup: React.FC = () => {
                 <MenuCard
                   onClick={() => handleBoardSelect("2p-ew")}
                   isSelected={selectedBoard === "2p-ew"}
+                  preview={{
+                    mode: "2p-ew",
+                    hideUnits: true,
+                  }}
                   darkMode={darkMode}
                   title="East vs West"
                   description="2 Player • Left vs Right"
@@ -119,6 +127,10 @@ const MenuSetup: React.FC = () => {
                 <MenuCard
                   onClick={() => handleBoardSelect("4p")}
                   isSelected={selectedBoard === "4p"}
+                  preview={{
+                    mode: "4p",
+                    hideUnits: true,
+                  }}
                   darkMode={darkMode}
                   title="Capture the Army"
                   description="4 Player • Quadrant Combat"
@@ -129,6 +141,10 @@ const MenuSetup: React.FC = () => {
                 <MenuCard
                   onClick={() => handleBoardSelect("2v2")}
                   isSelected={selectedBoard === "2v2"}
+                  preview={{
+                    mode: "2v2",
+                    hideUnits: true,
+                  }}
                   darkMode={darkMode}
                   title="Capture the World"
                   description="4 Player • 2 vs 2 Co-Op"
@@ -144,9 +160,14 @@ const MenuSetup: React.FC = () => {
             <MenuCard
               onClick={() => handlePresetSelect("custom")}
               isSelected={selectedPreset === "custom"}
+              preview={{
+                mode: selectedBoard,
+                protocol: "custom",
+                hideUnits: true,
+              }}
               darkMode={darkMode}
-              title="TC Omega"
-              description="Control over units, terrain, and spaces."
+              title="Ω Omega"
+              description="Setup the board Gamemaster."
               Icon={Sword}
               color="red"
               badge="God Mode"
@@ -156,9 +177,14 @@ const MenuSetup: React.FC = () => {
             <MenuCard
               onClick={() => handlePresetSelect("classic")}
               isSelected={selectedPreset === "classic"}
+              preview={{
+                mode: selectedBoard,
+                protocol: "classic",
+                hideUnits: true,
+              }}
               darkMode={darkMode}
-              title="TC Pi"
-              description='A slice of classic topped with "randomness".'
+              title="π Pi"
+              description="A slice of trenchess classic."
               Icon={Crown}
               color="amber"
               badge="Legacy Mode"
@@ -170,9 +196,15 @@ const MenuSetup: React.FC = () => {
                 handlePresetSelect("terrainiffic");
               }}
               isSelected={selectedPreset === "terrainiffic"}
+              preview={{
+                mode: selectedBoard,
+                protocol: "terrainiffic",
+                showIcons: true,
+                hideUnits: true,
+              }}
               darkMode={darkMode}
-              title="TC Chi"
-              description="Tactical Layouts from our Zen Garden."
+              title="χ Chi"
+              description="Intentional creations."
               Icon={MapIcon}
               color="emerald"
               badge="Flow Mode"
@@ -182,8 +214,13 @@ const MenuSetup: React.FC = () => {
             <MenuCard
               onClick={() => handlePresetSelect("quick")}
               isSelected={selectedPreset === "quick"}
+              preview={{
+                mode: selectedBoard,
+                protocol: "quick",
+                hideUnits: true,
+              }}
               darkMode={darkMode}
-              title="TC Alpha"
+              title="α Alpha"
               description='"Hit me Entropy one more Time!"'
               Icon={Sparkles}
               color="blue"

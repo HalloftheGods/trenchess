@@ -221,7 +221,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
             {isZen
               ? "Zen Garden"
               : gameState === "setup"
-                ? "Deployment"
+                ? `Player ${PLAYER_CONFIGS[turn].name}` // Player {Color}
                 : "Command Center"}
           </h2>
 
@@ -231,7 +231,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                 onClick={() =>
                   setPlayerTypes((prev) => ({ ...prev, [turn]: "human" }))
                 }
-                className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${playerTypes[turn] === "human" ? "bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"}`}
+                className={`px-3 py-1 rounded-md text-[15px] font-black uppercase tracking-widest transition-all ${playerTypes[turn] === "human" ? "bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"}`}
               >
                 Human
               </button>
@@ -239,7 +239,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                 onClick={() =>
                   setPlayerTypes((prev) => ({ ...prev, [turn]: "computer" }))
                 }
-                className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${playerTypes[turn] === "computer" ? "bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"}`}
+                className={`px-3 py-1 rounded-md text-[15px] font-black uppercase tracking-widest transition-all ${playerTypes[turn] === "computer" ? "bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"}`}
               >
                 CPU
               </button>
@@ -329,11 +329,6 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                       <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-tight">
                         {intel.label}
                       </span>
-                      {!isZen && (
-                        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-slate-300 dark:bg-slate-700 rounded-full text-[9px] flex items-center justify-center font-black border-2 border-white dark:border-slate-900 shadow-lg">
-                          {count}
-                        </span>
-                      )}
                     </button>
                   );
                 })}

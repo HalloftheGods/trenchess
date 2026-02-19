@@ -8,6 +8,7 @@ interface GameLogoProps {
   onClick?: () => void;
   logoText?: string;
   topText?: string;
+  showTerrain?: boolean;
 }
 
 const GameLogo: React.FC<GameLogoProps> = ({
@@ -16,6 +17,7 @@ const GameLogo: React.FC<GameLogoProps> = ({
   onClick,
   logoText,
   topText,
+  showTerrain = true,
 }) => {
   const isLarge = size === "large";
   const isMedium = size === "medium";
@@ -64,75 +66,77 @@ const GameLogo: React.FC<GameLogoProps> = ({
                 {topText || "Chess"}
               </span>
 
-              <div className="flex items-center gap-2 md:gap-5">
-                <span
-                  className={
-                    isMedium
-                      ? "text-xl md:text-2xl lg:text-3xl"
-                      : "text-2xl md:text-4xl"
-                  }
-                >
-                  +
-                </span>
-                <div
-                  className={`flex items-center ${
-                    isMedium ? "gap-1" : "gap-1.5 md:gap-3"
-                  }`}
-                >
+              {showTerrain && (
+                <div className="flex items-center gap-2 md:gap-5">
+                  <span
+                    className={
+                      isMedium
+                        ? "text-xl md:text-2xl lg:text-3xl"
+                        : "text-2xl md:text-4xl"
+                    }
+                  >
+                    +
+                  </span>
                   <div
-                    className={`rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)] ${
-                      isMedium ? "p-2" : "p-2 md:p-3"
+                    className={`flex items-center ${
+                      isMedium ? "gap-1" : "gap-1.5 md:gap-3"
                     }`}
                   >
-                    <Trees
-                      className={
-                        isMedium
-                          ? "w-6 h-6 md:w-8 md:h-8"
-                          : "w-5 h-5 md:w-8 md:h-8"
-                      }
-                    />
-                  </div>
-                  <div
-                    className={`rounded-2xl bg-blue-500/10 text-blue-500 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)] ${
-                      isMedium ? "p-2" : "p-2 md:p-3"
-                    }`}
-                  >
-                    <Waves
-                      className={
-                        isMedium
-                          ? "w-6 h-6 md:w-8 md:h-8"
-                          : "w-5 h-5 md:w-8 md:h-8"
-                      }
-                    />
-                  </div>
-                  <div
-                    className={`rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)] ${
-                      isMedium ? "p-2" : "p-2 md:p-3"
-                    }`}
-                  >
-                    <Mountain
-                      className={
-                        isMedium
-                          ? "w-6 h-6 md:w-8 md:h-8"
-                          : "w-5 h-5 md:w-8 md:h-8"
-                      }
-                    />
-                  </div>
-                  <div
-                    className={`rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)] ${
-                      isMedium ? "p-2" : "p-2 md:p-3"
-                    }`}
-                  >
-                    <DesertIcon
-                      className={
-                        isMedium
-                          ? "w-6 h-6 md:w-8 md:h-8"
-                          : "w-5 h-5 md:w-8 md:h-8"
-                      }
-                    />
+                    <div
+                      className={`rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)] ${
+                        isMedium ? "p-2" : "p-2 md:p-3"
+                      }`}
+                    >
+                      <Trees
+                        className={
+                          isMedium
+                            ? "w-6 h-6 md:w-8 md:h-8"
+                            : "w-5 h-5 md:w-8 md:h-8"
+                        }
+                      />
+                    </div>
+                    <div
+                      className={`rounded-2xl bg-blue-500/10 text-blue-500 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)] ${
+                        isMedium ? "p-2" : "p-2 md:p-3"
+                      }`}
+                    >
+                      <Waves
+                        className={
+                          isMedium
+                            ? "w-6 h-6 md:w-8 md:h-8"
+                            : "w-5 h-5 md:w-8 md:h-8"
+                        }
+                      />
+                    </div>
+                    <div
+                      className={`rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)] ${
+                        isMedium ? "p-2" : "p-2 md:p-3"
+                      }`}
+                    >
+                      <Mountain
+                        className={
+                          isMedium
+                            ? "w-6 h-6 md:w-8 md:h-8"
+                            : "w-5 h-5 md:w-8 md:h-8"
+                        }
+                      />
+                    </div>
+                    <div
+                      className={`rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)] ${
+                        isMedium ? "p-2" : "p-2 md:p-3"
+                      }`}
+                    >
+                      <DesertIcon
+                        className={
+                          isMedium
+                            ? "w-6 h-6 md:w-8 md:h-8"
+                            : "w-5 h-5 md:w-8 md:h-8"
+                        }
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Middle: Equation Bar */}
