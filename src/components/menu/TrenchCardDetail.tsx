@@ -1,8 +1,13 @@
 import React from "react";
 import { ShieldPlus, Ban, Zap, Sparkles } from "lucide-react";
-import { INITIAL_ARMY, PIECES, isUnitProtected } from "../../constants";
+import {
+  INITIAL_ARMY,
+  PIECES,
+  isUnitProtected,
+  TERRAIN_TYPES,
+} from "../../constants";
 import { canUnitTraverseTerrain } from "../../utils/terrainCompat";
-import { unitColorMap } from "../../data/unitDetails";
+import { UNIT_DETAILS, unitColorMap } from "../../data/unitDetails";
 import { TERRAIN_DETAILS } from "../../data/terrainDetails";
 import type { TerrainType } from "../../types";
 import type { PieceStyle } from "../../constants";
@@ -156,10 +161,51 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
     const previewGridSize = 7;
     const center = 3;
 
+    // Use active unit or default to first sanctuary unit for the demo
+    const demoUnitType = activeUnit || terrain.sanctuaryUnits[0];
+    const demoUnitDetails = UNIT_DETAILS[demoUnitType];
+    const isProtected = terrain.sanctuaryUnits.includes(demoUnitType);
+
+    const moves = demoUnitDetails?.movePattern(center, center) || [];
+    const attacks = demoUnitDetails?.attackPattern
+      ? demoUnitDetails.attackPattern(center, center)
+      : [];
+
+    // Define mock threats based on terrain
+    const getThreats = () => {
+      const threats: Array<{ type: string; r: number; c: number }> = [];
+      if (terrainType === TERRAIN_TYPES.TREES) {
+        threats.push({ type: PIECES.TANK, r: 3, c: 0 });
+        threats.push({ type: PIECES.HORSEMAN, r: 1, c: 2 });
+      } else if (terrainType === TERRAIN_TYPES.PONDS) {
+        threats.push({ type: PIECES.SNIPER, r: 0, c: 0 });
+        threats.push({ type: PIECES.HORSEMAN, r: 5, c: 2 });
+      } else if (terrainType === TERRAIN_TYPES.RUBBLE) {
+        threats.push({ type: PIECES.TANK, r: 3, c: 6 });
+        threats.push({ type: PIECES.SNIPER, r: 6, c: 0 });
+      } else if (terrainType === TERRAIN_TYPES.DESERT) {
+        threats.push({ type: PIECES.SNIPER, r: 0, c: 6 });
+        threats.push({ type: PIECES.HORSEMAN, r: 5, c: 4 });
+      }
+      return threats;
+    };
+
+    const threats = getThreats();
+
+    // Calculate threat paths
+    const threatPaths: number[][] = [];
+    threats.forEach((t) => {
+      const tDetails = UNIT_DETAILS[t.type];
+      const tAttacks = tDetails?.attackPattern
+        ? tDetails.attackPattern(t.r, t.c)
+        : tDetails?.movePattern(t.r, t.c) || [];
+      tAttacks.forEach((p) => threatPaths.push(p));
+    });
+
     return (
       <div className="bg-slate-800/20 dark:bg-white/5 rounded-2xl p-3 border border-white/5 w-fit shadow-inner">
         <div
-          className="grid gap-[1px] w-40 h-40"
+          className="grid gap-[1px] w-48 h-48"
           style={{
             gridTemplateColumns: `repeat(${previewGridSize}, 1fr)`,
           }}
@@ -172,6 +218,13 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
               const inTerrain =
                 Math.abs(r - center) <= 1 && Math.abs(c - center) <= 1;
 
+              const isMove = moves.some(([mr, mc]) => mr === r && mc === c);
+              const isAttack = attacks.some(([ar, ac]) => ar === r && ac === c);
+              const isThreat = threats.some((t) => t.r === r && t.c === c);
+              const isThreatPath = threatPaths.some(
+                ([tr, tc]) => tr === r && tc === c,
+              );
+
               const isEven = (r + c) % 2 === 0;
               let cellBg = isEven
                 ? "bg-slate-100/10 dark:bg-white/5"
@@ -183,20 +236,57 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
                   : terrain.color.bg.replace("/10", "/30");
               }
 
+              // Logic coloring
+              let highlightLayer = null;
+              if (isCenter) {
+                highlightLayer = (
+                  <div className="absolute inset-0 z-20 flex items-center justify-center">
+                    <div className="text-slate-900 drop-shadow-[0_0_2px_rgba(255,255,255,0.8)] transform scale-110">
+                      {getUnitIcon(demoUnitType)}
+                    </div>
+                  </div>
+                );
+              } else if (isThreat) {
+                const threatType = threats.find(
+                  (t) => t.r === r && t.c === c,
+                )?.type;
+                highlightLayer = (
+                  <div className="absolute inset-0 z-20 flex items-center justify-center">
+                    <div className="text-slate-900 drop-shadow-[0_0_2px_rgba(255,255,255,0.4)] scale-90">
+                      {threatType ? getUnitIcon(threatType) : null}
+                    </div>
+                  </div>
+                );
+              } else if (isAttack) {
+                highlightLayer = (
+                  <div className="absolute inset-0 bg-red-500/20 z-10" />
+                );
+              } else if (isMove) {
+                highlightLayer = (
+                  <div className="absolute inset-0 bg-emerald-500/20 z-10" />
+                );
+              } else if (isThreatPath) {
+                const isBlockedBySanctuary = inTerrain && isProtected;
+                highlightLayer = (
+                  <div
+                    className={`absolute inset-0 z-10 ${isBlockedBySanctuary ? "bg-slate-500/10 border border-dotted border-white/10" : "bg-red-500/5"}`}
+                  />
+                );
+              }
+
               return (
                 <div
                   key={i}
-                  className={`aspect-square rounded-sm relative flex items-center justify-center transition-all duration-300 ${cellBg} ${isCenter ? "z-10" : ""}`}
+                  className={`aspect-square rounded-sm relative flex items-center justify-center transition-all duration-300 ${cellBg} ${isCenter ? "z-30" : ""}`}
                 >
-                  {isCenter && (
-                    <div className={`${terrain.color.text} opacity-80`}>
-                      <IconComp size={16} />
-                    </div>
-                  )}
-                  {inTerrain && !isCenter && (
+                  {highlightLayer}
+                  {!isCenter && !isThreat && inTerrain && (
                     <div className={`${terrain.color.text} opacity-20`}>
                       <IconComp size={12} />
                     </div>
+                  )}
+                  {!inTerrain && i === 0 && (
+                    <div className="absolute -top-1 -left-1 w-2 h-2 rounded-full bg-white/5" />
                   )}
                 </div>
               );

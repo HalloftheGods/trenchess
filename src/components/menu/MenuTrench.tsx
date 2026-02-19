@@ -93,7 +93,7 @@ const MenuTrench: React.FC = () => {
           }}
           isSelected={false}
           darkMode={darkMode}
-          title="Swamp"
+          title="Swamps"
           description="Favors Rooks"
           Icon={Waves}
           color="blue"
@@ -133,7 +133,7 @@ const MenuTrench: React.FC = () => {
           }}
           isSelected={false}
           darkMode={darkMode}
-          title="Desert"
+          title="Deserts"
           description="Traverse & Escape"
           Icon={DesertIcon}
           color="amber"

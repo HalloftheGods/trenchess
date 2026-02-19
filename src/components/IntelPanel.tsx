@@ -146,7 +146,7 @@ const UNIT_INTEL_PANEL: Record<string, UnitIntelPanelEntry> = {
 
 const TERRAIN_INTEL_PANEL: Record<string, TerrainIntelPanelEntry> = {
   [TERRAIN_TYPES.PONDS]: {
-    label: "Swamp",
+    label: "Swamps",
     icon: Waves,
     color: "blue",
     interactions: [

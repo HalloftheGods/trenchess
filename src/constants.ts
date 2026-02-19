@@ -222,7 +222,7 @@ export const UNIT_INTEL: Record<string, UnitIntelEntry> = {
 // --- Terrain Intel (simple tooltips) ---
 export const TERRAIN_INTEL: Record<string, TerrainIntelEntry> = {
   [TERRAIN_TYPES.PONDS]: {
-    label: "Swamp",
+    label: "Swamps",
     icon: Waves,
     color: "text-blue-500",
     desc: "Sanctuary for Rooks. Grants protection from Bishops and Knights. Difficult terrain that slows movement.",
