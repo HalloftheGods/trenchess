@@ -45,6 +45,30 @@ io.on(
   ) => {
     console.log("User connected:", socket.id);
 
+    // Initial broadcast of online count
+    io.emit("online_count_update", io.engine.clientsCount);
+
+    const sendRoomList = () => {
+      const roomList: any[] = [];
+      for (const roomId in rooms) {
+        // Filter out empty rooms if any, or maybe show them?
+        // Let's show rooms with players or persistent rooms
+        if (rooms[roomId].players.length > 0) {
+          roomList.push({
+            id: roomId,
+            players: rooms[roomId].players.length,
+            maxPlayers: 4, // hardcoded for now
+            status: rooms[roomId].gameState ? "Playing" : "Waiting",
+          });
+        }
+      }
+      socket.emit("room_list_update", roomList);
+    };
+
+    socket.on("request_room_list", () => {
+      sendRoomList();
+    });
+
     socket.on("join_room", (roomId: string) => {
       socket.join(roomId);
       console.log(`User ${socket.id} joined room: ${roomId}`);
@@ -67,6 +91,21 @@ io.on(
       if (rooms[roomId].gameState) {
         socket.emit("game_state_sync", rooms[roomId].gameState);
       }
+
+      // Broadcast room list update to everyone (since player count changed)
+      // Optimally, debounced or only if new room created
+      const roomList: any[] = [];
+      for (const rId in rooms) {
+        if (rooms[rId].players.length > 0) {
+          roomList.push({
+            id: rId,
+            players: rooms[rId].players.length,
+            maxPlayers: 4,
+            status: rooms[rId].gameState ? "Playing" : "Waiting",
+          });
+        }
+      }
+      io.emit("room_list_update", roomList);
     });
 
     socket.on(
@@ -76,9 +115,6 @@ io.on(
           rooms[roomId].ready[socket.id] = isReady;
           io.to(roomId).emit("room_ready_status", rooms[roomId].ready);
 
-          // Check if everyone is ready?
-          // Let the clients decide what to do when everyone is ready,
-          // or duplicate logic here. For now, just broadcast status.
           const allReady = rooms[roomId].players.every(
             (pid) => rooms[roomId].ready[pid],
           );
@@ -100,6 +136,20 @@ io.on(
 
         io.to(roomId).emit("room_users", rooms[roomId].players);
         io.to(roomId).emit("room_ready_status", rooms[roomId].ready);
+
+        // Broadcast room list update
+        const roomList: any[] = [];
+        for (const rId in rooms) {
+          if (rooms[rId].players.length > 0) {
+            roomList.push({
+              id: rId,
+              players: rooms[rId].players.length,
+              maxPlayers: 4,
+              status: rooms[rId].gameState ? "Playing" : "Waiting",
+            });
+          }
+        }
+        io.emit("room_list_update", roomList);
       }
     });
 
@@ -115,7 +165,7 @@ io.on(
       },
     );
 
-    // Relay specific move actions (optional, if we want granular updates)
+    // Relay specific move actions
     socket.on(
       "send_move",
       ({ roomId, move }: { roomId: string; move: any }) => {
@@ -125,10 +175,7 @@ io.on(
 
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
-      // We should really handle cleanup here similar to leave_room
-      // But finding *which* room they were in requires iteration or a reverse map
-      // For this simple implementation, we'll skip complex cleanup on simple disconnect
-      // unless we track socket->room mapping.
+      io.emit("online_count_update", io.engine.clientsCount);
 
       // Quick fix: iterate all rooms
       for (const roomId in rooms) {
@@ -141,6 +188,20 @@ io.on(
           io.to(roomId).emit("room_ready_status", rooms[roomId].ready);
         }
       }
+
+      // Broadcast room list update
+      const roomList: any[] = [];
+      for (const rId in rooms) {
+        if (rooms[rId].players.length > 0) {
+          roomList.push({
+            id: rId,
+            players: rooms[rId].players.length,
+            maxPlayers: 4,
+            status: rooms[rId].gameState ? "Playing" : "Waiting",
+          });
+        }
+      }
+      io.emit("room_list_update", roomList);
     });
   },
 );

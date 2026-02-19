@@ -225,7 +225,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                 : "Command Center"}
           </h2>
 
-          {!isZen && gameState === "setup" && !multiplayer?.isConnected && (
+          {!isZen && gameState === "setup" && !multiplayer?.roomId && (
             <div className="flex bg-slate-100 dark:bg-black/20 rounded-lg p-1 border border-slate-200 dark:border-white/5">
               <button
                 onClick={() =>
@@ -419,7 +419,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
 
         {(gameState === "setup" || isZen) && (
           <div className="mt-auto space-y-3 pt-6">
-            {!isZen && !multiplayer?.isConnected && (
+            {!isZen && !multiplayer?.roomId && (
               <button
                 onClick={() => {
                   const idx = activePlayers.indexOf(turn);
@@ -434,7 +434,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
               </button>
             )}
 
-            {!isZen && !multiplayer?.isConnected && (
+            {!isZen && !multiplayer?.roomId && (
               <button
                 disabled={!isAllPlaced && !isCurrentPlayerReady}
                 onClick={() => {
@@ -464,7 +464,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
             )}
 
             {/* Multiplayer Ready Logic */}
-            {!isZen && multiplayer?.isConnected && (
+            {!isZen && multiplayer?.roomId && (
               <div className="space-y-3">
                 <div className="flex flex-col gap-2">
                   {/* Readiness Status of others */}

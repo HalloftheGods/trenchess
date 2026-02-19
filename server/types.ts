@@ -10,6 +10,9 @@ export interface ServerToClientEvents {
   game_state_sync: (state: any) => void;
   all_players_ready: () => void;
   receive_move: (move: any) => void;
+  // Global Lobby
+  room_list_update: (rooms: any[]) => void;
+  online_count_update: (count: number) => void;
 }
 
 export interface ClientToServerEvents {
@@ -18,6 +21,8 @@ export interface ClientToServerEvents {
   leave_room: (roomId: string) => void;
   update_game_state: (data: { roomId: string; newState: any }) => void;
   send_move: (data: { roomId: string; move: any }) => void;
+  // Global Lobby
+  request_room_list: () => void;
 }
 
 export interface InterServerEvents {

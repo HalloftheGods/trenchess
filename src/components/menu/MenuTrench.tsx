@@ -1,8 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Trees, Waves, Mountain } from "lucide-react";
+import { Trees, Waves, Mountain } from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
+import BackButton from "../ui/BackButton";
 import { useMenuContext } from "./MenuLayout";
 import { DesertIcon } from "../../UnitIcons";
 import type { TerrainType } from "../../types";
@@ -26,16 +27,13 @@ const MenuTrench: React.FC = () => {
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
       <div className="relative flex items-center justify-center gap-4 mb-4 w-full max-w-7xl">
-        <button
+        <BackButton
           onClick={() => navigate("/learn")}
-          className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer"
-          title="Back to How to Play"
-        >
-          <ChevronLeft size={24} />
-        </button>
+          className="absolute left-0"
+        />
         <SectionDivider
           label="The Trench: Trials & Tribulations"
-          className="ml-12"
+          className="ml-24"
           color="red"
         />
       </div>

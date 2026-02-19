@@ -19,12 +19,15 @@ export interface MultiplayerState {
   readyPlayers: Record<string, boolean>;
   socketId: string | null;
   isHost: boolean;
+  availableRooms: any[];
+  onlineCount: number;
   joinGame: (roomId: string) => void;
   hostGame: () => string; // returns new room ID
   leaveGame: () => void;
   toggleReady: (isReady: boolean) => void;
   sendGameState: (state: any) => void;
   sendMove: (move: any) => void;
+  refreshRooms: () => void;
 }
 
 export function useMultiplayer(
@@ -41,6 +44,9 @@ export function useMultiplayer(
 
   const socketRef = useRef<Socket | null>(null);
 
+  const [availableRooms, setAvailableRooms] = useState<any[]>([]);
+  const [onlineCount, setOnlineCount] = useState(0);
+
   // Initialize socket
   useEffect(() => {
     // Only connect when explicitly joining/hosting?
@@ -52,6 +58,8 @@ export function useMultiplayer(
       console.log("Connected to Space Station (Server)");
       setIsConnected(true);
       if (socketRef.current) setSocketId(socketRef.current.id || null);
+      // Request initial data
+      socketRef.current?.emit("request_room_list");
     });
 
     socketRef.current.on("disconnect", () => {
@@ -83,6 +91,16 @@ export function useMultiplayer(
       onMoveReceived(move);
     });
 
+    // New listeners for Global Lobby
+    socketRef.current.on("room_list_update", (rooms: any[]) => {
+      console.log("Received Room List:", rooms);
+      setAvailableRooms(rooms);
+    });
+
+    socketRef.current.on("online_count_update", (count: number) => {
+      setOnlineCount(count);
+    });
+
     return () => {
       socketRef.current?.disconnect();
     };
@@ -112,6 +130,8 @@ export function useMultiplayer(
     setPlayers([]);
     setReadyPlayers({});
     setIsHost(false);
+    // Refresh rooms when leaving
+    socketRef.current.emit("request_room_list");
   }, [roomId]);
 
   const toggleReady = useCallback(
@@ -138,6 +158,11 @@ export function useMultiplayer(
     [roomId],
   );
 
+  const refreshRooms = useCallback(() => {
+    if (!socketRef.current) return;
+    socketRef.current.emit("request_room_list");
+  }, []);
+
   return {
     isConnected,
     roomId,
@@ -145,11 +170,14 @@ export function useMultiplayer(
     readyPlayers,
     socketId,
     isHost,
+    availableRooms,
+    onlineCount,
     joinGame,
     hostGame,
     leaveGame,
     toggleReady,
     sendGameState,
     sendMove,
+    refreshRooms,
   };
 }
