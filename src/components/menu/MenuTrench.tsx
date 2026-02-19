@@ -53,7 +53,7 @@ const MenuTrench: React.FC = () => {
           className="absolute left-0"
         />
         <SectionDivider
-          label="The Trench: Trials & Tribulations"
+          label="The Trench came as four terrains."
           className="ml-24"
           color="red"
         />
@@ -74,7 +74,7 @@ const MenuTrench: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Mountains"
-          description="Favors Knights"
+          description="Favored the Knights"
           Icon={Mountain}
           color="red"
           className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
@@ -94,7 +94,7 @@ const MenuTrench: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Swamps"
-          description="Favors Rooks"
+          description="Favored the Rooks"
           Icon={Waves}
           color="blue"
           className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full w-full"
@@ -114,7 +114,7 @@ const MenuTrench: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Forests"
-          description="Favors Bishops"
+          description="Favored the Bishops"
           Icon={Trees}
           color="emerald"
           className="bg-emerald-100/30 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"
@@ -134,7 +134,7 @@ const MenuTrench: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Deserts"
-          description="Traverse & Escape"
+          description="Favored no one."
           Icon={DesertIcon}
           color="amber"
           className="bg-amber-100/30 hover:bg-amber-200/50 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 border-2 border-amber-500/20 hover:border-amber-500/50 h-full w-full"
@@ -143,6 +143,7 @@ const MenuTrench: React.FC = () => {
       <MenuDetailModal
         isOpen={!!terrain}
         onClose={closeModal}
+        darkMode={darkMode}
         color={
           terrain === "rubble"
             ? "red"

@@ -148,10 +148,10 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
 
       <div className="text-center relative z-10">
         <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
-          Worldwide <span className="text-blue-500">Mode</span>
+          Worldwide <span className="text-blue-500">Change</span>
         </h3>
         <p className="text-slate-400 dark:text-slate-500 mt-2 font-medium leading-relaxed">
-          Online Lobbies
+          Borders become Barbeques.
         </p>
       </div>
     </div>

@@ -90,9 +90,9 @@ export const UNIT_DETAILS: Record<
   }
 > = {
   [PIECES.COMMANDER]: {
-    title: "Solar Lancer",
+    title: "Lead Lancer",
     subtitle: "You Learned a New Job!",
-    role: "The King",
+    role: "Nothing blocked the Kings to push 2 steps foward.",
     desc: [],
     levelUp: {
       title: "Sovereign Lancer",
@@ -132,7 +132,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.BATTLEKNIGHT]: {
     title: "Royal Knight",
     subtitle: "You Learned a New Job!",
-    role: "The Queen",
+    role: "The Queens rode on their steeds into battle.",
     desc: [],
     levelUp: {
       title: "Royal Battle Knight",
@@ -169,12 +169,12 @@ export const UNIT_DETAILS: Record<
       ].map(([dr, dc]) => [r + dr, c + dc]),
   },
   [PIECES.TANK]: {
-    title: "Light Paladin",
+    title: "Paladin",
     subtitle: "You Learned a New Job!",
-    role: "The Rooks",
+    role: "The Rooks became Paladins.",
     desc: [],
     levelUp: {
-      title: "Light Paladin!",
+      title: "Blind Paladin!",
       stats: [
         "Safe in Swamps from Bishops & Knights.",
         "Safe in Deserts from all units except Rooks.",
@@ -194,9 +194,9 @@ export const UNIT_DETAILS: Record<
     },
   },
   [PIECES.SNIPER]: {
-    title: "Healer",
+    title: "Light Healer",
     subtitle: "You Learned a New Job!",
-    role: "The Bishops",
+    role: "The Bishops became Light Healers.",
     desc: [],
     levelUp: {
       title: "Healer",
@@ -219,7 +219,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.HORSEMAN]: {
     title: "Dark Knight",
     subtitle: "You Learned a New Job!",
-    role: "The Knights",
+    role: "The Knights became Dark Knights.",
     desc: [],
     levelUp: {
       title: "Dark Knight",
@@ -238,12 +238,12 @@ export const UNIT_DETAILS: Record<
     ],
   },
   [PIECES.BOT]: {
-    title: "Dragoon",
+    title: "Jumping Dragoon",
     subtitle: "You Learned a New Job!",
-    role: "The Pawns",
+    role: "The Pawns learned how to backflip.",
     desc: [],
     levelUp: {
-      title: "Dragoon",
+      title: "Jumping Dragoon",
       stats: ["Jump backwards 2 squares."],
       terrainIcons: [
         <Mountain key="mt" />,

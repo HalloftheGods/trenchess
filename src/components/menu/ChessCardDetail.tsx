@@ -22,6 +22,7 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
 
   const textColor = darkMode ? "text-slate-100" : "text-slate-800";
   const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";
+  const gridBorderColor = darkMode ? "border-slate-800" : "border-slate-200";
 
   const unit = INITIAL_ARMY.find((u) => u.type === unitType);
   if (!unit) return null;
@@ -46,15 +47,9 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
       )
     : true;
 
-  const panelBorderStyle = unitIsProtected
-    ? "border-8 border-double scale-[0.98]"
-    : !unitCanTraverse
-      ? "border-8 border-dotted scale-[0.98]"
-      : "border-0";
-
   const renderTerrainIcons = () => {
     return (
-      <div className="flex gap-3 justify-center md:justify-start">
+      <div className="flex gap-4 justify-center">
         {TERRAIN_DETAILS.map((t, idx) => {
           const isProtected = isUnitProtected(unitType, t.key as any);
           const canTraverse = canUnitTraverseTerrain(
@@ -68,20 +63,19 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
             <div
               key={idx}
               onClick={() => setInternalTerrainIdx(isActive ? -1 : idx)}
-              className={`p-2.5 rounded-2xl ${t.color.bg} ${t.color.text} border ${t.color.border} shadow-sm backdrop-blur-md relative transition-all cursor-pointer hover:scale-110 active:scale-95 group/t ${isActive ? "opacity-100 ring-2 ring-white/20 scale-110 shadow-lg" : !canTraverse ? "opacity-[0.42] grayscale-[0.5]" : "opacity-[0.85]"} ${isProtected ? "border-double border-4" : !canTraverse ? "border-dotted border-4" : ""}`}
+              className={`
+                relative p-3 rounded-xl transition-all duration-300 cursor-pointer group
+                ${isActive ? "scale-110 ring-2 ring-offset-2 ring-offset-slate-900" : "hover:scale-105 opacity-70 hover:opacity-100"}
+                ${isActive ? colors.ring : "ring-transparent"}
+                ${!canTraverse ? "grayscale opacity-30" : ""}
+                ${t.color.bg} ${t.color.text} border ${t.color.border}
+              `}
             >
-              <TIcon size={24} className="fill-current/10" />
+              <TIcon size={20} />
 
               {isProtected && (
-                <div
-                  className={`absolute -top-2 -right-2 p-1 rounded-full bg-white dark:bg-slate-900 border-2 ${colors.border} shadow-lg z-10 flex items-center justify-center animate-pulse`}
-                  title="Protected in this terrain"
-                >
-                  <ShieldPlus
-                    size={10}
-                    className={`${colors.text}`}
-                    strokeWidth={4}
-                  />
+                <div className="absolute -top-2 -right-2 bg-white dark:bg-slate-800 rounded-full p-0.5 shadow-md border border-slate-200 dark:border-slate-700">
+                  <ShieldPlus size={10} className={colors.text} />
                 </div>
               )}
             </div>
@@ -103,9 +97,11 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
       : [];
 
     return (
-      <div className="bg-slate-800/20 dark:bg-white/5 rounded-2xl p-3 border border-white/5 w-fit shadow-inner">
+      <div
+        className={`p-4 rounded-2xl ${darkMode ? "bg-slate-800/50" : "bg-slate-100"} border ${gridBorderColor}`}
+      >
         <div
-          className="grid gap-[1px] w-40 h-40"
+          className="grid gap-1 w-40 h-40"
           style={{
             gridTemplateColumns: `repeat(${previewGridSize}, 1fr)`,
           }}
@@ -117,27 +113,35 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
               const isCenter = r === center && c === center;
               const isMove = moves.some(([mr, mc]) => mr === r && mc === c);
               const isAttack = attacks.some(([ar, ac]) => ar === r && ac === c);
+              const isNewMove = newMoves.some(
+                ([nr, nc]) => nr === r && nc === c,
+              );
 
-              const isEven = (r + c) % 2 === 0;
-              const baseColor = isEven
-                ? "bg-slate-100/10 dark:bg-white/5"
-                : "bg-slate-200/10 dark:bg-white/[0.02]";
+              let cellClass = darkMode ? "bg-slate-700/30" : "bg-slate-200/50";
+
+              if (isCenter) {
+                cellClass = darkMode
+                  ? "bg-white text-slate-900"
+                  : "bg-slate-900 text-white";
+              } else if (isAttack) {
+                cellClass = "bg-red-500/80";
+              } else if (isNewMove) {
+                cellClass = "bg-amber-500/80";
+              } else if (isMove) {
+                cellClass = "bg-emerald-500/80";
+              }
 
               return (
                 <div
                   key={i}
-                  className={`aspect-square rounded-sm relative transition-all duration-300 ${
-                    isCenter
-                      ? "bg-white z-20 shadow-md scale-110"
-                      : isAttack
-                        ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)] z-10"
-                        : newMoves.some(([nr, nc]) => nr === r && nc === c)
-                          ? "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)] z-10 animate-pulse"
-                          : isMove
-                            ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)] z-10"
-                            : baseColor
-                  }`}
-                />
+                  className={`
+                    rounded-sm flex items-center justify-center transition-colors duration-300
+                    ${cellClass}
+                    ${isCenter ? "shadow-md scale-110 z-10 rounded-md" : ""}
+                  `}
+                >
+                  {isCenter && <IconComp size={16} strokeWidth={3} />}
+                </div>
               );
             },
           )}
@@ -147,134 +151,142 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
   };
 
   return (
-    <div
-      className={`relative w-full flex flex-col items-center z-10 text-center transition-all p-6 lg:p-10 pb-12 ${panelBorderStyle}`}
-    >
-      {/* Full-width Top Ribbon */}
+    <div className="w-full h-full flex flex-col">
+      {/* 1. Full-width Header */}
       <div
-        className={`absolute top-0 left-0 right-0 z-20 ${colors.ribbonBg} py-2 lg:py-3 shadow-lg border-b border-white/10 flex justify-center items-center`}
+        className={`w-full ${colors.ribbonBg} py-3 shadow-md flex items-center justify-center relative z-10`}
       >
-        <span className="text-white text-lg lg:text-xl font-black uppercase tracking-[0.4em] drop-shadow-md">
+        <span className="text-white text-sm font-bold uppercase tracking-[0.2em] px-4 text-center">
           {details.role}
         </span>
       </div>
 
-      {/* Background decoration */}
-      <div
-        className={`absolute -right-20 -top-20 w-64 h-64 rounded-full ${colors.bg} blur-[80px] opacity-20`}
-      />
-
-      {/* Subtitle */}
-      {details.subtitle && (
-        <div
-          className={`flex items-center gap-2 mb-1 mt-10 lg:mt-12 opacity-80`}
-        >
-          <UserPlus size={20} className={colors.text} />
-          <span
-            className={`text-xs font-bold uppercase tracking-[0.2em] ${colors.text}`}
-          >
-            {details.subtitle}
-          </span>
-        </div>
-      )}
-
-      {/* Title */}
-      <h3
-        className={`text-4xl lg:text-6xl font-black uppercase tracking-tighter ${textColor} mb-4 lg:mb-6 relative group`}
-      >
-        <span className="relative z-10 drop-shadow-sm">{details.title}</span>
-        <div
-          className={`absolute -inset-x-8 -inset-y-4 ${colors.bg} blur-2xl opacity-0 group-hover:opacity-40 transition-opacity rounded-full`}
-        />
-      </h3>
-
-      <div className="w-full flex flex-col md:grid md:grid-cols-[1fr_auto_1fr] gap-6 lg:gap-10 items-center mb-4 lg:mb-6">
-        {/* Left: Unit Icon */}
-        <div className="flex flex-col items-center gap-3 w-full">
-          <div
-            className={`relative w-32 h-32 lg:w-40 lg:h-40 rounded-[2.5rem] lg:rounded-[3rem] ${colors.bg} ${colors.text} flex items-center justify-center shadow-inner border border-white/5 transition-transform hover:rotate-3 group`}
-          >
-            <IconComp className="w-20 h-20 lg:w-24 lg:h-24 transition-transform group-hover:scale-110" />
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col lg:grid lg:grid-cols-[1fr_1.5fr_1fr] gap-8 p-6 lg:p-10 items-center lg:items-start text-center lg:text-left overflow-y-auto">
+        {/* Left Col: Identity */}
+        <div className="flex flex-col items-center gap-6 w-full">
+          <div className={`relative group`}>
+            <div
+              className={`w-32 h-32 lg:w-40 lg:h-40 rounded-[2rem] flex items-center justify-center ${colors.bg} ${colors.text} border-2 ${colors.border} shadow-xl transition-transform duration-500 group-hover:scale-105 group-hover:rotate-1`}
+            >
+              <IconComp
+                size={64}
+                strokeWidth={1.5}
+                className="drop-shadow-sm"
+              />
+            </div>
 
             {unitType === PIECES.BOT && (
-              <div className="absolute -bottom-3 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg border-2 border-slate-900">
+              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-amber-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
                 Promotable
               </div>
             )}
           </div>
 
-          <span
-            className={`text-[10px] font-black uppercase tracking-widest ${subtextColor} flex items-center gap-2`}
-          >
-            <div className="w-2 h-2 rounded-full bg-emerald-500" />
-            Capabilities
-          </span>
+          <div className="flex flex-col items-center gap-2">
+            <span
+              className={`text-[10px] font-bold uppercase tracking-[0.2em] ${subtextColor}`}
+            >
+              Class Type
+            </span>
+            <span className={`text-sm font-bold ${textColor}`}>{unitType}</span>
+          </div>
         </div>
 
-        {/* Center: Info Bullets */}
-        <div className="flex flex-col gap-4 lg:gap-5 w-full max-w-md">
-          {details.levelUp && (
-            <div className="flex flex-col gap-3 lg:gap-4">
-              {details.levelUp.stats.map((item, idx) => (
+        {/* Center Col: Stats & Info */}
+        <div className="flex flex-col gap-6 w-full pt-4">
+          <div className="flex flex-col gap-1 items-center lg:items-start">
+            {details.subtitle && (
+              <div
+                className={`flex items-center gap-2 text-xs font-bold uppercase tracking-widest ${colors.text} mb-2`}
+              >
+                <UserPlus size={14} />
+                <span>{details.subtitle}</span>
+              </div>
+            )}
+            <h1
+              className={`text-4xl lg:text-5xl font-black uppercase tracking-tighter ${textColor} leading-none`}
+            >
+              {details.title}
+            </h1>
+          </div>
+
+          <div className="h-px w-24 bg-gradient-to-r from-slate-200 to-transparent dark:from-slate-700 mx-auto lg:mx-0" />
+
+          {/* Description & Stats */}
+          <div className="flex flex-col gap-4">
+            {/* Level Up Title */}
+            {details.levelUp && (
+              <div className="flex items-center gap-3">
                 <div
-                  key={idx}
-                  className="flex items-start gap-3 lg:gap-4 text-left group/item"
+                  className={`w-1.5 h-1.5 rounded-full ${colors.bg} ${colors.ring}`}
+                />
+                <h4 className={`text-lg font-bold ${textColor}`}>
+                  {details.levelUp.title}
+                </h4>
+              </div>
+            )}
+
+            {/* Stat Points */}
+            <div className="flex flex-col gap-3 pl-4 lg:pl-0">
+              {details.levelUp?.stats.map((stat, i) => (
+                <div
+                  key={i}
+                  className={`flex items-start gap-3 text-sm lg:text-base leading-relaxed ${subtextColor}`}
                 >
-                  <div
-                    className={`w-2 h-2 rounded-full ${colors.bg} border ${colors.border} mt-1.5 shrink-0 shadow-sm transition-transform group-hover/item:scale-125`}
+                  <span
+                    className={`mt-2 w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600 shrink-0`}
                   />
-                  <p
-                    className={`text-sm lg:text-base font-bold ${subtextColor} leading-tight lg:leading-snug opacity-90 group-hover/item:opacity-100 transition-opacity`}
-                  >
-                    {item}
-                  </p>
+                  <span>{stat}</span>
+                </div>
+              ))}
+              {details.desc?.map((line, i) => (
+                <div
+                  key={`d-${i}`}
+                  className={`flex items-start gap-3 text-sm lg:text-base leading-relaxed ${subtextColor}`}
+                >
+                  <span
+                    className={`mt-2 w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600 shrink-0`}
+                  />
+                  <span>{line}</span>
                 </div>
               ))}
             </div>
-          )}
-
-          {/* Standard Description */}
-          {details.desc && details.desc.length > 0 && (
-            <div className="flex flex-col gap-2 lg:gap-3">
-              {details.desc.map((line, i) => (
-                <p
-                  key={i}
-                  className={`text-[13px] lg:text-sm ${subtextColor} leading-relaxed`}
-                >
-                  {line}
-                </p>
-              ))}
-            </div>
-          )}
+          </div>
         </div>
 
-        {/* Right: Move Preview */}
-        <div className="flex flex-col items-center gap-4 w-full">
+        {/* Right Col: Tactical Grid */}
+        <div className="flex flex-col items-center lg:items-end w-full gap-4">
           {renderMovePreview()}
-          <span
-            className={`text-[9px] lg:text-[10px] font-black uppercase tracking-widest ${subtextColor}`}
-          >
-            Move Pattern Preview
-          </span>
+          <div className="flex items-center gap-2 opacity-50">
+            <div className="w-2 h-2 rounded-sm bg-emerald-500" />
+            <span
+              className={`text-[10px] font-bold uppercase tracking-wider ${subtextColor}`}
+            >
+              Move
+            </span>
+            <div className="w-2 h-2 rounded-sm bg-red-500 ml-2" />
+            <span
+              className={`text-[10px] font-bold uppercase tracking-wider ${subtextColor}`}
+            >
+              Attack
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Terrain Affinity - Bottom */}
-      <div className="mt-2 lg:mt-4 w-full flex flex-col items-center gap-4">
-        <div className="flex items-center w-full gap-4 opacity-70">
-          <div
-            className={`h-px flex-1 ${darkMode ? "bg-white/10" : "bg-slate-900/10"}`}
-          />
+      {/* Footer: Affinities */}
+      <div
+        className={`w-full py-6 mt-auto border-t ${darkMode ? "border-slate-800" : "border-slate-100"}`}
+      >
+        <div className="flex flex-col items-center gap-4">
           <span
-            className={`text-[10px] font-black uppercase tracking-widest ${subtextColor}`}
+            className={`text-[10px] font-bold uppercase tracking-[0.2em] ${subtextColor} opacity-60`}
           >
-            Trench Affinity & Sanctuary
+            Terrain Mastery & Sanctuary
           </span>
-          <div
-            className={`h-px flex-1 ${darkMode ? "bg-white/10" : "bg-slate-900/10"}`}
-          />
+          {renderTerrainIcons()}
         </div>
-        {renderTerrainIcons()}
       </div>
     </div>
   );

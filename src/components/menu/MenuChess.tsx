@@ -8,7 +8,7 @@ import { INITIAL_ARMY, PIECES } from "../../constants";
 import { UNIT_DETAILS, unitColorMap } from "../../data/unitDetails";
 
 import { useParams } from "react-router-dom";
-import { Sparkles, MountainSnow } from "lucide-react";
+import { MountainSnow, HeartPlus, RouteOff, ChessKing } from "lucide-react";
 import MenuDetailModal from "./MenuDetailModal";
 import ChessCardDetail from "./ChessCardDetail";
 
@@ -89,10 +89,10 @@ const MenuChess: React.FC = () => {
         <SectionDivider
           label={
             view === "trench"
-              ? "Effected by the Trench"
+              ? "Divided by the Trench"
               : view === "moves"
-                ? "Learned a New Move"
-                : "The Chess Manual"
+                ? "Leveled Up - They learned new Jobs."
+                : "Some Evolved - Others divided - The Endgame changed"
           }
           className="ml-24"
           color={view === "trench" ? "red" : view === "moves" ? "blue" : "blue"}
@@ -100,19 +100,7 @@ const MenuChess: React.FC = () => {
       </div>
 
       {view === "selection" ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-7xl">
-          <MenuCard
-            onClick={() => setView("trench")}
-            onMouseEnter={() => setHoveredMenu("how-to-play")}
-            onMouseLeave={() => setHoveredMenu(null)}
-            isSelected={false}
-            darkMode={darkMode}
-            title="Effected by the Trench"
-            description="Knight, Bishop, and Rook"
-            Icon={MountainSnow}
-            color="red"
-            className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full py-12"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
           <MenuCard
             onClick={() => setView("moves")}
             onMouseEnter={() => setHoveredMenu("chess")}
@@ -121,9 +109,33 @@ const MenuChess: React.FC = () => {
             darkMode={darkMode}
             title="Evolved by the Trench"
             description="Pawn, Queen, and King"
-            Icon={Sparkles}
+            Icon={HeartPlus}
+            color="red"
+            className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full py-12"
+          />
+          <MenuCard
+            onClick={() => setView("trench")}
+            onMouseEnter={() => setHoveredMenu("how-to-play")}
+            onMouseLeave={() => setHoveredMenu(null)}
+            isSelected={false}
+            darkMode={darkMode}
+            title="Divided by the Trench"
+            description="Knight, Bishop, and Rook"
+            Icon={RouteOff}
             color="blue"
             className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full w-full py-12"
+          />
+          <MenuCard
+            onClick={() => navigate("/learn/endgame")}
+            onMouseEnter={() => setHoveredMenu("boardgame")}
+            onMouseLeave={() => setHoveredMenu(null)}
+            isSelected={false}
+            darkMode={darkMode}
+            title="The Endgame"
+            description="Modes & Objectives"
+            Icon={ChessKing}
+            color="emerald"
+            className="bg-emerald-100/50 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full py-12"
           />
         </div>
       ) : (
@@ -160,8 +172,8 @@ const MenuChess: React.FC = () => {
                 onMouseLeave={() => setHoveredMenu(null)}
                 isSelected={false}
                 darkMode={darkMode}
-                title={displayNames[type]}
-                description={details?.title || "Unit Details"}
+                title={details?.title || displayNames[type]}
+                description={details?.role || "Unit Details"}
                 Icon={unit.lucide}
                 color={cardColor}
                 className={`h-full w-full border-2 ${colors.bg.replace("/10", "/30")} hover:${colors.bg.replace("/10", "/50")} ${colors.border.replace("/40", "/20")} hover:${baseBorderColor} py-10`}
@@ -174,6 +186,7 @@ const MenuChess: React.FC = () => {
       <MenuDetailModal
         isOpen={!!unitType}
         onClose={closeModal}
+        darkMode={darkMode}
         color={
           unitType === PIECES.BATTLEKNIGHT
             ? "emerald"
@@ -191,7 +204,9 @@ const MenuChess: React.FC = () => {
           prevUnit
             ? {
                 icon: prevUnit.lucide,
-                label: displayNames[prevUnit.type],
+                label:
+                  UNIT_DETAILS[prevUnit.type]?.title ||
+                  displayNames[prevUnit.type],
                 onClick: () => navigate(`/learn/chess/${prevUnit.type}`),
                 className: unitColorMap[prevUnit.type].text,
               }
@@ -201,7 +216,9 @@ const MenuChess: React.FC = () => {
           nextUnit
             ? {
                 icon: nextUnit.lucide,
-                label: displayNames[nextUnit.type],
+                label:
+                  UNIT_DETAILS[nextUnit.type]?.title ||
+                  displayNames[nextUnit.type],
                 onClick: () => navigate(`/learn/chess/${nextUnit.type}`),
                 className: unitColorMap[nextUnit.type].text,
               }

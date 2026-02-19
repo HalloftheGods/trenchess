@@ -15,10 +15,10 @@ const MenuPlay: React.FC = () => {
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
       <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
         <BackButton onClick={() => navigate("/")} className="absolute left-0" />
-        <SectionDivider label="Play Trenchess" className="ml-24" />
+        <SectionDivider label="Enter Trenchess" className="ml-24" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-7xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-4">
         <MenuCard
           onClick={() => navigate("/play/local")}
           onMouseEnter={() => setHoveredMenu("couch")}

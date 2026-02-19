@@ -38,16 +38,6 @@ const ChessGuide: React.FC<ChessGuideProps> = ({
   const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";
   const cardBg = darkMode ? "bg-slate-900/50" : "bg-white/70";
 
-  // Map piece types to clean Chess Names
-  const chessNames: Record<string, string> = {
-    [PIECES.BOT]: "Pawn",
-    [PIECES.HORSEMAN]: "Knight",
-    [PIECES.SNIPER]: "Bishop",
-    [PIECES.TANK]: "Rook",
-    [PIECES.BATTLEKNIGHT]: "Queen",
-    [PIECES.COMMANDER]: "King",
-  };
-
   const renderTerrainIcons = (icons: React.ReactNode[]) => {
     return (
       <div className="flex gap-2">
@@ -227,7 +217,7 @@ const ChessGuide: React.FC<ChessGuideProps> = ({
 
             const colors = unitColorMap[unit.type];
             const IconComp = unit.lucide;
-            const chessTitle = chessNames[type] || details.role;
+            const chessTitle = details.role;
             const jobTitle = details.title; // e.g. "Dragoon" or "Dark Knight"
 
             return (
@@ -258,13 +248,13 @@ const ChessGuide: React.FC<ChessGuideProps> = ({
                         <h3
                           className={`text-5xl font-black uppercase tracking-tighter ${textColor}`}
                         >
-                          {chessTitle}
+                          {jobTitle}
                         </h3>
                       </div>
                       <span
                         className={`text-lg font-black uppercase tracking-[0.2em] ${colors.text} opacity-90`}
                       >
-                        {jobTitle}
+                        {chessTitle}
                       </span>
                     </div>
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen } from "lucide-react";
+import { Baby } from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import TrenchessText from "../ui/TrenchessText";
@@ -40,7 +40,7 @@ const MenuHome: React.FC = () => {
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
       <SectionDivider label="Main Menu" className="mb-8 max-w-7xl" />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-7xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-4">
         <MenuCard
           onClick={() => navigate("/learn")}
           onMouseEnter={() => {
@@ -52,7 +52,7 @@ const MenuHome: React.FC = () => {
           darkMode={darkMode}
           title="How to Play"
           description="Learn the Basics"
-          Icon={BookOpen}
+          Icon={Baby}
           color="slate"
           className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full w-full"
         />
@@ -62,13 +62,13 @@ const MenuHome: React.FC = () => {
           onMouseLeave={() => setHoveredMenu(null)}
           isSelected={false}
           darkMode={darkMode}
-          title="Play Trenchess"
+          title="Enter Trenchess"
           titleNode={
             <>
-              Play <TrenchessText />
+              Enter <TrenchessText />
             </>
           }
-          description="Choose your battleground"
+          description="Choose the Battleground"
           Icon={DualColorSwordsIcon}
           color="red"
           className="border-2 border-red-500/20 hover:border-blue-500/30 h-full w-full"
