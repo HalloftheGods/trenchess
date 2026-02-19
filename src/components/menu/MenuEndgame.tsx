@@ -4,7 +4,7 @@ import { ChessKing, ChessQueen, Earth } from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
-import { useMenuContext } from "./MenuLayout";
+import { useMenuContext } from "./MenuContext";
 
 const MenuEndgame: React.FC = () => {
   const navigate = useNavigate();

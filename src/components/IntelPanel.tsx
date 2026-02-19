@@ -174,7 +174,7 @@ const TERRAIN_INTEL_PANEL: Record<string, TerrainIntelPanelEntry> = {
   [TERRAIN_TYPES.RUBBLE]: {
     label: "Mountains",
     icon: Mountain,
-    color: "stone",
+    color: "red",
     interactions: [
       { unit: "Horseman", status: "allow", text: "Agile Climb" },
       { unit: "BattleKnight", status: "allow", text: "Can Enter" },
@@ -539,11 +539,15 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
 
   // Terrain intel
   const terrainData = activeData as TerrainIntelPanelEntry;
-  let bgClass = "bg-stone-900/20";
-  let borderClass = "border-stone-500/30";
-  let textClass = "text-stone-500";
+  let bgClass = "bg-slate-900/20";
+  let borderClass = "border-slate-500/30";
+  let textClass = "text-slate-500";
 
-  if (terrainData.color === "emerald") {
+  if (terrainData.color === "red") {
+    bgClass = "bg-red-900/20";
+    borderClass = "border-red-500/30";
+    textClass = "text-red-500";
+  } else if (terrainData.color === "emerald") {
     bgClass = "bg-emerald-900/20";
     borderClass = "border-emerald-500/30";
     textClass = "text-emerald-500";
@@ -693,7 +697,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
             if (tType === TERRAIN_TYPES.PONDS)
               cellColor = "bg-blue-200 dark:bg-blue-900/40";
             if (tType === TERRAIN_TYPES.RUBBLE)
-              cellColor = "bg-stone-300 dark:bg-stone-700/40";
+              cellColor = "bg-red-200 dark:bg-red-900/40";
             if (tType === TERRAIN_TYPES.DESERT)
               cellColor = "bg-amber-100 dark:bg-amber-900/40";
 

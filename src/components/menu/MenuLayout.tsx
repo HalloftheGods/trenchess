@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import PageLayout from "../PageLayout";
 import PageHeader from "../PageHeader";
@@ -8,52 +8,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { GameMode, TerrainType } from "../../types";
 import type { PieceStyle } from "../../constants";
 
-// Define the Context Type
-interface MenuContextType {
-  darkMode: boolean;
-  pieceStyle: PieceStyle;
-  hoveredMenu: string | null;
-  setHoveredMenu: (menu: string | null) => void;
-  hoveredTerrain: TerrainType | null;
-  setHoveredTerrain: (terrain: TerrainType | null) => void;
-  terrainSeed: number;
-  setTerrainSeed: (seed: number) => void;
-  selectedPreset: string | null;
-  setSelectedPreset: (preset: any) => void;
-  selectedBoard: GameMode | null;
-  setSelectedBoard: (mode: GameMode | null) => void;
-  seeds: any[];
-  previewSeedIndex: number;
-  setPreviewSeedIndex: React.Dispatch<React.SetStateAction<number>>;
-  playerConfig: Record<string, "human" | "computer">;
-  setPlayerConfig: React.Dispatch<
-    React.SetStateAction<Record<string, "human" | "computer">>
-  >;
-  togglePlayerType: (pid: string) => void;
-  setCtkBoardMode: (mode: GameMode) => void;
-  multiplayer: any;
-  onStartGame: (
-    mode: GameMode,
-    preset: any,
-    playerTypes?: any,
-    seed?: string,
-  ) => void;
-  onTutorial: () => void;
-  onCtfGuide: () => void;
-  onChessGuide: () => void;
-  onTrenchGuide: (terrain?: TerrainType) => void;
-  onOpenLibrary: () => void;
-}
-
-const MenuContext = createContext<MenuContextType | undefined>(undefined);
-
-export const useMenuContext = () => {
-  const context = useContext(MenuContext);
-  if (!context) {
-    throw new Error("useMenuContext must be used within a MenuLayout");
-  }
-  return context;
-};
+import { MenuContext, type MenuContextType } from "./MenuContext";
 
 interface MenuLayoutProps {
   darkMode: boolean;
@@ -62,6 +17,7 @@ interface MenuLayoutProps {
   togglePieceStyle: () => void;
   onTutorial: () => void;
   onLogoClick: () => void;
+  onZenGarden: () => void;
   multiplayer: any;
   onStartGame: (
     mode: GameMode,
@@ -82,6 +38,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
   togglePieceStyle,
   onTutorial,
   onLogoClick,
+  onZenGarden,
   multiplayer,
   onStartGame,
   onCtfGuide,
@@ -311,6 +268,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
           toggleTheme={toggleTheme}
           togglePieceStyle={togglePieceStyle}
           onTutorial={onTutorial}
+          onZenGarden={onZenGarden}
           onLogoClick={handleLogoClick}
           boardPreview={boardPreviewNode}
         />

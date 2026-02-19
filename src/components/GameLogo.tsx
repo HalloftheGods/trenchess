@@ -106,7 +106,7 @@ const GameLogo: React.FC<GameLogoProps> = ({
                     />
                   </div>
                   <div
-                    className={`rounded-2xl bg-stone-500/10 text-stone-500 dark:text-stone-400 border border-stone-500/20 shadow-[0_0_15px_rgba(120,113,108,0.1)] ${
+                    className={`rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)] ${
                       isMedium ? "p-2" : "p-2 md:p-3"
                     }`}
                   >

@@ -132,11 +132,11 @@ const BoardCell: React.FC<BoardCellProps> = ({
       )}
       {!fogged && terrainType === TERRAIN_TYPES.RUBBLE && (
         <div
-          className={`absolute inset-0 border border-stone-500/50 dark:border-stone-400/50 ${hasUnit ? "bg-stone-800 dark:bg-stone-900" : "bg-stone-500/10 dark:bg-stone-400/10"} flex items-center justify-center`}
+          className={`absolute inset-0 border border-red-500/50 dark:border-red-400/50 ${hasUnit ? "bg-red-800 dark:bg-red-900" : "bg-red-500/10 dark:bg-red-400/10"} flex items-center justify-center`}
           style={{ transform: isFlipped ? "rotate(180deg)" : "rotate(0deg)" }}
         >
           {!hasUnit && (
-            <Mountain className="w-[70%] h-[70%] text-stone-700 dark:text-stone-300 opacity-40" />
+            <Mountain className="w-[70%] h-[70%] text-red-700 dark:text-red-300 opacity-40" />
           )}
         </div>
       )}
@@ -167,7 +167,7 @@ const BoardCell: React.FC<BoardCellProps> = ({
           </div>
         ) : placementTerrain ? (
           <div
-            className={`absolute inset-0 border-4 opacity-50 ${placementTerrain === TERRAIN_TYPES.TREES ? "border-emerald-500" : placementTerrain === TERRAIN_TYPES.PONDS ? "border-blue-500" : placementTerrain === TERRAIN_TYPES.DESERT ? "border-amber-500" : "border-stone-500"}`}
+            className={`absolute inset-0 border-4 opacity-50 ${placementTerrain === TERRAIN_TYPES.TREES ? "border-emerald-500" : placementTerrain === TERRAIN_TYPES.PONDS ? "border-blue-500" : placementTerrain === TERRAIN_TYPES.DESERT ? "border-amber-500" : "border-red-500"}`}
           />
         ) : null)}
 

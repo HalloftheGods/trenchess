@@ -16,6 +16,7 @@ interface PageHeaderProps {
   toggleTheme: () => void;
   togglePieceStyle: () => void;
   onTutorial?: () => void;
+  onZenGarden?: () => void;
   logoText?: string;
   topText?: string;
   onLogoClick?: () => void;
@@ -29,6 +30,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   toggleTheme,
   togglePieceStyle,
   onTutorial,
+  onZenGarden,
   logoText,
   topText,
   onLogoClick,
@@ -57,6 +59,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         toggleTheme={toggleTheme}
         togglePieceStyle={togglePieceStyle}
         onTutorial={onTutorial}
+        onZenGarden={onZenGarden}
       />
 
       <div className="w-full max-w-7xl mt-4 mb-8 flex flex-col lg:flex-row items-center justify-between gap-8 px-4 z-10 relative">

@@ -1,5 +1,5 @@
 // Theme controls component
-import { Sun, Moon, ChessKnight, Calculator } from "lucide-react";
+import { Sun, Moon, ChessKnight, Calculator, Shell } from "lucide-react";
 import { BattleKnightIcon } from "../UnitIcons";
 import type { PieceStyle } from "../constants";
 import { IconButton } from "./ui/IconButton";
@@ -10,6 +10,7 @@ interface ThemeControlsProps {
   toggleTheme: () => void;
   togglePieceStyle: () => void;
   onTutorial?: () => void;
+  onZenGarden?: () => void;
   className?: string;
 }
 
@@ -19,11 +20,19 @@ const ThemeControls: React.FC<ThemeControlsProps> = ({
   toggleTheme,
   togglePieceStyle,
   onTutorial,
+  onZenGarden,
   className = "",
 }) => (
   <div
     className={`fixed top-6 right-6 z-50 flex items-center gap-2 ${className}`}
   >
+    {onZenGarden && (
+      <IconButton
+        icon={<Shell size={20} className="text-emerald-500" />}
+        label="Zen Garden Editor"
+        onClick={onZenGarden}
+      />
+    )}
     {onTutorial && (
       <IconButton
         icon={<Calculator size={20} />}

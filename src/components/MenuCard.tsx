@@ -179,7 +179,7 @@ const MenuCard = ({
       </div>
 
       <div className="text-center relative z-10">
-        <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
+        <h3 className="text-2xl font-black uppercase tracking-widest text-slate-900 dark:text-white">
           {titleNode ? (
             titleNode
           ) : title.includes(" ") ? (

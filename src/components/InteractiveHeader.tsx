@@ -55,9 +55,9 @@ const TERRAIN_LIST: TerrainDef[] = [
   {
     name: "Mountains",
     icon: <Mountain />,
-    bg: "bg-stone-500/10",
-    text: "text-stone-500",
-    border: "border-stone-500/40",
+    bg: "bg-red-500/10",
+    text: "text-red-500",
+    border: "border-red-500/40",
     terrainTypeKey: TERRAIN_TYPES.RUBBLE,
   },
   {
@@ -75,14 +75,14 @@ const UNIT_COLORS: Record<
   { text: string; bg: string; border: string }
 > = {
   [PIECES.COMMANDER]: {
-    text: "text-yellow-500",
-    bg: "bg-yellow-500/10",
-    border: "border-yellow-500/40",
-  },
-  [PIECES.BATTLEKNIGHT]: {
     text: "text-purple-500",
     bg: "bg-purple-500/10",
     border: "border-purple-500/40",
+  },
+  [PIECES.BATTLEKNIGHT]: {
+    text: "text-emerald-500",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/40",
   },
   [PIECES.TANK]: {
     text: "text-yellow-500",
@@ -90,14 +90,14 @@ const UNIT_COLORS: Record<
     border: "border-yellow-500/40",
   },
   [PIECES.SNIPER]: {
+    text: "text-orange-500",
+    bg: "bg-orange-500/10",
+    border: "border-orange-500/40",
+  },
+  [PIECES.HORSEMAN]: {
     text: "text-red-500",
     bg: "bg-red-500/10",
     border: "border-red-500/40",
-  },
-  [PIECES.HORSEMAN]: {
-    text: "text-stone-500",
-    bg: "bg-stone-500/10",
-    border: "border-stone-500/40",
   },
   [PIECES.BOT]: {
     text: "text-blue-500",

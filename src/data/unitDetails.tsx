@@ -46,20 +46,20 @@ export const unitColorMap: Record<
     ring: "ring-yellow-500/50",
   },
   [PIECES.SNIPER]: {
+    text: "text-orange-500",
+    bg: "bg-orange-500/10",
+    border: "border-orange-500/40",
+    shadow: "shadow-[0_0_10px_rgba(249,115,22,0.1)]",
+    ribbonBg: "bg-orange-500",
+    ring: "ring-orange-500/50",
+  },
+  [PIECES.HORSEMAN]: {
     text: "text-red-500",
     bg: "bg-red-500/10",
     border: "border-red-500/40",
     shadow: "shadow-[0_0_10px_rgba(239,68,68,0.1)]",
     ribbonBg: "bg-red-500",
     ring: "ring-red-500/50",
-  },
-  [PIECES.HORSEMAN]: {
-    text: "text-stone-500",
-    bg: "bg-stone-500/10",
-    border: "border-stone-500/40",
-    shadow: "shadow-[0_0_10px_rgba(120,113,108,0.1)]",
-    ribbonBg: "bg-stone-500",
-    ring: "ring-stone-500/50",
   },
   [PIECES.BOT]: {
     text: "text-blue-500",
@@ -130,7 +130,7 @@ export const UNIT_DETAILS: Record<
     ],
   },
   [PIECES.BATTLEKNIGHT]: {
-    title: "Knight Queen",
+    title: "Royal Knight",
     subtitle: "You Learned a New Job!",
     role: "The Queen",
     desc: [],
@@ -194,12 +194,12 @@ export const UNIT_DETAILS: Record<
     },
   },
   [PIECES.SNIPER]: {
-    title: "Red Mage",
+    title: "Healer",
     subtitle: "You Learned a New Job!",
     role: "The Bishops",
     desc: [],
     levelUp: {
-      title: "Red Mage",
+      title: "Healer",
       stats: ["Forests keep you safe from Rooks and Knights."],
       terrainIcons: [<Trees key="tr" />],
     },

@@ -1,10 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Map as MapIcon, ChessPawn, ChessKing } from "lucide-react";
+import {
+  Map as MapIcon,
+  ChessPawn,
+  ChessKing,
+  MountainSnow,
+} from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
-import { useMenuContext } from "./MenuLayout";
+import { useMenuContext } from "./MenuContext";
 
 const MenuLearn: React.FC = () => {
   const navigate = useNavigate();
@@ -29,7 +34,7 @@ const MenuLearn: React.FC = () => {
           darkMode={darkMode}
           title="The Trench"
           description="Terrain & Tactics"
-          Icon={MapIcon}
+          Icon={MountainSnow}
           color="red"
           className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
         />
@@ -40,7 +45,7 @@ const MenuLearn: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="The Chess"
-          description="Field Manual"
+          description="New Jobs!"
           Icon={ChessPawn}
           color="blue"
           className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-800/50 dark:hover:bg-blue-800 h-full w-full !border-blue-500/20 hover:!border-blue-500/50"

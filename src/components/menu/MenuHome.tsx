@@ -4,6 +4,7 @@ import { BookOpen } from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import TrenchessText from "../ui/TrenchessText";
+import { useMenuContext } from "./MenuContext";
 
 // Define the icon locally or import it if it's shared
 // It was defined in MenuScreen.tsx, let's redefine it here or move it to a shared file later.
@@ -31,18 +32,9 @@ const DualColorSwordsIcon: React.FC<{ size?: number; className?: string }> = ({
   </svg>
 );
 
-interface MenuHomeProps {
-  darkMode: boolean;
-  setHoveredMenu: (menu: string | null) => void;
-  setTerrainSeed: (seed: number) => void;
-}
-
-const MenuHome: React.FC<MenuHomeProps> = ({
-  darkMode,
-  setHoveredMenu,
-  setTerrainSeed,
-}) => {
+const MenuHome: React.FC = () => {
   const navigate = useNavigate();
+  const { darkMode, setHoveredMenu, setTerrainSeed } = useMenuContext();
 
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">

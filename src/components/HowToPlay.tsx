@@ -75,9 +75,9 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
           const terrainColors =
             iconElement.type === Mountain
               ? {
-                  bg: "bg-stone-500/10",
-                  text: "text-stone-500",
-                  border: "border-stone-500/20",
+                  bg: "bg-red-500/10",
+                  text: "text-red-500",
+                  border: "border-red-500/20",
                 }
               : iconElement.type === Trees
                 ? {

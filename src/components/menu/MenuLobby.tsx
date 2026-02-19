@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Globe, Plus, Key } from "lucide-react";
 import BackButton from "../ui/BackButton";
-import { useMenuContext } from "./MenuLayout";
+import { useMenuContext } from "./MenuContext";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import { GlobeLock } from "lucide-react";

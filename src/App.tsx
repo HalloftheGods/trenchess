@@ -23,6 +23,7 @@ import MenuLearn from "./components/menu/MenuLearn";
 import MenuEndgame from "./components/menu/MenuEndgame";
 import MenuTrench from "./components/menu/MenuTrench";
 import MenuLobby from "./components/menu/MenuLobby";
+import MenuLocal from "./components/menu/MenuLocal";
 import MenuSetup from "./components/menu/MenuSetup";
 import MenuChess from "./components/menu/MenuChess";
 
@@ -46,8 +47,13 @@ const App = () => {
 
   // Sync GameState with Route (Basic)
   useEffect(() => {
+    // Handle direct navigation to /zen
+    if (location.pathname === "/zen") {
+      game.initGameWithPreset("2p-ns", "zen-garden");
+      return;
+    }
+
     // If we are in specific routes, update game state if needed, or vice-versa
-    // For now, simpler: If game state transitions to 'play'/'setup'/'zen-garden', go to /game
     if (
       (game.gameState === "play" ||
         game.gameState === "setup" ||
@@ -101,6 +107,9 @@ const App = () => {
               game.setGameState("menu");
               navigate("/");
             }}
+            onZenGarden={() => {
+              navigate("/zen");
+            }}
             multiplayer={game.multiplayer}
             onStartGame={(mode, preset, playerTypes, seed) => {
               // This triggers the state change, which triggers the useEffect to navigate to /game
@@ -119,6 +128,7 @@ const App = () => {
       >
         <Route index element={<MenuHome />} />
         <Route path="play" element={<MenuPlay />} />
+        <Route path="play/local" element={<MenuLocal />} />
         <Route path="play/lobby" element={<MenuLobby />} />
         <Route path="play/setup" element={<MenuSetup />} />
         {/* We might want a route for setup like /play/setup?mode=... but for now simple */}
@@ -126,7 +136,13 @@ const App = () => {
         <Route path="learn" element={<MenuLearn />} />
         <Route path="learn/endgame" element={<MenuEndgame />} />
         <Route path="learn/trench" element={<MenuTrench />} />
+        <Route path="learn/trench/:terrain" element={<MenuTrench />} />
         <Route path="learn/chess" element={<MenuChess />} />
+        <Route path="learn/chess/:unitType" element={<MenuChess />} />
+        <Route
+          path="zen"
+          element={<div />} // Effect in App handles the actual loading state or transition
+        />
       </Route>
 
       <Route

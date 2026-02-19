@@ -168,11 +168,11 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
         };
       case TERRAIN_TYPES.RUBBLE:
         return {
-          bg: "bg-stone-500/10",
-          text: "text-stone-500",
-          border: "border-stone-500/40",
-          solid: "bg-stone-500",
-          ribbonBg: "bg-stone-500",
+          bg: "bg-red-500/10",
+          text: "text-red-500",
+          border: "border-red-500/40",
+          solid: "bg-red-500",
+          ribbonBg: "bg-red-500",
         };
       case TERRAIN_TYPES.DESERT:
         return {
@@ -302,9 +302,7 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
                           cellBg = isEven ? "bg-blue-500/50" : "bg-blue-500/30";
                           break;
                         case TERRAIN_TYPES.RUBBLE:
-                          cellBg = isEven
-                            ? "bg-stone-500/50"
-                            : "bg-stone-500/30";
+                          cellBg = isEven ? "bg-red-500/50" : "bg-red-500/30";
                           break;
                         case TERRAIN_TYPES.DESERT:
                           cellBg = isEven

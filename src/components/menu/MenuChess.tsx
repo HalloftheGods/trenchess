@@ -3,23 +3,53 @@ import { useNavigate } from "react-router-dom";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
-import { useMenuContext } from "./MenuLayout";
+import { useMenuContext } from "./MenuContext";
 import { INITIAL_ARMY, PIECES } from "../../constants";
 import { UNIT_DETAILS, unitColorMap } from "../../data/unitDetails";
 
+import { useParams } from "react-router-dom";
+import { Sparkles, MountainSnow } from "lucide-react";
+import MenuDetailModal from "./MenuDetailModal";
+import ChessCardDetail from "./ChessCardDetail";
+
 const MenuChess: React.FC = () => {
   const navigate = useNavigate();
+  const { unitType } = useParams<{ unitType: string }>();
   const { setHoveredMenu, darkMode } = useMenuContext();
 
-  // Define the order of pieces
-  const UNIT_ORDER = [
-    PIECES.BOT, // Pawn
+  // Define piece groups
+  const TRENCH_PIECES = [
     PIECES.HORSEMAN, // Knight
     PIECES.SNIPER, // Bishop
     PIECES.TANK, // Rook
+  ];
+
+  const MOVE_PIECES = [
+    PIECES.BOT, // Pawn
     PIECES.BATTLEKNIGHT, // Queen
     PIECES.COMMANDER, // King
   ];
+
+  const getCategoryForUnit = (type: string | undefined) => {
+    if (!type) return null;
+    if (TRENCH_PIECES.includes(type as any)) return "trench";
+    if (MOVE_PIECES.includes(type as any)) return "moves";
+    return null;
+  };
+
+  const [view, setView] = React.useState<"selection" | "trench" | "moves">(
+    unitType
+      ? (getCategoryForUnit(unitType) as any) || "selection"
+      : "selection",
+  );
+
+  const closeModal = () => {
+    navigate("/learn/chess");
+  };
+
+  // Define the order of pieces based on current view
+  const UNIT_ORDER =
+    view === "trench" ? TRENCH_PIECES : view === "moves" ? MOVE_PIECES : [];
 
   // Map piece types to clean display names
   const displayNames: Record<string, string> = {
@@ -31,74 +61,157 @@ const MenuChess: React.FC = () => {
     [PIECES.COMMANDER]: "King",
   };
 
+  // Navigation Logic
+  const chessIndex = UNIT_ORDER.indexOf(unitType as any);
+  const prevUnitType =
+    chessIndex !== -1
+      ? UNIT_ORDER[(chessIndex - 1 + UNIT_ORDER.length) % UNIT_ORDER.length]
+      : null;
+  const nextUnitType =
+    chessIndex !== -1 ? UNIT_ORDER[(chessIndex + 1) % UNIT_ORDER.length] : null;
+
+  const prevUnit = INITIAL_ARMY.find((u) => u.type === prevUnitType);
+  const nextUnit = INITIAL_ARMY.find((u) => u.type === nextUnitType);
+
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
       <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
         <BackButton
-          onClick={() => navigate("/learn")}
+          onClick={() => {
+            if (view !== "selection") {
+              setView("selection");
+            } else {
+              navigate("/learn");
+            }
+          }}
           className="absolute left-0"
         />
         <SectionDivider
-          label="The Chess: Field Manual"
+          label={
+            view === "trench"
+              ? "Effected by the Trench"
+              : view === "moves"
+                ? "Learned a New Move"
+                : "The Chess Manual"
+          }
           className="ml-24"
-          color="blue"
+          color={view === "trench" ? "red" : view === "moves" ? "blue" : "blue"}
         />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full max-w-7xl">
-        {UNIT_ORDER.map((type) => {
-          const unit = INITIAL_ARMY.find((u) => u.type === type);
-          if (!unit) return null;
+      {view === "selection" ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-7xl">
+          <MenuCard
+            onClick={() => setView("trench")}
+            onMouseEnter={() => setHoveredMenu("how-to-play")}
+            onMouseLeave={() => setHoveredMenu(null)}
+            isSelected={false}
+            darkMode={darkMode}
+            title="Effected by the Trench"
+            description="Knight, Bishop, and Rook"
+            Icon={MountainSnow}
+            color="red"
+            className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full py-12"
+          />
+          <MenuCard
+            onClick={() => setView("moves")}
+            onMouseEnter={() => setHoveredMenu("chess")}
+            onMouseLeave={() => setHoveredMenu(null)}
+            isSelected={false}
+            darkMode={darkMode}
+            title="Evolved by the Trench"
+            description="Pawn, Queen, and King"
+            Icon={Sparkles}
+            color="blue"
+            className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full w-full py-12"
+          />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-7xl">
+          {UNIT_ORDER.map((type) => {
+            const unit = INITIAL_ARMY.find((u) => u.type === type);
+            if (!unit) return null;
 
-          const details = UNIT_DETAILS[type];
-          const colors = unitColorMap[type];
+            const details = UNIT_DETAILS[type];
+            const colors = unitColorMap[type];
 
-          // Determine card color based on unit color logic or default
-          // unitColorMap keys: text, bg, border...
-          // MenuCard expects a 'color' prop (red, blue, emerald, amber, slate).
-          // Let's map pieces to these colors roughly.
-          let cardColor:
-            | "red"
-            | "blue"
-            | "emerald"
-            | "amber"
-            | "slate"
-            | "fuchsia" = "slate";
+            let cardColor:
+              | "red"
+              | "blue"
+              | "emerald"
+              | "amber"
+              | "slate"
+              | "fuchsia" = "slate";
 
-          if (type === PIECES.BOT) cardColor = "blue";
-          else if (type === PIECES.HORSEMAN) cardColor = "slate";
-          else if (type === PIECES.SNIPER) cardColor = "red";
-          else if (type === PIECES.TANK) cardColor = "amber";
-          else if (type === PIECES.BATTLEKNIGHT)
-            cardColor = "emerald"; // Queen -> Green
-          else if (type === PIECES.COMMANDER) cardColor = "fuchsia"; // King -> Purple/Fuchsia
+            if (type === PIECES.BOT) cardColor = "blue";
+            else if (type === PIECES.HORSEMAN) cardColor = "slate";
+            else if (type === PIECES.SNIPER) cardColor = "red";
+            else if (type === PIECES.TANK) cardColor = "amber";
+            else if (type === PIECES.BATTLEKNIGHT) cardColor = "emerald";
+            else if (type === PIECES.COMMANDER) cardColor = "fuchsia";
 
-          // Custom styling to match the unit colors exactly if needed,
-          // but MenuCard has specific color themes.
-          // We can override className.
+            const baseBorderColor = colors.border.split("/")[0];
 
-          // Parse the border color to get the base color (e.g. border-red-500)
-          const baseBorderColor = colors.border.split("/")[0];
+            return (
+              <MenuCard
+                key={type}
+                onClick={() => navigate(`/learn/chess/${type}`)}
+                onMouseEnter={() => setHoveredMenu("chess")}
+                onMouseLeave={() => setHoveredMenu(null)}
+                isSelected={false}
+                darkMode={darkMode}
+                title={displayNames[type]}
+                description={details?.title || "Unit Details"}
+                Icon={unit.lucide}
+                color={cardColor}
+                className={`h-full w-full border-2 ${colors.bg.replace("/10", "/30")} hover:${colors.bg.replace("/10", "/50")} ${colors.border.replace("/40", "/20")} hover:${baseBorderColor} py-10`}
+              />
+            );
+          })}
+        </div>
+      )}
 
-          return (
-            <MenuCard
-              key={type}
-              onClick={() => navigate(`/learn/chess/${type}`)}
-              onMouseEnter={() => setHoveredMenu("chess")}
-              onMouseLeave={() => setHoveredMenu(null)}
-              isSelected={false}
-              darkMode={darkMode}
-              title={displayNames[type]}
-              description={details?.title || "Unit Details"}
-              Icon={unit.lucide}
-              color={cardColor}
-              // Override border styles to match unit colors
-              // We use border-2 to override the default border-4, and apply high-opacity border on hover
-              className={`h-full w-full border-2 ${colors.bg.replace("/10", "/30")} hover:${colors.bg.replace("/10", "/50")} ${colors.border.replace("/40", "/20")} hover:${baseBorderColor}`}
-            />
-          );
-        })}
-      </div>
+      <MenuDetailModal
+        isOpen={!!unitType}
+        onClose={closeModal}
+        color={
+          unitType === PIECES.BATTLEKNIGHT
+            ? "emerald"
+            : unitType === PIECES.COMMANDER
+              ? "fuchsia"
+              : unitType === PIECES.SNIPER
+                ? "red"
+                : unitType === PIECES.TANK
+                  ? "amber"
+                  : unitType === PIECES.BOT
+                    ? "blue"
+                    : "slate"
+        }
+        prev={
+          prevUnit
+            ? {
+                icon: prevUnit.lucide,
+                label: displayNames[prevUnit.type],
+                onClick: () => navigate(`/learn/chess/${prevUnit.type}`),
+                className: unitColorMap[prevUnit.type].text,
+              }
+            : undefined
+        }
+        next={
+          nextUnit
+            ? {
+                icon: nextUnit.lucide,
+                label: displayNames[nextUnit.type],
+                onClick: () => navigate(`/learn/chess/${nextUnit.type}`),
+                className: unitColorMap[nextUnit.type].text,
+              }
+            : undefined
+        }
+      >
+        {unitType && (
+          <ChessCardDetail unitType={unitType} darkMode={darkMode} />
+        )}
+      </MenuDetailModal>
     </div>
   );
 };

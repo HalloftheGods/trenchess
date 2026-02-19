@@ -437,7 +437,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
             else if (terrain === TERRAIN_TYPES.PONDS)
               cellStyle = "bg-blue-800/80 border-blue-600/50"; // Swamp
             else if (terrain === TERRAIN_TYPES.RUBBLE)
-              cellStyle = "bg-stone-600/80 border-stone-500/50"; // Mountain
+              cellStyle = "bg-red-800/80 border-red-600/50"; // Mountain
             else if (terrain === TERRAIN_TYPES.DESERT)
               cellStyle = "bg-amber-200/80 border-amber-300/50"; // Desert
           }

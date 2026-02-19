@@ -68,9 +68,9 @@ const TERRAIN_LIST: TerrainDef[] = [
   {
     name: "Mountains",
     icon: <Mountain />,
-    bg: "bg-stone-500/10",
-    text: "text-stone-500",
-    border: "border-stone-500/40",
+    bg: "bg-red-500/10",
+    text: "text-red-500",
+    border: "border-red-500/40",
     terrainTypeKey: TERRAIN_TYPES.RUBBLE,
   },
   {
@@ -305,7 +305,7 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
   const getTerrainCellBg = (isEven: boolean) => {
     switch (terrain.name) {
       case "Mountains":
-        return isEven ? "bg-stone-500/60" : "bg-stone-500/40";
+        return isEven ? "bg-red-500/60" : "bg-red-500/40";
       case "Forests":
         return isEven ? "bg-emerald-500/50" : "bg-emerald-500/30";
       case "Swamps":
@@ -322,7 +322,7 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
   const getTerrainMoveShadow = () => {
     switch (terrain.name) {
       case "Mountains":
-        return "bg-stone-500 z-20 shadow-[0_0_15px_rgba(120,113,108,0.5)]";
+        return "bg-red-500 z-20 shadow-[0_0_15px_rgba(239,68,68,0.5)]";
       case "Forests":
         return "bg-emerald-500 z-20 shadow-[0_0_15px_rgba(16,185,129,0.5)]";
       case "Swamps":
