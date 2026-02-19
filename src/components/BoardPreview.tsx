@@ -318,7 +318,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
       }
     }
 
-    // 2v2 Alliance (Capture the Flag) - Corner King Formation
+    // 2v2 Alliance (Capture the World) - Corner King Formation
     else if (selectedMode === "2v2") {
       // Commander at [0][0] to sit in the absolute corner
       const formation = [
@@ -492,7 +492,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
           <span className="text-sm font-black uppercase tracking-[0.2em] leading-none text-center">
             {selectedMode
               ? selectedMode === "2v2"
-                ? "Capture the Flag(s)"
+                ? "Capture the World"
                 : selectedMode === "4p"
                   ? "Ultimate Showdown"
                   : selectedMode === "2p-ns"

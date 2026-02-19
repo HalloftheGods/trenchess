@@ -12,7 +12,8 @@ export type GameState =
   | "library"
   | "tutorial"
   | "ctf-guide"
-  | "trench-guide";
+  | "trench-guide"
+  | "chess-guide";
 export type SetupMode = "terrain" | "pieces";
 export type GameOverReason = "checkmate" | "stalemate" | "forfeit" | null;
 

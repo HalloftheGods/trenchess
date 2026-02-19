@@ -19,6 +19,7 @@ import { GameLayout } from "./components/GameLayout";
 import InteractiveTutorial from "./components/InteractiveTutorial";
 import CaptureTheFlagGuide from "./components/CaptureTheFlagGuide";
 import TrenchGuide from "./components/TrenchGuide";
+import ChessGuide from "./components/ChessGuide";
 
 import type { TerrainType } from "./types";
 
@@ -65,6 +66,10 @@ const App = () => {
         onCtfGuide={() => {
           setPrevState("menu");
           game.setGameState("ctf-guide");
+        }}
+        onChessGuide={() => {
+          setPrevState("menu");
+          game.setGameState("chess-guide");
         }}
         onTrenchGuide={(terrain) => {
           setPrevState("menu");
@@ -125,6 +130,19 @@ const App = () => {
         togglePieceStyle={game.togglePieceStyle}
         onTutorial={() => game.setGameState("tutorial")}
         initialTerrain={selectedTerrain}
+      />
+    );
+  }
+
+  if (game.gameState === "chess-guide") {
+    return (
+      <ChessGuide
+        onBack={() => game.setGameState(prevState as any)}
+        darkMode={game.darkMode}
+        pieceStyle={game.pieceStyle}
+        toggleTheme={game.toggleTheme}
+        togglePieceStyle={game.togglePieceStyle}
+        onTutorial={() => game.setGameState("tutorial")}
       />
     );
   }

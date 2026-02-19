@@ -22,6 +22,8 @@ interface MenuCardProps {
   darkMode?: boolean;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
+  /** Optional: override the title rendering with custom JSX */
+  titleNode?: React.ReactNode;
 }
 
 const COLOR_STYLES: Record<
@@ -105,6 +107,7 @@ const MenuCard = ({
   darkMode,
   onMouseEnter,
   onMouseLeave,
+  titleNode,
 }: MenuCardProps & { isSelected?: boolean; isDisabled?: boolean }) => {
   const styles = COLOR_STYLES[color];
 
@@ -177,7 +180,9 @@ const MenuCard = ({
 
       <div className="text-center relative z-10">
         <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
-          {title.includes(" ") ? (
+          {titleNode ? (
+            titleNode
+          ) : title.includes(" ") ? (
             <>
               {title.split(" ")[0]}{" "}
               <span className={styles.iconColor}>

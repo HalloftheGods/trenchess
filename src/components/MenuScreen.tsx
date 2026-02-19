@@ -23,6 +23,11 @@ import {
   Trees,
   Waves,
   Mountain,
+  ChessKing,
+  ChessQueen,
+  EarthLock,
+  Earth,
+  Bot,
 } from "lucide-react";
 import type { GameMode, TerrainType } from "../types";
 import type { PieceStyle } from "../constants";
@@ -36,6 +41,34 @@ import ChiLayoutModal from "./ChiLayoutModal";
 import PageLayout from "./PageLayout";
 import PageHeader from "./PageHeader";
 import SectionDivider from "./ui/SectionDivider";
+import TrenchessText from "./ui/TrenchessText";
+
+// Custom dual-colored swords icon: left sword = red, right sword = blue
+// Path data sourced from lucide-react's Swords icon
+const DualColorSwordsIcon: React.FC<{ size?: number; className?: string }> = ({
+  size = 64,
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {/* Background sword — RED */}
+    <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5" stroke="#2563eb" />
+    <line x1="13" x2="19" y1="19" y2="13" stroke="#2563eb" />
+    <line x1="16" x2="20" y1="16" y2="20" stroke="#2563eb" />
+    <line x1="19" x2="21" y1="21" y2="19" stroke="#2563eb" />
+    {/* Foreground sword — BLUE */}
+    <polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5" stroke="#dc2626" />
+    <line x1="5" x2="9" y1="14" y2="18" stroke="#dc2626" />
+    <line x1="7" x2="4" y1="17" y2="20" stroke="#dc2626" />
+    <line x1="3" x2="5" y1="19" y2="21" stroke="#dc2626" />
+  </svg>
+);
 
 interface MenuScreenProps {
   darkMode: boolean;
@@ -52,6 +85,7 @@ interface MenuScreenProps {
   onHowToPlay: () => void;
   onTutorial: () => void;
   onCtfGuide: () => void;
+  onChessGuide: () => void;
   onTrenchGuide: (terrain?: TerrainType) => void;
   onOpenLibrary: () => void;
   multiplayer: any;
@@ -66,6 +100,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
   onHowToPlay,
   onTutorial,
   onCtfGuide,
+  onChessGuide,
   onTrenchGuide,
   onOpenLibrary,
   multiplayer,
@@ -199,7 +234,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
         forcedTerrain: null,
       };
     }
-    // 5. Hover "Capture the Flag" -> 2v2 board
+    // 5. Hover "Capture the World" -> 2v2 board
     if (hoveredMenu === "ctf" || hoveredMenu === "worldwide") {
       return {
         mode: "2v2" as GameMode,
@@ -365,11 +400,16 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               onMouseLeave={() => setHoveredMenu(null)}
               isSelected={false}
               darkMode={darkMode}
-              title="Play Trenchress"
+              title="Play Trenchess"
+              titleNode={
+                <>
+                  Play <TrenchessText />
+                </>
+              }
               description="Choose your battleground"
-              Icon={Swords}
+              Icon={DualColorSwordsIcon}
               color="red"
-              className="border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
+              className="border-2 border-red-500/20 hover:border-blue-500/30 h-full w-full"
             />
           </div>
         </div>
@@ -425,8 +465,8 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               isSelected={false}
               darkMode={darkMode}
               title="Practice Mode"
-              description="Local Play"
-              Icon={Rocket}
+              description="Play against the AI"
+              Icon={Bot}
               color="slate"
               className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full w-full"
             />
@@ -468,7 +508,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                 className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
               />
               <MenuCard
-                onClick={onHowToPlay}
+                onClick={onChessGuide}
                 onMouseEnter={() => setHoveredMenu("chess")}
                 onMouseLeave={() => setHoveredMenu(null)}
                 isSelected={false}
@@ -487,7 +527,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                 darkMode={darkMode}
                 title="The Endgame"
                 description="Modes & Objectives"
-                Icon={Flag}
+                Icon={ChessKing}
                 color="emerald"
                 className="bg-emerald-100/50 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"
               />
@@ -507,7 +547,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               <ChevronLeft size={24} />
             </button>
             <SectionDivider
-              label="The Endgame"
+              label="The Endgame: Different ways to play"
               className="ml-12"
               color="emerald"
             />
@@ -528,9 +568,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               darkMode={darkMode}
               title="Capture the King"
               description="Classic Checkmate"
-              Icon={Crown}
-              color="amber"
-              className="bg-amber-100/30 hover:bg-amber-200/50 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 border-2 border-amber-500/20 hover:border-amber-500/50 h-full w-full"
+              Icon={ChessKing}
+              color="red"
+              className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
             />
             {/* Capture the Board */}
             <MenuCard
@@ -543,22 +583,22 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               darkMode={darkMode}
               title="Capture the Army"
               description="4 Player Domination"
-              Icon={Swords}
-              color="emerald"
-              className="bg-emerald-100/30 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"
+              Icon={ChessQueen}
+              color="blue"
+              className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full w-full"
             />
-            {/* Capture the Flag */}
+            {/* Capture the World */}
             <MenuCard
               onClick={onCtfGuide}
               onMouseEnter={() => setHoveredMenu("ctf")}
               onMouseLeave={() => setHoveredMenu(null)}
               isSelected={false}
               darkMode={darkMode}
-              title="Capture the Flag"
+              title="Capture the World"
               description="Team Co-Op Objective"
-              Icon={Flag}
-              color="red"
-              className="bg-red-100/50 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
+              Icon={Earth}
+              color="emerald"
+              className="bg-emerald-100/50 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"
             />
           </div>
         </div>
@@ -597,7 +637,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               isSelected={false}
               darkMode={darkMode}
               title="Forests"
-              description="Sanctuary of Mages"
+              description="Protects Bishops"
               Icon={Trees}
               color="emerald"
               className="bg-emerald-100/30 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"
@@ -616,7 +656,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               isSelected={false}
               darkMode={darkMode}
               title="Swamp"
-              description="Sanctuary of Paladins"
+              description="Protects Pawns & Rooks"
               Icon={Waves}
               color="blue"
               className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full w-full"
@@ -635,11 +675,12 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               isSelected={false}
               darkMode={darkMode}
               title="Mountains"
-              description="Sanctuary"
+              description="Protects Knights"
               Icon={Mountain}
               color="slate"
               className="bg-slate-100/30 hover:bg-slate-200/50 dark:bg-slate-900/20 dark:hover:bg-slate-900/40 border-2 border-slate-500/20 hover:border-slate-500/50 h-full w-full"
             />
+
             <MenuCard
               onClick={() => onTrenchGuide("desert" as any)}
               onMouseEnter={() => {
@@ -654,7 +695,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               isSelected={false}
               darkMode={darkMode}
               title="Desert"
-              description="Sanctuary of Sacred"
+              description="Protects Rooks"
               Icon={DesertIcon}
               color="amber"
               className="bg-amber-100/30 hover:bg-amber-200/50 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 border-2 border-amber-500/20 hover:border-amber-500/50 h-full w-full"
@@ -907,7 +948,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                     onClick={() => handleBoardSelect("2v2")}
                     isSelected={selectedBoard === "2v2"}
                     darkMode={darkMode}
-                    title="Capture the Flag(s)"
+                    title="Capture the World"
                     description="4 Player • 2 vs 2 Co-Op"
                     Icon={AllianceTone}
                     color="slate"
@@ -972,7 +1013,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               )}
             </div>
 
-            {/* Capture the Flag Rules (Shown in Step 1 if Alliance selected) */}
+            {/* Capture the World Rules (Shown in Step 1 if Alliance selected) */}
             {selectedBoard === "2v2" && currentStep === 2 && (
               <div className="animate-in fade-in slide-in-from-top-4 duration-500">
                 <div className="relative p-6 rounded-[2.5rem] bg-slate-900/40 backdrop-blur-md border border-white/5 shadow-2xl overflow-hidden">

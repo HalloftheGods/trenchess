@@ -577,7 +577,7 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
                 <h4 className={`font-bold ${textColor}`}>Victory Conditions</h4>
                 <p className={`text-sm ${subtextColor}`}>
                   The game is won by capturing the enemy King or by reaching the
-                  center flag tiles in Capture the Flag mode.
+                  center flag tiles in Capture the World mode.
                 </p>
               </div>
             </div>

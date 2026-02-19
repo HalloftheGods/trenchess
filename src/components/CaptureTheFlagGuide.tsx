@@ -2,21 +2,15 @@
  * Copyright (c) 2006 - 2026 Hall of the Gods, Inc.
  * All Rights Reserved.
  *
- * Capture the Flag Guide
+ * Capture the World Guide
  */
 import React, { useMemo } from "react";
-import {
-  Flag,
-  Crown,
-  Crosshair,
-  Skull,
-  Target,
-  ShieldPlus,
-} from "lucide-react";
+import { Flag, Crown, Crosshair, Skull, ShieldPlus } from "lucide-react";
 import GameLogo from "./GameLogo";
 import BoardPreview from "./BoardPreview";
+import PageLayout from "./PageLayout";
 import PageHeader from "./PageHeader";
-import CopyrightFooter from "./CopyrightFooter";
+import SectionDivider from "./ui/SectionDivider";
 import { DEFAULT_SEEDS } from "../data/defaultSeeds";
 import type { PieceStyle } from "../constants";
 
@@ -49,30 +43,10 @@ const CaptureTheFlagGuide: React.FC<CaptureTheFlagGuideProps> = ({
     return seeds[idx]?.seed;
   }, []);
 
-  const renderSectionTitle = (
-    title: string,
-    icon: React.ReactNode,
-    isGold?: boolean,
-  ) => (
-    <div className="flex items-center gap-3 mb-6">
-      <div
-        className={`p-2 rounded-lg ${isGold ? "bg-amber-500/20 text-amber-500 border border-amber-500/30" : darkMode ? "bg-blue-500/20 text-blue-400" : "bg-blue-100 text-blue-600"}`}
-      >
-        {icon}
-      </div>
-      <h2
-        className={`text-2xl font-black tracking-widest ${isGold ? "text-amber-500" : textColor}`}
-      >
-        {title}
-      </h2>
-    </div>
-  );
-
   return (
-    <div
-      className={`min-h-screen w-full ${darkMode ? "bg-[#050b15]" : "bg-stone-100"} p-4 md:p-8 overflow-y-auto`}
-    >
-      <div className="max-w-7xl mx-auto">
+    <PageLayout
+      darkMode={darkMode}
+      header={
         <PageHeader
           darkMode={darkMode}
           pieceStyle={pieceStyle}
@@ -81,7 +55,7 @@ const CaptureTheFlagGuide: React.FC<CaptureTheFlagGuideProps> = ({
           onTutorial={onTutorial}
           onLogoClick={onBack}
           onBack={onBack}
-          logoText="Capture the Flag(s)"
+          logoText="Capture the World"
           topText="Trenchess"
           boardPreview={
             <>
@@ -108,14 +82,18 @@ const CaptureTheFlagGuide: React.FC<CaptureTheFlagGuideProps> = ({
             </>
           }
         />
-
+      }
+    >
+      <div className="max-w-5xl mx-auto w-full">
         {/* Rules Cards */}
         <div className="mb-12">
-          {renderSectionTitle(
-            "Rules of Engagement",
-            <Target size={24} />,
-            true,
-          )}
+          <div className="flex flex-col items-center mb-16">
+            <SectionDivider
+              label="Rules of Engagement"
+              color="amber"
+              animate={true}
+            />
+          </div>
 
           <div className="grid grid-cols-1 gap-12">
             {/* Card 1: Pregame Setup */}
@@ -152,7 +130,7 @@ const CaptureTheFlagGuide: React.FC<CaptureTheFlagGuideProps> = ({
                     className={`${subtextColor} font-bold leading-relaxed text-lg`}
                   >
                     All Kings start in the corner. This is a static rule unique
-                    to all Capture the Flag games, forcing players to navigate
+                    to all Capture the World games, forcing players to navigate
                     the entire board to reach their objective.
                   </p>
                 </div>
@@ -427,10 +405,8 @@ const CaptureTheFlagGuide: React.FC<CaptureTheFlagGuideProps> = ({
         <div className="flex justify-center mb-12">
           <GameLogo size="small" />
         </div>
-
-        <CopyrightFooter />
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
