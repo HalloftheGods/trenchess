@@ -76,27 +76,22 @@ export function useGameCore() {
     [mode],
   );
 
-  const isAllPlaced = activePlayers.every((p) => {
-    // 0. Safety check
-    if (!terrain || terrain.length === 0) return false;
+  const isPlayerReady = useCallback(
+    (p: string) => {
+      // 0. Safety check
+      if (!terrain || terrain.length === 0) return false;
 
-    // 1. Check Units (Inventory must be empty)
-    const unitsPlaced = (inventory[p] || []).length === 0;
+      // 1. Check Units (Inventory must be empty — all units placed on board)
+      const unitsPlaced = (inventory[p] || []).length === 0;
 
-    // 2. Check Terrain (Must reach max placement)
-    const maxTerrain =
-      activePlayers.length === 2
-        ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-        : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
-    const myCells = getPlayerCells(p, mode);
-    let terrainCount = 0;
-    for (const [r, c] of myCells) {
-      if (terrain[r][c] !== TERRAIN_TYPES.FLAT) terrainCount++;
-    }
-    const terrainPlaced = terrainCount >= maxTerrain;
+      // Terrain placement is optional/tactical — not a gate for readiness.
+      // Players can choose to place fewer terrain tiles if they want.
+      return unitsPlaced;
+    },
+    [inventory, terrain],
+  );
 
-    return unitsPlaced && terrainPlaced;
-  });
+  const isAllPlaced = activePlayers.every((p) => isPlayerReady(p));
 
   // --- Turn Logic: Check & Skip ---
   useEffect(() => {
@@ -354,6 +349,7 @@ export function useGameCore() {
     getPlayerDisplayName,
     getPlayersForMode, // Helper needed for initialization
     isAllPlaced,
+    isPlayerReady,
     layoutName,
     setLayoutName,
     initFromSeed,

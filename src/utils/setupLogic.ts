@@ -96,14 +96,15 @@ export const createInitialState = (
   });
   shuffle(deck);
 
+  const share = Math.floor(deck.length / players.length);
+
   const inventory: Record<string, PieceType[]> = {};
   const terrainInventory: Record<string, TerrainType[]> = {};
   players.forEach((p) => {
     inventory[p] = INITIAL_ARMY.flatMap((unit) =>
       Array(unit.count).fill(unit.type),
     );
-    // Distribute equally (48 / numPlayers)
-    const share = Math.floor(48 / players.length);
+    // Distribute equally from the full deck
     terrainInventory[p] = deck.splice(0, share);
   });
 

@@ -22,6 +22,7 @@ interface ChessGuideProps {
   toggleTheme?: () => void;
   togglePieceStyle?: () => void;
   onTutorial?: () => void;
+  initialUnit?: string;
 }
 
 const ChessGuide: React.FC<ChessGuideProps> = ({
@@ -31,6 +32,7 @@ const ChessGuide: React.FC<ChessGuideProps> = ({
   toggleTheme,
   togglePieceStyle,
   onTutorial,
+  initialUnit,
 }) => {
   const textColor = darkMode ? "text-slate-100" : "text-slate-800";
   const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";
@@ -134,7 +136,7 @@ const ChessGuide: React.FC<ChessGuideProps> = ({
                   key={i}
                   className={`aspect-square rounded-[1px] relative flex items-center justify-center transition-all duration-300 ${
                     isCenter
-                      ? "bg-slate-800 dark:bg-white z-20 shadow-lg scale-110"
+                      ? "bg-slate-800 dark:bg-black z-20 shadow-lg scale-110"
                       : isAttack
                         ? "bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)] z-10"
                         : newMoves.some(([nr, nc]) => nr === r && nc === c)
@@ -177,14 +179,16 @@ const ChessGuide: React.FC<ChessGuideProps> = ({
   );
 
   // Defined order for display
-  const UNIT_ORDER = [
-    PIECES.BOT,
-    PIECES.HORSEMAN,
-    PIECES.SNIPER,
-    PIECES.TANK,
-    PIECES.BATTLEKNIGHT,
-    PIECES.COMMANDER,
-  ];
+  const UNIT_ORDER = initialUnit
+    ? [initialUnit]
+    : [
+        PIECES.BOT,
+        PIECES.HORSEMAN,
+        PIECES.SNIPER,
+        PIECES.TANK,
+        PIECES.BATTLEKNIGHT,
+        PIECES.COMMANDER,
+      ];
 
   return (
     <PageLayout

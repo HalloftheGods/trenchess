@@ -22,20 +22,20 @@ export const unitColorMap: Record<
   }
 > = {
   [PIECES.COMMANDER]: {
-    text: "text-yellow-500",
-    bg: "bg-yellow-500/10",
-    border: "border-yellow-500/40",
-    shadow: "shadow-[0_0_10px_rgba(234,179,8,0.1)]",
-    ribbonBg: "bg-yellow-500",
-    ring: "ring-yellow-500/50",
-  },
-  [PIECES.BATTLEKNIGHT]: {
     text: "text-purple-500",
     bg: "bg-purple-500/10",
     border: "border-purple-500/40",
     shadow: "shadow-[0_0_10px_rgba(168,85,247,0.1)]",
     ribbonBg: "bg-purple-500",
     ring: "ring-purple-500/50",
+  },
+  [PIECES.BATTLEKNIGHT]: {
+    text: "text-emerald-500",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/40",
+    shadow: "shadow-[0_0_10px_rgba(16,185,129,0.1)]",
+    ribbonBg: "bg-emerald-500",
+    ring: "ring-emerald-500/50",
   },
   [PIECES.TANK]: {
     text: "text-yellow-500",

@@ -43,7 +43,7 @@ export const MAX_TERRAIN_PER_PLAYER = {
 
 // Cards per type in the deck.
 // 4 types * 18 = 72 cards total. Enough for 4 players * 16 = 64 cards.
-export const TERRAIN_CARDS_PER_TYPE = 18;
+export const TERRAIN_CARDS_PER_TYPE = 32;
 
 // --- Terrain Types ---
 export const TERRAIN_TYPES: Record<string, TerrainType> = {

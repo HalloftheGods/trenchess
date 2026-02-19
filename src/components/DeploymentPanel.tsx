@@ -46,6 +46,7 @@ interface DeploymentPanelProps {
   setPlacementTerrain: (terrain: TerrainType | null) => void;
   activePlayers: string[];
   isAllPlaced: boolean;
+  isCurrentPlayerReady?: boolean;
   getIcon: (unit: ArmyUnit, className?: string) => React.ReactNode;
   getPlayerDisplayName: (pid: string) => string;
   setTurn: (turn: string) => void;
@@ -63,6 +64,10 @@ interface DeploymentPanelProps {
   setInventory?: (inventory: Record<string, PieceType[]>) => void;
   multiplayer?: any; // Using any to avoid circular deps or complex matching, but ideally MultiplayerState
   localPlayerId?: string;
+  playerTypes: Record<string, "human" | "computer">;
+  setPlayerTypes: React.Dispatch<
+    React.SetStateAction<Record<string, "human" | "computer">>
+  >;
 }
 
 const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
@@ -81,6 +86,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
   setPlacementTerrain,
   activePlayers,
   isAllPlaced,
+  isCurrentPlayerReady,
   getIcon,
   getPlayerDisplayName,
   setTurn,
@@ -97,6 +103,8 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
   layoutName,
   setInventory,
   multiplayer,
+  playerTypes,
+  setPlayerTypes,
 }) => {
   const [copied, setCopied] = useState(false);
   const [librarySeeds, setLibrarySeeds] = useState<
@@ -216,6 +224,27 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                 ? "Deployment"
                 : "Command Center"}
           </h2>
+
+          {!isZen && gameState === "setup" && !multiplayer?.isConnected && (
+            <div className="flex bg-slate-100 dark:bg-black/20 rounded-lg p-1 border border-slate-200 dark:border-white/5">
+              <button
+                onClick={() =>
+                  setPlayerTypes((prev) => ({ ...prev, [turn]: "human" }))
+                }
+                className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${playerTypes[turn] === "human" ? "bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"}`}
+              >
+                Human
+              </button>
+              <button
+                onClick={() =>
+                  setPlayerTypes((prev) => ({ ...prev, [turn]: "computer" }))
+                }
+                className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${playerTypes[turn] === "computer" ? "bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"}`}
+              >
+                CPU
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Zen Garden: Player Tabs at Top */}
@@ -407,15 +436,30 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
 
             {!isZen && !multiplayer?.isConnected && (
               <button
-                disabled={!isAllPlaced}
+                disabled={!isAllPlaced && !isCurrentPlayerReady}
                 onClick={() => {
-                  setGameState("play");
-                  setSelectedCell(null);
-                  setValidMoves([]);
+                  if (isAllPlaced) {
+                    setGameState("play");
+                    setSelectedCell(null);
+                    setValidMoves([]);
+                  } else {
+                    const idx = activePlayers.indexOf(turn);
+                    const next =
+                      activePlayers[(idx + 1) % activePlayers.length];
+                    setTurn(next);
+                    setPlacementPiece(null);
+                    setPlacementTerrain(null);
+                  }
                 }}
-                className={`w-full py-4 rounded-xl font-black text-lg uppercase tracking-tighter transition-all ${isAllPlaced ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg cursor-pointer" : "bg-slate-100 dark:bg-white/5 opacity-20 cursor-not-allowed"}`}
+                className={`w-full py-4 rounded-xl font-black text-lg uppercase tracking-tighter transition-all ${
+                  isAllPlaced
+                    ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg cursor-pointer"
+                    : isCurrentPlayerReady
+                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg cursor-pointer"
+                      : "bg-slate-100 dark:bg-white/5 opacity-20 cursor-not-allowed"
+                }`}
               >
-                Commence War
+                {isAllPlaced ? "Commence War" : "Finish Deployment"}
               </button>
             )}
 
@@ -485,11 +529,11 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                       multiplayer.socketId &&
                       multiplayer.readyPlayers[multiplayer.socketId]
                         ? "bg-slate-800 dark:bg-slate-700 text-white"
-                        : isAllPlaced
+                        : (isCurrentPlayerReady ?? isAllPlaced)
                           ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg"
                           : "bg-slate-100 dark:bg-white/5 opacity-50 cursor-not-allowed"
                     }`}
-                    disabled={!isAllPlaced}
+                    disabled={!(isCurrentPlayerReady ?? isAllPlaced)}
                   >
                     {multiplayer.socketId &&
                     multiplayer.readyPlayers[multiplayer.socketId]
