@@ -90,10 +90,13 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
   const [showLearnMenu, setShowLearnMenu] = useState(false);
   const [showPlayMenu, setShowPlayMenu] = useState(false);
   const [showTrenchMenu, setShowTrenchMenu] = useState(false);
+  const [showBoardgameMenu, setShowBoardgameMenu] = useState(false);
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
   const [hoveredTerrain, setHoveredTerrain] = useState<TerrainType | null>(
     null,
   );
+  // For CTK hover: randomly pick NvS or EvW each time
+  const [ctkBoardMode, setCtkBoardMode] = useState<GameMode>("2p-ns");
 
   const togglePlayerType = (pid: string) => {
     setPlayerConfig((prev) => ({
@@ -116,14 +119,6 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
     }
   };
 
-  const handleStart = () => {
-    if (selectedBoard && selectedPreset) {
-      const seed =
-        selectedPreset === "terrainiffic" ? currentSeed?.seed : undefined;
-      onStartGame(selectedBoard, selectedPreset, playerConfig, seed);
-    }
-  };
-
   /* Seed Loading & Management */
   const [seeds, setSeeds] = useState<any[]>([]);
   const [previewSeedIndex, setPreviewSeedIndex] = useState(0);
@@ -140,9 +135,133 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
       }
     }
     // Combine defaults + user saved seeds
-    // Reverse user seeds so newest are first, then defaults
-    // Use functional update to avoid dependency issues if needed, or just set it
     setSeeds([...loadedSeeds.reverse(), ...DEFAULT_SEEDS]);
+  }, []);
+
+  const currentSeed = seeds[previewSeedIndex];
+
+  const handleStart = () => {
+    if (selectedBoard && selectedPreset) {
+      const seed =
+        selectedPreset === "terrainiffic" ? currentSeed?.seed : undefined;
+      onStartGame(selectedBoard, selectedPreset, playerConfig, seed);
+    }
+  };
+
+  const cycleSeed = (direction: -1 | 1) => {
+    setPreviewSeedIndex((prev) => {
+      const next = prev + direction;
+      if (next < 0) return seeds.length - 1;
+      if (next >= seeds.length) return 0;
+      return next;
+    });
+  };
+
+  // Derived state for the persistent BoardPreview
+  const getPreviewState = () => {
+    // 1. Hover trench terrain items -> Terrain Only, Bland Board, Icons, No Units
+    if (hoveredMenu === "how-to-play") {
+      return {
+        mode: null as GameMode | null,
+        protocol: "terrainiffic",
+        showIcons: true,
+        hideUnits: true,
+        forcedTerrain: hoveredTerrain,
+      };
+    }
+    // 2. Hover "The Chess" -> classic starting layout, units visible, no terrain
+    if (hoveredMenu === "chess") {
+      return {
+        mode: "2p-ns" as GameMode,
+        protocol: "classic",
+        showIcons: false,
+        hideUnits: false,
+        forcedTerrain: null,
+      };
+    }
+    // 3. Hover "Capture the King" -> random NvS or EvW, no terrain, no units
+    if (hoveredMenu === "ctk") {
+      return {
+        mode: ctkBoardMode,
+        protocol: null,
+        showIcons: false,
+        hideUnits: true,
+        forcedTerrain: null,
+      };
+    }
+    // 4. Hover "Capture the Board" -> 4-player board
+    if (hoveredMenu === "ctboard") {
+      return {
+        mode: "4p" as GameMode,
+        protocol: null,
+        showIcons: false,
+        hideUnits: true,
+        forcedTerrain: null,
+      };
+    }
+    // 5. Hover "Capture the Flag" -> 2v2 board
+    if (hoveredMenu === "ctf" || hoveredMenu === "worldwide") {
+      return {
+        mode: "2v2" as GameMode,
+        protocol: null,
+        showIcons: false,
+        hideUnits: true,
+        forcedTerrain: null,
+      };
+    }
+    // 6. Hover Play Menu -> 2p-ns Board
+    if (
+      hoveredMenu === "play-menu" ||
+      hoveredMenu === "practice" ||
+      hoveredMenu === "couch"
+    ) {
+      return {
+        mode: "2p-ns" as GameMode,
+        protocol: null,
+        showIcons: false,
+        hideUnits: true,
+        forcedTerrain: null,
+      };
+    }
+    // 7. Default Flow
+    if (currentStep >= 2) {
+      return {
+        mode: selectedBoard || "2p-ns",
+        protocol: selectedPreset,
+        showIcons: false,
+        hideUnits: false,
+        forcedTerrain: null,
+      };
+    }
+    return {
+      mode: null as GameMode | null,
+      protocol: null,
+      showIcons: false,
+      hideUnits: true,
+      forcedTerrain: null,
+    };
+  };
+
+  const previewState = getPreviewState();
+  const isPreviewReady =
+    currentStep < 2
+      ? false
+      : !!selectedBoard && !!selectedPreset && currentStep !== 2;
+
+  // For How to Play, we want a random seed from the library.
+  const getRandomLibrarySeed = () => {
+    if (seeds.length === 0) return undefined;
+    // Hash terrainSeed to pick an index
+    const idx = Math.floor(Math.abs(terrainSeed) * seeds.length) % seeds.length;
+    return seeds[idx]?.seed;
+  };
+
+  const activeCustomSeed =
+    hoveredMenu === "how-to-play"
+      ? getRandomLibrarySeed()
+      : !hoveredMenu && selectedPreset === "terrainiffic"
+        ? currentSeed?.seed
+        : undefined;
 
   const boardPreviewNode = (
     <>
@@ -211,6 +330,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
             setShowLearnMenu(false);
             setShowPlayMenu(false);
             setShowTrenchMenu(false);
+            setShowBoardgameMenu(false);
             setIsJoining(false);
             setHoveredMenu(null);
           }}
@@ -221,9 +341,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
       {/* Step 0: Main Menu (Landing) */}
       {currentStep === 0 && !showLearnMenu && !showPlayMenu && (
         <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-          <SectionDivider label="Main Menu" className="mb-8 max-w-md" />
+          <SectionDivider label="Main Menu" className="mb-8 max-w-7xl" />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-7xl">
             <MenuCard
               onClick={() => setShowLearnMenu(true)}
               onMouseEnter={() => {
@@ -237,7 +357,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               description="Learn the Basics"
               Icon={BookOpen}
               color="slate"
-              className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full"
+              className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full w-full"
             />
             <MenuCard
               onClick={() => setShowPlayMenu(true)}
@@ -249,7 +369,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               description="Choose your battleground"
               Icon={Swords}
               color="red"
-              className="border-2 border-red-500/20 hover:border-red-500/50 h-full"
+              className="border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
             />
           </div>
         </div>
@@ -258,7 +378,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
       {/* Step 0.25: Play Sub-Menu */}
       {currentStep === 0 && showPlayMenu && (
         <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-          <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-md">
+          <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
             <button
               onClick={() => setShowPlayMenu(false)}
               className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer"
@@ -270,21 +390,6 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">
-            <MenuCard
-              onClick={() => {
-                setCurrentStep(2);
-                setShowPlayMenu(false);
-              }}
-              onMouseEnter={() => setHoveredMenu("practice")}
-              onMouseLeave={() => setHoveredMenu(null)}
-              isSelected={false}
-              darkMode={darkMode}
-              title="Practice Mode"
-              description="Local Play"
-              Icon={Rocket}
-              color="slate"
-              className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full"
-            />
             <MenuCard
               onClick={() => {
                 setSelectedPreset("quick");
@@ -299,7 +404,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               description="Local play with friends"
               Icon={Sofa}
               color="red"
-              className="border-2 border-red-500/20 hover:border-red-500/50 h-full"
+              className="border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
             />
             <HeaderLobby
               multiplayer={multiplayer}
@@ -310,63 +415,150 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               onMouseEnter={() => setHoveredMenu("worldwide")}
               onMouseLeave={() => setHoveredMenu(null)}
             />
+            <MenuCard
+              onClick={() => {
+                setCurrentStep(2);
+                setShowPlayMenu(false);
+              }}
+              onMouseEnter={() => setHoveredMenu("practice")}
+              onMouseLeave={() => setHoveredMenu(null)}
+              isSelected={false}
+              darkMode={darkMode}
+              title="Practice Mode"
+              description="Local Play"
+              Icon={Rocket}
+              color="slate"
+              className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full w-full"
+            />
           </div>
         </div>
       )}
 
       {/* Step 0.5: Learn Menu */}
-      {currentStep === 0 && showLearnMenu && !showTrenchMenu && (
+      {currentStep === 0 &&
+        showLearnMenu &&
+        !showTrenchMenu &&
+        !showBoardgameMenu && (
+          <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
+            <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
+              <button
+                onClick={() => setShowLearnMenu(false)}
+                className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+                title="Back to Menu"
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <SectionDivider label="How to Play" className="ml-12" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-7xl">
+              <MenuCard
+                onClick={() => setShowTrenchMenu(true)}
+                onMouseEnter={() => {
+                  setHoveredMenu("how-to-play");
+                  setTerrainSeed(Math.random());
+                }}
+                onMouseLeave={() => setHoveredMenu(null)}
+                isSelected={false}
+                darkMode={darkMode}
+                title="The Trench"
+                description="Terrain & Tactics"
+                Icon={MapIcon}
+                color="red"
+                className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
+              />
+              <MenuCard
+                onClick={onHowToPlay}
+                onMouseEnter={() => setHoveredMenu("chess")}
+                onMouseLeave={() => setHoveredMenu(null)}
+                isSelected={false}
+                darkMode={darkMode}
+                title="The Chess"
+                description="Field Manual"
+                Icon={ChessPawn}
+                color="blue"
+                className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-800/50 dark:hover:bg-blue-800 h-full w-full !border-blue-500/20 hover:!border-blue-500/50"
+              />
+              <MenuCard
+                onClick={() => setShowBoardgameMenu(true)}
+                onMouseEnter={() => setHoveredMenu("boardgame")}
+                onMouseLeave={() => setHoveredMenu(null)}
+                isSelected={false}
+                darkMode={darkMode}
+                title="The Endgame"
+                description="Modes & Objectives"
+                Icon={Flag}
+                color="emerald"
+                className="bg-emerald-100/50 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"
+              />
+            </div>
+          </div>
+        )}
+
+      {/* Step 0.6: Boardgame Sub-Menu */}
+      {currentStep === 0 && showLearnMenu && showBoardgameMenu && (
         <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-          <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-md">
+          <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
             <button
-              onClick={() => setShowLearnMenu(false)}
+              onClick={() => setShowBoardgameMenu(false)}
               className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer"
-              title="Back to Menu"
+              title="Back to How to Play"
             >
               <ChevronLeft size={24} />
             </button>
-            <SectionDivider label="How to Play" className="ml-12" />
+            <SectionDivider
+              label="The Endgame"
+              className="ml-12"
+              color="emerald"
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-7xl">
+            {/* Capture the King */}
             <MenuCard
-              onClick={() => setShowTrenchMenu(true)}
+              onClick={() => {
+                /* Navigate to CTK guide or similar */
+              }}
               onMouseEnter={() => {
-                setHoveredMenu("how-to-play");
-                setTerrainSeed(Math.random());
+                setHoveredMenu("ctk");
+                setCtkBoardMode(Math.random() > 0.5 ? "2p-ns" : "2p-ew");
               }}
               onMouseLeave={() => setHoveredMenu(null)}
               isSelected={false}
               darkMode={darkMode}
-              title="The Trench"
-              description="Trials & Tribulations"
-              Icon={MapIcon}
-              color="slate"
-              className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full"
+              title="Capture the King"
+              description="Classic Checkmate"
+              Icon={Crown}
+              color="amber"
+              className="bg-amber-100/30 hover:bg-amber-200/50 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 border-2 border-amber-500/20 hover:border-amber-500/50 h-full w-full"
             />
+            {/* Capture the Board */}
             <MenuCard
-              onClick={onHowToPlay}
-              onMouseEnter={() => setHoveredMenu("how-to-play")}
+              onClick={() => {
+                /* Navigate to 4-player guide */
+              }}
+              onMouseEnter={() => setHoveredMenu("ctboard")}
               onMouseLeave={() => setHoveredMenu(null)}
               isSelected={false}
               darkMode={darkMode}
-              title="The Chess"
-              description="Field Manual"
-              Icon={ChessPawn}
-              color="blue"
-              className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-800/50 dark:hover:bg-blue-800 h-full !border-blue-500/20 hover:!border-blue-500/50"
+              title="Capture the Army"
+              description="4 Player Domination"
+              Icon={Swords}
+              color="emerald"
+              className="bg-emerald-100/30 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"
             />
+            {/* Capture the Flag */}
             <MenuCard
               onClick={onCtfGuide}
-              onMouseEnter={() => setHoveredMenu("worldwide")}
+              onMouseEnter={() => setHoveredMenu("ctf")}
               onMouseLeave={() => setHoveredMenu(null)}
               isSelected={false}
               darkMode={darkMode}
-              title="Capture the Flag(s)"
-              description="Review the Objectives"
+              title="Capture the Flag"
+              description="Team Co-Op Objective"
               Icon={Flag}
               color="red"
-              className="bg-red-100/50 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full"
+              className="bg-red-100/50 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
             />
           </div>
         </div>
@@ -375,7 +567,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
       {/* Step 0.75: The Trench Sub-Menu */}
       {currentStep === 0 && showLearnMenu && showTrenchMenu && (
         <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-          <div className="relative flex items-center justify-center gap-4 mb-4 w-full max-w-md">
+          <div className="relative flex items-center justify-center gap-4 mb-4 w-full max-w-7xl">
             <button
               onClick={() => setShowTrenchMenu(false)}
               className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer"
@@ -386,11 +578,11 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
             <SectionDivider
               label="The Trench: Trials & Tribulations"
               className="ml-12"
-              color="amber"
+              color="red"
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl">
             <MenuCard
               onClick={() => onTrenchGuide("trees" as any)}
               onMouseEnter={() => {
@@ -408,7 +600,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               description="Sanctuary of Mages"
               Icon={Trees}
               color="emerald"
-              className="bg-emerald-100/30 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full"
+              className="bg-emerald-100/30 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"
             />
             <MenuCard
               onClick={() => onTrenchGuide("ponds" as any)}
@@ -427,7 +619,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               description="Sanctuary of Paladins"
               Icon={Waves}
               color="blue"
-              className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full"
+              className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full w-full"
             />
             <MenuCard
               onClick={() => onTrenchGuide("rubble" as any)}
@@ -443,10 +635,10 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               isSelected={false}
               darkMode={darkMode}
               title="Mountains"
-              description="Sanctuary of Dark Knights"
+              description="Sanctuary"
               Icon={Mountain}
               color="slate"
-              className="bg-slate-100/30 hover:bg-slate-200/50 dark:bg-slate-900/20 dark:hover:bg-slate-900/40 border-2 border-slate-500/20 hover:border-slate-500/50 h-full"
+              className="bg-slate-100/30 hover:bg-slate-200/50 dark:bg-slate-900/20 dark:hover:bg-slate-900/40 border-2 border-slate-500/20 hover:border-slate-500/50 h-full w-full"
             />
             <MenuCard
               onClick={() => onTrenchGuide("desert" as any)}
@@ -465,7 +657,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               description="Sanctuary of Sacred"
               Icon={DesertIcon}
               color="amber"
-              className="bg-amber-100/30 hover:bg-amber-200/50 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 border-2 border-amber-500/20 hover:border-amber-500/50 h-full"
+              className="bg-amber-100/30 hover:bg-amber-200/50 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 border-2 border-amber-500/20 hover:border-amber-500/50 h-full w-full"
             />
           </div>
         </div>
@@ -474,9 +666,12 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
       {/* Step 1: Mode Selection (Play Menu) */}
       {currentStep === 1 && !isJoining && (
         <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-          <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-md">
+          <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
             <button
-              onClick={() => setCurrentStep(0)}
+              onClick={() => {
+                setCurrentStep(0);
+                setShowPlayMenu(true);
+              }}
               className="absolute left-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer"
               title="Back to Play Menu"
             >
@@ -485,7 +680,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
             <SectionDivider label="Worldwide Mode" className="ml-12" />
           </div>
 
-          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 w-full max-w-4xl">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 w-full max-w-7xl">
             <MenuCard
               onClick={() => {
                 multiplayer?.onOpenHost();
@@ -590,13 +785,15 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
 
             <div className="grid grid-cols-5 gap-4">
               <button
-                onClick={() => setCurrentStep((prev) => (prev - 1) as number)}
-                disabled={currentStep === 2}
-                className={`py-4 rounded-2xl font-bold transition-all flex items-center justify-center shadow-lg ${
-                  currentStep === 2
-                    ? "bg-slate-100 dark:bg-slate-800/50 text-slate-300 dark:text-slate-700 cursor-not-allowed"
-                    : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700 hover:scale-[1.02] cursor-pointer"
-                }`}
+                onClick={() => {
+                  if (currentStep === 2) {
+                    setCurrentStep(0);
+                    setShowPlayMenu(true);
+                  } else {
+                    setCurrentStep((prev) => (prev - 1) as number);
+                  }
+                }}
+                className="py-4 rounded-2xl font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700 hover:scale-[1.02] transition-all flex items-center justify-center shadow-lg cursor-pointer"
                 title="Back"
               >
                 <ChevronLeft size={24} />
@@ -644,8 +841,6 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               </button>
             </div>
 
-            {/* Removed BoardPreview and Switcher from here */}
-
             <div className="flex flex-col gap-4">
               <button
                 onClick={handleStart}
@@ -686,7 +881,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                     description="2 Player • Top vs Bottom"
                     Icon={DualToneNS}
                     color="red"
-                    className={`custom-border-[conic-gradient(from_315deg,_#ef4444_0deg_90deg,_#ffffff_90deg_180deg,_#3b82f6_180deg_270deg,_#ffffff_270deg_360deg)]`}
+                    className={`custom-border-[conic-gradient(from_315deg,_#ef4444_0deg_90deg,_#ffffff_90deg_180deg,_#3b82f6_180deg_270deg,_#ffffff_270deg_360deg)] w-full`}
                   />
                   <MenuCard
                     onClick={() => handleBoardSelect("2p-ew")}
@@ -696,7 +891,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                     description="2 Player • Left vs Right"
                     Icon={DualToneEW}
                     color="emerald"
-                    className={`custom-border-[conic-gradient(from_315deg,_#ffffff_0deg_90deg,_#22c55e_90deg_180deg,_#ffffff_180deg_270deg,_#eab308_270deg_360deg)]`}
+                    className={`custom-border-[conic-gradient(from_315deg,_#ffffff_0deg_90deg,_#22c55e_90deg_180deg,_#ffffff_180deg_270deg,_#eab308_270deg_360deg)] w-full`}
                   />
                   <MenuCard
                     onClick={() => handleBoardSelect("4p")}
@@ -706,7 +901,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                     description="4 Player • Quadrant Combat"
                     Icon={QuadTone}
                     color="emerald"
-                    className={`custom-border-[conic-gradient(from_315deg,_#ef4444_0deg_90deg,_#eab308_90deg_180deg,_#3b82f6_180deg_270deg,_#22c55e_270deg_360deg)]`}
+                    className={`custom-border-[conic-gradient(from_315deg,_#ef4444_0deg_90deg,_#eab308_90deg_180deg,_#3b82f6_180deg_270deg,_#22c55e_270deg_360deg)] w-full`}
                   />
                   <MenuCard
                     onClick={() => handleBoardSelect("2v2")}
@@ -716,7 +911,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                     description="4 Player • 2 vs 2 Co-Op"
                     Icon={AllianceTone}
                     color="slate"
-                    className={`custom-border-[conic-gradient(from_315deg,_#ef4444_0deg_90deg,_#eab308_90deg_180deg,_#3b82f6_180deg_270deg,_#22c55e_270deg_360deg)]`}
+                    className={`custom-border-[conic-gradient(from_315deg,_#ef4444_0deg_90deg,_#eab308_90deg_180deg,_#3b82f6_180deg_270deg,_#22c55e_270deg_360deg)] w-full`}
                   />
                 </>
               ) : (
@@ -734,6 +929,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                     color="emerald"
                     badge="Flow Mode"
                     hoverText="χ"
+                    className="w-full"
                   />
 
                   <MenuCard
@@ -746,6 +942,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                     color="blue"
                     badge="Chaos Mode"
                     hoverText="α"
+                    className="w-full"
                   />
                   <MenuCard
                     onClick={() => handlePresetSelect("classic")}
@@ -757,6 +954,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                     color="amber"
                     badge="Legacy Mode"
                     hoverText="π"
+                    className="w-full"
                   />
                   <MenuCard
                     onClick={() => handlePresetSelect("custom")}
@@ -768,6 +966,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                     color="red"
                     badge="God Mode"
                     hoverText="Ω"
+                    className="w-full"
                   />
                 </>
               )}
@@ -794,24 +993,30 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                         <h4 className="text-3xl font-black text-white uppercase tracking-tighter leading-[0.9]">
                           Capture
                           <br />
-                          The{" "}
-                          <span className="relative">
-                            Flag(s)
-                            <div className="absolute -bottom-2.5 left-0 right-0 h-1.5 bg-red-600 rounded-full hidden lg:block" />
-                          </span>
+                          The <span className="relative">Flag(s)</span>
                         </h4>
                       </div>
 
-                      <div className="hidden lg:block h-16 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" />
+                      <div className="w-full lg:w-px h-px lg:h-12 bg-white/10" />
 
-                      <ul className="space-y-3 text-sm text-slate-300 font-semibold list-disc pl-5 text-left bg-white/5 p-5 rounded-2xl border border-white/5 flex-1 shadow-inner">
-                        <li>The flag(s) are the white and black squares.</li>
-                        <li>
-                          Reach the opposite center square with your King to
-                          win.
-                        </li>
-                        <li>If checkmated, you are out of the game.</li>
-                      </ul>
+                      <div className="flex flex-wrap justify-center lg:justify-start gap-6">
+                        <div className="flex flex-col items-center lg:items-start">
+                          <span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] mb-1">
+                            Objective
+                          </span>
+                          <span className="text-sm font-medium text-slate-300">
+                            Recover The Flag
+                          </span>
+                        </div>
+                        <div className="flex flex-col items-center lg:items-start">
+                          <span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] mb-1">
+                            Victory
+                          </span>
+                          <span className="text-sm font-medium text-slate-300">
+                            Return to Base
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -820,11 +1025,13 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
           </div>
         </div>
       )}
+
+      {/* Chi Layout Modal */}
       <ChiLayoutModal
         isOpen={chiModalOpen}
         onClose={() => setChiModalOpen(false)}
         seeds={seeds}
-        onSelect={(index) => setPreviewSeedIndex(index)}
+        onSelect={setPreviewSeedIndex}
         selectedIndex={previewSeedIndex}
         activeMode={selectedBoard}
       />

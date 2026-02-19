@@ -45,7 +45,7 @@ const SectionDivider: React.FC<SectionDividerProps> = ({
 
   return (
     <div
-      className={`flex items-center justify-center gap-4 w-full max-w-3xl ${className}`}
+      className={`flex items-center justify-center gap-4 w-full max-w-7xl ${className}`}
     >
       <div
         className={`h-px flex-1 relative overflow-hidden ${colorMap[color]}`}
