@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   createInitialState,
   applyClassicalFormation,
+  generateElementalTerrain,
 } from "../utils/setupLogic";
 import { getBestMove } from "../utils/aiLogic";
 import { getValidMoves, isPlayerInCheck } from "../utils/gameLogic";
@@ -60,6 +61,17 @@ describe("CPU vs CPU Game Simulation", () => {
         mode,
         players,
       );
+
+      // Add Terrain (32 pieces)
+      const terrainSetupResult = generateElementalTerrain(
+        terrain,
+        board,
+        terrainInventory,
+        players,
+        mode,
+      );
+      terrain = terrainSetupResult.terrain;
+      terrainInventory = terrainSetupResult.terrainInventory;
 
       // Setup classical board
       const setupResult = applyClassicalFormation(

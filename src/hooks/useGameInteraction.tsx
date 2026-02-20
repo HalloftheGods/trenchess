@@ -3,7 +3,12 @@ import { getValidMoves as getValidMovesUtil } from "../utils/gameLogic";
 import { getPlayerCells } from "../utils/setupLogic";
 import type { useGameCore } from "./useGameCore";
 import type { PieceType, TerrainType, BoardPiece } from "../types";
-import { BOARD_SIZE, TERRAIN_TYPES, PIECES } from "../constants";
+import {
+  BOARD_SIZE,
+  TERRAIN_TYPES,
+  PIECES,
+  MAX_TERRAIN_PER_PLAYER,
+} from "../constants";
 import { canPlaceUnit } from "../utils/setupLogic";
 
 type GameCore = ReturnType<typeof useGameCore>;
@@ -144,7 +149,10 @@ export function useGameInteraction(
           // Count terrain for that owner
           const ownerCells = getPlayerCells(targetOwner, mode);
           // Recalculate limit
-          const maxPlacement = activePlayers.length === 2 ? 16 : 12;
+          const maxPlacement =
+            activePlayers.length === 2
+              ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+              : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
           let currentPlaced = 0;
           for (const [pr, pc] of ownerCells) {
             if (terrain[pr][pc] !== TERRAIN_TYPES.FLAT) currentPlaced++;
@@ -465,7 +473,10 @@ export function useGameInteraction(
           const targetOwner = getOwnerOfCell(r, c);
           const ownerCells = getPlayerCells(targetOwner, mode);
 
-          const maxPlacement = activePlayers.length === 2 ? 16 : 12;
+          const maxPlacement =
+            activePlayers.length === 2
+              ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+              : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
           let currentPlaced = 0;
           for (const [pr, pc] of ownerCells) {
             if (terrain[pr][pc] !== TERRAIN_TYPES.FLAT) currentPlaced++;
@@ -589,7 +600,10 @@ export function useGameInteraction(
           }));
         } else if (placementTerrain && !board[r][c]) {
           // Check placement limit
-          const maxPlacement = activePlayers.length === 2 ? 16 : 12;
+          const maxPlacement =
+            activePlayers.length === 2
+              ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+              : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
           const myCells = getPlayerCells(startTurn, mode);
           let currentPlaced = 0;
           for (const [pr, pc] of myCells) {

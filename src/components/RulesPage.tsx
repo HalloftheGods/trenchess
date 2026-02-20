@@ -55,50 +55,26 @@ const RulesPage: React.FC<RulesPageProps> = ({
         <div className={`space-y-10 ${textColor} font-medium leading-relaxed`}>
           <section>
             <h2 className="text-2xl font-black uppercase tracking-widest mb-4 flex items-center gap-3">
-              <span className="text-brand-blue">I.</span> The Foundation
-              (Classic Game)
+              <span className="text-brand-blue">1.</span> The Basics
             </h2>
             <p className={subtextColor}>
-              In its purest form, Trenchess honors the ancestral rules of
-              Classic Chess. The main different is the battlefield has been
-              changed from a barren terrain into many differnt playable
-              layouts.. The objective remains absolute: capture the opponent's
-              Commander (King).
-            </p>
-            <p className={`mt-4 ${subtextColor}`}>
-              Support for a legacy chess game is not supportted ATM&gt;
-            </p>
-            <p className={`mt-4 ${subtextColor}`}>
-              There's enough Chess games out there. We're here to build
-              Trenchess.
+              Trenchess is like normal chess, but on a super fun board with
+              trees and ponds! Your goal is still the same: catch the other
+              team's King!
             </p>
             <ul className={`list-none pl-4 mt-6 space-y-4 ${subtextColor}`}>
               <li className="flex gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-blue mt-2 shrink-0" />
                 <span>
-                  <strong className={textColor}>Grid Integrity:</strong> A
-                  strick 32 Terrain elements at play (trees, ponds, rubble, or
-                  desert). Houserules can ignore this limit, the game will
-                  become much much harder to move around.
+                  <strong className={textColor}>How to Win:</strong> Catch the
+                  King, catch all the pieces, or take over the board!
                 </span>
               </li>
               <li className="flex gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-blue mt-2 shrink-0" />
                 <span>
-                  <strong className={textColor}>New Movements:</strong> Standard
-                  moves apply. There has been explicitly modified advanced unit
-                  augments in Trenchess.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-brand-blue mt-2 shrink-0" />
-                <span>
-                  <strong className={textColor}>Victory:</strong>
-                  <ul className="list-disc pl-5 mt-2">
-                    <li>Classic Checkmate</li>
-                    <li>Capture the Armies</li>
-                    <li>Capture the World</li>
-                  </ul>
+                  <strong className={textColor}>The Board:</strong> We use 32
+                  special spots so you have plenty of room to play!
                 </span>
               </li>
             </ul>
@@ -108,44 +84,40 @@ const RulesPage: React.FC<RulesPageProps> = ({
 
           <section>
             <h2 className="text-2xl font-black uppercase tracking-widest mb-4 flex items-center gap-3">
-              <span className="text-emerald-500">II.</span> The Trenches
-              (Elemental Terrain)
+              <span className="text-emerald-500">2.</span> Fun Places on the
+              Board
             </h2>
             <p className={subtextColor}>
-              When Elemental Terrain is active (e.g., in flow or chaos modes),
-              the board comes alive, altering the fundamental laws of
-              engagement. Terrain modifiers require meticulous tactical
-              responses.
+              The board has cool places that change how you play!
             </p>
             <ul className={`list-none pl-4 mt-6 space-y-4 ${subtextColor}`}>
               <li className="flex gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0" />
                 <span>
-                  <strong className={textColor}>Mountains:</strong> Impassable
-                  for Rooks, and Bishops.
+                  <strong className={textColor}>Mountains:</strong> Rooks and
+                  Bishops can't climb them!
                 </span>
               </li>
               <li className="flex gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0" />
                 <span>
-                  <strong className={textColor}>Forests:</strong> Impassable for
-                  Rooks, and Knights.
+                  <strong className={textColor}>Forests:</strong> Rooks and
+                  Knights get lost in the trees!
                 </span>
               </li>
               <li className="flex gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0" />
                 <span>
-                  <strong className={textColor}>Swamps:</strong> Impassable for
-                  Knights and Bishops.
+                  <strong className={textColor}>Swamps:</strong> Knights and
+                  Bishops get stuck in the mud!
                 </span>
               </li>
               <li className="flex gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
                 <span>
-                  <strong className="text-amber-500">Desert:</strong> A dead-end
-                  trap. A unit entering a desert immediately exhausts its
-                  momentum. It <strong>must</strong> exit the desert on its very
-                  next turn, or it is consumed by the sands permanently.
+                  <strong className="text-amber-500">Desert:</strong> It's super
+                  hot! If you step in the sand, you <strong>must</strong> move
+                  out on your very next turn, or you are stuck there forever!
                 </span>
               </li>
             </ul>
@@ -155,12 +127,9 @@ const RulesPage: React.FC<RulesPageProps> = ({
 
           <section>
             <h2 className="text-2xl font-black uppercase tracking-widest mb-4 flex items-center gap-3">
-              <span className="text-brand-red">III.</span> The Armies
+              <span className="text-brand-red">3.</span> Your Chess Team
             </h2>
-            <p className={subtextColor}>
-              The standard ranks have evolved to meet the harrowing demands of
-              the Trenches, wielding modernized arsenals.
-            </p>
+            <p className={subtextColor}>Meet your awesome pieces!</p>
             <ul className={`list-none pl-4 mt-6 space-y-4 ${subtextColor}`}>
               <li className="flex gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-red mt-2 shrink-0" />
@@ -168,16 +137,15 @@ const RulesPage: React.FC<RulesPageProps> = ({
                   <strong className={textColor}>
                     Jumping Dragoon (Pawns):
                   </strong>{" "}
-                  The front line. They march forward but have mastered the
-                  &quot;En-Voltige&quot;—a diagonal backward capture mechanism.
+                  The brave helpers in front! They march forward but can also do
+                  a cool backwards jump to catch bad guys!
                 </span>
               </li>
               <li className="flex gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-red mt-2 shrink-0" />
                 <span>
                   <strong className={textColor}>Light Healer (Bishops):</strong>{" "}
-                  Commanding the long-range diagonals. Their sightlines dictate
-                  open warfare.
+                  They slide really fast on the diagonals!
                 </span>
               </li>
               <li className="flex gap-3">
@@ -186,8 +154,7 @@ const RulesPage: React.FC<RulesPageProps> = ({
                   <strong className={textColor}>
                     Twilight Guardian (Rooks):
                   </strong>{" "}
-                  The vanguard of straight lines. Unmatched in sheer destructive
-                  force but crippled by dense wilderness.
+                  They smash in straight lines but are too big for the trees!
                 </span>
               </li>
               <li className="flex gap-3">
@@ -196,15 +163,15 @@ const RulesPage: React.FC<RulesPageProps> = ({
                   <strong className={textColor}>
                     Shadow Knight (Knights):
                   </strong>{" "}
-                  Agile disruptors. They vault over barricades and enemy lines
-                  with unpredictable L-shaped maneuvers.
+                  They love to jump over things in a fun "L" shape!
                 </span>
               </li>
               <li className="flex gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-red mt-2 shrink-0" />
                 <span>
                   <strong className={textColor}>Royal Knight (Queens):</strong>{" "}
-                  The absolute pinnacle of offensive versatility and mobility.
+                  The most powerful piece! They can move almost any way they
+                  want!
                 </span>
               </li>
               <li className="flex gap-3">
@@ -213,8 +180,45 @@ const RulesPage: React.FC<RulesPageProps> = ({
                   <strong className={textColor}>
                     King Juggernaught (Kings):
                   </strong>{" "}
-                  The heartbeat of the operation. If the King falls, the war is
-                  lost.
+                  The boss! You have to keep him safe, or the game is over!
+                </span>
+              </li>
+            </ul>
+          </section>
+
+          <div className="w-full h-px bg-white/10 my-8" />
+
+          <section>
+            <h2 className="text-2xl font-black uppercase tracking-widest mb-4 flex items-center gap-3">
+              <span className="text-violet-500">4.</span> Getting Ready
+            </h2>
+            <p className={subtextColor}>
+              Every game has its checks! Before you can start the game, you MUST
+              make sure everyone is ready.
+            </p>
+            <ul className={`list-none pl-4 mt-6 space-y-4 ${subtextColor}`}>
+              <li className="flex gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-violet-500 mt-2 shrink-0" />
+                <span>
+                  <strong className={textColor}>Team Check:</strong> You must
+                  place <strong className={textColor}>ALL 16</strong> of your
+                  chess pieces on the board. No one can stay behind!
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-violet-500 mt-2 shrink-0" />
+                <span>
+                  <strong className={textColor}>Terrain Check:</strong> You must
+                  also build your trenches! In 1v1, you must lay down exactly
+                  <strong className={textColor}> 16 pieces</strong> of terrain.
+                  In bigger games, you lay down 8.
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-violet-500 mt-2 shrink-0" />
+                <span>
+                  <strong className={textColor}>Commence War!</strong> Once
+                  everyone has finished their checks, the game will begin!
                 </span>
               </li>
             </ul>

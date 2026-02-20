@@ -171,7 +171,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.set("seed", seed);
-      window.history.pushState({}, "", url);
+      window.history.pushState({}, "", url.toString());
       navigator.clipboard.writeText(url.toString()).then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -286,13 +286,13 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
           <>
             {/* --- Terrain Section --- */}
             <div className="mb-5">
-              <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 pl-1 flex justify-between">
+              <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 pl-1 flex justify-between items-center">
                 <span>The Trench</span>
                 <span
                   className={
-                    placedCount >= maxPlacement
-                      ? "text-brand-red text-lg font-black transition-all"
-                      : "text-slate-500 text-lg font-bold transition-all"
+                    placedCount === maxPlacement
+                      ? "text-emerald-500 text-lg font-black transition-all animate-pulse"
+                      : "text-amber-500 text-lg font-black transition-all"
                   }
                 >
                   {placedCount}/{maxPlacement}
@@ -359,18 +359,29 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
 
             {/* --- Units Section --- */}
             <div>
-              <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 pl-1">
-                The Chess{" "}
-                {isZen &&
-                  `(${
-                    turn === "player1"
-                      ? "Red"
-                      : turn === "player2"
-                        ? "Yellow"
-                        : turn === "player3"
-                          ? "Green"
-                          : "Blue"
-                  })`}
+              <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 pl-1 flex justify-between items-center">
+                <span>
+                  The Chess{" "}
+                  {isZen &&
+                    `(${
+                      turn === "player1"
+                        ? "Red"
+                        : turn === "player2"
+                          ? "Yellow"
+                          : turn === "player3"
+                            ? "Green"
+                            : "Blue"
+                    })`}
+                </span>
+                <span
+                  className={
+                    (inventory[turn] || []).length === 0
+                      ? "text-emerald-500 text-lg font-black transition-all animate-pulse"
+                      : "text-amber-500 text-lg font-black transition-all"
+                  }
+                >
+                  {16 - (inventory[turn] || []).length}/16
+                </span>
               </div>
               <div className="grid grid-cols-6 gap-1">
                 {INITIAL_ARMY.map((unit, i) => {

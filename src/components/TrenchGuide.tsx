@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { ShieldPlus, Ban, Zap } from "lucide-react";
 import InteractiveGuide, { type Slide } from "./InteractiveGuide";
 import { PIECES, INITIAL_ARMY } from "../constants";
+
 import { unitColorMap } from "../data/unitDetails";
 import { TERRAIN_DETAILS, type TerrainDetail } from "../data/terrainDetails";
 
@@ -91,7 +92,7 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
     return (
       <div className="flex gap-2 flex-wrap justify-center">
         {terrain.sanctuaryUnits.map((pk: string) => {
-          const colors = unitColorMap[pk];
+          const colors = unitColorMap[pk as string];
           if (!colors) return null;
           return (
             <div

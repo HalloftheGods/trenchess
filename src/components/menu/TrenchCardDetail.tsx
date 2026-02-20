@@ -58,7 +58,7 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
 
   // Dynamic border style based on unit affinity
   const unitProtected = activeUnit
-    ? isUnitProtected(activeUnit, terrainType as any)
+    ? isUnitProtected(activeUnit as PieceType, terrainType as any)
     : false;
   const unitCanTraverse = activeUnit
     ? canUnitTraverseTerrain(activeUnit as any, terrainType as TerrainType)
@@ -164,7 +164,9 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
     // Use active unit or default to first sanctuary unit for the demo
     const demoUnitType = activeUnit || terrain.sanctuaryUnits[0];
     const demoUnitDetails = UNIT_DETAILS[demoUnitType];
-    const isProtected = terrain.sanctuaryUnits.includes(demoUnitType as any);
+    const isProtected = terrain.sanctuaryUnits.includes(
+      demoUnitType as PieceType,
+    );
 
     const moves = demoUnitDetails?.movePattern(center, center) || [];
     const attacks = demoUnitDetails?.attackPattern

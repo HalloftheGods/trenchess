@@ -60,6 +60,7 @@ export function useGameCore() {
     player3: "human",
     player4: "human",
   });
+  const [isThinking, setIsThinking] = useState(false);
 
   const getPlayerDisplayName = useCallback(
     (pid: string) => {
@@ -84,11 +85,24 @@ export function useGameCore() {
       // 1. Check Units (Inventory must be empty — all units placed on board)
       const unitsPlaced = (inventory[p] || []).length === 0;
 
-      // Terrain placement is optional/tactical — not a gate for readiness.
-      // Players can choose to place fewer terrain tiles if they want.
-      return unitsPlaced;
+      // 2. Check Terrain (ALL required pieces must be laid)
+      const myCells = getPlayerCells(p, mode);
+      let terrainCount = 0;
+      for (const [r, c] of myCells) {
+        if (terrain[r][c] !== TERRAIN_TYPES.FLAT) terrainCount++;
+      }
+
+      const players = getPlayersForMode(mode);
+      const targetTerrain =
+        players.length === 2
+          ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+          : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+
+      const terrainPlaced = terrainCount === targetTerrain;
+
+      return unitsPlaced && terrainPlaced;
     },
-    [inventory, terrain],
+    [inventory, terrain, mode],
   );
 
   const isAllPlaced = activePlayers.every((p) => isPlayerReady(p));
@@ -132,7 +146,7 @@ export function useGameCore() {
     const seed = serializeGame(mode, board, terrain, layoutName);
     const url = new URL(window.location.href);
     url.searchParams.set("seed", seed);
-    window.history.pushState({}, "", url);
+    window.history.pushState({}, "", url.toString());
   }, [mode, board, terrain, layoutName]);
 
   const updateUrl = useCallback((updates: Record<string, string | null>) => {
@@ -177,7 +191,10 @@ export function useGameCore() {
         // --- Calculate Inventory & Validation ---
         const newInventory: Record<string, PieceType[]> = {};
         const newTerrainInventory: Record<string, TerrainType[]> = {};
-        const handSize = players.length === 2 ? 24 : 12;
+        const handSize =
+          players.length === 2
+            ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+            : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
         const maxTerrain =
           players.length === 2
             ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
@@ -355,5 +372,7 @@ export function useGameCore() {
     initFromSeed,
     playerTypes,
     setPlayerTypes,
+    isThinking,
+    setIsThinking,
   };
 }

@@ -37,7 +37,7 @@ export function useGameSetup(core: GameCore, interaction: GameInteraction) {
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.delete("seed");
-      window.history.pushState({}, "", url);
+      window.history.pushState({}, "", url.toString());
     }
     const players = core.getPlayersForMode(selectedMode); // Helper from core
 
@@ -71,7 +71,7 @@ export function useGameSetup(core: GameCore, interaction: GameInteraction) {
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.delete("seed");
-      window.history.pushState({}, "", url);
+      window.history.pushState({}, "", url.toString());
     }
     const players = core.getPlayersForMode(selectedMode);
 

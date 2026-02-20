@@ -6,6 +6,7 @@ import {
   Calculator,
   Shell,
   FileText,
+  Trophy,
 } from "lucide-react";
 import { BattleKnightIcon } from "../UnitIcons";
 import type { PieceStyle } from "../constants";
@@ -84,6 +85,11 @@ const ThemeControls: React.FC<ThemeControlsProps> = ({
           <FileText size={20} className="text-slate-600 dark:text-slate-300" />
         }
         label="Rules"
+      />
+      <IconButton
+        onClick={() => navigate("/scoreboard")}
+        icon={<Trophy size={20} className="text-amber-500" />}
+        label="Scoreboard"
       />
     </div>
   );

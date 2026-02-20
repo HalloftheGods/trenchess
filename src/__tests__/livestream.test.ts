@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import {
   createInitialState,
   applyClassicalFormation,
+  generateElementalTerrain,
 } from "../utils/setupLogic";
 import { getBestMove } from "../utils/aiLogic";
 import { getValidMoves, isPlayerInCheck } from "../utils/gameLogic";
@@ -34,6 +35,17 @@ describe("Live Simulation Stream", () => {
       mode,
       players,
     );
+
+    const terrainSetupResult = generateElementalTerrain(
+      terrain,
+      board,
+      terrainInventory,
+      players,
+      mode as "2p-ns",
+    );
+    terrain = terrainSetupResult.terrain;
+    terrainInventory = terrainSetupResult.terrainInventory;
+
     const setupResult = applyClassicalFormation(
       board,
       terrain,

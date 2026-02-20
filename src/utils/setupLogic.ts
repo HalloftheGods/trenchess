@@ -4,6 +4,7 @@ import {
   PIECES,
   INITIAL_ARMY,
   TERRAIN_CARDS_PER_TYPE,
+  MAX_TERRAIN_PER_PLAYER,
 } from "../constants";
 import type { GameMode, BoardPiece, TerrainType, PieceType } from "../types";
 import { TerraForm } from "./TerraForm";
@@ -96,15 +97,17 @@ export const createInitialState = (
   });
   shuffle(deck);
 
-  const share = Math.floor(deck.length / players.length);
-
   const inventory: Record<string, PieceType[]> = {};
   const terrainInventory: Record<string, TerrainType[]> = {};
   players.forEach((p) => {
     inventory[p] = INITIAL_ARMY.flatMap((unit) =>
       Array(unit.count).fill(unit.type),
     );
-    // Distribute equally from the full deck
+    // Distribute exactly the quota
+    const share =
+      players.length === 2
+        ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+        : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
     terrainInventory[p] = deck.splice(0, share);
   });
 
@@ -178,8 +181,18 @@ export const randomizeTerrain = (
     });
     shuffle(available);
 
+    const quota =
+      players.length === 2
+        ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+        : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+    let placedCount = 0;
+
     const remaining: TerrainType[] = [];
     for (const terrType of playerTerrain) {
+      if (placedCount >= quota) {
+        remaining.push(terrType);
+        continue;
+      }
       // Find compatible cell
       const cellIdx = available.findIndex(([r, c]) => {
         const unit = currentBoard[r][c];
@@ -191,6 +204,7 @@ export const randomizeTerrain = (
         const [r, c] = available[cellIdx];
         nextTerrain[r][c] = terrType;
         available.splice(cellIdx, 1);
+        placedCount++;
       } else {
         remaining.push(terrType);
       }

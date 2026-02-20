@@ -201,7 +201,7 @@ const MenuCard = ({
               backgroundClip: "padding-box, border-box",
               borderColor: "transparent",
               "--card-bg": darkMode ? "#0f172a" : "#ffffff",
-            } as any)
+            } as React.CSSProperties)
           : undefined
       }
     >

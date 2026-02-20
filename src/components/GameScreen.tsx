@@ -7,6 +7,7 @@ import IntelPanel from "./IntelPanel";
 import { Pencil } from "lucide-react";
 import { serializeGame } from "../utils/gameUrl";
 import type { useGameState } from "../hooks/useGameState";
+import { LoadingFallback } from "./loading/LoadingFallback";
 
 interface GameScreenProps {
   game: ReturnType<typeof useGameState>;
@@ -65,7 +66,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
           if (typeof window !== "undefined") {
             const url = new URL(window.location.href);
             url.searchParams.set("seed", seed);
-            window.history.pushState({}, "", url);
+            window.history.pushState({}, "", url.toString());
             navigator.clipboard.writeText(url.toString());
             // window.location.reload(); // Don't reload in SPA if possible, but maybe needed for seed init?
           }
@@ -179,19 +180,25 @@ const GameScreen: React.FC<GameScreenProps> = ({
         isFlipped={game.isFlipped}
       />
 
-      <IntelPanel
-        gameState={game.gameState}
-        setupMode={game.setupMode}
-        placementPiece={game.placementPiece}
-        placementTerrain={game.placementTerrain}
-        selectedCell={game.selectedCell}
-        board={game.board}
-        terrain={game.terrain}
-        pieceStyle={game.pieceStyle}
-        getIcon={game.getIcon}
-        activePlayers={game.activePlayers}
-        capturedBy={game.capturedBy}
-      />
+      {game.isThinking ? (
+        <div className="xl:col-span-3 flex flex-col gap-6 order-2 xl:order-3 h-full min-h-[500px]">
+          <LoadingFallback fullScreen={false} />
+        </div>
+      ) : (
+        <IntelPanel
+          gameState={game.gameState}
+          setupMode={game.setupMode}
+          placementPiece={game.placementPiece}
+          placementTerrain={game.placementTerrain}
+          selectedCell={game.selectedCell}
+          board={game.board}
+          terrain={game.terrain}
+          pieceStyle={game.pieceStyle}
+          getIcon={game.getIcon}
+          activePlayers={game.activePlayers}
+          capturedBy={game.capturedBy}
+        />
+      )}
     </GameLayout>
   );
 };

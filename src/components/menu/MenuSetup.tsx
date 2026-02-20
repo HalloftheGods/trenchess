@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Eye, Pizza, Shell, Dices, Flag } from "lucide-react";
+import { Eye, Pizza, Shell, Dices, Flag, Globe } from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
-import TrenchessText from "../ui/TrenchessText";
-import ChiLayoutModal from "../ChiLayoutModal";
 import { useMenuContext } from "./MenuContext";
 import { DualToneNS, DualToneEW, QuadTone, AllianceTone } from "../MenuIcons";
 import type { GameMode } from "../../types";
@@ -21,14 +19,11 @@ const MenuSetup: React.FC = () => {
     setSelectedPreset,
     selectedBoard,
     setSelectedBoard,
-    seeds,
-    setPreviewSeedIndex,
-    previewSeedIndex,
     playerConfig,
+    previewConfig,
   } = useMenuContext();
 
   const [step, setStep] = useState(1); // 1 = Board, 2 = Preset
-  const [chiModalOpen, setChiModalOpen] = useState(false);
 
   // Initialize from URL param if present
   useEffect(() => {
@@ -53,8 +48,8 @@ const MenuSetup: React.FC = () => {
     preset: "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden",
   ) => {
     setSelectedPreset(preset);
-    if (preset === "terrainiffic") {
-      setChiModalOpen(true);
+    if (selectedBoard) {
+      onStartGame(selectedBoard, preset, playerConfig);
     }
   };
 
@@ -157,19 +152,37 @@ const MenuSetup: React.FC = () => {
         ) : (
           <>
             <MenuCard
+              onClick={() => handlePresetSelect("custom")}
+              isSelected={selectedPreset === "custom"}
+              preview={{
+                mode: selectedBoard,
+                protocol: "custom",
+                hideUnits: true,
+              }}
+              darkMode={darkMode}
+              title="Ω Omega"
+              description="Setup the board Gamemaster."
+              Icon={Eye}
+              color="red"
+              badge="Custom"
+              hoverText="Ω"
+              className="w-full"
+            />
+            <MenuCard
               onClick={() => handlePresetSelect("classic")}
               isSelected={selectedPreset === "classic"}
               preview={{
                 mode: selectedBoard,
                 protocol: "classic",
-                hideUnits: true,
+                hideUnits: false,
+                useDefaultFormation: true,
               }}
               darkMode={darkMode}
               title="π Pi"
-              description="A slice of Classic - Hot-to-Go."
+              description="Hot Slice of Classic - ready to go."
               Icon={Pizza}
               color="amber"
-              badge="EZ as Pi Mode"
+              badge="EZ as Pi"
               hoverText="π"
               className="w-full"
             />
@@ -189,7 +202,7 @@ const MenuSetup: React.FC = () => {
               description="Walk the community garden."
               Icon={Shell}
               color="emerald"
-              badge="Flow Mode"
+              badge="Feng Shui"
               hoverText="χ"
               className="w-full"
             />
@@ -203,53 +216,26 @@ const MenuSetup: React.FC = () => {
               }}
               darkMode={darkMode}
               title="α Alpha"
-              description='"Hit me Entropy one more Time!"'
+              description="Roll the dice of Entropy."
               Icon={Dices}
               color="blue"
-              badge="Chaos Mode"
+              badge="Random Chaos"
               hoverText="α"
-              className="w-full"
-            />
-            <MenuCard
-              onClick={() => handlePresetSelect("custom")}
-              isSelected={selectedPreset === "custom"}
-              preview={{
-                mode: selectedBoard,
-                protocol: "custom",
-                hideUnits: true,
-              }}
-              darkMode={darkMode}
-              title="Ω Omega"
-              description="Setup the board Gamemaster."
-              Icon={Eye}
-              color="red"
-              badge="God Mode"
-              hoverText="Ω"
               className="w-full"
             />
           </>
         )}
       </div>
 
-      {/* Step Progress */}
-      <div className="flex gap-2 w-32">
-        <div
-          className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${step >= 1 ? "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" : "bg-slate-200 dark:bg-slate-800"}`}
-        />
-        <div
-          className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${step >= 2 ? "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" : "bg-slate-200 dark:bg-slate-800"}`}
-        />
-      </div>
-
       {/* Disclaimer for 2v2 */}
-      {selectedBoard === "2v2" && step === 1 && (
+      {previewConfig.mode === "2v2" && (
         <div className="w-full animate-in fade-in slide-in-from-top-4 duration-500">
           <div className="relative p-6 rounded-[2.5rem] bg-slate-900/40 backdrop-blur-md border border-white/5 shadow-2xl overflow-hidden">
             <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-amber-500/30 rounded-tl-[2.5rem]" />
             <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-orange-500/30 rounded-br-[2.5rem]" />
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 px-2">
               <div className="p-5 rounded-[1.5rem] bg-gradient-to-br from-red-600 to-red-900 shadow-2xl shadow-red-950/50 -rotate-6 shrink-0 border border-white/10">
-                <Flag
+                <Globe
                   className="text-white fill-white/10"
                   size={42}
                   strokeWidth={3}
@@ -260,7 +246,7 @@ const MenuSetup: React.FC = () => {
                   <h4 className="text-3xl font-black text-white uppercase tracking-tighter leading-[0.9]">
                     Capture
                     <br />
-                    The <span className="relative">Flag(s)</span>
+                    The <span className="relative">World</span>
                   </h4>
                 </div>
                 <div className="w-full lg:w-px h-px lg:h-12 bg-white/10" />
@@ -270,7 +256,7 @@ const MenuSetup: React.FC = () => {
                       Objective
                     </span>
                     <span className="text-sm font-medium text-slate-300">
-                      Recover The Flag
+                      Capture The World
                     </span>
                   </div>
                   <div className="flex flex-col items-center lg:items-start">
@@ -278,7 +264,7 @@ const MenuSetup: React.FC = () => {
                       Victory
                     </span>
                     <span className="text-sm font-medium text-slate-300">
-                      Return to Base
+                      Land in the the Center or Corners of the board
                     </span>
                   </div>
                 </div>
@@ -287,31 +273,6 @@ const MenuSetup: React.FC = () => {
           </div>
         </div>
       )}
-
-      <button
-        onClick={() => {
-          if (selectedBoard && selectedPreset) {
-            onStartGame(selectedBoard, selectedPreset, playerConfig);
-          }
-        }}
-        disabled={!selectedBoard || !selectedPreset}
-        className={`w-full max-w-sm py-6 rounded-3xl font-black text-white text-xl uppercase tracking-widest transition-all shadow-2xl ${
-          selectedBoard && selectedPreset
-            ? "bg-slate-600 hover:bg-slate-700 hover:scale-[1.02] hover:shadow-slate-500/25 cursor-pointer"
-            : "bg-slate-300 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50"
-        }`}
-      >
-        Commence <TrenchessText />
-      </button>
-
-      <ChiLayoutModal
-        isOpen={chiModalOpen}
-        onClose={() => setChiModalOpen(false)}
-        seeds={seeds}
-        onSelect={setPreviewSeedIndex}
-        selectedIndex={previewSeedIndex}
-        activeMode={selectedBoard}
-      />
     </div>
   );
 };

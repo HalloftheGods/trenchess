@@ -83,6 +83,7 @@ export function useGameState() {
     playerTypes: core.playerTypes,
     executeMove: interaction.executeMove,
     winner: core.winner,
+    setIsThinking: core.setIsThinking,
   });
 
   return {

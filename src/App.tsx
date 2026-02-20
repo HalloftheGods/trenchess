@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import {
   Routes,
   Route,
@@ -35,79 +35,10 @@ const MenuLobby = lazy(() => import("./components/menu/MenuLobby"));
 const MenuLocal = lazy(() => import("./components/menu/MenuLocal"));
 const MenuSetup = lazy(() => import("./components/menu/MenuSetup"));
 const MenuChess = lazy(() => import("./components/menu/MenuChess"));
+const MenuScoreboard = lazy(() => import("./components/menu/MenuScoreboard"));
 
 import type { TerrainType } from "./types";
-import TrenchessText from "./components/ui/TrenchessText";
-import { Mountain, Trees, Waves } from "lucide-react";
-import { DesertIcon } from "./UnitIcons";
-
-// A simple sleek loading fallback
-const LoadingFallback = () => {
-  const [activeWave, setActiveWave] = useState(0);
-  const [messageIndex, setMessageIndex] = useState(0);
-  const [fade, setFade] = useState(true);
-
-  const messages = [
-    "Recipe",
-    "1. Open the Trench",
-    "2. Advance the Chess",
-    "3. Crack the Endgame",
-  ];
-
-  useEffect(() => {
-    const waveInterval = setInterval(() => {
-      setActiveWave((prev) => (prev === 0 ? 3 : prev - 1));
-    }, 200);
-    return () => clearInterval(waveInterval);
-  }, []);
-
-  useEffect(() => {
-    if (messageIndex < messages.length - 1) {
-      const timeout = setTimeout(() => {
-        setFade(false);
-        setTimeout(() => {
-          setMessageIndex((prev) => prev + 1);
-          setFade(true);
-        }, 300);
-      }, 2000);
-      return () => clearTimeout(timeout);
-    }
-  }, [messageIndex, messages.length]);
-
-  return (
-    <div className="w-full h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center">
-      <DesertIcon className="w-12 h-12" />
-      <span className="mt-4 text-center font-black uppercase tracking-widest text-slate-400">
-        <Mountain className="float-right w-12 h-12 text-brand-red" />
-        <Trees className=" w-12 h-12 text-emerald-500" />
-
-        <div className="flex flex-row justify-center mt-2">
-          {[0, 1, 2, 3].map((index) => (
-            <Waves
-              key={index}
-              className={`w-12 h-12 transition-all duration-300 ${
-                activeWave === index
-                  ? "text-brand-blue opacity-100 scale-110"
-                  : "text-brand-blue opacity-30 scale-100"
-              }`}
-            />
-          ))}
-        </div>
-        <div>
-          Loading <TrenchessText />
-        </div>
-
-        <div
-          className={`mt-4 min-h-[1.5em] transition-opacity duration-500 ${
-            fade ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          {messages[messageIndex]}
-        </div>
-      </span>
-    </div>
-  );
-};
+import { LoadingFallback } from "./components/loading/LoadingFallback";
 
 const TrenchGuideWrapper = (props: any) => {
   const { terrain } = useParams();
@@ -220,6 +151,8 @@ const App = () => {
           <Route path="play/lobby" element={<MenuLobby />} />
           <Route path="play/setup" element={<MenuSetup />} />
           {/* We might want a route for setup like /play/setup?mode=... but for now simple */}
+
+          <Route path="scoreboard" element={<MenuScoreboard />} />
 
           <Route path="learn" element={<MenuLearn />} />
           <Route path="learn/endgame" element={<MenuEndgame />} />

@@ -130,7 +130,7 @@ export const UNIT_DETAILS: Record<
     ],
   },
   [PIECES.BATTLEKNIGHT]: {
-    title: "Queen of Knights",
+    title: "Royal Guard",
     subtitle: "The Queens",
     role: "The Queens rode their steeds.",
     desc: [],
