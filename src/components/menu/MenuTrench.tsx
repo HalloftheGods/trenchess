@@ -134,7 +134,7 @@ const MenuTrench: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Deserts"
-          description="Favored no one."
+          description="Favored no one"
           Icon={DesertIcon}
           color="amber"
           className="bg-amber-100/30 hover:bg-amber-200/50 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 border-2 border-amber-500/20 hover:border-amber-500/50 h-full w-full"

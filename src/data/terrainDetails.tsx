@@ -69,7 +69,7 @@ export const TERRAIN_DETAILS: TerrainDetail[] = [
     key: TERRAIN_TYPES.PONDS as TerrainType,
     label: "Swamp",
     subtitle: "You discovered a new Trench!",
-    tagline: "Sanctuary of the Paladins",
+    tagline: "Sanctuary of the Towers",
     icon: Waves,
     color: {
       text: "text-blue-400",

@@ -9,6 +9,7 @@ import {
   Sparkles,
   Database,
   Copy,
+  Trash2,
 } from "lucide-react";
 import {
   TERRAIN_TYPES,
@@ -56,6 +57,8 @@ interface DeploymentPanelProps {
   randomizeTerrain: () => void;
   randomizeUnits: () => void;
   setClassicalFormation: () => void;
+  resetTerrain?: () => void;
+  resetUnits?: () => void;
   mirrorBoard?: () => void;
   inCheck: boolean;
   board: (BoardPiece | null)[][];
@@ -96,6 +99,8 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
   randomizeTerrain,
   randomizeUnits,
   setClassicalFormation,
+  resetTerrain,
+  resetUnits,
   mirrorBoard,
   inCheck,
   board,
@@ -208,7 +213,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
 
   return (
     <div className="xl:col-span-3 space-y-6 order-2 xl:order-1 sticky top-24">
-      <div className="bg-white/80 dark:bg-slate-900/80 rounded-[2.5rem] p-6 border border-slate-200 dark:border-white/5 shadow-2xl flex flex-col max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar">
+      <div className="bg-white/80 dark:bg-slate-900/80 rounded-[2.5rem] p-6 border border-slate-200 dark:border-white/5 shadow-2xl flex flex-col overflow-y-auto custom-scrollbar">
         <div className="flex items-center justify-between mb-6">
           <h2
             className={`text-xl font-black flex items-center gap-3 uppercase tracking-tighter ${PLAYER_CONFIGS[turn].text}`}
@@ -279,24 +284,24 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
             {/* --- Terrain Section --- */}
             <div className="mb-5">
               <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 pl-1 flex justify-between">
-                <span>Terrain</span>
+                <span>The Trench</span>
                 <span
                   className={
                     placedCount >= maxPlacement
-                      ? "text-red-400"
-                      : "text-slate-500"
+                      ? "text-red-500 text-lg font-black transition-all"
+                      : "text-slate-500 text-lg font-bold transition-all"
                   }
                 >
                   {placedCount}/{maxPlacement}
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-1.5">
+              <div className="flex justify-center gap-2 px-2">
                 {[
                   TERRAIN_TYPES.TREES,
                   TERRAIN_TYPES.PONDS,
                   TERRAIN_TYPES.RUBBLE,
                   TERRAIN_TYPES.DESERT,
-                ].map((tType) => {
+                ].map((tType, i) => {
                   const count =
                     (terrainInventory[turn]?.filter((u) => u === tType) || [])
                       .length || 0;
@@ -305,11 +310,24 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                   if (!intel) return null;
                   const IconComp = intel.icon;
 
-                  let colorClass = "text-stone-400";
-                  if (intel.color === "emerald")
-                    colorClass = "text-emerald-500";
-                  if (intel.color === "blue") colorClass = "text-blue-500";
-                  if (intel.color === "sky") colorClass = "text-sky-400";
+                  const colorClass = intel.color || "text-stone-400";
+
+                  // Determine tile style based on player color
+                  const pColor = PLAYER_CONFIGS[turn].color;
+                  const isAlt = i % 2 === 1; // Checkerboard pattern (1D list)
+                  let tileBg = isAlt ? "bg-slate-800" : "bg-slate-700"; // Fallback
+
+                  if (pColor === "red") {
+                    tileBg = isAlt ? "bg-red-900/80" : "bg-red-700/80";
+                  } else if (pColor === "blue") {
+                    tileBg = isAlt ? "bg-blue-900/80" : "bg-blue-700/80";
+                  } else if (pColor === "yellow") {
+                    tileBg = isAlt ? "bg-yellow-700/80" : "bg-yellow-500/80";
+                  } else if (pColor === "green") {
+                    tileBg = isAlt ? "bg-emerald-900/80" : "bg-emerald-700/80";
+                  }
+
+                  const isActive = placementTerrain === tType;
 
                   return (
                     <button
@@ -318,35 +336,28 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                         (!isZen && count === 0) ||
                         (isZen && placedCount >= maxPlacement)
                       }
+                      title={intel.label}
                       onClick={() => {
                         setPlacementTerrain(tType as TerrainType);
                         setPlacementPiece(null);
                         setSetupMode("terrain");
                       }}
-                      className={`relative p-2 rounded-xl border-2 transition-all flex flex-col items-center gap-1 ${placementTerrain === tType ? "border-slate-900 dark:border-white bg-slate-100 dark:bg-white/10 scale-105" : "border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10"} ${(!isZen && count === 0) || (isZen && placedCount >= maxPlacement) ? "opacity-20 grayscale cursor-not-allowed" : "cursor-pointer"}`}
+                      className={`relative w-14 h-14 rounded-sm border transition-all flex flex-col items-center justify-center gap-0 ${isActive ? "border-white scale-105 z-10 shadow-xl" : "border-transparent opacity-80 hover:opacity-100 hover:scale-[1.02]"} ${tileBg} ${(!isZen && count === 0) || (isZen && placedCount >= maxPlacement) ? "cursor-not-allowed contrast-50" : "cursor-pointer"}`}
                     >
-                      <IconComp size={32} className={colorClass} />
-                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-tight">
-                        {intel.label}
-                      </span>
+                      <IconComp
+                        size={32}
+                        className={`${colorClass} w-[85%] h-[85%] drop-shadow-md ${(!isZen && count === 0) || (isZen && placedCount >= maxPlacement) ? "grayscale opacity-40" : ""}`}
+                      />
                     </button>
                   );
                 })}
               </div>
-              {!isZen && (
-                <button
-                  onClick={randomizeTerrain}
-                  className="w-full mt-2 py-2 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 border border-emerald-500/30 hover:border-emerald-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-emerald-400 hover:text-emerald-300 hover:scale-[1.02] active:scale-95"
-                >
-                  <Shuffle size={14} /> Randomize Terrain
-                </button>
-              )}
             </div>
 
             {/* --- Units Section --- */}
             <div>
               <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 pl-1">
-                Units{" "}
+                The Chess{" "}
                 {isZen &&
                   `(${
                     turn === "player1"
@@ -358,11 +369,42 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                           : "Blue"
                   })`}
               </div>
-              <div className="grid grid-cols-2 gap-1.5">
-                {INITIAL_ARMY.map((unit) => {
+              <div className="grid grid-cols-6 gap-1">
+                {INITIAL_ARMY.map((unit, i) => {
                   const count =
                     (inventory[turn]?.filter((u) => u === unit.type) || [])
                       .length || 0;
+
+                  // Determine tile style based on player color
+                  const pColor = PLAYER_CONFIGS[turn].color;
+                  // Actually, loop index i: 0 1 | 2 3 | 4 5
+                  // Row 0: 0(Dark) 1(Light) ?
+                  // If we want checkerboard on a 2-column grid:
+                  // Row 0: Col 0 (i=0) -> Dark, Col 1 (i=1) -> Light
+                  // Row 1: Col 0 (i=2) -> Light, Col 1 (i=3) -> Dark
+                  // Row 2: Col 0 (i=4) -> Dark, Col 1 (i=5) -> Light
+
+                  // Math:
+                  // r = floor(i/2), c = i%2
+                  // isAlt = (r+c)%2 === 1
+                  const r = Math.floor(i / 2);
+                  const c = i % 2;
+                  const isAlt = (r + c) % 2 === 1;
+
+                  let tileBg = isAlt ? "bg-slate-800" : "bg-slate-700"; // Fallback
+
+                  if (pColor === "red") {
+                    tileBg = isAlt ? "bg-red-900/80" : "bg-red-700/80";
+                  } else if (pColor === "blue") {
+                    tileBg = isAlt ? "bg-blue-900/80" : "bg-blue-700/80";
+                  } else if (pColor === "yellow") {
+                    tileBg = isAlt ? "bg-yellow-700/80" : "bg-yellow-500/80";
+                  } else if (pColor === "green") {
+                    tileBg = isAlt ? "bg-emerald-900/80" : "bg-emerald-700/80";
+                  }
+
+                  const isActive = placementPiece === unit.type;
+
                   return (
                     <button
                       key={unit.type}
@@ -372,19 +414,20 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                         setPlacementTerrain(null);
                         setSetupMode("pieces");
                       }}
-                      className={`relative p-2 rounded-xl border-2 transition-all flex flex-col items-center gap-1 ${placementPiece === unit.type ? "border-slate-900 dark:border-white bg-slate-100 dark:bg-white/10 scale-105" : "border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10"} ${count === 0 ? "opacity-20 grayscale cursor-not-allowed" : "cursor-pointer"}`}
+                      className={`relative aspect-square p-1 rounded-sm border transition-all flex flex-col items-center justify-center gap-0 ${isActive ? "border-white scale-105 z-10 shadow-xl" : "border-transparent opacity-80 hover:opacity-100 hover:scale-[1.02]"} ${tileBg} ${count === 0 ? "cursor-not-allowed contrast-50" : "cursor-pointer"}`}
                     >
-                      {getIcon(
-                        unit,
-                        pieceStyle === "custom"
-                          ? `w-14 h-14 ${PLAYER_CONFIGS[turn].text}`
-                          : `text-5xl ${PLAYER_CONFIGS[turn].text}`,
-                      )}
-                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-tight">
-                        {unit.type}
-                      </span>
+                      <div
+                        className={`flex items-center justify-center w-full h-full ${count === 0 ? "grayscale opacity-40" : ""}`}
+                      >
+                        {getIcon(
+                          unit,
+                          ["custom", "lucide"].includes(pieceStyle)
+                            ? `w-[85%] h-[85%] ${PLAYER_CONFIGS[turn].text} drop-shadow-md`
+                            : `text-3xl ${PLAYER_CONFIGS[turn].text} drop-shadow-md`,
+                        )}
+                      </div>
                       {true && (
-                        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-slate-300 dark:bg-slate-700 rounded-full text-[9px] flex items-center justify-center font-black border-2 border-white dark:border-slate-900 shadow-lg">
+                        <span className="absolute top-1 right-1 w-5 h-5 bg-slate-900/50 rounded-full text-[9px] flex items-center justify-center font-black border border-white/20 text-white shadow-sm backdrop-blur-sm">
                           {count}
                         </span>
                       )}
@@ -392,23 +435,54 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                   );
                 })}
               </div>
-              {!isZen && (
-                <div className="flex gap-2 mt-2">
+            </div>
+
+            {/* --- Actions Section --- */}
+            {!isZen && (
+              <div className="space-y-2 mt-6">
+                <div className="flex gap-2">
+                  <button
+                    onClick={randomizeTerrain}
+                    className="flex-1 py-2 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 border border-emerald-500/30 hover:border-emerald-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-emerald-400 hover:text-emerald-300 hover:scale-[1.02] active:scale-95"
+                  >
+                    <Shuffle size={14} /> Terrain
+                  </button>
+                  {resetTerrain && (
+                    <button
+                      onClick={resetTerrain}
+                      className="py-2 px-3 bg-red-50 dark:bg-white/5 hover:bg-red-100 dark:hover:bg-red-900/20 border border-slate-200 dark:border-white/5 hover:border-red-200 dark:hover:border-red-500/30 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-red-500 hover:scale-[1.02] active:scale-95"
+                      title="Reset Terrain"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex gap-2">
                   <button
                     onClick={randomizeUnits}
                     className="flex-1 py-2 bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 hover:from-violet-600/30 hover:to-fuchsia-600/30 border border-violet-500/30 hover:border-violet-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-violet-400 hover:text-violet-300 hover:scale-[1.02] active:scale-95"
                   >
-                    <Shuffle size={14} /> Randomize
+                    <Shuffle size={14} /> Units
                   </button>
                   <button
                     onClick={setClassicalFormation}
                     className="flex-1 py-2 bg-gradient-to-r from-amber-600/20 to-orange-600/20 hover:from-amber-600/30 hover:to-orange-600/30 border border-amber-500/30 hover:border-amber-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-amber-400 hover:text-amber-300 hover:scale-[1.02] active:scale-95"
                   >
-                    <LayoutGrid size={14} /> Classic Formation
+                    <LayoutGrid size={14} /> Classic
                   </button>
+                  {resetUnits && (
+                    <button
+                      onClick={resetUnits}
+                      className="py-2 px-3 bg-red-50 dark:bg-white/5 hover:bg-red-100 dark:hover:bg-red-900/20 border border-slate-200 dark:border-white/5 hover:border-red-200 dark:hover:border-red-500/30 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-red-500 hover:scale-[1.02] active:scale-95"
+                      title="Reset Units"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </>
         )}
 

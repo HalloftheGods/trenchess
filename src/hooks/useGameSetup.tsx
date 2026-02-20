@@ -383,5 +383,57 @@ export function useGameSetup(core: GameCore, interaction: GameInteraction) {
     randomizeUnits,
     setClassicalFormation,
     mirrorBoard,
+    resetTerrain: useCallback(() => {
+      const nextTerrain = terrain.map((row) => [...row]);
+      const nextTInv = { ...terrainInventory };
+      const myCells = SetupLogic.getPlayerCells(turn, mode);
+      const reclaimed: TerrainType[] = [];
+
+      for (const [r, c] of myCells) {
+        if (nextTerrain[r][c] !== TERRAIN_TYPES.FLAT) {
+          reclaimed.push(nextTerrain[r][c]);
+          nextTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+        }
+      }
+
+      nextTInv[turn] = [...(nextTInv[turn] || []), ...reclaimed];
+      setTerrain(nextTerrain);
+      setTerrainInventory(nextTInv);
+      setPlacementTerrain(null);
+    }, [
+      terrain,
+      terrainInventory,
+      turn,
+      mode,
+      setTerrain,
+      setTerrainInventory,
+      setPlacementTerrain,
+    ]),
+    resetUnits: useCallback(() => {
+      const nextBoard = board.map((row) => [...row]);
+      const nextInv = { ...inventory };
+      const myCells = SetupLogic.getPlayerCells(turn, mode);
+      const reclaimed: PieceType[] = [];
+
+      for (const [r, c] of myCells) {
+        if (nextBoard[r][c] && nextBoard[r][c]?.player === turn) {
+          reclaimed.push(nextBoard[r][c]!.type);
+          nextBoard[r][c] = null;
+        }
+      }
+
+      nextInv[turn] = [...(nextInv[turn] || []), ...reclaimed];
+      setBoard(nextBoard);
+      setInventory(nextInv);
+      setPlacementPiece(null);
+    }, [
+      board,
+      inventory,
+      turn,
+      mode,
+      setBoard,
+      setInventory,
+      setPlacementPiece,
+    ]),
   };
 }

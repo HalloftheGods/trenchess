@@ -8,7 +8,15 @@ import { INITIAL_ARMY, PIECES } from "../../constants";
 import { UNIT_DETAILS, unitColorMap } from "../../data/unitDetails";
 
 import { useParams } from "react-router-dom";
-import { MountainSnow, HeartPlus, RouteOff, ChessKing } from "lucide-react";
+import {
+  MountainSnow,
+  HeartPlus,
+  RouteOff,
+  ChessKing,
+  ChessPawn,
+  ChessKnight,
+  ChessBishop,
+} from "lucide-react";
 import MenuDetailModal from "./MenuDetailModal";
 import ChessCardDetail from "./ChessCardDetail";
 
@@ -89,10 +97,10 @@ const MenuChess: React.FC = () => {
         <SectionDivider
           label={
             view === "trench"
-              ? "Divided by the Trench"
+              ? "The Divided forged their own Classes"
               : view === "moves"
                 ? "Leveled Up - They learned new Jobs."
-                : " New Jobs were unlocked - Some Evolved - Others divided - The Endgame changed "
+                : " Everyone learned new jobs - While some divided, others evolved - The Endgame changed "
           }
           className="ml-24"
           color={view === "trench" ? "red" : view === "moves" ? "blue" : "blue"}
@@ -102,26 +110,26 @@ const MenuChess: React.FC = () => {
       {view === "selection" ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
           <MenuCard
-            onClick={() => setView("moves")}
-            onMouseEnter={() => setHoveredMenu("chess")}
-            onMouseLeave={() => setHoveredMenu(null)}
-            isSelected={false}
-            darkMode={darkMode}
-            title="The Evolved"
-            description="While the Pawns, Queens, and Kings danced..."
-            Icon={HeartPlus}
-            color="red"
-            className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full py-12"
-          />
-          <MenuCard
             onClick={() => setView("trench")}
             onMouseEnter={() => setHoveredMenu("how-to-play")}
             onMouseLeave={() => setHoveredMenu(null)}
             isSelected={false}
             darkMode={darkMode}
             title="The Divided"
-            description="...the Knights, Bishops, Rooks, sought shelter."
-            Icon={RouteOff}
+            description="The Knights, Bishops, Rooks, found recluse..."
+            Icon={ChessBishop}
+            color="red"
+            className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full py-12"
+          />
+          <MenuCard
+            onClick={() => setView("moves")}
+            onMouseEnter={() => setHoveredMenu("chess")}
+            onMouseLeave={() => setHoveredMenu(null)}
+            isSelected={false}
+            darkMode={darkMode}
+            title="The Evolved"
+            description="...while the Pawns, Queens, and Kings danced."
+            Icon={ChessPawn}
             color="blue"
             className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full w-full py-12"
           />

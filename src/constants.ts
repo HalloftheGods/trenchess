@@ -236,7 +236,7 @@ export const TERRAIN_INTEL: Record<string, TerrainIntelEntry> = {
   [TERRAIN_TYPES.RUBBLE]: {
     label: "Mountains",
     icon: Mountain,
-    color: "text-red-500",
+    color: "text-slate-400",
     desc: "Sanctuary for Knights. Grants protection from Rooks and Bishops. High peaks that block direct movement.",
   },
   [TERRAIN_TYPES.DESERT]: {

@@ -169,12 +169,12 @@ export const UNIT_DETAILS: Record<
       ].map(([dr, dc]) => [r + dr, c + dc]),
   },
   [PIECES.TANK]: {
-    title: "Paladin",
+    title: "Twilight Guardian",
     subtitle: "You Learned a New Job!",
-    role: "The Rooks became Paladins.",
+    role: "The Rooks guarded the Swamps, Dusk-to-Dusk.",
     desc: [],
     levelUp: {
-      title: "Blind Paladin!",
+      title: "Twilight Guardian!",
       stats: [
         "Safe in Swamps from Bishops & Knights.",
         "Safe in Deserts from all units except Rooks.",
@@ -196,7 +196,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.SNIPER]: {
     title: "Light Healer",
     subtitle: "You Learned a New Job!",
-    role: "The Bishops became Light Healers.",
+    role: "The Bishops healed the Forests under Light.",
     desc: [],
     levelUp: {
       title: "Healer",
@@ -219,7 +219,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.HORSEMAN]: {
     title: "Dark Knight",
     subtitle: "You Learned a New Job!",
-    role: "The Knights became Dark Knights.",
+    role: "The Knights rode the Mountains under Dark.",
     desc: [],
     levelUp: {
       title: "Dark Knight",

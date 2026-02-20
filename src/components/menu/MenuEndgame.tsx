@@ -18,7 +18,7 @@ const MenuEndgame: React.FC = () => {
           className="absolute left-0"
         />
         <SectionDivider
-          label="The Endgame: Different ways to play"
+          label="The Endgame brought different win conditions"
           className="ml-24"
           color="emerald"
         />
@@ -84,7 +84,7 @@ const MenuEndgame: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Capture the World"
-          description="And most wanted to Capture the World"
+          description="But  most wanted to dominate the world"
           Icon={Earth}
           color="emerald"
           className="bg-emerald-100/50 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"
