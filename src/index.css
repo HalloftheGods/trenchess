@@ -2,6 +2,9 @@
 @theme {
   --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Cinzel", serif;
+
+  --color-brand-red: #ef4444; /* red-500 */
+  --color-brand-blue: #3b82f6; /* blue-500 */
 }
 
 /* Enable class-based dark mode toggling (Tailwind v4) */

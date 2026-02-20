@@ -106,7 +106,7 @@ export const PLAYER_CONFIGS: Record<string, PlayerConfig> = {
   player1: {
     name: "NW",
     color: "red",
-    text: "text-red-500",
+    text: "text-brand-red",
     bg: "bg-red-600",
     shadow: "shadow-red-900/40",
   },
@@ -127,7 +127,7 @@ export const PLAYER_CONFIGS: Record<string, PlayerConfig> = {
   player4: {
     name: "SE",
     color: "blue",
-    text: "text-blue-500",
+    text: "text-brand-blue",
     bg: "bg-blue-600",
     shadow: "shadow-blue-900/40",
   },

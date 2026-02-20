@@ -96,7 +96,7 @@ const GameLogo: React.FC<GameLogoProps> = ({
                       />
                     </div>
                     <div
-                      className={`rounded-2xl bg-blue-500/10 text-blue-500 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)] ${
+                      className={`rounded-2xl bg-brand-blue/10 text-brand-blue border border-brand-blue/20 shadow-[0_0_15px_rgba(59,130,246,0.1)] ${
                         isMedium ? "p-2" : "p-2 md:p-3"
                       }`}
                     >
@@ -109,7 +109,7 @@ const GameLogo: React.FC<GameLogoProps> = ({
                       />
                     </div>
                     <div
-                      className={`rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)] ${
+                      className={`rounded-2xl bg-brand-red/10 text-brand-red border border-brand-red/20 shadow-[0_0_15px_rgba(239,68,68,0.1)] ${
                         isMedium ? "p-2" : "p-2 md:p-3"
                       }`}
                     >
@@ -156,8 +156,8 @@ const GameLogo: React.FC<GameLogoProps> = ({
                 <span className="text-slate-100">{logoText}</span>
               ) : (
                 <>
-                  <span className="text-red-600">TREN</span>
-                  <span className="text-blue-600">CHESS</span>
+                  <span className="text-brand-red">TREN</span>
+                  <span className="text-brand-blue">CHESS</span>
                 </>
               )}
             </h1>
@@ -176,8 +176,8 @@ const GameLogo: React.FC<GameLogoProps> = ({
               <span className="text-slate-100">{logoText}</span>
             ) : (
               <>
-                <span className="text-red-600">TREN</span>
-                <span className="text-blue-600">CHESS</span>
+                <span className="text-brand-red">TREN</span>
+                <span className="text-brand-blue">CHESS</span>
               </>
             )}
           </h1>

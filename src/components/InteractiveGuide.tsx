@@ -168,7 +168,9 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
                   </div>
                 )}
                 {/* Row 2: Description (Simple List) */}
-                <div className="w-full h-full">{currentSlide.description}</div>
+                <div className="w-full h-full flex flex-col justify-center text-left">
+                  {currentSlide.description}
+                </div>
               </div>
 
               {/* Row 4: Info/Legend (Bottom Row) */}

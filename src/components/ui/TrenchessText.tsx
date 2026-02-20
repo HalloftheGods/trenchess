@@ -13,8 +13,8 @@ interface TrenchessTextProps {
  */
 const TrenchessText: React.FC<TrenchessTextProps> = ({ className = "" }) => (
   <span className={className}>
-    <span className="text-red-600">Tren</span>
-    <span className="text-blue-600">chess</span>
+    <span className="text-brand-red">Tren</span>
+    <span className="text-brand-blue">chess</span>
   </span>
 );
 

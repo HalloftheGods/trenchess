@@ -30,9 +30,9 @@ const Badge: React.FC<BadgeProps> = ({
       border: "border-emerald-500/30",
     },
     blue: {
-      bg: "from-blue-500/20 to-blue-500/5",
-      text: "text-blue-600 dark:text-blue-400",
-      border: "border-blue-500/30",
+      bg: "from-brand-blue/20 to-brand-blue/5",
+      text: "text-brand-blue dark:text-brand-blue",
+      border: "border-brand-blue/30",
     },
     stone: {
       bg: "from-stone-500/20 to-stone-500/5",
@@ -50,9 +50,9 @@ const Badge: React.FC<BadgeProps> = ({
       border: "border-purple-500/30",
     },
     red: {
-      bg: "from-red-500/20 to-red-500/5",
-      text: "text-red-600 dark:text-red-400",
-      border: "border-red-500/30",
+      bg: "from-brand-red/20 to-brand-red/5",
+      text: "text-brand-red dark:text-brand-red",
+      border: "border-brand-red/30",
     },
     yellow: {
       bg: "from-yellow-400/20 to-yellow-500/5",

@@ -18,12 +18,12 @@ export const DualToneNS = ({ size = 24, className = "" }: MenuIconProps) => (
     className={className}
   >
     {/* Front User - Red */}
-    <g className="text-red-500">
+    <g className="text-brand-red">
       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
       <circle cx="9" cy="7" r="4" />
     </g>
     {/* Back User - Blue */}
-    <g className="text-blue-500">
+    <g className="text-brand-blue">
       <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </g>
@@ -72,7 +72,7 @@ export const QuadTone = ({ size = 24, className = "" }: MenuIconProps) => (
     className={className}
   >
     {/* NW - Red */}
-    <rect width="7" height="7" x="3" y="3" rx="1" className="text-red-500" />
+    <rect width="7" height="7" x="3" y="3" rx="1" className="text-brand-red" />
     {/* NE - Yellow */}
     <rect
       width="7"
@@ -85,7 +85,14 @@ export const QuadTone = ({ size = 24, className = "" }: MenuIconProps) => (
     {/* SW - Green */}
     <rect width="7" height="7" x="3" y="14" rx="1" className="text-green-500" />
     {/* SE - Blue */}
-    <rect width="7" height="7" x="14" y="14" rx="1" className="text-blue-500" />
+    <rect
+      width="7"
+      height="7"
+      x="14"
+      y="14"
+      rx="1"
+      className="text-brand-blue"
+    />
   </svg>
 );
 export const AllianceTone = ({ size = 24, className = "" }: MenuIconProps) => (
