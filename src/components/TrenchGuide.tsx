@@ -110,7 +110,7 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
   const slides: Slide[] = useMemo(() => {
     const terrainSlides = TERRAIN_DETAILS.map((terrain) => {
       const IconComp = terrain.icon;
-      const colorMatch = terrain.color.text.match(/text-([a-z]+)-\d+/);
+      const colorMatch = terrain.color.text.match(/text-(?:brand-)?([a-z]+)/);
       const colorName = colorMatch ? colorMatch[1] : "amber";
       const validColors = [
         "red",

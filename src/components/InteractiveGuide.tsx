@@ -118,10 +118,11 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
       <div className="w-full flex items-center justify-between gap-4 px-4 lg:px-0">
         <button
           onClick={() =>
-            setCurrentSlideIndex(Math.max(0, currentSlideIndex - 1))
+            setCurrentSlideIndex(
+              (currentSlideIndex - 1 + slides.length) % slides.length,
+            )
           }
-          disabled={currentSlideIndex === 0}
-          className="p-4 rounded-full bg-slate-800/10 hover:bg-slate-800/20 dark:bg-slate-800/40 dark:hover:bg-slate-700/60 disabled:opacity-20 transition-all text-slate-800 dark:text-slate-100"
+          className="p-4 rounded-full bg-slate-800/10 hover:bg-slate-800/20 dark:bg-slate-800/40 dark:hover:bg-slate-700/60 transition-all text-slate-800 dark:text-slate-100"
         >
           <ChevronLeft size={32} />
         </button>
@@ -185,12 +186,9 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
 
         <button
           onClick={() =>
-            setCurrentSlideIndex(
-              Math.min(slides.length - 1, currentSlideIndex + 1),
-            )
+            setCurrentSlideIndex((currentSlideIndex + 1) % slides.length)
           }
-          disabled={currentSlideIndex === slides.length - 1}
-          className="p-4 rounded-full bg-slate-800/10 hover:bg-slate-800/20 dark:bg-slate-800/40 dark:hover:bg-slate-700/60 disabled:opacity-20 transition-all text-slate-800 dark:text-slate-100"
+          className="p-4 rounded-full bg-slate-800/10 hover:bg-slate-800/20 dark:bg-slate-800/40 dark:hover:bg-slate-700/60 transition-all text-slate-800 dark:text-slate-100"
         >
           <ChevronRight size={32} />
         </button>

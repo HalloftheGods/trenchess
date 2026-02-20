@@ -157,8 +157,8 @@ const ChessGuide: React.FC<ChessGuideProps> = ({ onBack, initialUnit }) => {
       const colors = unitColorMap[unit.type];
       const IconComp = unit.lucide;
 
-      // Extract base color from the text class (e.g., "text-slate-500" -> "slate")
-      const colorMatch = colors.text.match(/text-([a-z]+)-\d+/);
+      // Extract base color from the text class (e.g., "text-slate-500" or "text-brand-red" -> "red")
+      const colorMatch = colors.text.match(/text-(?:brand-)?([a-z]+)/);
       const colorName = colorMatch ? colorMatch[1] : "slate";
       // Ensure it's one of the valid color strings
       const validColors = [
