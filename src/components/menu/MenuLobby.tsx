@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Globe, Plus, Key } from "lucide-react";
+import { Globe, Key } from "lucide-react";
 import BackButton from "../ui/BackButton";
 import { useMenuContext } from "./MenuContext";
 import MenuCard from "../MenuCard";
@@ -42,7 +42,7 @@ const MenuLobby: React.FC = () => {
         description={`${multiplayer?.onlineCount || 0} players online`}
         Icon={Globe}
         color="red"
-        className="bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30 h-full w-full"
+        className="h-full w-full"
       />
       <MenuCard
         onClick={handleCreateLobby}
@@ -54,7 +54,7 @@ const MenuLobby: React.FC = () => {
         description="Host a private game"
         Icon={GlobeLock}
         color="blue"
-        className="bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 h-full w-full"
+        className="h-full w-full"
       />
       <MenuCard
         onClick={() => setView("join")}
@@ -66,7 +66,7 @@ const MenuLobby: React.FC = () => {
         description="Join with a code"
         Icon={Key}
         color="slate"
-        className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full w-full"
+        className="h-full w-full"
       />
     </div>
   );
@@ -269,19 +269,7 @@ const MenuLobby: React.FC = () => {
 
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-      <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
-        <BackButton
-          onClick={() => {
-            if (view !== "menu") {
-              if (view === "host") multiplayer?.leaveGame();
-              setView("menu");
-            } else {
-              navigate("/play");
-            }
-          }}
-          label={view !== "menu" ? "Worldwide Mode" : "Play"}
-          className="absolute left-0"
-        />
+      <div className="relative w-full max-w-7xl mb-12">
         <SectionDivider
           label={
             view === "menu"
@@ -292,7 +280,18 @@ const MenuLobby: React.FC = () => {
                   ? "Lobby"
                   : "Join Operation"
           }
-          className="ml-24"
+        />
+        <BackButton
+          onClick={() => {
+            if (view !== "menu") {
+              if (view === "host") multiplayer?.leaveGame();
+              setView("menu");
+            } else {
+              navigate("/play");
+            }
+          }}
+          label={view !== "menu" ? "Worldwide Mode" : "Play"}
+          className="absolute left-0 -top-8"
         />
       </div>
 

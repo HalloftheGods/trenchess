@@ -215,7 +215,7 @@ export const UNIT_INTEL: Record<string, UnitIntelEntry> = {
   },
   [PIECES.BOT]: {
     title: "Bot",
-    desc: "Infantry. Moves forward 1 tile. In 4P mode, can move towards the center in two directions. Captures diagonally.",
+    desc: "Infantry. Moves like a Pawn, but can also perform a 'Backflip' (jump 2 squares backward) to reposition or capture unexpectedly.",
   },
 };
 

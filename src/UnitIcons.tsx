@@ -185,40 +185,32 @@ export const DesertIcon = ({
   size?: number | string;
 }) => (
   <svg
-    viewBox="0 0 100 100"
+    viewBox="0 0 24 24"
     className={className}
     width={size}
     height={size}
     fill="none"
     stroke="currentColor"
-    strokeWidth="6"
+    strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    {/* Sun and Snow split */}
-    {/* Sun Top-Left */}
-    <circle
-      cx="35"
-      cy="35"
-      r="15"
-      className="text-amber-500"
-      stroke="currentColor"
-    />
-    <path d="M35 10 L35 15" className="text-amber-500" stroke="currentColor" />
-    <path d="M35 55 L35 60" className="text-amber-500" stroke="currentColor" />
-    <path d="M10 35 L15 35" className="text-amber-500" stroke="currentColor" />
-    <path d="M55 35 L60 35" className="text-amber-500" stroke="currentColor" />
-    <path d="M17 17 L21 21" className="text-amber-500" stroke="currentColor" />
-    <path d="M53 53 L49 49" className="text-amber-500" stroke="currentColor" />
-    <path d="M17 53 L21 49" className="text-amber-500" stroke="currentColor" />
-    <path d="M53 17 L49 21" className="text-amber-500" stroke="currentColor" />
-
-    {/* Snowflake Bottom-Right */}
-    <g transform="translate(50, 50) scale(0.8)">
-      <path d="M10 10 L40 40" className="text-sky-400" stroke="currentColor" />
-      <path d="M40 10 L10 40" className="text-sky-400" stroke="currentColor" />
-      <path d="M25 5 L25 45" className="text-sky-400" stroke="currentColor" />
-      <path d="M5 25 L45 25" className="text-sky-400" stroke="currentColor" />
+    {/* Sun paths - Golden */}
+    <g className="text-amber-400">
+      <path d="M10 21v-1" />
+      <path d="M10 4V3" />
+      <path d="M10 9a3 3 0 0 0 0 6" />
+      <path d="M2 12h1" />
+      <path d="m3.64 18.36.7-.7" />
+      <path d="m4.34 6.34-.7-.7" />
+    </g>
+    {/* Snow paths - Frozen color */}
+    <g className="text-cyan-300">
+      <path d="m14 20 1.25-2.5L18 18" />
+      <path d="m14 4 1.25 2.5L18 6" />
+      <path d="m17 21-3-6 1.5-3H22" />
+      <path d="m17 3-3 6 1.5 3" />
+      <path d="m20 10-1.5 2 1.5 2" />
     </g>
   </svg>
 );

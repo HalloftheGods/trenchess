@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ChessPawn, MountainSnow } from "lucide-react";
+import { ChessRook, Mountain } from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
@@ -12,9 +12,12 @@ const MenuLearn: React.FC = () => {
 
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-      <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
-        <BackButton onClick={() => navigate("/")} className="absolute left-0" />
-        <SectionDivider label="How to Play" className="ml-24" />
+      <div className="relative w-full max-w-7xl mb-12">
+        <SectionDivider label="There's a Prophecy on the wind..." />
+        <BackButton
+          onClick={() => navigate("/")}
+          className="absolute left-0 -top-8"
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
@@ -27,11 +30,11 @@ const MenuLearn: React.FC = () => {
           onMouseLeave={() => setHoveredMenu(null)}
           isSelected={false}
           darkMode={darkMode}
-          title="Enter The Trench"
-          description="One day, the trench appeared..."
-          Icon={MountainSnow}
+          title="Open The Trench"
+          description="One day, out of NOWHERE, the Trench opens..."
+          Icon={Mountain}
           color="red"
-          className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
+          className="h-full w-full"
         />
         <MenuCard
           onClick={() => navigate("/learn/chess")}
@@ -40,10 +43,10 @@ const MenuLearn: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Enter The Chess"
-          description="... it was never the same."
-          Icon={ChessPawn}
+          description="...the Royal Family's form, never the same, if not insane."
+          Icon={ChessRook}
           color="blue"
-          className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-800/50 dark:hover:bg-blue-800 h-full w-full !border-blue-500/20 hover:!border-blue-500/50"
+          className="h-full w-full"
         />
       </div>
     </div>

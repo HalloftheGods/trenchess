@@ -47,15 +47,14 @@ const MenuTrench: React.FC = () => {
 
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-      <div className="relative flex items-center justify-center gap-4 mb-4 w-full max-w-7xl">
+      <div className="relative w-full max-w-7xl mb-12">
+        <SectionDivider
+          label="From Nowhere - Rains terror to terrains with never-ending tethers"
+          color="red"
+        />
         <BackButton
           onClick={() => navigate("/learn")}
-          className="absolute left-0"
-        />
-        <SectionDivider
-          label="The Trench came as four terrains."
-          className="ml-24"
-          color="red"
+          className="absolute left-0 -top-8"
         />
       </div>
 
@@ -71,13 +70,19 @@ const MenuTrench: React.FC = () => {
             setHoveredMenu(null);
             setHoveredTerrain(null);
           }}
+          preview={{
+            mode: null,
+            forcedTerrain: "rubble",
+            showIcons: true,
+            hideUnits: true,
+          }}
           isSelected={false}
           darkMode={darkMode}
           title="Mountains"
-          description="Favored the Knights"
+          description="Knights favor the Mountains"
           Icon={Mountain}
           color="red"
-          className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
+          className="h-full w-full"
         />
 
         <MenuCard
@@ -91,13 +96,19 @@ const MenuTrench: React.FC = () => {
             setHoveredMenu(null);
             setHoveredTerrain(null);
           }}
+          preview={{
+            mode: null,
+            forcedTerrain: "ponds",
+            showIcons: true,
+            hideUnits: true,
+          }}
           isSelected={false}
           darkMode={darkMode}
           title="Swamps"
-          description="Favored the Rooks"
+          description="Rooks favor the Swamps"
           Icon={Waves}
           color="blue"
-          className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full w-full"
+          className="h-full w-full"
         />
 
         <MenuCard
@@ -111,13 +122,19 @@ const MenuTrench: React.FC = () => {
             setHoveredMenu(null);
             setHoveredTerrain(null);
           }}
+          preview={{
+            mode: null,
+            forcedTerrain: "trees",
+            showIcons: true,
+            hideUnits: true,
+          }}
           isSelected={false}
           darkMode={darkMode}
           title="Forests"
-          description="Favored the Bishops"
+          description="Bishops favor the Forests"
           Icon={Trees}
           color="emerald"
-          className="bg-emerald-100/30 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"
+          className="h-full w-full"
         />
 
         <MenuCard
@@ -131,13 +148,19 @@ const MenuTrench: React.FC = () => {
             setHoveredMenu(null);
             setHoveredTerrain(null);
           }}
+          preview={{
+            mode: null,
+            forcedTerrain: "desert",
+            showIcons: true,
+            hideUnits: true,
+          }}
           isSelected={false}
           darkMode={darkMode}
           title="Deserts"
-          description="Favored no one"
+          description="The Deserts favor no one"
           Icon={DesertIcon}
           color="amber"
-          className="bg-amber-100/30 hover:bg-amber-200/50 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 border-2 border-amber-500/20 hover:border-amber-500/50 h-full w-full"
+          className="h-full w-full"
         />
       </div>
       <MenuDetailModal

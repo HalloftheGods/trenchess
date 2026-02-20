@@ -27,7 +27,7 @@ interface MenuLayoutProps {
     playerTypes?: any,
     seed?: string,
   ) => void;
-  onCtfGuide: () => void;
+  onCtwGuide: () => void;
   onChessGuide: () => void;
   onTrenchGuide: (terrain?: TerrainType) => void;
   onOpenLibrary: () => void;
@@ -43,7 +43,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
   onZenGarden,
   multiplayer,
   onStartGame,
-  onCtfGuide,
+  onCtwGuide,
   onChessGuide,
   onTrenchGuide,
   onOpenLibrary,
@@ -158,7 +158,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
     multiplayer,
     onStartGame,
     onTutorial,
-    onCtfGuide,
+    onCtwGuide,
     onChessGuide,
     onTrenchGuide,
     onOpenLibrary,

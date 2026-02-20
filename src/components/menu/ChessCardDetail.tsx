@@ -33,19 +33,7 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
   const colors = unitColorMap[unitType];
   const IconComp = unit.lucide;
 
-  const activeTerrainTypeKey =
-    activeTerrainIdx >= 0 ? TERRAIN_DETAILS[activeTerrainIdx].key : null;
-
   // Dynamic border style based on terrain affinity
-  const unitIsProtected =
-    activeTerrainTypeKey &&
-    isUnitProtected(unitType, activeTerrainTypeKey as any);
-  const unitCanTraverse = activeTerrainTypeKey
-    ? canUnitTraverseTerrain(
-        unitType as PieceType,
-        activeTerrainTypeKey as TerrainType,
-      )
-    : true;
 
   const renderTerrainIcons = () => {
     return (
@@ -140,7 +128,7 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
                     ${isCenter ? "shadow-md scale-110 z-10 rounded-md" : ""}
                   `}
                 >
-                  {isCenter && <IconComp size={16} strokeWidth={3} />}
+                  {isCenter && <IconComp size={16} />}
                 </div>
               );
             },
@@ -169,11 +157,7 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
             <div
               className={`w-32 h-32 lg:w-40 lg:h-40 rounded-[2rem] flex items-center justify-center ${colors.bg} ${colors.text} border-2 ${colors.border} shadow-xl transition-transform duration-500 group-hover:scale-105 group-hover:rotate-1`}
             >
-              <IconComp
-                size={64}
-                strokeWidth={1.5}
-                className="drop-shadow-sm"
-              />
+              <IconComp size={64} className="drop-shadow-sm" />
             </div>
 
             {unitType === PIECES.BOT && (

@@ -198,11 +198,6 @@ export function useGameInteraction(
     let canPlace = true;
 
     // Check constraints (copied from previous logic)
-    if (
-      targetTerrain === TERRAIN_TYPES.DESERT &&
-      placementPiece !== PIECES.TANK
-    )
-      canPlace = false;
 
     if (placementPiece === PIECES.TANK && targetTerrain === TERRAIN_TYPES.TREES)
       canPlace = false;
@@ -339,6 +334,43 @@ export function useGameInteraction(
         setActivePlayers(remainingPlayers);
       }
 
+      // Desert Rule: Eliminate any piece belonging to the current player
+      // that is standing on a DESERT tile, EXCEPT the piece that just moved.
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
+          const p = newBoard[r][c];
+          if (
+            p &&
+            p.player === turn &&
+            terrain[r][c] === TERRAIN_TYPES.DESERT
+          ) {
+            if (r !== toR || c !== toC) {
+              // Piece was left on the desert!
+              if (p.type === PIECES.COMMANDER) {
+                const victim = p.player;
+                const remainingPlayers = activePlayers.filter(
+                  (ap) => ap !== victim,
+                );
+                // The environment claims the army
+                for (let row = 0; row < BOARD_SIZE; row++) {
+                  for (let col = 0; col < BOARD_SIZE; col++) {
+                    if (newBoard[row][col]?.player === victim) {
+                      newBoard[row][col] = null;
+                    }
+                  }
+                }
+                if (remainingPlayers.length === 1) {
+                  setWinner(remainingPlayers[0]);
+                }
+                setActivePlayers(remainingPlayers);
+              } else {
+                newBoard[r][c] = null;
+              }
+            }
+          }
+        }
+      }
+
       setBoard(newBoard);
 
       // If human moved, clear selection. If AI moved, we assume caller handles UI or it doesn't matter.
@@ -355,6 +387,7 @@ export function useGameInteraction(
     },
     [
       board,
+      terrain,
       turn,
       activePlayers,
       setBoard,
@@ -590,11 +623,6 @@ export function useGameInteraction(
         const targetTerrain = terrain[r][c];
         // Reuse validation logic if possible or copy
         // ... (Logic same as hover)
-        if (
-          targetTerrain === TERRAIN_TYPES.DESERT &&
-          placementPiece !== PIECES.TANK
-        )
-          return;
         if (
           placementPiece === PIECES.TANK &&
           targetTerrain === TERRAIN_TYPES.TREES

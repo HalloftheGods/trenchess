@@ -5,13 +5,13 @@
 import React, { useState, useEffect } from "react";
 import {
   ChevronLeft,
-  Trash2,
   Play,
   Share2,
   Calendar,
   Search,
   Database,
   Pencil,
+  Bomb,
 } from "lucide-react";
 import { deserializeGame, adaptSeedToMode } from "../utils/gameUrl";
 import {
@@ -270,7 +270,7 @@ const SeedLibrary: React.FC<SeedLibraryProps> = ({
                     onClick={() => handleDelete(item.id)}
                     className="flex items-center justify-center gap-2 bg-slate-100 dark:bg-white/5 hover:bg-red-500/10 hover:text-red-500 text-slate-500 dark:text-slate-400 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer"
                   >
-                    <Trash2 size={14} /> Delete
+                    <Bomb size={14} /> Delete
                   </button>
                 </div>
               </div>

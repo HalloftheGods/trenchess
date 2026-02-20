@@ -18,16 +18,14 @@ export const getValidMoves = (
     const targetTerrain = terrain[nr]?.[nc];
     if (!targetTerrain) return false; // Safety check
 
-    // Desert: Only Tanks can land on it. Blocks passing for everyone.
+    // Desert: Anyone can land on it. Blocks passing for everyone.
     if (targetTerrain === TERRAIN_TYPES.DESERT) {
-      if (piece.type === PIECES.TANK) {
-        if (!targetPiece) {
-          moves.push([nr, nc]);
-        } else if (targetPiece.player !== player) {
-          moves.push([nr, nc]);
-        }
+      if (!targetPiece) {
+        moves.push([nr, nc]);
+      } else if (targetPiece.player !== player) {
+        moves.push([nr, nc]);
       }
-      return false; // Break sliders (like Tank/Rook) and block others
+      return false; // Break sliders (like Tank/Rook/Sniper) and block passing
     }
 
     // Swamp: Pro Tank. Blocks Horseman, Sniper
@@ -61,46 +59,46 @@ export const getValidMoves = (
   if (piece.type === PIECES.BOT) {
     if (mode === "2p-ew") {
       const dir = player === "player3" ? 1 : -1;
-      if (
-        c + dir >= 0 &&
-        c + dir < BOARD_SIZE &&
-        !board[r][c + dir] &&
-        terrain[r]?.[c + dir] !== TERRAIN_TYPES.DESERT
-      )
-        moves.push([r, c + dir]);
 
-      // Backflip Jump: Backward 2 squares
-      const bdc = -2 * dir;
-      if (
-        c + bdc >= 0 &&
-        c + bdc < BOARD_SIZE &&
-        !board[r][c + bdc] &&
-        terrain[r]?.[c + bdc] !== TERRAIN_TYPES.DESERT
-      )
-        moves.push([r, c + bdc]);
-      [
-        [1, dir],
-        [-1, dir],
-      ].forEach(([dr, dc]) => {
+      // Classic Pawn: Move 1 forward, Capture 1 diagonal
+      const nf = c + dir;
+      if (nf >= 0 && nf < BOARD_SIZE && !board[r][nf]) moves.push([r, nf]);
+      [1, -1].forEach((dr) => {
         const nr = r + dr,
-          nc = c + dc;
+          nc = c + dir;
         if (
           nr >= 0 &&
           nr < BOARD_SIZE &&
           nc >= 0 &&
           nc < BOARD_SIZE &&
           board[nr][nc] &&
-          board[nr][nc]!.player !== player &&
-          terrain[nr]?.[nc] !== TERRAIN_TYPES.DESERT
-        )
+          board[nr][nc]?.player !== player
+        ) {
           moves.push([nr, nc]);
+        }
+      });
+
+      // En-Voltige: Backward 2-square Vault (Vacant Only)
+      const bc = c - 2 * dir;
+      if (bc >= 0 && bc < BOARD_SIZE && !board[r][bc]) {
+        moves.push([r, bc]);
+      }
+      // En-Voltige: Strike (Sides of the 2nd Row back)
+      [1, -1].forEach((dr) => {
+        const nr = r + dr;
+        const nc = c - 2 * dir;
+        if (
+          nr >= 0 &&
+          nr < BOARD_SIZE &&
+          nc >= 0 &&
+          nc < BOARD_SIZE &&
+          board[nr][nc] &&
+          board[nr][nc]?.player !== player
+        ) {
+          moves.push([nr, nc]);
+        }
       });
     } else if (mode === "4p") {
-      // 4p: NW=p1, NE=p2, SW=p3, SE=p4
-      // NW (p1) moves S(+r) & E(+c)
-      // NE (p2) moves S(+r) & W(-c)
-      // SW (p3) moves N(-r) & E(+c)
-      // SE (p4) moves N(-r) & W(-c)
       let dr = 0,
         dc = 0;
       if (player === "player1") {
@@ -117,7 +115,7 @@ export const getValidMoves = (
         dc = -1;
       }
 
-      // Orthogonal moves (forward)
+      // Classic 4P Pawn: Move 1 towards center (two directions)
       [
         [dr, 0],
         [0, dc],
@@ -129,13 +127,26 @@ export const getValidMoves = (
           nr < BOARD_SIZE &&
           nc >= 0 &&
           nc < BOARD_SIZE &&
-          !board[nr][nc] &&
-          terrain[nr]?.[nc] !== TERRAIN_TYPES.DESERT
-        )
+          !board[nr][nc]
+        ) {
           moves.push([nr, nc]);
+        }
       });
+      // Classic 4P Capture: Diagonally towards center
+      const cnr = r + dr,
+        cnc = c + dc;
+      if (
+        cnr >= 0 &&
+        cnr < BOARD_SIZE &&
+        cnc >= 0 &&
+        cnc < BOARD_SIZE &&
+        board[cnr][cnc] &&
+        board[cnr][cnc]!.player !== player
+      ) {
+        moves.push([cnr, cnc]);
+      }
 
-      // Backflip Jumps: Backward 2 squares (NW moves SE, etc)
+      // En-Voltige: Backward Vault (±2)
       [
         [-2 * dr, 0],
         [0, -2 * dc],
@@ -147,56 +158,35 @@ export const getValidMoves = (
           nr < BOARD_SIZE &&
           nc >= 0 &&
           nc < BOARD_SIZE &&
-          !board[nr][nc] &&
-          terrain[nr]?.[nc] !== TERRAIN_TYPES.DESERT
-        )
+          !board[nr][nc]
+        ) {
           moves.push([nr, nc]);
+        }
       });
-
-      // Diagonal captures (three directions: forward-center, forward-left, forward-right)
-      [
-        [dr, dc],
-        [dr, -dc],
-        [-dr, dc],
-      ].forEach(([ddr, ddc]) => {
-        const nr = r + ddr,
-          nc = c + ddc;
+      // En-Voltige: Strike (Strict diagonal back 2)
+      [[-2 * dr, -2 * dc]].forEach(([ddr, ddc]) => {
+        const snr = r + ddr,
+          snc = c + ddc;
         if (
-          nr >= 0 &&
-          nr < BOARD_SIZE &&
-          nc >= 0 &&
-          nc < BOARD_SIZE &&
-          board[nr][nc] &&
-          board[nr][nc]!.player !== player &&
-          terrain[nr]?.[nc] !== TERRAIN_TYPES.DESERT
-        )
-          moves.push([nr, nc]);
+          snr >= 0 &&
+          snr < BOARD_SIZE &&
+          snc >= 0 &&
+          snc < BOARD_SIZE &&
+          board[snr][snc] &&
+          board[snr][snc]!.player !== player
+        ) {
+          moves.push([snr, snc]);
+        }
       });
     } else {
       // Default NS direction (2p-ns)
       const dir = player === "player1" || player === "player2" ? 1 : -1;
-      if (
-        r + dir >= 0 &&
-        r + dir < BOARD_SIZE &&
-        !board[r + dir][c] &&
-        terrain[r + dir]?.[c] !== TERRAIN_TYPES.DESERT
-      )
-        moves.push([r + dir, c]);
 
-      // Backflip Jump: Backward 2 squares
-      const bdr = -2 * dir;
-      if (
-        r + bdr >= 0 &&
-        r + bdr < BOARD_SIZE &&
-        !board[r + bdr][c] &&
-        terrain[r + bdr]?.[c] !== TERRAIN_TYPES.DESERT
-      )
-        moves.push([r + bdr, c]);
-      [
-        [dir, 1],
-        [dir, -1],
-      ].forEach(([dr, dc]) => {
-        const nr = r + dr,
+      // Classic Pawn: Move 1 forward, Capture 1 diagonal
+      const nf = r + dir;
+      if (nf >= 0 && nf < BOARD_SIZE && !board[nf][c]) moves.push([nf, c]);
+      [1, -1].forEach((dc) => {
+        const nr = r + dir,
           nc = c + dc;
         if (
           nr >= 0 &&
@@ -204,10 +194,31 @@ export const getValidMoves = (
           nc >= 0 &&
           nc < BOARD_SIZE &&
           board[nr][nc] &&
-          board[nr][nc]!.player !== player &&
-          terrain[nr]?.[nc] !== TERRAIN_TYPES.DESERT
-        )
+          board[nr][nc]?.player !== player
+        ) {
           moves.push([nr, nc]);
+        }
+      });
+
+      // En-Voltige: Backward 2-square Vault (Vacant Only)
+      const br = r - 2 * dir;
+      if (br >= 0 && br < BOARD_SIZE && !board[br][c]) {
+        moves.push([br, c]);
+      }
+      // En-Voltige: Strike (Sides of the 2nd Row back)
+      [1, -1].forEach((dc) => {
+        const nc = c + dc;
+        const nr = r - 2 * dir;
+        if (
+          nr >= 0 &&
+          nr < BOARD_SIZE &&
+          nc >= 0 &&
+          nc < BOARD_SIZE &&
+          board[nr][nc] &&
+          board[nr][nc]?.player !== player
+        ) {
+          moves.push([nr, nc]);
+        }
       });
     }
   }
@@ -228,7 +239,6 @@ export const getValidMoves = (
       if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
         const targetPiece = board[nr][nc];
         const targetTerrain = terrain[nr][nc];
-        if (targetTerrain === TERRAIN_TYPES.DESERT) return;
         if (piece.type === PIECES.HORSEMAN) {
           if (
             targetTerrain === TERRAIN_TYPES.PONDS ||
@@ -298,8 +308,7 @@ export const getValidMoves = (
         midR < BOARD_SIZE &&
         midC >= 0 &&
         midC < BOARD_SIZE &&
-        !board[midR]?.[midC] &&
-        terrain[midR][midC] !== TERRAIN_TYPES.DESERT
+        !board[midR]?.[midC]
       ) {
         if (depth > 0) {
           checkCell(r + dr * 2, c + dc * 2);

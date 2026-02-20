@@ -138,8 +138,8 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
       onClick={onClick || (() => {})}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      title="Worldwide Change"
-      description="Borders become Barbeques."
+      title="Worlds Changed"
+      description="Borders become Barbeques. (Online Play)"
       Icon={GlobeLock}
       color="blue"
       className="w-full h-full"

@@ -764,7 +764,7 @@ const createTheFortress = () => {
 const createCheckeredPast = () => {
   const terrain = createEmptyTerrain();
   // Rows 3,4 and 7,8 checkerboard (24)
-  for (let r of [3, 4, 7, 8]) {
+  for (const r of [3, 4, 7, 8]) {
     for (let c = 0; c < BOARD_SIZE; c++) {
       if ((r + c) % 2 !== 0) terrain[r][c] = TERRAIN_TYPES.PONDS;
     }

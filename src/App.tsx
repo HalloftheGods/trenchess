@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import {
   Routes,
   Route,
@@ -7,27 +7,62 @@ import {
   useParams,
 } from "react-router-dom";
 import { useGameState } from "./hooks/useGameState"; // Assuming this path
-import GameScreen from "./components/GameScreen";
-import HowToPlay from "./components/HowToPlay";
-import SeedLibrary from "./components/SeedLibrary";
-import InteractiveTutorial from "./components/InteractiveTutorial";
-import CaptureTheFlagGuide from "./components/CaptureTheFlagGuide";
-import TrenchGuide from "./components/TrenchGuide";
-import ChessGuide from "./components/ChessGuide";
 
-// Menu Components
-import MenuLayout from "./components/menu/MenuLayout";
-import MenuHome from "./components/menu/MenuHome";
-import MenuPlay from "./components/menu/MenuPlay";
-import MenuLearn from "./components/menu/MenuLearn";
-import MenuEndgame from "./components/menu/MenuEndgame";
-import MenuTrench from "./components/menu/MenuTrench";
-import MenuLobby from "./components/menu/MenuLobby";
-import MenuLocal from "./components/menu/MenuLocal";
-import MenuSetup from "./components/menu/MenuSetup";
-import MenuChess from "./components/menu/MenuChess";
+// Lazy-loaded Components
+const GameScreen = lazy(() => import("./components/GameScreen"));
+const HowToPlay = lazy(() => import("./components/HowToPlay"));
+const SeedLibrary = lazy(() => import("./components/SeedLibrary"));
+const InteractiveTutorial = lazy(
+  () => import("./components/InteractiveTutorial"),
+);
+const CaptureTheWorldGuide = lazy(
+  () => import("./components/CaptureTheWorldGuide"),
+);
+const CtkGuide = lazy(() => import("./components/CtkGuide"));
+const CtaGuide = lazy(() => import("./components/CtaGuide"));
+const TrenchGuide = lazy(() => import("./components/TrenchGuide"));
+const ChessGuide = lazy(() => import("./components/ChessGuide"));
+
+// Lazy-loaded Menu Components
+const MenuLayout = lazy(() => import("./components/menu/MenuLayout"));
+const MenuHome = lazy(() => import("./components/menu/MenuHome"));
+const MenuPlay = lazy(() => import("./components/menu/MenuPlay"));
+const MenuLearn = lazy(() => import("./components/menu/MenuLearn"));
+const MenuEndgame = lazy(() => import("./components/menu/MenuEndgame"));
+const MenuTrench = lazy(() => import("./components/menu/MenuTrench"));
+const MenuLobby = lazy(() => import("./components/menu/MenuLobby"));
+const MenuLocal = lazy(() => import("./components/menu/MenuLocal"));
+const MenuSetup = lazy(() => import("./components/menu/MenuSetup"));
+const MenuChess = lazy(() => import("./components/menu/MenuChess"));
 
 import type { TerrainType } from "./types";
+import TrenchessText from "./components/ui/TrenchessText";
+import { Mountain, Trees, Waves } from "lucide-react";
+import { DesertIcon } from "./UnitIcons";
+
+// A simple sleek loading fallback
+const LoadingFallback = () => (
+  <div className="w-full h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center">
+    <DesertIcon className="w-12 h-12" />
+    <span className="mt-4 text-center  font-black uppercase tracking-widest text-slate-400">
+      <Mountain className="float-right w-12 h-12 text-red-500" />
+      <Trees className=" w-12 h-12 text-emerald-500" />
+      <div>
+        Loading <TrenchessText />
+      </div>
+
+      <div className="flex flex-row">
+        <Waves className="w-12 h-12 text-blue-500" />
+        <Waves className="w-12 h-12 text-blue-500 " />
+        <Waves className="w-12 h-12 text-blue-500" />
+        <Waves className="w-12 h-12 text-blue-500" />
+      </div>
+      <div>
+        Please wait... <br />
+      </div>
+    </span>
+  </div>
+);
 
 const TrenchGuideWrapper = (props: any) => {
   const { terrain } = useParams();
@@ -43,7 +78,7 @@ const App = () => {
   const game = useGameState();
   const navigate = useNavigate();
   const location = useLocation();
-  const [prevState, setPrevState] = useState<string>("menu"); // Keep for "Back" functionality in wrappers if needed
+  // Keep for "Back" functionality in wrappers if left out
 
   // Sync GameState with Route (Basic)
   useEffect(() => {
@@ -90,157 +125,138 @@ const App = () => {
   };
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <MenuLayout
-            darkMode={game.darkMode}
-            pieceStyle={game.pieceStyle}
-            toggleTheme={game.toggleTheme}
-            togglePieceStyle={game.togglePieceStyle}
-            onTutorial={() => {
-              game.setGameState("tutorial");
-              navigate("/tutorial");
-            }}
-            onLogoClick={() => {
-              game.setGameState("menu");
-              navigate("/");
-            }}
-            onZenGarden={() => {
-              navigate("/zen");
-            }}
-            multiplayer={game.multiplayer}
-            onStartGame={(mode, preset, playerTypes, seed) => {
-              // This triggers the state change, which triggers the useEffect to navigate to /game
-              game.initGameWithPreset(mode, preset, playerTypes, seed);
-            }}
-            // These props are largely unused by the new Menu Components which navigate directly,
-            // but required by MenuLayout interface (which populates context)
-            onCtfGuide={() => navigate("/learn/ctf")}
-            onChessGuide={() => navigate("/learn/chess")}
-            onTrenchGuide={(t) =>
-              navigate(t ? `/learn/trench/${t}` : "/learn/trench")
-            }
-            onOpenLibrary={() => navigate("/library")}
-          />
-        }
-      >
-        <Route index element={<MenuHome />} />
-        <Route path="play" element={<MenuPlay />} />
-        <Route path="play/local" element={<MenuLocal />} />
-        <Route path="play/lobby" element={<MenuLobby />} />
-        <Route path="play/setup" element={<MenuSetup />} />
-        {/* We might want a route for setup like /play/setup?mode=... but for now simple */}
-
-        <Route path="learn" element={<MenuLearn />} />
-        <Route path="learn/endgame" element={<MenuEndgame />} />
-        <Route path="learn/trench" element={<MenuTrench />} />
-        <Route path="learn/trench/:terrain" element={<MenuTrench />} />
-        <Route path="learn/chess" element={<MenuChess />} />
-        <Route path="learn/chess/:unitType" element={<MenuChess />} />
+    <Suspense fallback={<LoadingFallback />}>
+      <Routes>
         <Route
-          path="zen"
-          element={<div />} // Effect in App handles the actual loading state or transition
+          path="/"
+          element={
+            <MenuLayout
+              darkMode={game.darkMode}
+              pieceStyle={game.pieceStyle}
+              toggleTheme={game.toggleTheme}
+              togglePieceStyle={game.togglePieceStyle}
+              onTutorial={() => {
+                game.setGameState("tutorial");
+                navigate("/tutorial");
+              }}
+              onLogoClick={() => {
+                game.setGameState("menu");
+                navigate("/");
+              }}
+              onZenGarden={() => {
+                navigate("/zen");
+              }}
+              multiplayer={game.multiplayer}
+              onStartGame={(mode, preset, playerTypes, seed) => {
+                // This triggers the state change, which triggers the useEffect to navigate to /game
+                game.initGameWithPreset(mode, preset, playerTypes, seed);
+              }}
+              // These props are largely unused by the new Menu Components which navigate directly,
+              // but required by MenuLayout interface (which populates context)
+              onCtwGuide={() => navigate("/learn/endgame/capture-the-world")}
+              onChessGuide={() => navigate("/learn/chess")}
+              onTrenchGuide={(t) =>
+                navigate(t ? `/learn/trench/${t}` : "/learn/trench")
+              }
+              onOpenLibrary={() => navigate("/library")}
+            />
+          }
+        >
+          <Route index element={<MenuHome />} />
+          <Route path="play" element={<MenuPlay />} />
+          <Route path="play/local" element={<MenuLocal />} />
+          <Route path="play/lobby" element={<MenuLobby />} />
+          <Route path="play/setup" element={<MenuSetup />} />
+          {/* We might want a route for setup like /play/setup?mode=... but for now simple */}
+
+          <Route path="learn" element={<MenuLearn />} />
+          <Route path="learn/endgame" element={<MenuEndgame />} />
+          <Route
+            path="learn/endgame/capture-the-world"
+            element={<CaptureTheWorldGuide onBack={handleBackToLearn} />}
+          />
+          <Route
+            path="learn/endgame/capture-the-king"
+            element={<CtkGuide onBack={handleBackToLearn} />}
+          />
+          <Route
+            path="learn/endgame/capture-the-army"
+            element={<CtaGuide onBack={handleBackToLearn} />}
+          />
+          <Route path="learn/trench" element={<MenuTrench />} />
+          <Route
+            path="learn/trench/:terrain"
+            element={<TrenchGuideWrapper onBack={handleBackToLearn} />}
+          />
+          <Route path="learn/chess" element={<MenuChess />} />
+          <Route
+            path="learn/chess/:unitType"
+            element={
+              <ChessGuideWrapper onBack={() => navigate("/learn/chess")} />
+            }
+          />
+          <Route
+            path="zen"
+            element={<div />} // Effect in App handles the actual loading state or transition
+          />
+        </Route>
+
+        <Route
+          path="/game"
+          element={
+            <GameScreen
+              game={game}
+              onMenuClick={handleBackToMenu}
+              onHowToPlayClick={() => navigate("/learn/manual")} // In-game help
+              onLibraryClick={() => navigate("/library")}
+            />
+          }
         />
-      </Route>
 
-      <Route
-        path="/game"
-        element={
-          <GameScreen
-            game={game}
-            onMenuClick={handleBackToMenu}
-            onHowToPlayClick={() => navigate("/learn/manual")} // In-game help
-            onLibraryClick={() => navigate("/library")}
-          />
-        }
-      />
+        <Route
+          path="/tutorial"
+          element={
+            <InteractiveTutorial
+              onBack={handleBackToMenu}
+              darkMode={game.darkMode}
+            />
+          }
+        />
 
-      <Route
-        path="/tutorial"
-        element={
-          <InteractiveTutorial
-            onBack={handleBackToMenu}
-            darkMode={game.darkMode}
-          />
-        }
-      />
+        <Route
+          path="/library"
+          element={
+            <SeedLibrary
+              onBack={handleBackToMenu} // Or navigate(-1)?
+              onLoadSeed={(seed) => {
+                game.initFromSeed(seed); // Sets state to play/setup
+                // useEffect will handle nav to /game
+              }}
+              onEditInZen={(seed) => {
+                game.initFromSeed(seed, "zen-garden");
+                // useEffect will handle nav to /game
+              }}
+              activeMode={game.mode}
+            />
+          }
+        />
 
-      <Route
-        path="/library"
-        element={
-          <SeedLibrary
-            onBack={handleBackToMenu} // Or navigate(-1)?
-            onLoadSeed={(seed) => {
-              game.initFromSeed(seed); // Sets state to play/setup
-              // useEffect will handle nav to /game
-            }}
-            onEditInZen={(seed) => {
-              game.initFromSeed(seed, "zen-garden");
-              // useEffect will handle nav to /game
-            }}
-            activeMode={game.mode}
-          />
-        }
-      />
-
-      {/* Guides */}
-      <Route
-        path="/learn/manual"
-        element={
-          <HowToPlay
-            onBack={handleBackToMenu} // Should probably go back to where we came from
-            darkMode={game.darkMode}
-            pieceStyle={game.pieceStyle}
-            toggleTheme={game.toggleTheme}
-            togglePieceStyle={game.togglePieceStyle}
-            onTutorial={() => navigate("/tutorial")}
-          />
-        }
-      />
-      <Route
-        path="/learn/ctf"
-        element={
-          <CaptureTheFlagGuide
-            onBack={handleBackToLearn}
-            darkMode={game.darkMode}
-            pieceStyle={game.pieceStyle}
-            toggleTheme={game.toggleTheme}
-            togglePieceStyle={game.togglePieceStyle}
-            onTutorial={() => navigate("/tutorial")}
-          />
-        }
-      />
-      {/* Updated Chess Navigation */}
-      <Route
-        path="/learn/chess/:unitType"
-        element={
-          <ChessGuideWrapper
-            onBack={() => navigate("/learn/chess")}
-            darkMode={game.darkMode}
-            pieceStyle={game.pieceStyle}
-            toggleTheme={game.toggleTheme}
-            togglePieceStyle={game.togglePieceStyle}
-            onTutorial={() => navigate("/tutorial")}
-          />
-        }
-      />
-      {/* Dynamic Route for Trench Guide */}
-      <Route
-        path="/learn/trench/:terrain"
-        element={
-          <TrenchGuideWrapper
-            onBack={handleBackToLearn}
-            darkMode={game.darkMode}
-            pieceStyle={game.pieceStyle}
-            toggleTheme={game.toggleTheme}
-            togglePieceStyle={game.togglePieceStyle}
-            onTutorial={() => navigate("/tutorial")}
-          />
-        }
-      />
-    </Routes>
+        {/* Guides */}
+        <Route
+          path="/learn/manual"
+          element={
+            <HowToPlay
+              onBack={handleBackToMenu} // Should probably go back to where we came from
+              darkMode={game.darkMode}
+              pieceStyle={game.pieceStyle}
+              toggleTheme={game.toggleTheme}
+              togglePieceStyle={game.togglePieceStyle}
+              onTutorial={() => navigate("/tutorial")}
+            />
+          }
+        />
+      </Routes>
+    </Suspense>
   );
 };
 

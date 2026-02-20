@@ -60,7 +60,7 @@ const MenuHome: React.FC = () => {
           description="Learn the Basics"
           Icon={Baby}
           color="slate"
-          className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 h-full w-full"
+          className="h-full w-full"
         />
         <MenuCard
           onClick={() => navigate("/play")}
@@ -81,7 +81,7 @@ const MenuHome: React.FC = () => {
           description="Master its Wisdom"
           Icon={DualColorSwordsIcon}
           color="red"
-          className="hover:border-blue-500/30 h-full w-full"
+          className="h-full w-full"
         />
       </div>
     </div>

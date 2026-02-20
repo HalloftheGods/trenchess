@@ -9,7 +9,8 @@ import {
   Sparkles,
   Database,
   Copy,
-  Trash2,
+  Bomb,
+  Mountain,
 } from "lucide-react";
 import {
   TERRAIN_TYPES,
@@ -55,6 +56,7 @@ interface DeploymentPanelProps {
   setSelectedCell: (cell: null) => void;
   setValidMoves: (moves: number[][]) => void;
   randomizeTerrain: () => void;
+  generateElementalTerrain?: () => void;
   randomizeUnits: () => void;
   setClassicalFormation: () => void;
   resetTerrain?: () => void;
@@ -97,6 +99,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
   setSelectedCell,
   setValidMoves,
   randomizeTerrain,
+  generateElementalTerrain,
   randomizeUnits,
   setClassicalFormation,
   resetTerrain,
@@ -445,15 +448,23 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                     onClick={randomizeTerrain}
                     className="flex-1 py-2 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 border border-emerald-500/30 hover:border-emerald-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-emerald-400 hover:text-emerald-300 hover:scale-[1.02] active:scale-95"
                   >
-                    <Shuffle size={14} /> Terrain
+                    <Shuffle size={14} /> Random
                   </button>
+                  {generateElementalTerrain && (
+                    <button
+                      onClick={generateElementalTerrain}
+                      className="flex-1 py-2 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 border border-emerald-500/30 hover:border-emerald-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-emerald-400 hover:text-emerald-300 hover:scale-[1.02] active:scale-95"
+                    >
+                      <Mountain size={14} /> Natural
+                    </button>
+                  )}
                   {resetTerrain && (
                     <button
                       onClick={resetTerrain}
                       className="py-2 px-3 bg-red-50 dark:bg-white/5 hover:bg-red-100 dark:hover:bg-red-900/20 border border-slate-200 dark:border-white/5 hover:border-red-200 dark:hover:border-red-500/30 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-red-500 hover:scale-[1.02] active:scale-95"
                       title="Reset Terrain"
                     >
-                      <Trash2 size={14} />
+                      <Bomb size={14} />
                     </button>
                   )}
                 </div>
@@ -477,7 +488,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                       className="py-2 px-3 bg-red-50 dark:bg-white/5 hover:bg-red-100 dark:hover:bg-red-900/20 border border-slate-200 dark:border-white/5 hover:border-red-200 dark:hover:border-red-500/30 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-red-500 hover:scale-[1.02] active:scale-95"
                       title="Reset Units"
                     >
-                      <Trash2 size={14} />
+                      <Bomb size={14} />
                     </button>
                   )}
                 </div>

@@ -134,6 +134,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
           setSelectedCell={game.setSelectedCell}
           setValidMoves={game.setValidMoves}
           randomizeTerrain={game.randomizeTerrain}
+          generateElementalTerrain={game.generateElementalTerrain}
           randomizeUnits={game.randomizeUnits}
           resetTerrain={game.resetTerrain}
           resetUnits={game.resetUnits}

@@ -47,7 +47,7 @@ export interface MenuContextType {
     seed?: string,
   ) => void;
   onTutorial: () => void;
-  onCtfGuide: () => void;
+  onCtwGuide: () => void;
   onChessGuide: () => void;
   onTrenchGuide: (terrain?: TerrainType) => void;
   onOpenLibrary: () => void;

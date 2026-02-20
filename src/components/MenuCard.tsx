@@ -27,6 +27,8 @@ interface MenuCardProps {
   titleNode?: React.ReactNode;
   /** Optional: configuration for the board preview when this card is hovered */
   preview?: PreviewConfig;
+  /** Visual variant of the card. Default is 'tinted' */
+  variant?: "tinted" | "solid" | "transparent";
 }
 
 const COLOR_STYLES: Record<
@@ -36,63 +38,97 @@ const COLOR_STYLES: Record<
     shadow: string;
     gradient: string;
     iconColor: string;
+    tintedBg: string; // The standard transparent tinted background
+    solidBg: string; // Used for "solid" variant
   }
 > = {
   red: {
-    border: "hover:border-red-500",
+    border: "border-red-500/20 hover:border-red-500/50",
     shadow: "hover:shadow-red-500/20",
     gradient:
       "from-red-500/0 to-red-500/0 group-hover:from-red-500/5 group-hover:to-red-500/10",
     iconColor: "text-red-500",
+    tintedBg:
+      "bg-red-50/50 hover:bg-red-100/50 dark:bg-red-900/10 dark:hover:bg-red-900/20",
+    solidBg:
+      "bg-red-100 hover:bg-red-200 dark:bg-red-900/50 dark:hover:bg-red-900/80",
   },
   orange: {
-    border: "hover:border-orange-500",
+    border: "border-orange-500/20 hover:border-orange-500/50",
     shadow: "hover:shadow-orange-500/20",
     gradient:
       "from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/5 group-hover:to-orange-500/10",
     iconColor: "text-orange-500",
+    tintedBg:
+      "bg-orange-50/50 hover:bg-orange-100/50 dark:bg-orange-900/10 dark:hover:bg-orange-900/20",
+    solidBg:
+      "bg-orange-100 hover:bg-orange-200 dark:bg-orange-900/50 dark:hover:bg-orange-900/80",
   },
   yellow: {
-    border: "hover:border-yellow-500",
+    border: "border-yellow-500/20 hover:border-yellow-500/50",
     shadow: "hover:shadow-yellow-500/20",
     gradient:
       "from-yellow-500/0 to-yellow-500/0 group-hover:from-yellow-500/5 group-hover:to-yellow-500/10",
     iconColor: "text-yellow-500",
+    tintedBg:
+      "bg-yellow-50/50 hover:bg-yellow-100/50 dark:bg-yellow-900/10 dark:hover:bg-yellow-900/20",
+    solidBg:
+      "bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-900/50 dark:hover:bg-yellow-900/80",
   },
   emerald: {
-    border: "hover:border-emerald-500",
+    border: "border-emerald-500/20 hover:border-emerald-500/50",
     shadow: "hover:shadow-emerald-500/20",
     gradient:
       "from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/5 group-hover:to-emerald-500/10",
     iconColor: "text-emerald-500",
+    tintedBg:
+      "bg-emerald-50/50 hover:bg-emerald-100/50 dark:bg-emerald-900/10 dark:hover:bg-emerald-900/20",
+    solidBg:
+      "bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900/50 dark:hover:bg-emerald-900/80",
   },
   blue: {
-    border: "hover:border-blue-500",
+    border: "border-blue-500/20 hover:border-blue-500/50",
     shadow: "hover:shadow-blue-500/20",
     gradient:
       "from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-blue-500/10",
     iconColor: "text-blue-500",
+    tintedBg:
+      "bg-blue-50/50 hover:bg-blue-100/50 dark:bg-blue-900/10 dark:hover:bg-blue-900/20",
+    solidBg:
+      "bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/50 dark:hover:bg-blue-900/80",
   },
   amber: {
-    border: "hover:border-amber-500",
+    border: "border-amber-500/20 hover:border-amber-500/50",
     shadow: "hover:shadow-amber-500/20",
     gradient:
       "from-amber-500/0 to-amber-500/0 group-hover:from-amber-500/5 group-hover:to-amber-500/10",
     iconColor: "text-amber-500",
+    tintedBg:
+      "bg-amber-50/50 hover:bg-amber-100/50 dark:bg-amber-900/10 dark:hover:bg-amber-900/20",
+    solidBg:
+      "bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/50 dark:hover:bg-amber-900/80",
   },
   fuchsia: {
-    border: "hover:border-fuchsia-500",
+    border: "border-fuchsia-500/20 hover:border-fuchsia-500/50",
     shadow: "hover:shadow-fuchsia-500/20",
     gradient:
       "from-fuchsia-500/0 to-fuchsia-500/0 group-hover:from-fuchsia-500/5 group-hover:to-fuchsia-500/10",
     iconColor: "text-fuchsia-500",
+    tintedBg:
+      "bg-fuchsia-50/50 hover:bg-fuchsia-100/50 dark:bg-fuchsia-900/10 dark:hover:bg-fuchsia-900/20",
+    solidBg:
+      "bg-fuchsia-100 hover:bg-fuchsia-200 dark:bg-fuchsia-900/50 dark:hover:bg-fuchsia-900/80",
   },
   slate: {
-    border: "hover:border-slate-500",
+    border: "border-slate-500/20 hover:border-slate-500/50",
     shadow: "hover:shadow-slate-500/20",
     gradient:
       "from-slate-500/0 to-slate-500/0 group-hover:from-slate-500/5 group-hover:to-slate-500/10",
     iconColor: "text-slate-500",
+    tintedBg:
+      "bg-slate-50/50 hover:bg-slate-100/50 dark:bg-slate-900/10 dark:hover:bg-slate-900/20",
+    solidBg:
+      "bg-slate-100 hover:bg-slate-200 dark:bg-slate-900/50 dark:hover:bg-slate-900/80",
   },
 };
 
@@ -112,9 +148,10 @@ const MenuCard = ({
   onMouseLeave,
   titleNode,
   preview,
+  variant = "tinted",
 }: MenuCardProps & { isSelected?: boolean; isDisabled?: boolean }) => {
   const styles = COLOR_STYLES[color];
-  const { setPreviewConfig } = useMenuContext();
+  const { setPreviewConfig, selectedBoard } = useMenuContext();
 
   const handleMouseEnter = () => {
     if (onMouseEnter) onMouseEnter();
@@ -126,12 +163,9 @@ const MenuCard = ({
   const handleMouseLeave = () => {
     if (onMouseLeave) onMouseLeave();
     if (preview) {
-      // Revert to default or empty?
-      // For now, let's set it to default empty state if strictly needed,
-      // but usually the next card will set it, or it lingers which might be fine.
-      // Actually, better to clear it to avoid stale previews.
+      // Revert to selected board if one is active, otherwise clear
       setPreviewConfig({
-        mode: null,
+        mode: selectedBoard || null,
       });
     }
   };
@@ -142,14 +176,20 @@ const MenuCard = ({
       disabled={isDisabled}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`group bg-white dark:bg-slate-900 border-4 p-8 rounded-[2.5rem] transition-all flex flex-col items-center gap-6 shadow-2xl relative overflow-hidden cursor-pointer ${
+      className={`group border-2 p-8 rounded-[2.5rem] transition-all flex flex-col items-center gap-6 shadow-2xl relative overflow-hidden cursor-pointer ${
         isDisabled
           ? "opacity-50 cursor-not-allowed grayscale"
           : "hover:-translate-y-2"
       } ${
         isSelected
           ? "ring-4 ring-inset ring-red-600 border-transparent [--card-bg:#ffffff] dark:[--card-bg:#0f172a]"
-          : "border-slate-200/30 dark:border-white/5"
+          : styles.border
+      } ${
+        variant === "tinted"
+          ? styles.tintedBg
+          : variant === "solid"
+            ? styles.solidBg
+            : "bg-white dark:bg-slate-900 border-slate-200/30 dark:border-white/5"
       } ${styles.shadow} ${className}`}
       style={
         isSelected && className.includes("custom-border")

@@ -7,7 +7,6 @@
  */
 import React, { useState, useEffect, useMemo } from "react";
 import {
-  ArrowLeft,
   Trees,
   Waves,
   Mountain,
@@ -547,7 +546,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
                 ? TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey
                 : ""
             }
-            selectedUnit={selectedUnit}
+            selectedUnit={selectedUnit || undefined}
             onUnitSelect={setSelectedUnit}
             onPrev={handlePrevTerrain}
             onNext={handleNextTerrain}

@@ -6,16 +6,12 @@
  */
 import React from "react";
 import {
-  Trees,
-  Waves,
-  Mountain,
-  X,
-  Sparkles,
-  ShieldPlus,
   ChevronLeft,
   ChevronRight,
+  ShieldPlus,
+  Sparkles,
+  X,
 } from "lucide-react";
-import { DesertIcon } from "../UnitIcons";
 import {
   TERRAIN_INTEL,
   TERRAIN_TYPES,

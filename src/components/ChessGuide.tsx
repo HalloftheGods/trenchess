@@ -1,43 +1,16 @@
-/*
- * Copyright (c) 2006 - 2026 Hall of the Gods, Inc.
- * All Rights Reserved.
- *
- * This software is the confidential and proprietary information of Trenchess.
- */
-import React from "react";
-import { Trees, Mountain, Zap } from "lucide-react";
-import BoardPreview from "./BoardPreview";
+import React, { useMemo } from "react";
+import { Trees, Mountain } from "lucide-react";
+import InteractiveGuide, { type Slide } from "./InteractiveGuide";
 import { PIECES, INITIAL_ARMY } from "../constants";
 import { DesertIcon } from "../UnitIcons";
 import { UNIT_DETAILS, unitColorMap } from "../data/unitDetails";
-import type { PieceStyle } from "../constants";
-import PageLayout from "./PageLayout";
-import PageHeader from "./PageHeader";
-import SectionDivider from "./ui/SectionDivider";
 
 interface ChessGuideProps {
   onBack: () => void;
-  darkMode: boolean;
-  pieceStyle: PieceStyle;
-  toggleTheme?: () => void;
-  togglePieceStyle?: () => void;
-  onTutorial?: () => void;
   initialUnit?: string;
 }
 
-const ChessGuide: React.FC<ChessGuideProps> = ({
-  onBack,
-  darkMode,
-  pieceStyle,
-  toggleTheme,
-  togglePieceStyle,
-  onTutorial,
-  initialUnit,
-}) => {
-  const textColor = darkMode ? "text-slate-100" : "text-slate-800";
-  const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";
-  const cardBg = darkMode ? "bg-slate-900/50" : "bg-white/70";
-
+const ChessGuide: React.FC<ChessGuideProps> = ({ onBack, initialUnit }) => {
   const renderTerrainIcons = (icons: React.ReactNode[]) => {
     return (
       <div className="flex gap-2">
@@ -87,7 +60,7 @@ const ChessGuide: React.FC<ChessGuideProps> = ({
     unitType: string,
     movePattern: (r: number, c: number) => number[][],
   ) => {
-    const previewGridSize = 9; // Smaller grid for cleaner look
+    const previewGridSize = 9;
     const centerRow = 4;
     const centerCol = 4;
     const details = UNIT_DETAILS[unitType];
@@ -100,12 +73,10 @@ const ChessGuide: React.FC<ChessGuideProps> = ({
       : [];
 
     return (
-      <div className="bg-slate-100 dark:bg-white/5 rounded-2xl p-3 border border-slate-200 dark:border-white/5 w-fit shadow-inner">
+      <div className="bg-slate-100 dark:bg-white/5 rounded-2xl p-3 border border-slate-200 dark:border-white/5 w-fit shadow-inner mx-auto lg:mx-0">
         <div
           className="grid gap-[1px] w-40 h-40 sm:w-48 sm:h-48"
-          style={{
-            gridTemplateColumns: `repeat(${previewGridSize}, 1fr)`,
-          }}
+          style={{ gridTemplateColumns: `repeat(${previewGridSize}, 1fr)` }}
         >
           {Array.from({ length: previewGridSize * previewGridSize }).map(
             (_, i) => {
@@ -127,10 +98,10 @@ const ChessGuide: React.FC<ChessGuideProps> = ({
                   className={`aspect-square rounded-[1px] relative flex items-center justify-center transition-all duration-300 ${
                     isCenter
                       ? "bg-slate-800 dark:bg-black z-20 shadow-lg scale-110"
-                      : isAttack
-                        ? "bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)] z-10"
-                        : newMoves.some(([nr, nc]) => nr === r && nc === c)
-                          ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)] z-10 animate-pulse"
+                      : newMoves.some(([nr, nc]) => nr === r && nc === c)
+                        ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)] z-10 animate-pulse"
+                        : isAttack
+                          ? "bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)] z-10"
                           : isMove
                             ? "bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] z-10"
                             : isPromotionRow
@@ -155,22 +126,18 @@ const ChessGuide: React.FC<ChessGuideProps> = ({
     );
   };
 
-  const boardPreviewNode = (
-    <BoardPreview
-      key="chess-guide-preview"
-      selectedMode={"2p-ns"}
-      selectedProtocol={"classic" as any}
-      darkMode={darkMode}
-      pieceStyle={pieceStyle}
-      isReady={true}
-      showTerrainIcons={false}
-      hideUnits={false}
-    />
-  );
-
-  // Defined order for display
   const UNIT_ORDER = initialUnit
-    ? [initialUnit]
+    ? [
+        initialUnit,
+        ...[
+          PIECES.BOT,
+          PIECES.HORSEMAN,
+          PIECES.SNIPER,
+          PIECES.TANK,
+          PIECES.BATTLEKNIGHT,
+          PIECES.COMMANDER,
+        ].filter((u) => u !== initialUnit),
+      ]
     : [
         PIECES.BOT,
         PIECES.HORSEMAN,
@@ -180,134 +147,159 @@ const ChessGuide: React.FC<ChessGuideProps> = ({
         PIECES.COMMANDER,
       ];
 
-  return (
-    <PageLayout
-      darkMode={darkMode}
-      header={
-        <PageHeader
-          darkMode={darkMode}
-          pieceStyle={pieceStyle}
-          toggleTheme={toggleTheme || (() => {})}
-          togglePieceStyle={togglePieceStyle || (() => {})}
-          onTutorial={onTutorial}
-          onLogoClick={onBack}
-          onBack={onBack}
-          boardPreview={boardPreviewNode}
-        />
-      }
-    >
-      <div className="max-w-5xl mx-auto w-full">
-        {/* Header */}
-        <div className="flex flex-col items-center mb-16">
-          <SectionDivider
-            label="The Chess - Unit Roster"
-            color="blue"
-            animate={true}
-          />
-        </div>
+  const slides: Slide[] = useMemo(() => {
+    return UNIT_ORDER.map((type) => {
+      const unit = INITIAL_ARMY.find((u) => u.type === type);
+      const details = UNIT_DETAILS[type];
 
-        {/* Units Grid */}
-        <div className="grid grid-cols-1 gap-8 mb-20">
-          {UNIT_ORDER.map((type) => {
-            const unit = INITIAL_ARMY.find((u) => u.type === type);
-            if (!unit) return null;
+      if (!unit || !details) return null;
 
-            const details = UNIT_DETAILS[unit.type];
-            if (!details) return null;
+      const colors = unitColorMap[unit.type];
+      const IconComp = unit.lucide;
 
-            const colors = unitColorMap[unit.type];
-            const IconComp = unit.lucide;
-            const chessTitle = details.role;
-            const jobTitle = details.title; // e.g. "Dragoon" or "Dark Knight"
+      // Extract base color from the text class (e.g., "text-slate-500" -> "slate")
+      const colorMatch = colors.text.match(/text-([a-z]+)-\d+/);
+      const colorName = colorMatch ? colorMatch[1] : "slate";
+      // Ensure it's one of the valid color strings
+      const validColors = [
+        "red",
+        "blue",
+        "emerald",
+        "amber",
+        "slate",
+        "indigo",
+      ];
+      const finalColor = validColors.includes(colorName) ? colorName : "slate";
 
-            return (
-              <div
-                key={unit.type}
-                className={`relative p-8 rounded-3xl border-4 ${cardBg} ${colors.border} flex flex-col gap-6 transition-all hover:shadow-lg overflow-hidden group/card`}
-              >
-                <div className="flex flex-col md:flex-row gap-10 items-center">
-                  {/* Unit Icon (Left) */}
-                  <div className="flex flex-col shrink-0 gap-4 items-center">
-                    <div
-                      className={`w-36 h-36 sm:w-48 sm:h-48 rounded-[2.5rem] ${colors.bg} ${colors.text} flex items-center justify-center shadow-inner border border-white/5 transition-transform group-hover/card:-rotate-3`}
-                    >
-                      <IconComp className="w-24 h-24 sm:w-32 sm:h-32 transition-transform group-hover/card:scale-110" />
-                    </div>
-                    {/* Terrain Icons */}
-                    {details.levelUp?.terrainIcons && (
-                      <div className="flex justify-center">
-                        {renderTerrainIcons(details.levelUp.terrainIcons)}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Description (Middle) */}
-                  <div className="flex-1 min-w-0 flex flex-col text-center md:text-left justify-center py-2">
-                    <div className="flex flex-col gap-2 items-center md:items-start mb-6">
-                      <div className="flex items-center gap-4 justify-center md:justify-start w-full flex-wrap">
-                        <h3
-                          className={`text-5xl font-black uppercase tracking-tighter ${textColor}`}
-                        >
-                          {jobTitle}
-                        </h3>
-                      </div>
-                      <span
-                        className={`text-lg font-black uppercase tracking-[0.2em] ${colors.text} opacity-90`}
-                      >
-                        {chessTitle}
-                      </span>
-                    </div>
-
-                    <ul className="space-y-3">
-                      {details.levelUp && (
-                        <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10 mb-6 relative">
-                          <div className="flex items-center gap-2 text-amber-500 font-black text-sm uppercase italic tracking-wider mb-2 justify-center md:justify-start">
-                            <Zap size={14} className="fill-amber-500" />
-                            Special Ability
-                          </div>
-                          <ul className="space-y-1">
-                            {details.levelUp.stats.map((stat, sIdx) => (
-                              <li
-                                key={sIdx}
-                                className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-2 text-left justify-center md:justify-start"
-                              >
-                                <div className="w-1 h-1 rounded-full bg-amber-500/40 shrink-0" />
-                                {stat}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {/* Standard Description */}
-                      {details.desc?.map((line, i) => (
-                        <li
-                          key={i}
-                          className="text-sm text-center md:text-left leading-relaxed font-medium text-slate-500 dark:text-slate-400"
-                        >
-                          {line}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Move Preview (Right) */}
-                  <div className="shrink-0 flex flex-col gap-3 items-center md:items-start">
-                    <span
-                      className={`text-[10px] font-black uppercase tracking-widest ${subtextColor} flex items-center gap-2`}
-                    >
-                      <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                      Move Set
-                    </span>
-                    {renderMovePreview(unit.type, details.movePattern)}
-                  </div>
+      return {
+        id: unit.type,
+        title: details.title,
+        subtitle: details.subtitle,
+        color: finalColor as any,
+        topLabel: details.role,
+        icon: IconComp,
+        previewConfig: {
+          mode: "2p-ns",
+          protocol: "classic",
+          showIcons: false,
+          hideUnits: false,
+        },
+        leftContent: details.levelUp?.terrainIcons ? (
+          <div className="flex items-center gap-6">
+            {renderTerrainIcons(details.levelUp.terrainIcons)}
+          </div>
+        ) : null,
+        description: (
+          <div className="flex flex-row items-center gap-6 justify-center flex-wrap">
+            {details.levelUp?.stats.map((stat, sIdx) => {
+              const colonIndex = stat.indexOf(":");
+              const name =
+                colonIndex !== -1 ? stat.substring(0, colonIndex) : stat;
+              return (
+                <div key={sIdx} className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-amber-500/60 shrink-0" />
+                  <span className="text-sm font-bold text-slate-500 dark:text-slate-400 tracking-widest">
+                    {name}
+                  </span>
                 </div>
+              );
+            })}
+          </div>
+        ),
+        sideContent: (
+          <div className="flex flex-col items-center gap-4">
+            {renderMovePreview(unit.type, details.movePattern)}
+          </div>
+        ),
+        infoContent: (
+          <div className="flex flex-col items-center gap-8">
+            {/* Move Legend */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 p-6 rounded-3xl bg-slate-100/50 dark:bg-white/5 border border-slate-200/50 dark:border-white/5 w-full max-w-2xl mx-auto">
+              {/* Basic Movement */}
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Unit Movement
+                </span>
               </div>
-            );
-          })}
-        </div>
-      </div>
-    </PageLayout>
+
+              {/* Standard Capture */}
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Capture Zone
+                </span>
+              </div>
+
+              {/* Promotion for Bots */}
+              {unit.type === PIECES.BOT && (
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-full bg-amber-500/20 flex items-center justify-center">
+                    <div className="w-1 h-1 rounded-full bg-amber-500/60" />
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Promotion Rank
+                  </span>
+                </div>
+              )}
+
+              {/* Special Abilities from stats */}
+              {details.levelUp?.stats.map((stat, sIdx) => {
+                const colonIndex = stat.indexOf(":");
+                if (colonIndex === -1) {
+                  if (stat.toLowerCase().includes("sanctuary")) return null;
+
+                  return (
+                    <div
+                      key={`legend-${sIdx}`}
+                      className="flex items-start gap-3 sm:col-span-2"
+                    >
+                      <div className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)] mt-0.5 animate-pulse" />
+                      <p className="text-[10px] font-medium text-slate-600 dark:text-slate-300">
+                        <span className="font-black uppercase tracking-wider text-amber-500 mr-2">
+                          Special:
+                        </span>
+                        {stat}
+                      </p>
+                    </div>
+                  );
+                }
+
+                const name = stat.substring(0, colonIndex);
+                const desc = stat.substring(colonIndex + 1).trim();
+                const isSanctuary = name.toLowerCase().includes("sanctuary");
+
+                return (
+                  <div
+                    key={`legend-${sIdx}`}
+                    className={`flex items-start gap-3 ${isSanctuary ? "sm:col-span-2" : "sm:col-span-2"}`}
+                  >
+                    <div
+                      className={`w-3 h-3 rounded-full ${isSanctuary ? "bg-amber-400/50" : "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)] animate-pulse"} mt-0.5`}
+                    />
+                    <p className="text-[10px] font-medium text-slate-600 dark:text-slate-300">
+                      <span className="font-black uppercase tracking-wider text-amber-500 mr-2">
+                        {name}:
+                      </span>
+                      {desc}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ),
+      };
+    }).filter(Boolean) as Slide[];
+  }, [UNIT_ORDER]);
+
+  return (
+    <InteractiveGuide
+      title="The Chess - Unit Roster"
+      slides={slides}
+      onBack={onBack}
+      labelColor="blue"
+    />
   );
 };
 

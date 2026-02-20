@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChessKing, ChessQueen, Earth } from "lucide-react";
 import MenuCard from "../MenuCard";
@@ -10,17 +10,21 @@ const MenuEndgame: React.FC = () => {
   const navigate = useNavigate();
   const { setHoveredMenu, darkMode } = useMenuContext();
 
+  const ctkPreviewMode = useMemo(
+    () => (Math.random() > 0.5 ? ("2p-ns" as const) : ("2p-ew" as const)),
+    [],
+  );
+
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-      <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
+      <div className="relative w-full max-w-7xl mb-12">
+        <SectionDivider
+          label="The Endgame split into 3 different win conditions"
+          color="emerald"
+        />
         <BackButton
           onClick={() => navigate("/learn")}
-          className="absolute left-0"
-        />
-        <SectionDivider
-          label="The Endgame brought different win conditions"
-          className="ml-24"
-          color="emerald"
+          className="absolute left-0 -top-8"
         />
       </div>
 
@@ -28,30 +32,28 @@ const MenuEndgame: React.FC = () => {
         {/* Capture the King */}
         <MenuCard
           onClick={() => {
-            // Navigate to CTK guide or placeholder
-            // navigate('/learn/endgame/ctk');
+            navigate("/learn/endgame/capture-the-king");
           }}
           onMouseEnter={() => {
             setHoveredMenu("ctk");
           }}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
-            mode: Math.random() > 0.5 ? "2p-ns" : "2p-ew",
+            mode: ctkPreviewMode,
             hideUnits: true,
           }}
           isSelected={false}
           darkMode={darkMode}
           title="Capture the King"
-          description="Some Stayed True to the Classic Checkmate"
+          description="Some Shall Stay True to 'Checkmate' of old."
           Icon={ChessKing}
           color="red"
-          className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full"
+          className="h-full w-full"
         />
         {/* Capture the Board */}
         <MenuCard
           onClick={() => {
-            // Navigate to 4-player guide
-            // navigate('/learn/endgame/army');
+            navigate("/learn/endgame/capture-the-army");
           }}
           onMouseEnter={() => setHoveredMenu("ctboard")}
           onMouseLeave={() => setHoveredMenu(null)}
@@ -62,18 +64,15 @@ const MenuEndgame: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Capture the Army"
-          description="Others Wanted to be the Last Army Standing"
+          description="Others shall seek to control every last Army."
           Icon={ChessQueen}
           color="blue"
-          className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full w-full"
+          className="h-full w-full"
         />
         {/* Capture the World */}
         <MenuCard
           onClick={() => {
-            // navigate('/learn/ctf'); // Or use the callback from props if kept
-            // onCtfGuide() was passed in MenuScreen.
-            // In new router, we should navigate to the route.
-            navigate("/learn/ctf");
+            navigate("/learn/endgame/capture-the-world");
           }}
           onMouseEnter={() => setHoveredMenu("ctf")}
           onMouseLeave={() => setHoveredMenu(null)}
@@ -84,10 +83,10 @@ const MenuEndgame: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Capture the World"
-          description="But  most wanted to dominate the world"
+          description="But most shall race as if to win the world."
           Icon={Earth}
           color="emerald"
-          className="bg-emerald-100/50 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full"
+          className="h-full w-full"
         />
       </div>
     </div>

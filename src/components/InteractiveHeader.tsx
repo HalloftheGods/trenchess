@@ -134,7 +134,6 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
 }) => {
   const cardBg = darkMode ? "bg-slate-900/50" : "bg-white/70";
   const borderColor = darkMode ? "border-white/10" : "border-slate-200";
-  const textColor = darkMode ? "text-slate-100" : "text-slate-800";
   const terrain =
     selectedTerrainIdx >= 0 ? TERRAIN_LIST[selectedTerrainIdx] : null;
 

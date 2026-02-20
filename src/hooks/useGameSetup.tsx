@@ -225,6 +225,30 @@ export function useGameSetup(core: GameCore, interaction: GameInteraction) {
     setPlacementTerrain,
   ]);
 
+  const generateElementalTerrain = useCallback(() => {
+    if (gameState !== "setup") return;
+    const result = SetupLogic.generateElementalTerrain(
+      terrain,
+      board,
+      terrainInventory,
+      [turn], // Only current player
+      mode,
+    );
+    setTerrain(result.terrain);
+    setTerrainInventory(result.terrainInventory);
+    setPlacementTerrain(null);
+  }, [
+    terrain,
+    board,
+    terrainInventory,
+    turn,
+    mode,
+    gameState,
+    setTerrain,
+    setTerrainInventory,
+    setPlacementTerrain,
+  ]);
+
   const randomizeUnits = useCallback(() => {
     if (gameState !== "setup") return;
     const result = SetupLogic.randomizeUnits(
@@ -380,6 +404,7 @@ export function useGameSetup(core: GameCore, interaction: GameInteraction) {
     initGame,
     initGameWithPreset,
     randomizeTerrain,
+    generateElementalTerrain,
     randomizeUnits,
     setClassicalFormation,
     mirrorBoard,

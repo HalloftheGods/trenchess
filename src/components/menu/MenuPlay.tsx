@@ -13,9 +13,12 @@ const MenuPlay: React.FC = () => {
 
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-      <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
-        <BackButton onClick={() => navigate("/")} className="absolute left-0" />
-        <SectionDivider label="And so it began..." className="ml-24" />
+      <div className="relative w-full max-w-7xl mb-12">
+        <SectionDivider label="And so it began..." />
+        <BackButton
+          onClick={() => navigate("/")}
+          className="absolute left-0 -top-8"
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-4">
@@ -25,11 +28,11 @@ const MenuPlay: React.FC = () => {
           onMouseLeave={() => setHoveredMenu(null)}
           isSelected={false}
           darkMode={darkMode}
-          title="Local Gathering"
-          description="Friends became families."
+          title="Locals Gathered"
+          description="Friends became families. (Local Play)"
           Icon={Sofa}
           color="red"
-          className="hover:border-red-500/50 h-full w-full"
+          className="h-full w-full"
         />
         <HeaderLobby
           multiplayer={multiplayer}

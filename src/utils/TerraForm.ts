@@ -158,15 +158,15 @@ export class TerraForm {
       if (featureType === TERRAIN_TYPES.RUBBLE) baseSize = 5; // Mountains are medium/long
       if (featureType === TERRAIN_TYPES.DESERT) baseSize = 7; // Deserts sprawl
 
-      let clusterSize = Math.min(
+      const clusterSize = Math.min(
         quota - placedCount,
         Math.floor(rng() * 4) + baseSize,
       );
-      let seedIdx = emptyIndices[Math.floor(rng() * emptyIndices.length)];
+      const seedIdx = emptyIndices[Math.floor(rng() * emptyIndices.length)];
 
       // We'll use a simple BFS frontier to grow the cluster
-      let clusterFrontier = [seedIdx];
-      let currentCluster: number[] = [];
+      const clusterFrontier = [seedIdx];
+      const currentCluster: number[] = [];
 
       while (
         currentCluster.length < clusterSize &&

@@ -1,102 +1,39 @@
-/*
- * Copyright (c) 2006 - 2026 Hall of the Gods, Inc.
- * All Rights Reserved.
- *
- * This software is the confidential and proprietary information of Trenchess.
- */
-import React from "react";
+import React, { useMemo } from "react";
 import { ShieldPlus, Ban, Zap } from "lucide-react";
-import BoardPreview from "./BoardPreview";
-import PageLayout from "./PageLayout";
-import PageHeader from "./PageHeader";
-import SectionDivider from "./ui/SectionDivider";
+import InteractiveGuide, { type Slide } from "./InteractiveGuide";
 import { PIECES, INITIAL_ARMY } from "../constants";
-
 import { unitColorMap } from "../data/unitDetails";
-import type { PieceStyle } from "../constants";
-import type { TerrainType } from "../types";
+import { TERRAIN_DETAILS, type TerrainDetail } from "../data/terrainDetails";
 
 interface TrenchGuideProps {
   onBack: () => void;
-  darkMode: boolean;
-  pieceStyle: PieceStyle;
-  toggleTheme?: () => void;
-  togglePieceStyle?: () => void;
-  onTutorial?: () => void;
-  initialTerrain?: TerrainType | null;
+  initialTerrain?: string | null;
 }
 
-import { TERRAIN_DETAILS, type TerrainDetail } from "../data/terrainDetails";
+const CHESS_NAME: Record<string, { chess: string; role: string }> = {
+  [PIECES.TANK]: { chess: "Rook", role: "Heavy Armor" },
+  [PIECES.SNIPER]: { chess: "Bishop", role: "Ranged" },
+  [PIECES.HORSEMAN]: { chess: "Knight", role: "Cavalry" },
+  [PIECES.BATTLEKNIGHT]: { chess: "Queen", role: "Elite" },
+  [PIECES.COMMANDER]: { chess: "King", role: "Leader" },
+  [PIECES.BOT]: { chess: "Pawn", role: "Infantry" },
+};
 
 const TrenchGuide: React.FC<TrenchGuideProps> = ({
   onBack,
-  darkMode,
-  pieceStyle,
-  toggleTheme,
-  togglePieceStyle,
-  onTutorial,
   initialTerrain,
 }) => {
-  const textColor = darkMode ? "text-slate-100" : "text-slate-800";
-  const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";
-  const cardBg = darkMode ? "bg-slate-900/50" : "bg-white/70";
-
-  React.useEffect(() => {
-    if (initialTerrain) {
-      const element = document.getElementById(`terrain-${initialTerrain}`);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    } else {
-      window.scrollTo(0, 0);
-    }
-  }, [initialTerrain]);
-
-  const boardPreviewNode = (
-    <BoardPreview
-      key="trench-guide-preview"
-      selectedMode={null}
-      selectedProtocol={"terrainiffic" as any}
-      darkMode={darkMode}
-      pieceStyle={pieceStyle}
-      isReady={false}
-      terrainSeed={99999}
-      showTerrainIcons={true}
-      hideUnits={true}
-    />
-  );
-
   const getUnitIcon = (pieceKey: string) => {
     const unit = INITIAL_ARMY.find((u) => u.type === pieceKey);
     if (!unit) return null;
-    if (pieceStyle === "lucide") {
-      const Icon = unit.lucide;
-      return <Icon className="w-full h-full" />;
-    }
-    if (pieceStyle === "custom") {
-      const Icon = unit.custom;
-      return <Icon className="w-full h-full" />;
-    }
-    return (
-      <span className="text-lg leading-none">
-        {unit[pieceStyle as "emoji" | "bold" | "outlined"]}
-      </span>
-    );
-  };
-
-  // Map PIECES key -> standard chess name
-  const CHESS_NAME: Record<string, { chess: string; role: string }> = {
-    [PIECES.TANK]: { chess: "Rook", role: "Heavy Armor" },
-    [PIECES.SNIPER]: { chess: "Bishop", role: "Ranged" },
-    [PIECES.HORSEMAN]: { chess: "Knight", role: "Cavalry" },
-    [PIECES.BATTLEKNIGHT]: { chess: "Queen", role: "Elite" },
-    [PIECES.COMMANDER]: { chess: "King", role: "Leader" },
-    [PIECES.BOT]: { chess: "Pawn", role: "Infantry" },
+    const Icon = unit.lucide;
+    return <Icon className="w-full h-full" />;
   };
 
   const renderUnitChip = (
     pieceKey: string,
     status: "allow" | "block" | "sanctuary",
+    keyPrefix: string,
   ) => {
     const unit = INITIAL_ARMY.find((u) => u.type === pieceKey);
     if (!unit) return null;
@@ -107,7 +44,7 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
 
     return (
       <div
-        key={pieceKey}
+        key={`${keyPrefix}-${pieceKey}`}
         className={`flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all ${
           isBlock
             ? "bg-red-500/5 border-red-500/20 opacity-60"
@@ -116,32 +53,19 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
               : `${colors.bg} ${colors.border}`
         }`}
       >
-        {/* Unit icon */}
         <div
-          className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
-            isBlock ? "text-slate-500" : colors.text
-          }`}
+          className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${isBlock ? "text-slate-500" : colors.text}`}
         >
           {getUnitIcon(pieceKey)}
         </div>
-
-        {/* Name + status */}
         <div className="flex-1 min-w-0">
           <span
-            className={`block text-xs font-black uppercase tracking-wider leading-none mb-0.5 ${
-              isBlock ? "text-slate-500" : colors.text
-            }`}
+            className={`block text-xs font-black uppercase tracking-wider leading-none mb-0.5 ${isBlock ? "text-slate-500" : colors.text}`}
           >
             {chessInfo?.chess || unit.type}
           </span>
           <span
-            className={`text-[10px] font-bold uppercase tracking-widest ${
-              isBlock
-                ? "text-red-400"
-                : isSanctuary
-                  ? "text-amber-400"
-                  : "text-emerald-400"
-            }`}
+            className={`text-[10px] font-bold uppercase tracking-widest ${isBlock ? "text-red-400" : isSanctuary ? "text-amber-400" : "text-emerald-400"}`}
           >
             {isBlock
               ? "✗ Blocked"
@@ -150,8 +74,6 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
                 : "✓ Can Enter"}
           </span>
         </div>
-
-        {/* Status icon */}
         <div className="shrink-0">
           {isBlock ? (
             <Ban size={16} className="text-red-400/60" />
@@ -165,17 +87,15 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
     );
   };
 
-  /** Small unit icon badges shown below the terrain icon — mirroring terrain icons in unit cards */
   const renderSanctuaryBadges = (terrain: TerrainDetail) => {
     return (
       <div className="flex gap-2 flex-wrap justify-center">
         {terrain.sanctuaryUnits.map((pk) => {
-          const unit = INITIAL_ARMY.find((u) => u.type === pk);
-          if (!unit) return null;
           const colors = unitColorMap[pk];
+          if (!colors) return null;
           return (
             <div
-              key={pk}
+              key={`badge-${pk}`}
               title={CHESS_NAME[pk]?.chess || pk}
               className={`p-2 rounded-xl ${colors.bg} ${colors.text} border ${colors.border} shadow-sm backdrop-blur-sm`}
             >
@@ -187,210 +107,164 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
     );
   };
 
-  return (
-    <PageLayout
-      darkMode={darkMode}
-      header={
-        <PageHeader
-          darkMode={darkMode}
-          pieceStyle={pieceStyle}
-          toggleTheme={toggleTheme || (() => {})}
-          togglePieceStyle={togglePieceStyle || (() => {})}
-          onTutorial={onTutorial}
-          onLogoClick={onBack}
-          onBack={onBack}
-          boardPreview={boardPreviewNode}
-        />
+  const slides: Slide[] = useMemo(() => {
+    const terrainSlides = TERRAIN_DETAILS.map((terrain) => {
+      const IconComp = terrain.icon;
+      const colorMatch = terrain.color.text.match(/text-([a-z]+)-\d+/);
+      const colorName = colorMatch ? colorMatch[1] : "amber";
+      const validColors = [
+        "red",
+        "blue",
+        "emerald",
+        "amber",
+        "slate",
+        "indigo",
+      ];
+      const finalColor = validColors.includes(colorName) ? colorName : "amber";
+
+      return {
+        id: terrain.key,
+        title: terrain.label,
+        subtitle: terrain.subtitle,
+        color: finalColor as any,
+        topLabel: terrain.tagline,
+        icon: IconComp,
+        previewConfig: {
+          protocol: "terrainiffic",
+          showIcons: true,
+          hideUnits: true,
+        },
+        description: (
+          <div className="space-y-6">
+            <ul className="space-y-3">
+              {terrain.flavorStats.map((stat, i) => (
+                <li
+                  key={i}
+                  className="text-lg font-bold text-slate-500 dark:text-slate-400 flex items-center gap-3 text-left"
+                >
+                  <div className="w-2 h-2 rounded-full bg-amber-500/60 shrink-0" />
+                  {stat}
+                </li>
+              ))}
+            </ul>
+
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px flex-1 bg-slate-200 dark:bg-white/10" />
+                <span className="text-xs font-black uppercase tracking-widest text-slate-500">
+                  Unit Interactions
+                </span>
+                <div className="h-px flex-1 bg-slate-200 dark:bg-white/10" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                {terrain.sanctuaryUnits.map((pk) =>
+                  renderUnitChip(pk, "sanctuary", terrain.key),
+                )}
+                {terrain.allowedUnits
+                  .filter((pk) => !terrain.sanctuaryUnits.includes(pk))
+                  .map((pk) => renderUnitChip(pk, "allow", terrain.key))}
+                {terrain.blockedUnits.map((pk) =>
+                  renderUnitChip(pk, "block", terrain.key),
+                )}
+              </div>
+            </div>
+          </div>
+        ),
+        leftContent:
+          terrain.sanctuaryUnits.length > 0 ? (
+            <div className="flex items-center gap-6">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap">
+                Sanctuary Units
+              </span>
+              {renderSanctuaryBadges(terrain)}
+            </div>
+          ) : null,
+      };
+    });
+
+    const rulesSlide: Slide = {
+      id: "sanctuary-rules",
+      title: "Sanctuary Rule",
+      subtitle: "The Trenchess True Power",
+      color: "amber",
+      topLabel: "Gameplay Rules",
+      icon: ShieldPlus,
+      previewConfig: {
+        protocol: "terrainiffic",
+        showIcons: true,
+        hideUnits: false,
+      },
+      description: (
+        <div className="space-y-6 mt-4">
+          <div className="flex gap-4">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full border shrink-0 border-amber-500/30 bg-amber-500/10 text-amber-500 font-bold">
+              1
+            </div>
+            <div>
+              <h4 className="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider text-sm">
+                Invisible to Specific Enemies
+              </h4>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                When a unit occupies its Sanctuary Terrain, it becomes invisible
+                to specific enemy classes — those enemies cannot target or
+                attack it while it remains inside.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full border shrink-0 border-amber-500/30 bg-amber-500/10 text-amber-500 font-bold">
+              2
+            </div>
+            <div>
+              <h4 className="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider text-sm">
+                Double Border = Protected
+              </h4>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                A unit with a double border is currently positioned inside its
+                Sanctuary Terrain. The terrain tile will show a dotted border to
+                indicate the protection relationship.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full border shrink-0 border-amber-500/30 bg-amber-500/10 text-amber-500 font-bold">
+              3
+            </div>
+            <div>
+              <h4 className="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider text-sm">
+                Terrain Placement is Strategic
+              </h4>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                Positioning your units in their Sanctuary Terrain is a core
+                defensive strategy in Trenchess. Place terrain strategically
+                before the game begins.
+              </p>
+            </div>
+          </div>
+        </div>
+      ),
+    };
+
+    // If initialTerrain was provided, move it to the front
+    let sortedSlides = [...terrainSlides];
+    if (initialTerrain) {
+      const idx = sortedSlides.findIndex((s) => s.id === initialTerrain);
+      if (idx > 0) {
+        const item = sortedSlides.splice(idx, 1)[0];
+        sortedSlides.unshift(item);
       }
-    >
-      <div className="max-w-5xl mx-auto w-full">
-        {/* Page Header */}
-        <div className="flex flex-col items-center mb-16">
-          <SectionDivider
-            label="The Trench: Trials & Tribulations"
-            color="amber"
-            animate={true}
-          />
-        </div>
+    }
 
-        {/* Terrain Cards — styled like unit/chess cards */}
-        <div className="grid grid-cols-1 gap-8 mb-12">
-          {TERRAIN_DETAILS.map((terrain) => {
-            const IconComp = terrain.icon;
+    return [...sortedSlides, rulesSlide];
+  }, [initialTerrain]);
 
-            return (
-              <div
-                key={terrain.key}
-                id={`terrain-${terrain.key}`}
-                className={`relative p-8 rounded-3xl border-4 ${cardBg} ${terrain.color.border} flex flex-col gap-6 transition-all hover:shadow-lg overflow-hidden`}
-              >
-                <div className="flex flex-col sm:flex-row gap-10 items-center sm:items-start">
-                  {/* Left: Terrain Icon + Sanctuary unit badges */}
-                  <div className="flex flex-col shrink-0 gap-4 items-center">
-                    {/* Big terrain icon */}
-                    <div
-                      className={`w-36 h-36 sm:w-48 sm:h-48 rounded-[2.5rem] ${terrain.color.iconBg} ${terrain.color.text} flex items-center justify-center shadow-inner border border-white/5 transition-transform hover:-rotate-3 group`}
-                    >
-                      <IconComp
-                        size={80}
-                        className="transition-transform group-hover:scale-110"
-                      />
-                    </div>
-
-                    {/* Sanctuary unit icons below — who finds shelter here */}
-                    {renderSanctuaryBadges(terrain)}
-                  </div>
-
-                  {/* Center: Name + flavor box + unit interaction grid */}
-                  <div className="flex-1 min-w-0 flex flex-col text-center sm:text-left justify-center py-2">
-                    {/* Title block */}
-                    <div className="flex flex-col gap-1 items-center sm:items-start mb-6">
-                      <div className="flex items-center gap-4 justify-center sm:justify-start w-full flex-wrap">
-                        <h3
-                          className={`text-4xl font-black uppercase tracking-tighter ${textColor}`}
-                        >
-                          {terrain.label}
-                        </h3>
-                        <div
-                          className={`px-4 py-1.5 rounded-xl ${terrain.color.bg} ${terrain.color.text} text-[11px] font-black uppercase tracking-widest border border-white/5`}
-                        >
-                          {terrain.tagline}
-                        </div>
-                      </div>
-                      <span
-                        className={`text-sm font-bold uppercase tracking-[0.2em] ${terrain.color.text} opacity-80`}
-                      >
-                        {terrain.subtitle}
-                      </span>
-                    </div>
-
-                    {/* Flavor / rules highlight box — like the levelUp amber box */}
-                    <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10 mb-6 relative">
-                      <div className="flex items-center gap-2 text-amber-500 font-black text-sm uppercase italic tracking-wider mb-2">
-                        <Zap size={14} className="fill-amber-500" />
-                        {terrain.flavorTitle}
-                      </div>
-                      <ul className="space-y-1">
-                        {terrain.flavorStats.map((stat, i) => (
-                          <li
-                            key={i}
-                            className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-2 text-left"
-                          >
-                            <div className="w-1 h-1 rounded-full bg-amber-500/40 shrink-0" />
-                            {stat}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Unit interaction grid */}
-                    <div>
-                      <div className="flex items-center gap-3 mb-3">
-                        <div
-                          className={`h-px flex-1 ${darkMode ? "bg-white/10" : "bg-slate-200"}`}
-                        />
-                        <span
-                          className={`text-[10px] font-black uppercase tracking-widest ${subtextColor}`}
-                        >
-                          Unit Interactions
-                        </span>
-                        <div
-                          className={`h-px flex-1 ${darkMode ? "bg-white/10" : "bg-slate-200"}`}
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {/* Sanctuary units first */}
-                        {terrain.sanctuaryUnits.map((pk) =>
-                          renderUnitChip(pk, "sanctuary"),
-                        )}
-                        {/* Allowed-but-not-sanctuary */}
-                        {terrain.allowedUnits
-                          .filter((pk) => !terrain.sanctuaryUnits.includes(pk))
-                          .map((pk) => renderUnitChip(pk, "allow"))}
-                        {/* Blocked */}
-                        {terrain.blockedUnits.map((pk) =>
-                          renderUnitChip(pk, "block"),
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Sanctuary Rule Summary */}
-        <div
-          className={`mb-12 p-8 rounded-3xl border ${cardBg} ${darkMode ? "border-white/10" : "border-slate-200"} backdrop-blur-xl shadow-xl`}
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 rounded-lg bg-amber-500/20 text-amber-500 border border-amber-500/30">
-              <ShieldPlus size={24} />
-            </div>
-            <h2
-              className={`text-2xl font-black tracking-widest text-amber-500`}
-            >
-              Sanctuary Rule
-            </h2>
-          </div>
-          <div className="space-y-4">
-            <div className="flex gap-4">
-              <div
-                className={`flex items-center justify-center w-8 h-8 rounded-full border shrink-0 ${darkMode ? "border-slate-700 bg-slate-800" : "border-slate-200 bg-white"} font-bold`}
-              >
-                1
-              </div>
-              <div>
-                <h4 className={`font-bold ${textColor}`}>
-                  Invisible to Specific Enemies
-                </h4>
-                <p className={`text-sm ${subtextColor}`}>
-                  When a unit occupies its Sanctuary Terrain, it becomes
-                  invisible to specific enemy classes — those enemies cannot
-                  target or attack it while it remains inside.
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div
-                className={`flex items-center justify-center w-8 h-8 rounded-full border shrink-0 ${darkMode ? "border-slate-700 bg-slate-800" : "border-slate-200 bg-white"} font-bold`}
-              >
-                2
-              </div>
-              <div>
-                <h4 className={`font-bold ${textColor}`}>
-                  Double Border = Protected
-                </h4>
-                <p className={`text-sm ${subtextColor}`}>
-                  In the interactive guide, a unit with a double border is
-                  currently inside its Sanctuary Terrain. The terrain tile will
-                  show a dotted border to indicate the protection relationship.
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div
-                className={`flex items-center justify-center w-8 h-8 rounded-full border shrink-0 ${darkMode ? "border-slate-700 bg-slate-800" : "border-slate-200 bg-white"} font-bold`}
-              >
-                3
-              </div>
-              <div>
-                <h4 className={`font-bold ${textColor}`}>
-                  Terrain Placement is Strategic
-                </h4>
-                <p className={`text-sm ${subtextColor}`}>
-                  Place terrain tiles before the game begins to create natural
-                  fortifications. Positioning your units in their Sanctuary
-                  Terrain is a core defensive strategy in Trenchess.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </PageLayout>
+  return (
+    <InteractiveGuide
+      title="The Trench: Trials & Tribulations"
+      slides={slides}
+      onBack={onBack}
+      labelColor="amber"
+    />
   );
 };
 

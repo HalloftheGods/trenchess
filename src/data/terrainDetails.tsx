@@ -155,19 +155,20 @@ export const TERRAIN_DETAILS: TerrainDetail[] = [
     },
     flavorTitle: "⚠ Desert Rule",
     flavorStats: [
-      "Rooks alone may walk the sands — all others are turned away.",
-      "Rooks inside are immune to every attack while the sand holds.",
-      "Dead-end zone: movement stops on entry. Exit on your very next turn or be lost.",
+      "The shifting sands are open to all who dare enter.",
+      "Movement stops on entry. You cannot pass straight through.",
+      "Exit on your very next turn or your piece is lost to the desert forever.",
     ],
     rule: "Desert Rule",
-    allowedUnits: [PIECES.TANK],
-    blockedUnits: [
+    allowedUnits: [
+      PIECES.TANK,
       PIECES.SNIPER,
       PIECES.HORSEMAN,
       PIECES.BATTLEKNIGHT,
       PIECES.BOT,
       PIECES.COMMANDER,
     ],
-    sanctuaryUnits: [PIECES.TANK],
+    blockedUnits: [],
+    sanctuaryUnits: [],
   },
 ];

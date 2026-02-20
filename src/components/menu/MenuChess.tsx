@@ -8,15 +8,7 @@ import { INITIAL_ARMY, PIECES } from "../../constants";
 import { UNIT_DETAILS, unitColorMap } from "../../data/unitDetails";
 
 import { useParams } from "react-router-dom";
-import {
-  MountainSnow,
-  HeartPlus,
-  RouteOff,
-  ChessKing,
-  ChessPawn,
-  ChessKnight,
-  ChessBishop,
-} from "lucide-react";
+import { ChessPawn, ChessBishop, Trophy } from "lucide-react";
 import MenuDetailModal from "./MenuDetailModal";
 import ChessCardDetail from "./ChessCardDetail";
 
@@ -83,7 +75,17 @@ const MenuChess: React.FC = () => {
 
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-      <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
+      <div className="relative w-full max-w-7xl mb-12">
+        <SectionDivider
+          label={
+            view === "trench"
+              ? "Although divided, new jobs meant solace."
+              : view === "moves"
+                ? "The Evoloved gained new Skills through their jobs"
+                : "Some divide, Others evolve - New jobs Come - The Endgame cracks "
+          }
+          color={view === "trench" ? "red" : view === "moves" ? "blue" : "blue"}
+        />
         <BackButton
           onClick={() => {
             if (view !== "selection") {
@@ -92,18 +94,7 @@ const MenuChess: React.FC = () => {
               navigate("/learn");
             }
           }}
-          className="absolute left-0"
-        />
-        <SectionDivider
-          label={
-            view === "trench"
-              ? "The Divided forged their own Classes"
-              : view === "moves"
-                ? "Leveled Up - They learned new Jobs."
-                : " Everyone learned new jobs - While some divided, others evolved - The Endgame changed "
-          }
-          className="ml-24"
-          color={view === "trench" ? "red" : view === "moves" ? "blue" : "blue"}
+          className="absolute left-0 -top-8"
         />
       </div>
 
@@ -113,37 +104,49 @@ const MenuChess: React.FC = () => {
             onClick={() => setView("trench")}
             onMouseEnter={() => setHoveredMenu("how-to-play")}
             onMouseLeave={() => setHoveredMenu(null)}
+            preview={{
+              mode: "2p-ns",
+              hideUnits: true,
+            }}
             isSelected={false}
             darkMode={darkMode}
             title="The Divided"
-            description="The Knights, Bishops, Rooks, found recluse..."
+            description="The Knights, Bishops, Rooks, found favor..."
             Icon={ChessBishop}
             color="red"
-            className="bg-red-100/30 hover:bg-red-200/50 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-2 border-red-500/20 hover:border-red-500/50 h-full w-full py-12"
+            className="h-full w-full py-12"
           />
           <MenuCard
             onClick={() => setView("moves")}
             onMouseEnter={() => setHoveredMenu("chess")}
             onMouseLeave={() => setHoveredMenu(null)}
+            preview={{
+              mode: "2p-ew",
+              hideUnits: true,
+            }}
             isSelected={false}
             darkMode={darkMode}
             title="The Evolved"
-            description="...while the Pawns, Queens, and Kings danced."
+            description="... the Pawns, Queens, and Kings found flavor."
             Icon={ChessPawn}
             color="blue"
-            className="bg-blue-100/30 hover:bg-blue-200/50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-2 border-blue-500/20 hover:border-blue-500/50 h-full w-full py-12"
+            className="h-full w-full py-12"
           />
           <MenuCard
             onClick={() => navigate("/learn/endgame")}
             onMouseEnter={() => setHoveredMenu("boardgame")}
             onMouseLeave={() => setHoveredMenu(null)}
+            preview={{
+              mode: "4p",
+              hideUnits: true,
+            }}
             isSelected={false}
             darkMode={darkMode}
             title="The Endgame"
-            description="Needless to say, objectives changed."
-            Icon={ChessKing}
-            color="emerald"
-            className="bg-emerald-100/50 hover:bg-emerald-200/50 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border-2 border-emerald-500/20 hover:border-emerald-500/50 h-full w-full py-12"
+            description="Cracked, the Endgame splits into 3."
+            Icon={Trophy}
+            color="yellow"
+            className="h-full w-full py-12"
           />
         </div>
       ) : (
@@ -153,7 +156,6 @@ const MenuChess: React.FC = () => {
             if (!unit) return null;
 
             const details = UNIT_DETAILS[type];
-            const colors = unitColorMap[type];
 
             let cardColor:
               | "red"
@@ -170,7 +172,8 @@ const MenuChess: React.FC = () => {
             else if (type === PIECES.BATTLEKNIGHT) cardColor = "emerald";
             else if (type === PIECES.COMMANDER) cardColor = "fuchsia";
 
-            const baseBorderColor = colors.border.split("/")[0];
+            const previewMode =
+              view === "trench" ? "2p-ns" : view === "moves" ? "2p-ew" : "4p";
 
             return (
               <MenuCard
@@ -178,13 +181,17 @@ const MenuChess: React.FC = () => {
                 onClick={() => navigate(`/learn/chess/${type}`)}
                 onMouseEnter={() => setHoveredMenu("chess")}
                 onMouseLeave={() => setHoveredMenu(null)}
+                preview={{
+                  mode: previewMode,
+                  hideUnits: true,
+                }}
                 isSelected={false}
                 darkMode={darkMode}
                 title={details?.title || displayNames[type]}
                 description={details?.role || "Unit Details"}
                 Icon={unit.lucide}
                 color={cardColor}
-                className={`h-full w-full border-2 ${colors.bg.replace("/10", "/30")} hover:${colors.bg.replace("/10", "/50")} ${colors.border.replace("/40", "/20")} hover:${baseBorderColor} py-10`}
+                className="h-full w-full py-10"
               />
             );
           })}

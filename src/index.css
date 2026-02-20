@@ -55,3 +55,15 @@ body {
     background: rgba(255, 255, 255, 0.2);
   }
 }
+
+.guide-description-container ul {
+  @apply flex flex-wrap gap-4 justify-center list-none p-0 !m-0;
+}
+
+.guide-description-container li {
+  @apply bg-slate-500/10 dark:bg-white/5 border border-slate-500/20 dark:border-white/10 px-6 py-3 rounded-2xl backdrop-blur-md shadow-lg flex items-center gap-3 !m-0;
+}
+
+.guide-description-container li div {
+  @apply hidden; /* Hide the dots since we have the ribbon background */
+}

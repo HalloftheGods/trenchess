@@ -6,12 +6,7 @@
  */
 import React from "react";
 import { Trees, Waves, Mountain, ShieldPlus, X } from "lucide-react";
-import {
-  PIECES,
-  INITIAL_ARMY,
-  isUnitProtected,
-  TERRAIN_TYPES,
-} from "../constants";
+import { PIECES, isUnitProtected, TERRAIN_TYPES } from "../constants";
 import { DesertIcon } from "../UnitIcons";
 
 /** Which terrain icon keys each unit has in its levelUp data. */

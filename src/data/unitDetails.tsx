@@ -7,7 +7,7 @@
 
 import React from "react";
 import { Trees, Waves, Mountain } from "lucide-react";
-import { DesertIcon } from "../UnitIcons";
+
 import { PIECES } from "../constants";
 
 export const unitColorMap: Record<
@@ -90,9 +90,9 @@ export const UNIT_DETAILS: Record<
   }
 > = {
   [PIECES.COMMANDER]: {
-    title: "Lead Lancer",
-    subtitle: "You Learned a New Job!",
-    role: "The Kings cleared 2 steps foward.",
+    title: "King Juggernaut",
+    subtitle: "The Kings",
+    role: "The Kings clears 2 steps foward.",
     desc: [],
     levelUp: {
       title: "Sovereign Lancer",
@@ -130,8 +130,8 @@ export const UNIT_DETAILS: Record<
     ],
   },
   [PIECES.BATTLEKNIGHT]: {
-    title: "Royal Knight",
-    subtitle: "You Learned a New Job!",
+    title: "Queen of Knights",
+    subtitle: "The Queens",
     role: "The Queens rode their steeds.",
     desc: [],
     levelUp: {
@@ -170,20 +170,24 @@ export const UNIT_DETAILS: Record<
   },
   [PIECES.TANK]: {
     title: "Twilight Guardian",
-    subtitle: "You Learned a New Job!",
+    subtitle: "The Rooks",
     role: "The Rooks guarded the Swamps, Dusk-to-Dusk.",
     desc: [],
     levelUp: {
       title: "Twilight Guardian!",
       stats: [
-        "Safe in Swamps from Bishops & Knights.",
-        "Safe in Deserts from all units except Rooks.",
-        "Deserts end movement; must exit next turn.",
+        "Single-step-diagonal: Advance1 square diagonally.",
+        "Swamp Sanctuary: Safe from Bishops & Knights.",
       ],
-      terrainIcons: [
-        <Waves key="wv" />,
-        <DesertIcon key="ds" className="w-6 h-6" />,
-      ],
+      terrainIcons: [<Waves key="wv" />],
+    },
+    newMovePattern(r, c) {
+      return [
+        [r - 1, c - 1],
+        [r + 1, c - 1],
+        [r + 1, c + 1],
+        [r - 1, c + 1],
+      ];
     },
     movePattern: (r, c) => {
       const moves: number[][] = [];
@@ -195,13 +199,24 @@ export const UNIT_DETAILS: Record<
   },
   [PIECES.SNIPER]: {
     title: "Light Healer",
-    subtitle: "You Learned a New Job!",
-    role: "The Bishops healed the Forests under Light.",
+    subtitle: "The Bishops",
+    role: "The Bishops healed the Forest with Light.",
     desc: [],
     levelUp: {
       title: "Healer",
-      stats: ["Forests keep you safe from Rooks and Knights."],
+      stats: [
+        "Double-step Retreat: Horizonal or Vertical 2 squares.",
+        "Forest Sanctuary: Safe from Rooks and Knights.",
+      ],
       terrainIcons: [<Trees key="tr" />],
+    },
+    newMovePattern(r, c) {
+      return [
+        [r - 2, c - 0],
+        [r + 2, c - 0],
+        [r + 0, c - 2],
+        [r + 0, c + 2],
+      ];
     },
     movePattern: (r, c) => {
       const moves: number[][] = [];
@@ -218,16 +233,29 @@ export const UNIT_DETAILS: Record<
   },
   [PIECES.HORSEMAN]: {
     title: "Dark Knight",
-    subtitle: "You Learned a New Job!",
+    subtitle: "The Knights",
     role: "The Knights rode the Mountains under Dark.",
     desc: [],
     levelUp: {
       title: "Dark Knight",
-      stats: ["Mountains keep you safe from Rooks and Bishops."],
+      stats: [
+        "Triple-Jump: Horizontal or Vertical 3 squares.",
+        "Mountain Sanctuary: Safe from Rooks and Bishops.",
+      ],
       terrainIcons: [<Mountain key="mt" />],
+    },
+
+    newMovePattern(r, c) {
+      return [
+        [r + 3, c - 0],
+        [r - 3, c - 0],
+        [r + 0, c - 3],
+        [r + 0, c + 3],
+      ];
     },
     movePattern: (r, c) => [
       [r - 2, c - 1],
+      [r - 3, c - 0],
       [r - 2, c + 1],
       [r - 1, c - 2],
       [r - 1, c + 2],
@@ -239,12 +267,15 @@ export const UNIT_DETAILS: Record<
   },
   [PIECES.BOT]: {
     title: "Jumping Dragoon",
-    subtitle: "You Learned a New Job!",
+    subtitle: "The Pawns",
     role: "The Pawns learned how to backflip.",
     desc: [],
     levelUp: {
       title: "Jumping Dragoon",
-      stats: ["Jump backwards 2 squares."],
+      stats: [
+        "Backflip: Vault 2 squares if vacant.",
+        "Crouching-Tiger-Hidden-Dragoon: Backflip capture on left or right.",
+      ],
       terrainIcons: [
         <Mountain key="mt" />,
         <Trees key="tr" />,
@@ -252,10 +283,16 @@ export const UNIT_DETAILS: Record<
       ],
     },
     movePattern: (r, c) => [[r - 1, c]],
-    newMovePattern: (r, c) => [[r + 2, c]],
+    newMovePattern: (r, c) => [
+      [r + 2, c],
+      [r + 2, c - 1],
+      [r + 2, c + 1],
+    ],
     attackPattern: (r, c) => [
       [r - 1, c - 1],
       [r - 1, c + 1],
+      [r + 2, c - 1],
+      [r + 2, c + 1],
     ],
   },
 };

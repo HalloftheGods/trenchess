@@ -12,17 +12,16 @@ const MenuLocal: React.FC = () => {
 
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
-      <div className="relative flex items-center justify-center gap-4 mb-8 w-full max-w-7xl">
+      <div className="relative w-full max-w-7xl mb-12">
+        <SectionDivider
+          label="Locals Gathered - Songs were sung"
+          color="amber"
+          animate
+        />
         <BackButton
           onClick={() => navigate("/play")}
           label="Play"
-          className="absolute left-0"
-        />
-        <SectionDivider
-          label="Local Gathering"
-          className="ml-24"
-          color="amber"
-          animate
+          className="absolute left-0 -top-8"
         />
       </div>
 
@@ -38,10 +37,10 @@ const MenuLocal: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="One Player"
-          description="Play your AI friends today!"
+          description="Nocturne of the A.I. Battles"
           Icon={Bot}
           color="red"
-          className="hover:border-red-500/50 h-full w-full"
+          className="h-full w-full"
         />
         <MenuCard
           onClick={() => navigate("/play/setup?mode=couch&players=2")}
@@ -54,10 +53,10 @@ const MenuLocal: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Two Players"
-          description="Your good ol' 1 v 1 pow-wow."
+          description="Duet of the Two Rivals"
           Icon={User}
           color="blue"
-          className="hover:border-blue-500/50 h-full w-full"
+          className="h-full w-full"
         />
         <MenuCard
           onClick={() => navigate("/play/setup?mode=couch&players=3")}
@@ -70,10 +69,10 @@ const MenuLocal: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Three Players"
-          description="1 v 2 or Free-for-all."
+          description="Ballad of the Three for All"
           Icon={Users}
           color="emerald"
-          className="hover:border-emerald-500/50 h-full w-full"
+          className="h-full w-full"
         />
         <MenuCard
           onClick={() => navigate("/play/setup?mode=couch&players=4")}
@@ -86,10 +85,10 @@ const MenuLocal: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Four Players"
-          description="Good Luck!"
+          description="Ode to the Corners of the World"
           Icon={UserPlus}
           color="amber"
-          className="hover:border-amber-500/50 h-full w-full"
+          className="h-full w-full"
         />
       </div>
     </div>

@@ -111,7 +111,7 @@ export const createInitialState = (
   return { board, terrain, inventory, terrainInventory };
 };
 
-export const randomizeTerrain = (
+export const generateElementalTerrain = (
   _currentTerrain: TerrainType[][],
   currentBoard: (BoardPiece | null)[][],
   _terrainInventory: Record<string, TerrainType[]>,
@@ -125,25 +125,14 @@ export const randomizeTerrain = (
     symmetry: "rotational", // Default to fair symmetry
   });
 
-  // Calculate terrain inventory (should be empty if we place everything,
-  // but let's just return empty inventories as TerraForm places pieces directly)
   const nextTInv: Record<string, TerrainType[]> = {};
   players.forEach((p) => {
     nextTInv[p] = [];
   });
 
-  // Safety check: Avoid placing terrain on existing units
-  // (Though usually randomizeTerrain happens before units or clears them?
-  // In 'terrainiffic' preset, units might be manually placed later, or it's a fresh start.
-  // In 'quick' preset, units are randomized after.
-  // Existing logic filtered available cells checking !currentBoard[r][c].
-  // We should respect that if possible, but TerraForm generates a whole grid.
-  // Let's iterate and clear terrain if it lands on a unit.
   for (let r = 0; r < BOARD_SIZE; r++) {
     for (let c = 0; c < BOARD_SIZE; c++) {
       if (currentBoard[r][c]) {
-        // If there is a unit here, we can't have terrain usually
-        // Check compatibility
         const unit = currentBoard[r][c]!;
         const terr = nextTerrain[r][c];
         if (terr !== TERRAIN_TYPES.FLAT && !canPlaceUnit(unit.type, terr)) {
@@ -152,6 +141,63 @@ export const randomizeTerrain = (
       }
     }
   }
+
+  return { terrain: nextTerrain, terrainInventory: nextTInv };
+};
+
+export const randomizeTerrain = (
+  currentTerrain: TerrainType[][],
+  currentBoard: (BoardPiece | null)[][],
+  terrainInventory: Record<string, TerrainType[]>,
+  players: string[],
+  mode: GameMode,
+) => {
+  const nextTerrain = currentTerrain.map((row) => [...row]);
+  const nextTInv = { ...terrainInventory };
+
+  players.forEach((p) => {
+    const myCells = getPlayerCells(p, mode);
+    const playerTerrain = [...(nextTInv[p] || [])];
+
+    // Clear existing terrain for player
+    for (const [r, c] of myCells) {
+      if (nextTerrain[r][c] !== TERRAIN_TYPES.FLAT) {
+        playerTerrain.push(nextTerrain[r][c]);
+        nextTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+      }
+    }
+
+    shuffle(playerTerrain);
+
+    const available = myCells.filter(([r, c]) => {
+      // Find empty cells or cells with compatible unit
+      if (!currentBoard[r][c]) return true;
+      // If there's a unit, we cannot know the terrain until we pop it, so we'll check compatibility when placing.
+      // But for simple placement, let's just use empty cells if possible, or we'll skip later.
+      return true;
+    });
+    shuffle(available);
+
+    const remaining: TerrainType[] = [];
+    for (const terrType of playerTerrain) {
+      // Find compatible cell
+      const cellIdx = available.findIndex(([r, c]) => {
+        const unit = currentBoard[r][c];
+        if (!unit) return true;
+        return canPlaceUnit(unit.type, terrType);
+      });
+
+      if (cellIdx !== -1) {
+        const [r, c] = available[cellIdx];
+        nextTerrain[r][c] = terrType;
+        available.splice(cellIdx, 1);
+      } else {
+        remaining.push(terrType);
+      }
+    }
+
+    nextTInv[p] = remaining;
+  });
 
   return { terrain: nextTerrain, terrainInventory: nextTInv };
 };

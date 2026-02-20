@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Map as MapIcon, Crown, Sword, Sparkles, Flag } from "lucide-react";
+import { Eye, Pizza, Shell, Dices, Flag } from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
@@ -64,7 +64,12 @@ const MenuSetup: React.FC = () => {
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center gap-8">
       {/* Header Row */}
-      <div className="relative flex items-center justify-center gap-4 w-full">
+      <div className="relative w-full mb-8">
+        <SectionDivider
+          label={step === 1 ? "A dance was chosen" : "And the Stage was flung"}
+          color="amber"
+          animate
+        />
         <BackButton
           onClick={() => {
             if (step === 2) {
@@ -74,13 +79,7 @@ const MenuSetup: React.FC = () => {
             }
           }}
           label={step === 2 ? "Choose Board" : "Local Gathering"}
-          className="absolute left-0"
-        />
-        <SectionDivider
-          label={step === 1 ? "They Discussed Colors" : "Choose The Field"}
-          className="ml-24"
-          color="amber"
-          animate
+          className="absolute left-0 -top-8"
         />
       </div>
       {/* Cards Grid */}
@@ -102,7 +101,7 @@ const MenuSetup: React.FC = () => {
                   }}
                   darkMode={darkMode}
                   title="North vs South"
-                  description="2 Player • Red vs Blue"
+                  description="Roses are Red, Violets are Blue..."
                   Icon={DualToneNS}
                   color="red"
                   className={`custom-border-[conic-gradient(from_315deg,_#ef4444_0deg_90deg,_#ffffff_90deg_180deg,_#3b82f6_180deg_270deg,_#ffffff_270deg_360deg)] w-full`}
@@ -115,8 +114,8 @@ const MenuSetup: React.FC = () => {
                     hideUnits: true,
                   }}
                   darkMode={darkMode}
-                  title="East vs West"
-                  description="2 Player • Left vs Right"
+                  title="West vs East"
+                  description="Zinnias come in Green, and Tulips dress Yellow too..."
                   Icon={DualToneEW}
                   color="emerald"
                   className={`custom-border-[conic-gradient(from_315deg,_#ffffff_0deg_90deg,_#22c55e_90deg_180deg,_#ffffff_180deg_270deg,_#eab308_270deg_360deg)] w-full`}
@@ -158,23 +157,6 @@ const MenuSetup: React.FC = () => {
         ) : (
           <>
             <MenuCard
-              onClick={() => handlePresetSelect("custom")}
-              isSelected={selectedPreset === "custom"}
-              preview={{
-                mode: selectedBoard,
-                protocol: "custom",
-                hideUnits: true,
-              }}
-              darkMode={darkMode}
-              title="Ω Omega"
-              description="Setup the board Gamemaster."
-              Icon={Sword}
-              color="red"
-              badge="God Mode"
-              hoverText="Ω"
-              className="w-full"
-            />
-            <MenuCard
               onClick={() => handlePresetSelect("classic")}
               isSelected={selectedPreset === "classic"}
               preview={{
@@ -184,10 +166,10 @@ const MenuSetup: React.FC = () => {
               }}
               darkMode={darkMode}
               title="π Pi"
-              description="A slice of trenchess classic."
-              Icon={Crown}
+              description="A slice of Classic - Hot-to-Go."
+              Icon={Pizza}
               color="amber"
-              badge="Legacy Mode"
+              badge="EZ as Pi Mode"
               hoverText="π"
               className="w-full"
             />
@@ -204,8 +186,8 @@ const MenuSetup: React.FC = () => {
               }}
               darkMode={darkMode}
               title="χ Chi"
-              description="Intentional creations."
-              Icon={MapIcon}
+              description="Walk the community garden."
+              Icon={Shell}
               color="emerald"
               badge="Flow Mode"
               hoverText="χ"
@@ -222,10 +204,27 @@ const MenuSetup: React.FC = () => {
               darkMode={darkMode}
               title="α Alpha"
               description='"Hit me Entropy one more Time!"'
-              Icon={Sparkles}
+              Icon={Dices}
               color="blue"
               badge="Chaos Mode"
               hoverText="α"
+              className="w-full"
+            />
+            <MenuCard
+              onClick={() => handlePresetSelect("custom")}
+              isSelected={selectedPreset === "custom"}
+              preview={{
+                mode: selectedBoard,
+                protocol: "custom",
+                hideUnits: true,
+              }}
+              darkMode={darkMode}
+              title="Ω Omega"
+              description="Setup the board Gamemaster."
+              Icon={Eye}
+              color="red"
+              badge="God Mode"
+              hoverText="Ω"
               className="w-full"
             />
           </>
@@ -298,7 +297,7 @@ const MenuSetup: React.FC = () => {
         disabled={!selectedBoard || !selectedPreset}
         className={`w-full max-w-sm py-6 rounded-3xl font-black text-white text-xl uppercase tracking-widest transition-all shadow-2xl ${
           selectedBoard && selectedPreset
-            ? "bg-red-600 hover:bg-red-700 hover:scale-[1.02] hover:shadow-red-500/25 cursor-pointer"
+            ? "bg-slate-600 hover:bg-slate-700 hover:scale-[1.02] hover:shadow-slate-500/25 cursor-pointer"
             : "bg-slate-300 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50"
         }`}
       >
