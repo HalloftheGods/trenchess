@@ -1,30 +1,32 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { ChessPawn, Trophy, Mountain } from "lucide-react";
+
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
-import { useMenuContext } from "./MenuContext";
-import { INITIAL_ARMY, PIECES } from "../../data/unitDetails";
-import { UNIT_DETAILS, unitColorMap } from "../../data/unitDetails";
-
-import { useParams } from "react-router-dom";
-import { ChessPawn, ChessBishop, Trophy } from "lucide-react";
+import ForwardButton from "../ui/ForwardButton";
 import MenuDetailModal from "./MenuDetailModal";
 import ChessCardDetail from "./ChessCardDetail";
+import { useMenuContext } from "./MenuContext";
+import {
+  INITIAL_ARMY,
+  PIECES,
+  UNIT_DETAILS,
+  unitColorMap,
+} from "../../data/unitDetails";
 
 const MenuChess: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { unitType } = useParams<{ unitType: string }>();
   const { setHoveredMenu, darkMode } = useMenuContext();
 
   // Define piece groups
-  const TRENCH_PIECES = [
+  const CHESS_PIECES = [
     PIECES.HORSEMAN, // Knight
     PIECES.SNIPER, // Bishop
     PIECES.TANK, // Rook
-  ];
-
-  const MOVE_PIECES = [
     PIECES.BOT, // Pawn
     PIECES.BATTLEKNIGHT, // Queen
     PIECES.COMMANDER, // King
@@ -32,24 +34,24 @@ const MenuChess: React.FC = () => {
 
   const getCategoryForUnit = (type: string | undefined) => {
     if (!type) return null;
-    if (TRENCH_PIECES.includes(type as any)) return "trench";
-    if (MOVE_PIECES.includes(type as any)) return "moves";
+    if (CHESS_PIECES.includes(type as any)) return "chessmen";
     return null;
   };
 
-  const [view, setView] = React.useState<"selection" | "trench" | "moves">(
-    unitType
-      ? (getCategoryForUnit(unitType) as any) || "selection"
-      : "selection",
-  );
+  const [view, setView] = useState<"selection" | "chessmen">(() => {
+    if (unitType) {
+      return (getCategoryForUnit(unitType) as any) || "selection";
+    }
+    const state = location.state as { view?: "selection" | "chessmen" } | null;
+    return state?.view || "selection";
+  });
 
   const closeModal = () => {
     navigate("/learn/chess");
   };
 
   // Define the order of pieces based on current view
-  const UNIT_ORDER =
-    view === "trench" ? TRENCH_PIECES : view === "moves" ? MOVE_PIECES : [];
+  const UNIT_ORDER = view === "chessmen" ? CHESS_PIECES : [];
 
   // Map piece types to clean display names
   const displayNames: Record<string, string> = {
@@ -78,13 +80,11 @@ const MenuChess: React.FC = () => {
       <div className="relative w-full max-w-7xl mb-12">
         <SectionDivider
           label={
-            view === "trench"
-              ? "Although divided, new jobs meant solace."
-              : view === "moves"
-                ? "The Evoloved gained new Skills through their jobs"
-                : "Some divide, Others evolve - New jobs Come - The Endgame cracks "
+            view === "chessmen"
+              ? '"From the trench, the Chessmen grow stronger"'
+              : '"The world cracks into 3, and with it, the Endgame."'
           }
-          color={view === "trench" ? "red" : view === "moves" ? "blue" : "blue"}
+          color={view === "chessmen" ? "blue" : "red"}
         />
         <BackButton
           onClick={() => {
@@ -99,10 +99,10 @@ const MenuChess: React.FC = () => {
       </div>
 
       {view === "selection" ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
           <MenuCard
-            onClick={() => setView("trench")}
-            onMouseEnter={() => setHoveredMenu("how-to-play")}
+            onClick={() => setView("chessmen")}
+            onMouseEnter={() => setHoveredMenu("chess")}
             onMouseLeave={() => setHoveredMenu(null)}
             preview={{
               mode: "2p-ns",
@@ -110,24 +110,8 @@ const MenuChess: React.FC = () => {
             }}
             isSelected={false}
             darkMode={darkMode}
-            title="The Divided"
-            description="The Knights, Bishops, Rooks, found favor..."
-            Icon={ChessBishop}
-            color="red"
-            className="h-full w-full py-12"
-          />
-          <MenuCard
-            onClick={() => setView("moves")}
-            onMouseEnter={() => setHoveredMenu("chess")}
-            onMouseLeave={() => setHoveredMenu(null)}
-            preview={{
-              mode: "2p-ew",
-              hideUnits: true,
-            }}
-            isSelected={false}
-            darkMode={darkMode}
-            title="The Evolved"
-            description="... the Pawns, Queens, and Kings found flavor."
+            title="The Chessmen"
+            description='"From the trench, the Chessmen grow stronger"'
             Icon={ChessPawn}
             color="blue"
             className="h-full w-full py-12"
@@ -143,9 +127,9 @@ const MenuChess: React.FC = () => {
             isSelected={false}
             darkMode={darkMode}
             title="The Endgame"
-            description="Cracked, the Endgame splits into 3."
+            description='"The world cracks into 3, and with it, the Endgame."'
             Icon={Trophy}
-            color="yellow"
+            color="red"
             className="h-full w-full py-12"
           />
         </div>
@@ -172,8 +156,7 @@ const MenuChess: React.FC = () => {
             else if (type === PIECES.BATTLEKNIGHT) cardColor = "emerald";
             else if (type === PIECES.COMMANDER) cardColor = "fuchsia";
 
-            const previewMode =
-              view === "trench" ? "2p-ns" : view === "moves" ? "2p-ew" : "4p";
+            const previewMode = view === "chessmen" ? "2p-ns" : "4p";
 
             return (
               <MenuCard
@@ -195,6 +178,30 @@ const MenuChess: React.FC = () => {
               />
             );
           })}
+        </div>
+      )}
+
+      {view === "selection" && !unitType && (
+        <div className="relative w-full max-w-7xl mt-6 space-y-2">
+          <SectionDivider label="" />
+          <ForwardButton
+            onClick={() => navigate("/learn/trench")}
+            label="Open the Trench"
+            className="float-right"
+            Icon={Mountain}
+          />
+        </div>
+      )}
+
+      {view === "chessmen" && !unitType && (
+        <div className="relative w-full max-w-7xl mt-6 space-y-2">
+          <SectionDivider label="" />
+          <ForwardButton
+            onClick={() => navigate("/learn/endgame")}
+            label="The Endgame"
+            className="float-right"
+            Icon={Trophy}
+          />
         </div>
       )}
 

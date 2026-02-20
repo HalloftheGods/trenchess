@@ -130,6 +130,8 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
         showTerrainIcons={previewConfig.showIcons}
         hideUnits={previewConfig.hideUnits}
         forcedTerrain={previewConfig.forcedTerrain}
+        highlightOuterSquares={previewConfig.highlightOuterSquares}
+        labelOverride={previewConfig.label}
       />
       {/* Layout Switcher (Only if in Terrainiffic setup, which we might handle later) */}
     </>

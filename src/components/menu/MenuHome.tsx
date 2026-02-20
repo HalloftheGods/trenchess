@@ -78,7 +78,7 @@ const MenuHome: React.FC = () => {
               Enter the <TrenchessText />
             </>
           }
-          description="Master its Wisdom"
+          description='"Master its Wisdom"'
           Icon={DualColorSwordsIcon}
           color="red"
           className="h-full w-full"

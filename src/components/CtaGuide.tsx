@@ -1,5 +1,6 @@
 import React from "react";
-import { Users, Crown, RefreshCcw } from "lucide-react";
+import { Users, Crown, RefreshCcw, Swords } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import InteractiveGuide, { type Slide } from "./InteractiveGuide";
 
 interface CtaGuideProps {
@@ -110,12 +111,19 @@ const CtaGuide: React.FC<CtaGuideProps> = ({ onBack }) => {
     },
   ];
 
+  const navigate = useNavigate();
+
   return (
     <InteractiveGuide
       title="Capture the Army"
       slides={slides}
       onBack={onBack}
       labelColor="blue"
+      footerForward={{
+        label: "Enter The Trenchess",
+        onClick: () => navigate("/play"),
+        icon: Swords,
+      }}
     />
   );
 };

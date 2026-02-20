@@ -1,19 +1,16 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ChessKing, ChessQueen, Earth } from "lucide-react";
+import { ChessKing, ChessQueen, ChessRook, Earth, Swords } from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
+import ForwardButton from "../ui/ForwardButton";
 import { useMenuContext } from "./MenuContext";
+import { Route } from "lucide-react";
 
 const MenuEndgame: React.FC = () => {
   const navigate = useNavigate();
   const { setHoveredMenu, darkMode } = useMenuContext();
-
-  const ctkPreviewMode = useMemo(
-    () => (Math.random() > 0.5 ? ("2p-ns" as const) : ("2p-ew" as const)),
-    [],
-  );
 
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
@@ -39,13 +36,15 @@ const MenuEndgame: React.FC = () => {
           }}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
-            mode: ctkPreviewMode,
+            mode: null,
             hideUnits: true,
+            highlightOuterSquares: true,
+            label: "Capture the King",
           }}
           isSelected={false}
           darkMode={darkMode}
           title="Capture the King"
-          description="Some Shall Stay True to 'Checkmate' of old."
+          description="&quot;Some Shall Stay True to 'Checkmate' of old.&quot;"
           Icon={ChessKing}
           color="red"
           className="h-full w-full"
@@ -64,7 +63,7 @@ const MenuEndgame: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Capture the Army"
-          description="Others shall seek to control every last Army."
+          description='"Others shall seek to control every last Army."'
           Icon={ChessQueen}
           color="blue"
           className="h-full w-full"
@@ -83,10 +82,22 @@ const MenuEndgame: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Capture the World"
-          description="But most shall race as if to win the world."
+          description='"But most shall race as if to win the world."'
           Icon={Earth}
           color="emerald"
           className="h-full w-full"
+        />
+      </div>
+
+      <div className="relative w-full max-w-7xl mt-6 space-y-2">
+        <SectionDivider label="" />
+        <ForwardButton
+          onClick={() =>
+            navigate("/learn/chess", { state: { view: "chessmen" } })
+          }
+          label="The Chessmen"
+          className="float-right"
+          Icon={ChessRook}
         />
       </div>
     </div>

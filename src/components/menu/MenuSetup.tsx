@@ -61,7 +61,9 @@ const MenuSetup: React.FC = () => {
       {/* Header Row */}
       <div className="relative w-full mb-8">
         <SectionDivider
-          label={step === 1 ? "A dance was chosen" : "And the Stage was flung"}
+          label={
+            step === 1 ? '"A dance is chosen"' : '"And the Stage is flung"'
+          }
           color="amber"
           animate
         />
@@ -96,7 +98,7 @@ const MenuSetup: React.FC = () => {
                   }}
                   darkMode={darkMode}
                   title="North vs South"
-                  description="Roses are Red, Violets are Blue..."
+                  description='"Roses are Red, Violets are Blue..."'
                   Icon={DualToneNS}
                   color="red"
                   className={`custom-border-[conic-gradient(from_315deg,_#ef4444_0deg_90deg,_#ffffff_90deg_180deg,_#3b82f6_180deg_270deg,_#ffffff_270deg_360deg)] w-full`}
@@ -110,7 +112,7 @@ const MenuSetup: React.FC = () => {
                   }}
                   darkMode={darkMode}
                   title="West vs East"
-                  description="Zinnias come in Green, and Tulips dress Yellow too..."
+                  description='"Zinnias come in Green, and Tulips dress Yellow too..."'
                   Icon={DualToneEW}
                   color="emerald"
                   className={`custom-border-[conic-gradient(from_315deg,_#ffffff_0deg_90deg,_#22c55e_90deg_180deg,_#ffffff_180deg_270deg,_#eab308_270deg_360deg)] w-full`}
@@ -161,7 +163,7 @@ const MenuSetup: React.FC = () => {
               }}
               darkMode={darkMode}
               title="Ω Omega"
-              description="Setup the board Gamemaster."
+              description='"Setup the board Gamemaster."'
               Icon={Eye}
               color="red"
               badge="Custom"
@@ -179,7 +181,7 @@ const MenuSetup: React.FC = () => {
               }}
               darkMode={darkMode}
               title="π Pi"
-              description="Hot Slice of Classic - ready to go."
+              description='"Hot Slice of Classic - ready to go."'
               Icon={Pizza}
               color="amber"
               badge="EZ as Pi"
@@ -199,7 +201,7 @@ const MenuSetup: React.FC = () => {
               }}
               darkMode={darkMode}
               title="χ Chi"
-              description="Walk the community garden."
+              description='"Walk the community garden."'
               Icon={Shell}
               color="emerald"
               badge="Feng Shui"
@@ -216,7 +218,7 @@ const MenuSetup: React.FC = () => {
               }}
               darkMode={darkMode}
               title="α Alpha"
-              description="Roll the dice of Entropy."
+              description='"Roll the dice of Entropy."'
               Icon={Dices}
               color="blue"
               badge="Random Chaos"

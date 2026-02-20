@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useMenuContext } from "./menu/MenuContext";
 import SectionDivider from "./ui/SectionDivider";
 import BackButton from "./ui/BackButton";
+import ForwardButton from "./ui/ForwardButton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface Slide {
@@ -23,6 +24,11 @@ interface InteractiveGuideProps {
   title: string;
   onBack: () => void;
   labelColor?: "red" | "blue" | "emerald" | "amber" | "slate" | "indigo";
+  footerForward?: {
+    label: string;
+    onClick: () => void;
+    icon: React.ElementType;
+  };
 }
 
 const colorMaps = {
@@ -81,6 +87,7 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
   title,
   onBack,
   labelColor = "red",
+  footerForward,
 }) => {
   const { setPreviewConfig, darkMode } = useMenuContext();
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -133,20 +140,27 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
           >
             <div className="flex flex-col w-full gap-8 mt-0">
               {/* Row 1: Header */}
-              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 pb-2 border-b border-slate-200/10">
-                <div className="flex flex-col">
-                  {currentSlide.topLabel && (
-                    <p
-                      className={`text-sm font-bold ${subtextColor} uppercase tracking-widest mb-1`}
-                    >
-                      {currentSlide.topLabel}
-                    </p>
-                  )}
-                  <h3
-                    className={`text-5xl font-black uppercase tracking-tight ${textColor}`}
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 pb-8 border-b border-slate-200/10">
+                <div className="flex items-center gap-6">
+                  <div
+                    className={`p-4 rounded-[1.5rem] border-2 shadow-xl ${cmap.iconBg} ${cmap.iconText} ${cmap.iconBorder} flex items-center justify-center w-24 h-24 shrink-0 transition-transform hover:scale-105 duration-500`}
                   >
-                    {currentSlide.title}
-                  </h3>
+                    <currentSlide.icon size={48} />
+                  </div>
+                  <div className="flex flex-col">
+                    {currentSlide.topLabel && (
+                      <p
+                        className={`text-sm font-bold ${subtextColor} uppercase tracking-widest mb-1`}
+                      >
+                        {currentSlide.topLabel}
+                      </p>
+                    )}
+                    <h3
+                      className={`text-5xl font-black uppercase tracking-tight ${textColor}`}
+                    >
+                      {currentSlide.title}
+                    </h3>
+                  </div>
                 </div>
 
                 {currentSlide.leftContent && (
@@ -154,21 +168,14 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
                 )}
               </div>
 
-              {/* Row 3: Visuals (Icon and Preview) */}
-              <div className="flex flex-col lg:flex-row items-center lg:items-stretch justify-center gap-10">
-                <div className="flex-0 flex items-center justify-center">
-                  <div
-                    className={`p-4 rounded-[2.5rem] border-2 shadow-2xl ${cmap.iconBg} ${cmap.iconText} ${cmap.iconBorder} flex items-center justify-center w-48 h-48 sm:w-64 sm:h-64 transition-transform hover:scale-105 duration-500`}
-                  >
-                    <currentSlide.icon size={128} />
-                  </div>
-                </div>
+              {/* Row 2: Visuals & Description */}
+              <div className="flex flex-col lg:flex-row items-center lg:items-stretch justify-start gap-12">
                 {currentSlide.sideContent && (
-                  <div className="flex-0 flex flex-col items-center justify-center">
+                  <div className="flex-0 flex flex-col items-center justify-center min-w-[320px]">
                     {currentSlide.sideContent}
                   </div>
                 )}
-                {/* Row 2: Description (Simple List) */}
+                {/* Description (Simple List) */}
                 <div className="w-full h-full flex flex-col justify-center text-left">
                   {currentSlide.description}
                 </div>
@@ -204,6 +211,18 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
           />
         ))}
       </div>
+
+      {footerForward && (
+        <div className="relative w-full max-w-7xl mt-16 space-y-2">
+          <SectionDivider label="" />
+          <ForwardButton
+            onClick={footerForward.onClick}
+            label={footerForward.label}
+            className="float-right"
+            Icon={footerForward.icon}
+          />
+        </div>
+      )}
     </div>
   );
 };

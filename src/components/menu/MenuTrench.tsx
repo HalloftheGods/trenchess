@@ -1,11 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Trees, Waves, Mountain } from "lucide-react";
+import { Trees, Waves, Mountain, ChessRook } from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
+import ForwardButton from "../ui/ForwardButton";
 import { useMenuContext } from "./MenuContext";
 import { DesertIcon } from "../../UnitIcons";
+import { Route } from "lucide-react";
 import type { TerrainType } from "../../types/game";
 
 import { useParams } from "react-router-dom";
@@ -49,7 +51,7 @@ const MenuTrench: React.FC = () => {
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
       <div className="relative w-full max-w-7xl mb-12">
         <SectionDivider
-          label="From Nowhere - Rains terror to terrains with never-ending tethers"
+          label='"From Nowhere - Rains terror to terrains with never-ending tethers"'
           color="red"
         />
         <BackButton
@@ -79,7 +81,7 @@ const MenuTrench: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Mountains"
-          description="Knights favor the Mountains"
+          description='"Knights shall ride Mountains"'
           Icon={Mountain}
           color="red"
           className="h-full w-full"
@@ -105,7 +107,7 @@ const MenuTrench: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Swamps"
-          description="Rooks favor the Swamps"
+          description='"Rooks shall guard Swamps"'
           Icon={Waves}
           color="blue"
           className="h-full w-full"
@@ -131,7 +133,7 @@ const MenuTrench: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Forests"
-          description="Bishops favor the Forests"
+          description='"Bishops shall protect Forests"'
           Icon={Trees}
           color="emerald"
           className="h-full w-full"
@@ -157,12 +159,27 @@ const MenuTrench: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Deserts"
-          description="The Deserts favor no one"
+          description='"The Deserts shall test all"'
           Icon={DesertIcon}
           color="amber"
           className="h-full w-full"
         />
       </div>
+
+      {!terrain && (
+        <div className="relative w-full max-w-7xl mt-6 space-y-2">
+          <SectionDivider label="" />
+          <ForwardButton
+            onClick={() =>
+              navigate("/learn/chess", { state: { view: "chessmen" } })
+            }
+            label="Advance the Chessmen"
+            className="float-right"
+            Icon={ChessRook}
+          />
+        </div>
+      )}
+
       <MenuDetailModal
         isOpen={!!terrain}
         onClose={closeModal}

@@ -108,7 +108,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.COMMANDER]: {
     title: "King Juggernaut",
     subtitle: "The Kings",
-    role: "The Kings clears 2 steps foward.",
+    role: '"The King clears 2 steps forward."',
     desc: [],
     levelUp: {
       title: "Sovereign Lancer",
@@ -144,7 +144,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.BATTLEKNIGHT]: {
     title: "Royal Guard",
     subtitle: "The Queens",
-    role: "The Queens rode their steeds.",
+    role: '"The Queen rides her steed."',
     desc: [],
     levelUp: {
       title: "Royal Battle Knight",
@@ -179,7 +179,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.TANK]: {
     title: "Twilight Guardian",
     subtitle: "The Rooks",
-    role: "The Rooks guarded the Swamps, Dusk-to-Dusk.",
+    role: '"Rooks guard the Swamps, Dusk-to-Dusk."',
     desc: [],
     levelUp: {
       title: "Twilight Guardian!",
@@ -208,7 +208,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.SNIPER]: {
     title: "Light Healer",
     subtitle: "The Bishops",
-    role: "The Bishops healed the Forest with Light.",
+    role: '"The Bishop heals the Forest with Light."',
     desc: [],
     levelUp: {
       title: "Healer",
@@ -242,7 +242,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.HORSEMAN]: {
     title: "Shadow Knight",
     subtitle: "The Knights",
-    role: "The Knights rode the Mountains under Dark.",
+    role: '"The Knight rides the Mountains under Dark."',
     desc: [],
     levelUp: {
       title: "Shadow Knight",
@@ -276,7 +276,7 @@ export const UNIT_DETAILS: Record<
   [PIECES.BOT]: {
     title: "Jumping Dragoon",
     subtitle: "The Pawns",
-    role: "The Pawns learned how to backflip.",
+    role: '"The Pawn learns the way of the backflip."',
     desc: [],
     levelUp: {
       title: "Jumping Dragoon",

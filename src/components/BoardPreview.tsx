@@ -29,6 +29,8 @@ interface BoardPreviewProps {
   showTerrainIcons?: boolean;
   hideUnits?: boolean;
   forcedTerrain?: TerrainType | null;
+  highlightOuterSquares?: boolean;
+  labelOverride?: string;
 }
 
 const BoardPreview: React.FC<BoardPreviewProps> = ({
@@ -43,6 +45,8 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
   showTerrainIcons,
   hideUnits,
   forcedTerrain,
+  highlightOuterSquares,
+  labelOverride,
 }) => {
   // Parse custom seed if present
   const seedData = React.useMemo(() => {
@@ -410,6 +414,13 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
         {grid.map(({ row, col }) => {
           const blandStyle = getQuadrantBaseStyle(row, col, "neutral");
 
+          // Outer Ring Highlight (12x12 vs 8x8)
+          const isOuter = row < 2 || row > 9 || col < 2 || col > 9;
+          const outerHighlight =
+            highlightOuterSquares && isOuter
+              ? "ring-2 ring-inset ring-amber-500/60 bg-amber-500/10 animate-pulse shadow-[inset_0_0_15px_rgba(245,158,11,0.4)]"
+              : "";
+
           // Standard Bland Mode - only if no mode AND no terrain icons requested and not terrainiffic
           if (
             !selectedMode &&
@@ -419,7 +430,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
             return (
               <div
                 key={`${row}-${col}`}
-                className={`${blandStyle} rounded-[1px] transition-all duration-500`}
+                className={`${blandStyle} ${outerHighlight} rounded-[1px] transition-all duration-500`}
               />
             );
           }
@@ -485,7 +496,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
           return (
             <div
               key={`${row}-${col}`}
-              className={`${cellStyle} rounded-[1px] transition-all duration-500 relative flex items-center justify-center`}
+              className={`${cellStyle} ${outerHighlight} rounded-[1px] transition-all duration-500 relative flex items-center justify-center`}
             >
               {TerrainIcon && (
                 <div className="absolute inset-0 flex items-center justify-center opacity-40">
@@ -543,15 +554,16 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
       <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-500">
         <div className="bg-slate-900/90 text-white px-6 py-3 rounded-2xl backdrop-blur-md border border-white/10 shadow-2xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-500">
           <span className="text-sm font-black uppercase tracking-[0.2em] leading-none text-center">
-            {selectedMode
-              ? selectedMode === "2v2"
-                ? "Capture the World"
-                : selectedMode === "4p"
-                  ? "Ultimate Showdown"
-                  : selectedMode === "2p-ns"
-                    ? "North vs South"
-                    : "East vs West"
-              : "Awaiting Protocol"}
+            {labelOverride ||
+              (selectedMode
+                ? selectedMode === "2v2"
+                  ? "Capture the World"
+                  : selectedMode === "4p"
+                    ? "Ultimate Showdown"
+                    : selectedMode === "2p-ns"
+                      ? "North vs South"
+                      : "East vs West"
+                : "Awaiting Protocol")}
           </span>
         </div>
       </div>

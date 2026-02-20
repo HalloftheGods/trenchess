@@ -14,7 +14,7 @@ const MenuPlay: React.FC = () => {
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
       <div className="relative w-full max-w-7xl mb-12">
-        <SectionDivider label="And so it began..." />
+        <SectionDivider label='"And so it begins..."' />
         <BackButton
           onClick={() => navigate("/")}
           className="absolute left-0 -top-8"
@@ -29,7 +29,7 @@ const MenuPlay: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Locals Gathered"
-          description="Friends became families. (Local Play)"
+          description='"Friends become families." (Local Play)'
           Icon={Sofa}
           color="red"
           className="h-full w-full"

@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
-import { Earth, Crown, Skull, Replace } from "lucide-react";
+import { Earth, Crown, Skull, Replace, Swords } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import InteractiveGuide, { type Slide } from "./InteractiveGuide";
 import { DEFAULT_SEEDS } from "../data/defaultSeeds";
 
@@ -203,12 +204,19 @@ const CaptureTheWorldGuide: React.FC<CaptureTheWorldGuideProps> = ({
     },
   ];
 
+  const navigate = useNavigate();
+
   return (
     <InteractiveGuide
       title="Capture the World"
       slides={slides}
       onBack={onBack}
       labelColor="emerald"
+      footerForward={{
+        label: "Enter The Trenchess",
+        onClick: () => navigate("/play"),
+        icon: Swords,
+      }}
     />
   );
 };

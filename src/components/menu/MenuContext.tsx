@@ -15,6 +15,8 @@ export interface PreviewConfig {
   hideUnits?: boolean;
   forcedTerrain?: TerrainType | null;
   useDefaultFormation?: boolean;
+  highlightOuterSquares?: boolean;
+  label?: string;
 }
 
 export interface MenuContextType {
