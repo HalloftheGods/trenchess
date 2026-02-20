@@ -15,10 +15,12 @@ import {
 } from "lucide-react";
 import BoardPreview from "./BoardPreview";
 import TerrainIntelTool from "./TerrainIntelTool";
-import { PIECES, INITIAL_ARMY } from "../constants";
+import { PIECES, INITIAL_ARMY } from "../data/unitDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
 import { DesertIcon } from "../UnitIcons";
 import { UNIT_DETAILS, unitColorMap } from "../data/unitDetails";
 import type { PieceStyle } from "../constants";
+import type { TerrainType } from "../types/game";
 import PageLayout from "./PageLayout";
 import PageHeader from "./PageHeader";
 
@@ -66,44 +68,43 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
     </div>
   );
 
-  const renderTerrainIcons = (icons: React.ReactNode[]) => {
+  const renderTerrainIcons = (terrainKeys: TerrainType[]) => {
     return (
       <div className="flex gap-2">
-        {icons.map((icon, idx) => {
-          const iconElement = icon as React.ReactElement;
-          const terrainColors =
-            iconElement.type === Mountain
-              ? {
-                  bg: "bg-brand-red/10",
-                  text: "text-brand-red",
-                  border: "border-brand-red/20",
-                }
-              : iconElement.type === Trees
-                ? {
-                    bg: "bg-emerald-500/10",
-                    text: "text-emerald-500",
-                    border: "border-emerald-500/20",
-                  }
-                : iconElement.type === DesertIcon
-                  ? {
-                      bg: "bg-amber-500/10",
-                      text: "text-amber-500",
-                      border: "border-amber-500/20",
-                    }
-                  : {
-                      bg: "bg-brand-blue/10",
-                      text: "text-brand-blue",
-                      border: "border-brand-blue/20",
-                    };
+        {terrainKeys.map((key, idx) => {
+          let bg = "",
+            text = "",
+            border = "";
+          let IconComp: any = null;
+
+          if (key === TERRAIN_TYPES.RUBBLE) {
+            bg = "bg-brand-red/10";
+            text = "text-brand-red";
+            border = "border-brand-red/20";
+            IconComp = Mountain;
+          } else if (key === TERRAIN_TYPES.TREES) {
+            bg = "bg-emerald-500/10";
+            text = "text-emerald-500";
+            border = "border-emerald-500/20";
+            IconComp = Trees;
+          } else if (key === TERRAIN_TYPES.DESERT) {
+            bg = "bg-amber-500/10";
+            text = "text-amber-500";
+            border = "border-amber-500/20";
+            IconComp = DesertIcon;
+          } else {
+            bg = "bg-brand-blue/10";
+            text = "text-brand-blue";
+            border = "border-brand-blue/20";
+            IconComp = Waves;
+          }
+
           return (
             <div
               key={idx}
-              className={`p-2.5 rounded-xl ${terrainColors.bg} ${terrainColors.text} border ${terrainColors.border} shadow-sm backdrop-blur-sm`}
+              className={`p-2.5 rounded-xl ${bg} ${text} border ${border} shadow-sm backdrop-blur-sm`}
             >
-              {React.cloneElement(iconElement as React.ReactElement<any>, {
-                size: 28,
-                className: "fill-current",
-              })}
+              <IconComp size={28} className="fill-current" />
             </div>
           );
         })}
@@ -250,9 +251,9 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
                         <IconComp className="w-24 h-24 sm:w-32 sm:h-32 transition-transform group-hover:scale-110" />
                       </div>
                       {/* Terrain Icons Below Main Icon */}
-                      {details.levelUp?.terrainIcons && (
+                      {details.levelUp?.sanctuaryTerrain && (
                         <div className="flex justify-center">
-                          {renderTerrainIcons(details.levelUp.terrainIcons)}
+                          {renderTerrainIcons(details.levelUp.sanctuaryTerrain)}
                         </div>
                       )}
                     </div>
@@ -374,9 +375,9 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
                         <IconComp className="w-24 h-24 sm:w-32 sm:h-32 transition-transform group-hover:scale-110" />
                       </div>
                       {/* Terrain Icons Below Main Icon */}
-                      {details.levelUp?.terrainIcons && (
+                      {details.levelUp?.sanctuaryTerrain && (
                         <div className="flex justify-center">
-                          {renderTerrainIcons(details.levelUp.terrainIcons)}
+                          {renderTerrainIcons(details.levelUp.sanctuaryTerrain)}
                         </div>
                       )}
                     </div>

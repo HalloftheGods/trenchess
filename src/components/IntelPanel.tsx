@@ -12,14 +12,11 @@ import {
 import { DesertIcon } from "../UnitIcons";
 import { getValidMoves } from "../utils/gameLogic";
 import { getTraversableTerrains } from "../utils/terrainCompat";
-import {
-  TERRAIN_TYPES,
-  PIECES,
-  INITIAL_ARMY,
-  TERRAIN_INTEL,
-  PLAYER_CONFIGS,
-  isUnitProtected,
-} from "../constants";
+import { PLAYER_CONFIGS } from "../constants";
+import { PIECES, INITIAL_ARMY } from "../data/unitDetails";
+import { TERRAIN_INTEL } from "../data/terrainDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
+import { isUnitProtected } from "../utils/gameLogic";
 import type {
   GameState,
   SetupMode,
@@ -27,9 +24,11 @@ import type {
   TerrainType,
   BoardPiece,
   ArmyUnit,
+} from "../types/game";
+import type {
   UnitIntelPanelEntry,
   TerrainIntelPanelEntry,
-} from "../types";
+} from "../types/guide";
 
 // --- Detailed intel data for the panel ---
 const UNIT_INTEL_PANEL: Record<string, UnitIntelPanelEntry> = {

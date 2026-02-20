@@ -1,5 +1,6 @@
-import type { GameMode, BoardPiece, TerrainType, PieceType } from "../types";
-import { BOARD_SIZE, TERRAIN_TYPES } from "../constants";
+import type { GameMode, BoardPiece, TerrainType, PieceType } from "../types/game";
+import { BOARD_SIZE } from "../constants";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
 
 interface GameSeed {
   m: GameMode; // mode

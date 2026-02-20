@@ -1,14 +1,31 @@
-/*
- * Copyright (c) 2006 - 2026 Hall of the Gods, Inc.
- * All Rights Reserved.
- *
- * Shared unit details and color configuration.
- */
+import {
+  ChessKnight,
+  ChessKing,
+  ChessQueen,
+  ChessRook,
+  ChessBishop,
+  ChessPawn,
+} from "lucide-react";
+import {
+  CommanderIcon,
+  BattleKnightIcon,
+  TankIcon,
+  SniperIcon,
+  HorsemanIcon,
+  BotIcon,
+} from "../UnitIcons";
+import type { TerrainType, PieceType, ArmyUnit } from "../types/game";
+import type { UnitIntelEntry } from "../types/guide";
 
-import React from "react";
-import { Trees, Waves, Mountain } from "lucide-react";
-
-import { PIECES } from "../constants";
+// --- Piece Types ---
+export const PIECES: Record<string, PieceType> = {
+  BOT: "bot",
+  HORSEMAN: "horseman",
+  SNIPER: "sniper",
+  TANK: "tank",
+  BATTLEKNIGHT: "battleknight",
+  COMMANDER: "commander",
+};
 
 export const unitColorMap: Record<
   string,
@@ -81,8 +98,7 @@ export const UNIT_DETAILS: Record<
     levelUp?: {
       title: string;
       stats: string[];
-      icon?: React.ReactNode;
-      terrainIcons?: React.ReactNode[];
+      sanctuaryTerrain?: TerrainType[];
     };
     movePattern: (r: number, c: number) => number[][];
     newMovePattern?: (r: number, c: number) => number[][];
@@ -100,11 +116,7 @@ export const UNIT_DETAILS: Record<
         "Joust 2 squares in a straight line.",
         "Captures any enemies in the way.",
       ],
-      terrainIcons: [
-        <Mountain key="mt" />,
-        <Trees key="tr" />,
-        <Waves key="wv" />,
-      ],
+      sanctuaryTerrain: ["rubble", "trees", "ponds"],
     },
     movePattern: (r, c) => [
       [r - 1, c],
@@ -137,11 +149,7 @@ export const UNIT_DETAILS: Record<
     levelUp: {
       title: "Royal Battle Knight",
       stats: ["Leap over units L-shape."],
-      terrainIcons: [
-        <Mountain key="mt" />,
-        <Trees key="tr" />,
-        <Waves key="wv" />,
-      ],
+      sanctuaryTerrain: ["rubble", "trees", "ponds"],
     },
     movePattern: (r, c) => {
       const moves: number[][] = [];
@@ -179,7 +187,7 @@ export const UNIT_DETAILS: Record<
         "Single-step-diagonal: Advance1 square diagonally.",
         "Swamp Sanctuary: Safe from Bishops & Knights.",
       ],
-      terrainIcons: [<Waves key="wv" />],
+      sanctuaryTerrain: ["ponds"],
     },
     newMovePattern(r, c) {
       return [
@@ -208,7 +216,7 @@ export const UNIT_DETAILS: Record<
         "Double-step Retreat: Horizonal or Vertical 2 squares.",
         "Forest Sanctuary: Safe from Rooks and Knights.",
       ],
-      terrainIcons: [<Trees key="tr" />],
+      sanctuaryTerrain: ["trees"],
     },
     newMovePattern(r, c) {
       return [
@@ -242,7 +250,7 @@ export const UNIT_DETAILS: Record<
         "Triple-Jump: Horizontal or Vertical 3 squares.",
         "Mountain Sanctuary: Safe from Rooks and Bishops.",
       ],
-      terrainIcons: [<Mountain key="mt" />],
+      sanctuaryTerrain: ["rubble"],
     },
 
     newMovePattern(r, c) {
@@ -276,11 +284,7 @@ export const UNIT_DETAILS: Record<
         "Backflip: Vault 2 squares if vacant.",
         "Crouching-Tiger-Hidden-Dragoon: Backflip capture on left or right.",
       ],
-      terrainIcons: [
-        <Mountain key="mt" />,
-        <Trees key="tr" />,
-        <Waves key="wv" />,
-      ],
+      sanctuaryTerrain: ["rubble", "trees", "ponds"],
     },
     movePattern: (r, c) => [[r - 1, c]],
     newMovePattern: (r, c) => [
@@ -294,5 +298,91 @@ export const UNIT_DETAILS: Record<
       [r + 2, c - 1],
       [r + 2, c + 1],
     ],
+  },
+};
+
+// --- Initial Army ---
+export const INITIAL_ARMY: ArmyUnit[] = [
+  {
+    type: PIECES.COMMANDER,
+    count: 1,
+    emoji: "👑",
+    bold: "♚︎",
+    outlined: "♔︎",
+    custom: CommanderIcon,
+    lucide: ChessKing,
+  },
+  {
+    type: PIECES.BATTLEKNIGHT,
+    count: 1,
+    emoji: "👸",
+    bold: "♛︎",
+    outlined: "♕︎",
+    custom: BattleKnightIcon,
+    lucide: ChessQueen,
+  },
+  {
+    type: PIECES.TANK,
+    count: 2,
+    emoji: "🛡️",
+    bold: "♜︎",
+    outlined: "♖︎",
+    custom: TankIcon,
+    lucide: ChessRook,
+  },
+  {
+    type: PIECES.SNIPER,
+    count: 2,
+    emoji: "🎯",
+    bold: "♝︎",
+    outlined: "♗︎",
+    custom: SniperIcon,
+    lucide: ChessBishop,
+  },
+  {
+    type: PIECES.HORSEMAN,
+    count: 2,
+    emoji: "🏇",
+    bold: "♞︎",
+    outlined: "♘︎",
+    custom: HorsemanIcon,
+    lucide: ChessKnight,
+  },
+  {
+    type: PIECES.BOT,
+    count: 8,
+    emoji: "🤖",
+    bold: "♟︎",
+    outlined: "♙︎",
+    custom: BotIcon,
+    lucide: ChessPawn,
+  },
+];
+
+// --- Unit Intel (simple tooltips) ---
+export const UNIT_INTEL: Record<string, UnitIntelEntry> = {
+  [PIECES.COMMANDER]: {
+    title: "Commander",
+    desc: "The Leader. Moves 2 spaces in a straight line or 1 space diagonally. Cannot pass through a square guarded by an enemy. Capture to win.",
+  },
+  [PIECES.BATTLEKNIGHT]: {
+    title: "BattleKnight",
+    desc: "Elite unit. Moves like a Queen AND a Horseman. Can occupy any terrain. Cannot pass through walls but can jump them in L-shape moves.",
+  },
+  [PIECES.TANK]: {
+    title: "Tank",
+    desc: "Heavy Armor. Moves like a Rook. Cannot enter Forest or Mountains. Thrives in Swamp. Only unit that can traverse Tundra.",
+  },
+  [PIECES.SNIPER]: {
+    title: "Sniper",
+    desc: "Ranged Specialist. Moves diagonally like a Bishop. Gains cover in Forest. Blocked by Swamp and Mountains.",
+  },
+  [PIECES.HORSEMAN]: {
+    title: "Horseman",
+    desc: "Cavalry. Moves in an L-shape, jumping over units and walls. Thrives in Mountains. Bogs down in Swamp and Forest.",
+  },
+  [PIECES.BOT]: {
+    title: "Bot",
+    desc: "Infantry. Moves like a Pawn, but can also perform a 'Backflip' (jump 2 squares backward) to reposition or capture unexpectedly.",
   },
 };

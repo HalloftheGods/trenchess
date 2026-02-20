@@ -1,5 +1,6 @@
-import { BOARD_SIZE, PIECES } from "../constants";
-import type { BoardPiece, TerrainType, GameMode } from "../types";
+import { BOARD_SIZE } from "../constants";
+import { PIECES } from "../data/unitDetails";
+import type { BoardPiece, TerrainType, GameMode } from "../types/game";
 import { getValidMoves, isPlayerInCheck } from "./gameLogic";
 
 // --- Heuristic Weights ---

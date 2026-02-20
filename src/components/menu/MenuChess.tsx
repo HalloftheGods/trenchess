@@ -4,7 +4,7 @@ import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
 import { useMenuContext } from "./MenuContext";
-import { INITIAL_ARMY, PIECES } from "../../constants";
+import { INITIAL_ARMY, PIECES } from "../../data/unitDetails";
 import { UNIT_DETAILS, unitColorMap } from "../../data/unitDetails";
 
 import { useParams } from "react-router-dom";

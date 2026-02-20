@@ -14,12 +14,10 @@ import {
   Bomb,
 } from "lucide-react";
 import { deserializeGame, adaptSeedToMode } from "../utils/gameUrl";
-import {
-  PLAYER_CONFIGS,
-  INITIAL_ARMY,
-  getQuadrantBaseStyle,
-} from "../constants";
-import type { GameMode } from "../types";
+import { PLAYER_CONFIGS } from "../constants";
+import { INITIAL_ARMY } from "../data/unitDetails";
+import { getQuadrantBaseStyle } from "../utils/boardLayouts";
+import type { GameMode } from "../types/game";
 
 interface SeedItem {
   id: string;

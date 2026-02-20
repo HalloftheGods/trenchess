@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import type { GameMode, TerrainType } from "../../types";
+import type { GameMode, TerrainType } from "../../types/game";
 import type { PieceStyle } from "../../constants";
 
 export interface PreviewConfig {

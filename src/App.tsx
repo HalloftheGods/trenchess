@@ -37,7 +37,7 @@ const MenuSetup = lazy(() => import("./components/menu/MenuSetup"));
 const MenuChess = lazy(() => import("./components/menu/MenuChess"));
 const MenuScoreboard = lazy(() => import("./components/menu/MenuScoreboard"));
 
-import type { TerrainType } from "./types";
+import type { TerrainType } from "./types/game";
 import { LoadingFallback } from "./components/loading/LoadingFallback";
 
 const TrenchGuideWrapper = (props: any) => {

@@ -7,8 +7,17 @@
 
 import { Trees, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "../UnitIcons";
-import { TERRAIN_TYPES, PIECES } from "../constants";
-import type { TerrainType, PieceType } from "../types";
+import { PIECES } from "./unitDetails";
+import type { TerrainType, PieceType } from "../types/game";
+import type { TerrainIntelEntry } from "../types/guide";
+
+export const TERRAIN_TYPES: Record<string, TerrainType> = {
+  FLAT: "flat",
+  TREES: "trees",
+  PONDS: "ponds",
+  RUBBLE: "rubble",
+  DESERT: "desert",
+};
 
 export interface TerrainDetail {
   key: TerrainType;
@@ -161,3 +170,30 @@ export const TERRAIN_DETAILS: TerrainDetail[] = [
     blockedUnits: [],
   },
 ];
+
+export const TERRAIN_INTEL: Record<string, TerrainIntelEntry> = {
+  [TERRAIN_TYPES.PONDS]: {
+    label: "Swamps",
+    icon: Waves,
+    color: "text-brand-blue",
+    desc: "Sanctuary for Rooks. Grants protection from Bishops and Knights. Difficult terrain that slows movement.",
+  },
+  [TERRAIN_TYPES.TREES]: {
+    label: "Forests",
+    icon: Trees,
+    color: "text-emerald-500",
+    desc: "Sanctuary for Kings, Queens, Bishops, and Pawns. Grants protection from Rooks and Knights. Impassable for Rooks and Knights.",
+  },
+  [TERRAIN_TYPES.RUBBLE]: {
+    label: "Mountains",
+    icon: Mountain,
+    color: "text-brand-red",
+    desc: "Sanctuary for Knights. Grants protection from Rooks and Bishops. High peaks that block direct movement.",
+  },
+  [TERRAIN_TYPES.DESERT]: {
+    label: "Desert",
+    icon: DesertIcon,
+    color: "text-amber-500",
+    desc: "Exclusive zone for Rooks. Immune to non-Rook attacks. Deserts end movement; must exit next turn.",
+  },
+};

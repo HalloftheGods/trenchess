@@ -4,7 +4,7 @@ import PageLayout from "../PageLayout";
 import PageHeader from "../PageHeader";
 import BoardPreview from "../BoardPreview";
 import { DEFAULT_SEEDS } from "../../data/defaultSeeds";
-import type { GameMode, TerrainType } from "../../types";
+import type { GameMode, TerrainType } from "../../types/game";
 import type { PieceStyle } from "../../constants";
 import {
   MenuContext,

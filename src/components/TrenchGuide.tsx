@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { ShieldPlus, Ban, Zap } from "lucide-react";
 import InteractiveGuide, { type Slide } from "./InteractiveGuide";
-import { PIECES, INITIAL_ARMY } from "../constants";
+import { PIECES, INITIAL_ARMY } from "../data/unitDetails";
 
 import { unitColorMap } from "../data/unitDetails";
 import { TERRAIN_DETAILS, type TerrainDetail } from "../data/terrainDetails";

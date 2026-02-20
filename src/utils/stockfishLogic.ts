@@ -1,6 +1,7 @@
 import Stockfish from "fairy-stockfish-nnue.wasm/stockfish.js";
-import type { BoardPiece } from "../types";
-import { PIECES, BOARD_SIZE } from "../constants";
+import type { BoardPiece } from "../types/game";
+import { BOARD_SIZE } from "../constants";
+import { PIECES } from "../data/unitDetails";
 
 class StockfishEngine {
   private engine: any = null;

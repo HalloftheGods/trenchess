@@ -2,13 +2,10 @@ import { useState, useCallback } from "react";
 import { getValidMoves as getValidMovesUtil } from "../utils/gameLogic";
 import { getPlayerCells } from "../utils/setupLogic";
 import type { useGameCore } from "./useGameCore";
-import type { PieceType, TerrainType, BoardPiece } from "../types";
-import {
-  BOARD_SIZE,
-  TERRAIN_TYPES,
-  PIECES,
-  MAX_TERRAIN_PER_PLAYER,
-} from "../constants";
+import type { PieceType, TerrainType, BoardPiece } from "../types/game";
+import { BOARD_SIZE, MAX_TERRAIN_PER_PLAYER } from "../constants";
+import { PIECES } from "../data/unitDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
 import { canPlaceUnit } from "../utils/setupLogic";
 
 type GameCore = ReturnType<typeof useGameCore>;

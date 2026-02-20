@@ -5,7 +5,7 @@
 import React from "react";
 import { X, Map as MapIcon, ChevronRight } from "lucide-react";
 import { MiniBoard } from "./SeedLibrary";
-import type { GameMode } from "../types";
+import type { GameMode } from "../types/game";
 
 interface ChiLayoutModalProps {
   isOpen: boolean;

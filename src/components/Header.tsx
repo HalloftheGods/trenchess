@@ -1,5 +1,5 @@
 import { BookOpen, Database } from "lucide-react";
-import type { GameMode } from "../types";
+import type { GameMode } from "../types/game";
 import type { PieceStyle } from "../constants";
 import { IconButton } from "./ui/IconButton";
 import { SegmentedControl } from "./ui/SegmentedControl";

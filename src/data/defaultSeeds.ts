@@ -1,6 +1,7 @@
 import { serializeGame } from "../utils/gameUrl";
-import { TERRAIN_TYPES, BOARD_SIZE } from "../constants";
-import type { TerrainType, BoardPiece } from "../types";
+import { BOARD_SIZE } from "../constants";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
+import type { TerrainType, BoardPiece } from "../types/game";
 
 // Helper to create an empty board
 const createEmptyBoard = (): (BoardPiece | null)[][] =>

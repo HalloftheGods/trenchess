@@ -11,6 +11,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "fairy-stockfish-nnue.wasm": "^1.1.11",
     "lucide": "^0.574.0",
     "lucide-react": "^0.574.0",
     "react": "^19.2.4",

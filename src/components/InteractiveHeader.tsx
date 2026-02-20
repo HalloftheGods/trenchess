@@ -7,14 +7,11 @@
 import React from "react";
 import { Trees, Waves, Mountain, ArrowLeft } from "lucide-react";
 import { DesertIcon } from "../UnitIcons";
-import {
-  PIECES,
-  TERRAIN_TYPES,
-  INITIAL_ARMY,
-  isUnitProtected,
-} from "../constants";
+import { PIECES, INITIAL_ARMY } from "../data/unitDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
+import { isUnitProtected } from "../utils/gameLogic";
 import { canUnitTraverseTerrain } from "../utils/terrainCompat";
-import type { PieceType, TerrainType } from "../types";
+import type { PieceType, TerrainType } from "../types/game";
 
 interface InteractiveHeaderProps {
   darkMode: boolean;

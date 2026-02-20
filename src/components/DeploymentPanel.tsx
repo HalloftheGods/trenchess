@@ -12,13 +12,10 @@ import {
   Bomb,
   Mountain,
 } from "lucide-react";
-import {
-  TERRAIN_TYPES,
-  PLAYER_CONFIGS,
-  INITIAL_ARMY,
-  TERRAIN_INTEL,
-  MAX_TERRAIN_PER_PLAYER,
-} from "../constants";
+import { PLAYER_CONFIGS, MAX_TERRAIN_PER_PLAYER } from "../constants";
+import { INITIAL_ARMY } from "../data/unitDetails";
+import { TERRAIN_INTEL } from "../data/terrainDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
 import { getPlayerCells } from "../utils/setupLogic";
 import { serializeGame, deserializeGame } from "../utils/gameUrl";
 import type {
@@ -29,7 +26,7 @@ import type {
   ArmyUnit,
   BoardPiece,
   GameMode,
-} from "../types";
+} from "../types/game";
 
 interface DeploymentPanelProps {
   mode: GameMode;

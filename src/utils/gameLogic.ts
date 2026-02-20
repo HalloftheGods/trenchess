@@ -1,5 +1,12 @@
-import { BOARD_SIZE, TERRAIN_TYPES, PIECES } from "../constants";
-import type { BoardPiece, TerrainType, GameMode } from "../types";
+import { BOARD_SIZE } from "../constants";
+import { PIECES } from "../data/unitDetails";
+import { TERRAIN_TYPES, TERRAIN_DETAILS } from "../data/terrainDetails";
+import type {
+  BoardPiece,
+  TerrainType,
+  GameMode,
+  PieceType,
+} from "../types/game";
 
 export const getValidMoves = (
   r: number,
@@ -428,4 +435,13 @@ export const hasAnyValidMoves = (
       return false;
     }),
   );
+};
+
+export const isUnitProtected = (
+  unitType: string,
+  terrainType: TerrainType | string,
+): boolean => {
+  const terrainInfo = TERRAIN_DETAILS.find((t) => t.key === terrainType);
+  if (!terrainInfo) return false;
+  return terrainInfo.sanctuaryUnits.includes(unitType as PieceType);
 };

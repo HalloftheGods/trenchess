@@ -17,10 +17,12 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { DesertIcon } from "../UnitIcons";
-import { TERRAIN_TYPES, INITIAL_ARMY, isUnitProtected } from "../constants";
+import { INITIAL_ARMY } from "../data/unitDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
+import { isUnitProtected } from "../utils/gameLogic";
 import { canUnitTraverseTerrain } from "../utils/terrainCompat";
 import { UNIT_DETAILS, unitColorMap } from "../data/unitDetails";
-import type { PieceType, TerrainType } from "../types";
+import type { PieceType, TerrainType } from "../types/game";
 import { deserializeGame } from "../utils/gameUrl";
 import TerrainMovePreview from "./TerrainMovePreview"; // Updated import
 import TerrainDetailsPanel from "./TerrainDetailsPanel"; // New component

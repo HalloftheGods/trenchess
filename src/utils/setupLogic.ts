@@ -1,13 +1,14 @@
-import {
-  BOARD_SIZE,
-  TERRAIN_TYPES,
-  PIECES,
-  INITIAL_ARMY,
-  TERRAIN_CARDS_PER_TYPE,
-  MAX_TERRAIN_PER_PLAYER,
-} from "../constants";
-import type { GameMode, BoardPiece, TerrainType, PieceType } from "../types";
+import { BOARD_SIZE, TERRAIN_CARDS_PER_TYPE, MAX_TERRAIN_PER_PLAYER } from "../constants";
+import { PIECES, INITIAL_ARMY } from "../data/unitDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
+import type {
+  GameMode,
+  BoardPiece,
+  TerrainType,
+  PieceType,
+} from "../types/game";
 import { TerraForm } from "./TerraForm";
+import { getClassicalFormationTargets } from "./boardLayouts";
 
 export interface SetupResult {
   board: (BoardPiece | null)[][];
@@ -290,80 +291,7 @@ export const applyClassicalFormation = (
     }
 
     // 2. Define Targets
-    const targets: { r: number; c: number; type: PieceType }[] = [];
-    if (mode === "2p-ns") {
-      const backRank = [
-        PIECES.TANK,
-        PIECES.HORSEMAN,
-        PIECES.SNIPER,
-        PIECES.BATTLEKNIGHT,
-        PIECES.COMMANDER,
-        PIECES.SNIPER,
-        PIECES.HORSEMAN,
-        PIECES.TANK,
-      ];
-      const pawnRank = Array(8).fill(PIECES.BOT);
-      if (p === "player1") {
-        backRank.forEach((type, i) => targets.push({ r: 2, c: 2 + i, type }));
-        pawnRank.forEach((type, i) => targets.push({ r: 3, c: 2 + i, type }));
-      } else {
-        backRank.forEach((type, i) => targets.push({ r: 9, c: 2 + i, type }));
-        pawnRank.forEach((type, i) => targets.push({ r: 8, c: 2 + i, type }));
-      }
-    } else if (mode === "2p-ew") {
-      const backRank = [
-        PIECES.TANK,
-        PIECES.HORSEMAN,
-        PIECES.SNIPER,
-        PIECES.BATTLEKNIGHT,
-        PIECES.COMMANDER,
-        PIECES.SNIPER,
-        PIECES.HORSEMAN,
-        PIECES.TANK,
-      ];
-      const pawnRank = Array(8).fill(PIECES.BOT);
-      if (p === "player3") {
-        backRank.forEach((type, i) => targets.push({ r: 2 + i, c: 2, type }));
-        pawnRank.forEach((type, i) => targets.push({ r: 2 + i, c: 3, type }));
-      } else {
-        backRank.forEach((type, i) => targets.push({ r: 2 + i, c: 9, type }));
-        pawnRank.forEach((type, i) => targets.push({ r: 2 + i, c: 8, type }));
-      }
-    } else {
-      const formation = [
-        [PIECES.TANK, PIECES.BATTLEKNIGHT, PIECES.COMMANDER, PIECES.TANK],
-        [PIECES.HORSEMAN, PIECES.SNIPER, PIECES.SNIPER, PIECES.HORSEMAN],
-        [PIECES.BOT, PIECES.BOT, PIECES.BOT, PIECES.BOT],
-        [PIECES.BOT, PIECES.BOT, PIECES.BOT, PIECES.BOT],
-      ];
-      let rOrigins = 0,
-        cOrigins = 0,
-        rStep = 1;
-      if (p === "player1") {
-        rOrigins = 1;
-        cOrigins = 1;
-      } else if (p === "player2") {
-        rOrigins = 1;
-        cOrigins = 7;
-      } else if (p === "player3") {
-        rOrigins = 10;
-        cOrigins = 1;
-        rStep = -1;
-      } else {
-        rOrigins = 10;
-        cOrigins = 7;
-        rStep = -1;
-      }
-      for (let rIdx = 0; rIdx < 4; rIdx++) {
-        for (let cIdx = 0; cIdx < 4; cIdx++) {
-          targets.push({
-            r: rOrigins + rIdx * rStep,
-            c: cOrigins + cIdx,
-            type: formation[rIdx][cIdx],
-          });
-        }
-      }
-    }
+    const targets = getClassicalFormationTargets(p, mode);
 
     const playerTerrainInv = [...(nextTInv[p] || [])];
     for (const { r, c, type } of targets) {

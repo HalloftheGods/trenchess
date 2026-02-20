@@ -7,15 +7,12 @@
  */
 import React from "react";
 import { Trees, Waves, Mountain, ShieldPlus, X } from "lucide-react";
-import {
-  PIECES,
-  INITIAL_ARMY,
-  isUnitProtected,
-  TERRAIN_TYPES,
-  TERRAIN_INTEL,
-} from "../constants";
+import { PIECES, INITIAL_ARMY } from "../data/unitDetails";
+import { TERRAIN_INTEL } from "../data/terrainDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
+import { isUnitProtected } from "../utils/gameLogic";
 import { DesertIcon } from "../UnitIcons";
-import type { PieceType } from "../types";
+import type { PieceType } from "../types/game";
 
 // ── Types ────────────────────────────────────────────────────────────
 

@@ -6,8 +6,6 @@ import {
   generateElementalTerrain,
 } from "../utils/setupLogic";
 import { getBestMove } from "../utils/aiLogic";
-import { getValidMoves, isPlayerInCheck } from "../utils/gameLogic";
-import { BOARD_SIZE } from "../constants";
 
 const SERVER_URL = "http://localhost:3001";
 const ROOM_ID =

@@ -12,15 +12,13 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import {
-  TERRAIN_INTEL,
-  TERRAIN_TYPES,
-  INITIAL_ARMY,
-  isUnitProtected,
-} from "../constants";
+import { INITIAL_ARMY } from "../data/unitDetails";
+import { TERRAIN_INTEL } from "../data/terrainDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
+import { isUnitProtected } from "../utils/gameLogic";
 import { canUnitTraverseTerrain } from "../utils/terrainCompat";
 import { unitColorMap } from "../data/unitDetails";
-import type { PieceType, TerrainType } from "../types";
+import type { PieceType, TerrainType } from "../types/game";
 
 interface TerrainDetailsPanelProps {
   darkMode: boolean;
@@ -336,7 +334,7 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
               {intel.desc
                 .split(". ")
                 .filter(Boolean)
-                .map((item, idx) => (
+                .map((item: string, idx: number) => (
                   <div key={idx} className="flex items-start gap-3 text-left">
                     <div
                       className={`w-1.5 h-1.5 rounded-full ${colors.solid} opacity-40 mt-1.5 shrink-0 shadow-sm`}

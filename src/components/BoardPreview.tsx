@@ -1,17 +1,12 @@
 import React from "react";
-import {
-  BOARD_SIZE,
-  getQuadrantBaseStyle,
-  INITIAL_ARMY,
-  PIECES,
-  PLAYER_CONFIGS,
-  TERRAIN_TYPES,
-  type PieceStyle,
-} from "../constants";
-import type { GameMode, ArmyUnit, PieceType, TerrainType } from "../types";
+import { BOARD_SIZE, PLAYER_CONFIGS, type PieceStyle } from "../constants";
+import { INITIAL_ARMY, PIECES } from "../data/unitDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
+import { getQuadrantBaseStyle } from "../utils/boardLayouts";
+import type { GameMode, ArmyUnit, PieceType, TerrainType } from "../types/game";
 import { Edit, Ban } from "lucide-react";
 import { deserializeGame, adaptSeedToMode } from "../utils/gameUrl";
-import { TERRAIN_INTEL } from "../constants";
+import { TERRAIN_INTEL } from "../data/terrainDetails";
 import { TerraForm } from "../utils/TerraForm";
 import { TERRAIN_DETAILS } from "../data/terrainDetails";
 

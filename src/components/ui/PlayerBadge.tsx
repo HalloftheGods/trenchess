@@ -1,4 +1,4 @@
-import type { PlayerConfig } from "../../types";
+import type { PlayerConfig } from "../../types/game";
 
 interface PlayerBadgeProps {
   player?: string;

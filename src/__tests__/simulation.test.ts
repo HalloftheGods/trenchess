@@ -6,8 +6,9 @@ import {
 } from "../utils/setupLogic";
 import { getBestMove } from "../utils/aiLogic";
 import { getValidMoves, isPlayerInCheck } from "../utils/gameLogic";
-import type { GameMode } from "../types";
-import { BOARD_SIZE, PIECES } from "../constants";
+import type { GameMode } from "../types/game";
+import { BOARD_SIZE } from "../constants";
+import { PIECES } from "../data/unitDetails";
 
 // Helper to find the king and check if captured
 const isKingAlive = (board: any[][], player: string) => {
@@ -123,7 +124,6 @@ describe("CPU vs CPU Game Simulation", () => {
         }
 
         // 3. AI gets best move
-        const t0 = performance.now();
         const bestMove = getBestMove(board, terrain, player, mode);
 
         if (!bestMove) {

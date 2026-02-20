@@ -6,7 +6,7 @@ import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
 import { useMenuContext } from "./MenuContext";
 import { DesertIcon } from "../../UnitIcons";
-import type { TerrainType } from "../../types";
+import type { TerrainType } from "../../types/game";
 
 import { useParams } from "react-router-dom";
 import { TERRAIN_DETAILS } from "../../data/terrainDetails";

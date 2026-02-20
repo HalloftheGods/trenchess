@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Eye, Pizza, Shell, Dices, Flag, Globe } from "lucide-react";
+import { Eye, Pizza, Shell, Dices, Globe } from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
 import { useMenuContext } from "./MenuContext";
 import { DualToneNS, DualToneEW, QuadTone, AllianceTone } from "../MenuIcons";
-import type { GameMode } from "../../types";
+import type { GameMode } from "../../types/game";
 
 const MenuSetup: React.FC = () => {
   const navigate = useNavigate();

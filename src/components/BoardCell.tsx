@@ -1,20 +1,18 @@
 // Board cell component
 import { Trees as TreeIcon, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "../UnitIcons";
-import {
-  TERRAIN_TYPES,
-  PLAYER_CONFIGS,
-  INITIAL_ARMY,
-  getQuadrantBaseStyle,
-  isUnitProtected,
-} from "../constants";
+import { PLAYER_CONFIGS } from "../constants";
+import { INITIAL_ARMY } from "../data/unitDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
+import { getQuadrantBaseStyle } from "../utils/boardLayouts";
+import { isUnitProtected } from "../utils/gameLogic";
 import type {
   BoardPiece,
   TerrainType,
   GameState,
   ArmyUnit,
   PieceType,
-} from "../types";
+} from "../types/game";
 
 interface BoardCellProps {
   r: number;

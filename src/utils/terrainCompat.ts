@@ -1,6 +1,8 @@
-import { TERRAIN_TYPES, PIECES, BOARD_SIZE } from "../constants";
+import { BOARD_SIZE } from "../constants";
+import { PIECES } from "../data/unitDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
 import { getValidMoves } from "./gameLogic";
-import type { PieceType, TerrainType } from "../types";
+import type { PieceType, TerrainType } from "../types/game";
 
 /**
  * Dynamically checks whether a unit type can traverse a given terrain type

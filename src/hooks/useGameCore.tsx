@@ -8,14 +8,10 @@ import type {
   PieceType,
   TerrainType,
   BoardPiece,
-} from "../types";
-import {
-  PLAYER_CONFIGS,
-  INITIAL_ARMY,
-  TERRAIN_TYPES,
-  BOARD_SIZE,
-  MAX_TERRAIN_PER_PLAYER,
-} from "../constants";
+} from "../types/game";
+import { PLAYER_CONFIGS, BOARD_SIZE, MAX_TERRAIN_PER_PLAYER } from "../constants";
+import { INITIAL_ARMY } from "../data/unitDetails";
+import { TERRAIN_TYPES } from "../data/terrainDetails";
 import { getPlayerCells } from "../utils/setupLogic";
 
 const getPlayersForMode = (m: GameMode) =>

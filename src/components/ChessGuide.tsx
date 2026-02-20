@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
-import { Trees, Mountain } from "lucide-react";
 import InteractiveGuide, { type Slide } from "./InteractiveGuide";
-import { PIECES, INITIAL_ARMY } from "../constants";
-import { DesertIcon } from "../UnitIcons";
+import { PIECES, INITIAL_ARMY } from "../data/unitDetails";
 import { UNIT_DETAILS, unitColorMap } from "../data/unitDetails";
+import { TERRAIN_DETAILS } from "../data/terrainDetails";
+import type { TerrainType } from "../types/game";
 
 interface ChessGuideProps {
   onBack: () => void;
@@ -11,44 +11,20 @@ interface ChessGuideProps {
 }
 
 const ChessGuide: React.FC<ChessGuideProps> = ({ onBack, initialUnit }) => {
-  const renderTerrainIcons = (icons: React.ReactNode[]) => {
+  const renderTerrainIcons = (terrainKeys: TerrainType[]) => {
     return (
       <div className="flex gap-2">
-        {icons.map((icon, idx) => {
-          const iconElement = icon as React.ReactElement;
-          const terrainColors =
-            iconElement.type === Mountain
-              ? {
-                  bg: "bg-brand-red/10",
-                  text: "text-brand-red",
-                  border: "border-brand-red/20",
-                }
-              : iconElement.type === Trees
-                ? {
-                    bg: "bg-emerald-500/10",
-                    text: "text-emerald-500",
-                    border: "border-emerald-500/20",
-                  }
-                : iconElement.type === DesertIcon
-                  ? {
-                      bg: "bg-amber-500/10",
-                      text: "text-amber-500",
-                      border: "border-amber-500/20",
-                    }
-                  : {
-                      bg: "bg-brand-blue/10",
-                      text: "text-brand-blue",
-                      border: "border-brand-blue/20",
-                    };
+        {terrainKeys.map((key, idx) => {
+          const terrain = TERRAIN_DETAILS.find((t) => t.key === key);
+          if (!terrain) return null;
+          const Icon = terrain.icon;
+
           return (
             <div
               key={idx}
-              className={`p-2.5 rounded-xl ${terrainColors.bg} ${terrainColors.text} border ${terrainColors.border} shadow-sm backdrop-blur-sm`}
+              className={`p-2.5 rounded-xl ${terrain.color.bg} ${terrain.color.text} border ${terrain.color.border} shadow-sm backdrop-blur-sm`}
             >
-              {React.cloneElement(iconElement as React.ReactElement<any>, {
-                size: 28,
-                className: "fill-current",
-              })}
+              <Icon size={28} className="fill-current" />
             </div>
           );
         })}
@@ -184,9 +160,9 @@ const ChessGuide: React.FC<ChessGuideProps> = ({ onBack, initialUnit }) => {
           showIcons: false,
           hideUnits: false,
         },
-        leftContent: details.levelUp?.terrainIcons ? (
+        leftContent: details.levelUp?.sanctuaryTerrain ? (
           <div className="flex items-center gap-6">
-            {renderTerrainIcons(details.levelUp.terrainIcons)}
+            {renderTerrainIcons(details.levelUp.sanctuaryTerrain)}
           </div>
         ) : null,
         description: (
