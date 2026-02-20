@@ -148,7 +148,7 @@ const TERRAIN_INTEL_PANEL: Record<string, TerrainIntelPanelEntry> = {
   [TERRAIN_TYPES.PONDS]: {
     label: "Swamps",
     icon: Waves,
-    color: "blue",
+    color: "brand-blue",
     interactions: [
       { unit: "Tank", status: "allow", text: "Pushes Through" },
       { unit: "BattleKnight", status: "allow", text: "Can Enter" },
@@ -174,7 +174,7 @@ const TERRAIN_INTEL_PANEL: Record<string, TerrainIntelPanelEntry> = {
   [TERRAIN_TYPES.RUBBLE]: {
     label: "Mountains",
     icon: Mountain,
-    color: "red",
+    color: "brand-red",
     interactions: [
       { unit: "Horseman", status: "allow", text: "Agile Climb" },
       { unit: "BattleKnight", status: "allow", text: "Can Enter" },
@@ -298,7 +298,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                 return (
                   <div
                     key={pid}
-                    className={`relative overflow-hidden rounded-2xl border bg-white/50 dark:bg-slate-800/50 p-4 transition-all border-${config.color}-500/20`}
+                    className={`relative overflow-hidden rounded-2xl border bg-white/50 dark:bg-slate-800/50 p-4 transition-all border-${config.color}/20`}
                   >
                     <div className="flex items-center justify-between mb-3 relative z-10">
                       <div className="flex items-center gap-3">
@@ -508,7 +508,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                         return (
                           <div
                             key={t}
-                            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${canTraverse ? "bg-emerald-500/10 border border-emerald-500/20" : "bg-red-500/5 border border-red-500/10 opacity-40"}`}
+                            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${canTraverse ? "bg-emerald-500/10 border border-emerald-500/20" : "bg-brand-red/5 border border-brand-red/10 opacity-40"}`}
                           >
                             <IconComp
                               size={28}
@@ -520,7 +520,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                               {intel.label}
                             </span>
                             <span
-                              className={`text-[8px] font-black uppercase ${canTraverse ? "text-emerald-500" : "text-red-400"}`}
+                              className={`text-[8px] font-black uppercase ${canTraverse ? "text-emerald-500" : "text-brand-red"}`}
                             >
                               {canTraverse ? "✓" : "✗"}
                             </span>
@@ -543,18 +543,18 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
   let borderClass = "border-slate-500/30";
   let textClass = "text-slate-500";
 
-  if (terrainData.color === "red") {
+  if (terrainData.color === "brand-red") {
     bgClass = "bg-red-900/20";
-    borderClass = "border-red-500/30";
-    textClass = "text-red-500";
+    borderClass = "border-brand-red/30";
+    textClass = "text-brand-red";
   } else if (terrainData.color === "emerald") {
     bgClass = "bg-emerald-900/20";
     borderClass = "border-emerald-500/30";
     textClass = "text-emerald-500";
-  } else if (terrainData.color === "blue") {
+  } else if (terrainData.color === "brand-blue") {
     bgClass = "bg-blue-900/20";
-    borderClass = "border-blue-500/30";
-    textClass = "text-blue-500";
+    borderClass = "border-brand-blue/30";
+    textClass = "text-brand-blue";
   } else if (terrainData.color === "sky") {
     bgClass = "bg-sky-50 dark:bg-sky-900/20";
     borderClass = "border-sky-200 dark:border-sky-500/30";
@@ -805,7 +805,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                       {rule.status === "block" && (
                         <ThumbsDown
                           size={12}
-                          className="text-red-600 dark:text-red-400"
+                          className="text-brand-red dark:text-brand-red"
                         />
                       )}
                       {rule.status === "special" && (
@@ -819,7 +819,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                           rule.status === "allow"
                             ? "text-emerald-600 dark:text-emerald-400"
                             : rule.status === "block"
-                              ? "text-red-600 dark:text-red-400"
+                              ? "text-brand-red dark:text-brand-red"
                               : "text-amber-600 dark:text-amber-400"
                         }`}
                       >

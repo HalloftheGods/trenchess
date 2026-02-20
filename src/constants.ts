@@ -105,10 +105,10 @@ export const PIECES: Record<string, PieceType> = {
 export const PLAYER_CONFIGS: Record<string, PlayerConfig> = {
   player1: {
     name: "NW",
-    color: "red",
+    color: "brand-red",
     text: "text-brand-red",
-    bg: "bg-red-600",
-    shadow: "shadow-red-900/40",
+    bg: "bg-brand-red",
+    shadow: "shadow-brand-red/40",
   },
   player2: {
     name: "NE",
@@ -126,10 +126,10 @@ export const PLAYER_CONFIGS: Record<string, PlayerConfig> = {
   },
   player4: {
     name: "SE",
-    color: "blue",
+    color: "brand-blue",
     text: "text-brand-blue",
-    bg: "bg-blue-600",
-    shadow: "shadow-blue-900/40",
+    bg: "bg-brand-blue",
+    shadow: "shadow-brand-blue/40",
   },
 };
 
@@ -224,7 +224,7 @@ export const TERRAIN_INTEL: Record<string, TerrainIntelEntry> = {
   [TERRAIN_TYPES.PONDS]: {
     label: "Swamps",
     icon: Waves,
-    color: "text-blue-500",
+    color: "text-brand-blue",
     desc: "Sanctuary for Rooks. Grants protection from Bishops and Knights. Difficult terrain that slows movement.",
   },
   [TERRAIN_TYPES.TREES]: {
@@ -236,7 +236,7 @@ export const TERRAIN_INTEL: Record<string, TerrainIntelEntry> = {
   [TERRAIN_TYPES.RUBBLE]: {
     label: "Mountains",
     icon: Mountain,
-    color: "text-slate-400",
+    color: "text-brand-red",
     desc: "Sanctuary for Knights. Grants protection from Rooks and Bishops. High peaks that block direct movement.",
   },
   [TERRAIN_TYPES.DESERT]: {

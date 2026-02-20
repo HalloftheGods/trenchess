@@ -87,7 +87,7 @@ const MenuLobby: React.FC = () => {
         value={joinLobbyCode}
         onChange={(e) => setJoinLobbyCode(e.target.value.toUpperCase())}
         placeholder="CODE"
-        className="w-full bg-slate-100 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 rounded-xl px-4 py-4 text-center font-black text-2xl tracking-[0.5em] outline-none transition-all uppercase placeholder:text-slate-300 dark:placeholder:text-slate-700"
+        className="w-full bg-slate-100 dark:bg-slate-800 border-2 border-transparent focus:border-brand-blue rounded-xl px-4 py-4 text-center font-black text-2xl tracking-[0.5em] outline-none transition-all uppercase placeholder:text-slate-300 dark:placeholder:text-slate-700"
         maxLength={6}
       />
 
@@ -106,7 +106,7 @@ const MenuLobby: React.FC = () => {
         disabled={!joinLobbyCode}
         className={`w-full py-4 rounded-xl font-black text-white uppercase tracking-widest transition-all shadow-lg ${
           joinLobbyCode
-            ? "bg-blue-600 hover:bg-blue-700 hover:scale-[1.02]"
+            ? "bg-brand-blue hover:bg-brand-blue/80 hover:scale-[1.02]"
             : "bg-slate-300 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
         }`}
       >
@@ -116,12 +116,12 @@ const MenuLobby: React.FC = () => {
   );
 
   const renderHost = () => (
-    <div className="w-full max-w-md bg-white dark:bg-slate-900 border-4 border-blue-500/30 p-8 rounded-[2rem] shadow-2xl flex flex-col gap-6">
+    <div className="w-full max-w-md bg-white dark:bg-slate-900 border-4 border-brand-blue/30 p-8 rounded-[2rem] shadow-2xl flex flex-col gap-6">
       <div className="text-center">
         <h3 className="text-xl font-bold text-slate-500 uppercase tracking-widest mb-2">
           Lobby Code
         </h3>
-        <div className="text-6xl font-black text-blue-600 dark:text-blue-400 tracking-widest selection:bg-blue-100">
+        <div className="text-6xl font-black text-brand-blue dark:text-brand-blue tracking-widest selection:bg-brand-blue/20">
           {multiplayer?.roomId || "...."}
         </div>
       </div>
@@ -131,7 +131,7 @@ const MenuLobby: React.FC = () => {
       <div>
         <h4 className="font-bold text-slate-700 dark:text-slate-300 mb-4 flex items-center justify-between">
           <span>Players</span>
-          <span className="text-sm bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-lg">
+          <span className="text-sm bg-brand-blue/10 dark:bg-brand-blue/20 text-brand-blue dark:text-brand-blue px-2 py-1 rounded-lg">
             {multiplayer?.players.length}/4
           </span>
         </h4>
@@ -142,7 +142,7 @@ const MenuLobby: React.FC = () => {
               className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-blue to-brand-blue/60 flex items-center justify-center text-white font-bold text-sm">
                   P{i + 1}
                 </div>
                 <span className="font-medium text-slate-700 dark:text-slate-200">
@@ -180,7 +180,7 @@ const MenuLobby: React.FC = () => {
           // Implementation of start game depends on where we want to go.
           // Usually it navigates to /game or /setup.
           // For now, let's just show "Waiting" if not host, or "Start" if host.
-          className="flex-1 py-3 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-lg"
+          className="flex-1 py-3 rounded-xl font-bold text-white bg-brand-blue hover:bg-brand-blue/80 transition-all shadow-lg"
           onClick={() => {
             // Check if ready?
             navigate("/play/setup?mode=multiplayer");
@@ -205,7 +205,7 @@ const MenuLobby: React.FC = () => {
         </div>
         <button
           onClick={() => multiplayer?.refreshRooms?.()}
-          className="p-2 text-slate-400 hover:text-blue-500 transition-colors"
+          className="p-2 text-slate-400 hover:text-brand-blue transition-colors"
           title="Refresh"
         >
           {/* Refresh Icon */}
@@ -231,7 +231,7 @@ const MenuLobby: React.FC = () => {
         {multiplayer?.availableRooms?.map((room: any) => (
           <div
             key={room.id}
-            className="border-2 border-slate-200 dark:border-slate-700 rounded-xl p-4 hover:border-blue-500 transition-all cursor-pointer bg-slate-50 dark:bg-slate-800/50"
+            className="border-2 border-slate-200 dark:border-slate-700 rounded-xl p-4 hover:border-brand-blue transition-all cursor-pointer bg-slate-50 dark:bg-slate-800/50"
             onClick={() => {
               multiplayer.joinGame(room.id);
               setView("host");
@@ -241,7 +241,7 @@ const MenuLobby: React.FC = () => {
               <span className="font-bold text-lg text-slate-700 dark:text-slate-200">
                 {room.id}
               </span>
-              <span className="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-1 rounded">
+              <span className="text-xs font-bold bg-brand-blue/10 text-brand-blue px-2 py-1 rounded">
                 {room.players}/{room.maxPlayers || 4}
               </span>
             </div>
@@ -257,7 +257,7 @@ const MenuLobby: React.FC = () => {
             <br />
             <button
               onClick={handleCreateLobby}
-              className="text-blue-500 hover:underline mt-2 font-bold not-italic"
+              className="text-brand-blue hover:underline mt-2 font-bold not-italic"
             >
               Start your own.
             </button>

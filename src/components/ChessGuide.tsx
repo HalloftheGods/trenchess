@@ -19,9 +19,9 @@ const ChessGuide: React.FC<ChessGuideProps> = ({ onBack, initialUnit }) => {
           const terrainColors =
             iconElement.type === Mountain
               ? {
-                  bg: "bg-red-500/10",
-                  text: "text-red-500",
-                  border: "border-red-500/20",
+                  bg: "bg-brand-red/10",
+                  text: "text-brand-red",
+                  border: "border-brand-red/20",
                 }
               : iconElement.type === Trees
                 ? {
@@ -36,9 +36,9 @@ const ChessGuide: React.FC<ChessGuideProps> = ({ onBack, initialUnit }) => {
                       border: "border-amber-500/20",
                     }
                   : {
-                      bg: "bg-blue-500/10",
-                      text: "text-blue-500",
-                      border: "border-blue-500/20",
+                      bg: "bg-brand-blue/10",
+                      text: "text-brand-blue",
+                      border: "border-brand-blue/20",
                     };
           return (
             <div
@@ -101,7 +101,7 @@ const ChessGuide: React.FC<ChessGuideProps> = ({ onBack, initialUnit }) => {
                       : newMoves.some(([nr, nc]) => nr === r && nc === c)
                         ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)] z-10 animate-pulse"
                         : isAttack
-                          ? "bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)] z-10"
+                          ? "bg-brand-red shadow-[0_0_15px_rgba(239,68,68,0.4)] z-10"
                           : isMove
                             ? "bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] z-10"
                             : isPromotionRow
@@ -225,7 +225,7 @@ const ChessGuide: React.FC<ChessGuideProps> = ({ onBack, initialUnit }) => {
 
               {/* Standard Capture */}
               <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
+                <div className="w-3 h-3 rounded-full bg-brand-red shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Capture Zone
                 </span>

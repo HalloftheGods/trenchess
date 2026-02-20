@@ -61,19 +61,19 @@ const CaptureTheWorldGuide: React.FC<CaptureTheWorldGuideProps> = ({
           </div>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="grid grid-cols-3 grid-rows-3 gap-16">
-              <div className="p-3 bg-red-600 rounded-xl shadow-lg -rotate-3 border-2 border-amber-400/50">
+              <div className="p-3 bg-brand-red/70 rounded-xl shadow-lg -rotate-3 border-2 border-amber-400/50">
                 <Crown className="text-white" size={24} />
               </div>
               <div />
-              <div className="p-3 bg-red-600 rounded-xl shadow-lg rotate-3 border-2 border-amber-400/50">
+              <div className="p-3 bg-brand-red/70 rounded-xl shadow-lg rotate-3 border-2 border-amber-400/50">
                 <Crown className="text-white" size={24} />
               </div>
               <div /> <div /> <div />
-              <div className="p-3 bg-blue-600 rounded-xl shadow-lg rotate-6 border-2 border-amber-400/50">
+              <div className="p-3 bg-brand-blue/70 rounded-xl shadow-lg rotate-6 border-2 border-amber-400/50">
                 <Crown className="text-white" size={24} />
               </div>
               <div />
-              <div className="p-3 bg-blue-600 rounded-xl shadow-lg -rotate-6 border-2 border-amber-400/50">
+              <div className="p-3 bg-brand-blue/70 rounded-xl shadow-lg -rotate-6 border-2 border-amber-400/50">
                 <Crown className="text-white" size={24} />
               </div>
             </div>
@@ -127,7 +127,7 @@ const CaptureTheWorldGuide: React.FC<CaptureTheWorldGuideProps> = ({
           </div>
           <div className="relative z-10 flex flex-col items-center gap-4">
             <div className="w-48 h-48 border-2 border-emerald-500/30 rounded-2xl relative overflow-hidden bg-slate-800/80 shadow-2xl">
-              <div className="absolute top-2 left-2 w-8 h-8 bg-red-500/20 border border-red-500/40 rounded-lg" />
+              <div className="absolute top-2 left-2 w-8 h-8 bg-brand-red/20 border border-brand-red/40 rounded-lg" />
               <div className="absolute bottom-2 right-2 w-8 h-8 bg-emerald-500/20 border border-emerald-500/40 rounded-lg" />
               <svg className="absolute inset-0 w-full h-full">
                 <path
@@ -185,13 +185,13 @@ const CaptureTheWorldGuide: React.FC<CaptureTheWorldGuideProps> = ({
               </div>
             </div>
             <div className="flex flex-col gap-2 items-center w-1/2 opacity-30 grayscale">
-              <div className="w-16 h-16 rounded-2xl bg-red-600 flex items-center justify-center border-2 border-red-400">
+              <div className="w-16 h-16 rounded-2xl bg-brand-red/70 flex items-center justify-center border-2 border-brand-red/40">
                 <Skull className="text-white" size={32} />
               </div>
               <div className="text-3xl font-black text-transparent my-2">→</div>
               <div className="flex gap-2 flex-wrap justify-center mt-2">
-                <div className="w-5 h-5 rounded-full bg-red-500/60" />
-                <div className="w-5 h-5 rounded-full bg-red-500/60" />
+                <div className="w-5 h-5 rounded-full bg-brand-red/60" />
+                <div className="w-5 h-5 rounded-full bg-brand-red/60" />
               </div>
             </div>
           </div>

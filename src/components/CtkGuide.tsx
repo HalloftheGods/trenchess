@@ -20,19 +20,19 @@ const CtkGuide: React.FC<CtkGuideProps> = ({ onBack }) => {
       description: (
         <ul className="space-y-4">
           <li className="text-xl font-bold text-slate-500 dark:text-slate-400 leading-relaxed flex items-start gap-4">
-            <div className="w-2 h-2 rounded-full bg-red-500/60 mt-2.5 shrink-0" />
+            <div className="w-2 h-2 rounded-full bg-brand-red/60 mt-2.5 shrink-0" />
             The rules of the board have evolved. Trenchess is played on a 12x12
             grid instead of the classic 8x8.
           </li>
           <li className="text-xl font-bold text-slate-500 dark:text-slate-400 leading-relaxed flex items-start gap-4">
-            <div className="w-2 h-2 rounded-full bg-red-500/60 mt-2.5 shrink-0" />
+            <div className="w-2 h-2 rounded-full bg-brand-red/60 mt-2.5 shrink-0" />
             This provides more room for tactical maneuvering, unit deployments,
             and terrain integration.
           </li>
         </ul>
       ),
       sideContent: (
-        <div className="w-full aspect-square bg-slate-900/40 rounded-[2.5rem] border-2 border-red-500/20 flex flex-col items-center justify-center p-4 relative overflow-hidden bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-500/5 to-transparent">
+        <div className="w-full aspect-square bg-slate-900/40 rounded-[2.5rem] border-2 border-brand-red/20 flex flex-col items-center justify-center p-4 relative overflow-hidden bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-red/5 to-transparent">
           <div className="grid grid-cols-12 gap-[1px] w-full h-full opacity-20 pointer-events-none p-4">
             {Array.from({ length: 144 }).map((_, i) => (
               <div
@@ -42,11 +42,11 @@ const CtkGuide: React.FC<CtkGuideProps> = ({ onBack }) => {
             ))}
           </div>
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="text-5xl font-black text-red-500/80 drop-shadow-2xl scale-125 rotate-[-5deg] tracking-tighter">
+            <span className="text-5xl font-black text-brand-red/80 drop-shadow-2xl scale-125 rotate-[-5deg] tracking-tighter">
               12x12
             </span>
           </div>
-          <span className="mt-auto text-[10px] font-black uppercase text-red-500/60 tracking-[0.3em] pt-4">
+          <span className="mt-auto text-[10px] font-black uppercase text-brand-red/60 tracking-[0.3em] pt-4">
             Extended Battleground
           </span>
         </div>
@@ -95,7 +95,7 @@ const CtkGuide: React.FC<CtkGuideProps> = ({ onBack }) => {
             {[...Array(18)].map((_, i) => (
               <div
                 key={i}
-                className={`rounded-sm ${Math.random() > 0.5 ? "bg-blue-500/40" : "bg-slate-700/40"}`}
+                className={`rounded-sm ${Math.random() > 0.5 ? "bg-brand-blue/40" : "bg-slate-700/40"}`}
               />
             ))}
           </div>
@@ -133,7 +133,7 @@ const CtkGuide: React.FC<CtkGuideProps> = ({ onBack }) => {
       sideContent: (
         <div className="w-full aspect-square bg-slate-900/40 rounded-[2.5rem] border-2 border-amber-500/20 flex flex-col items-center justify-center p-8 relative overflow-hidden">
           <div className="absolute inset-0 bg-amber-500/5" />
-          <div className="relative z-10 w-24 h-24 bg-red-600 rounded-[1.5rem] shadow-2xl border-2 border-amber-500/50 flex items-center justify-center animate-pulse">
+          <div className="relative z-10 w-24 h-24 bg-brand-red/70 rounded-[1.5rem] shadow-2xl border-2 border-amber-500/50 flex items-center justify-center animate-pulse">
             <ChessKing size={56} className="text-white drop-shadow-md" />
           </div>
           <div className="absolute inset-0 flex items-center justify-center">

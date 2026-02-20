@@ -78,7 +78,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
 
     switch (selectedMode) {
       case "2p-ns":
-        borderColors = `${baseL} ${baseR} border-t-red-500 border-b-blue-600`;
+        borderColors = `${baseL} ${baseR} border-t-brand-red border-b-brand-blue`;
         break;
       case "2p-ew":
         borderColors = `${baseT} ${baseB} border-l-emerald-500 border-r-yellow-500`;
@@ -90,13 +90,13 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
       case "4p":
         // Showdown: Red (Top), Yellow (Right), Blue (Bottom), Green (Left)
         borderColors =
-          "border-t-red-500 border-r-yellow-500 border-b-blue-600 border-l-emerald-500";
+          "border-t-brand-red border-r-yellow-500 border-b-brand-blue border-l-emerald-500";
         break;
     }
 
     // Add Ready State Glow
     if (isReady) {
-      return `${borderColors} ring-4 ring-offset-4 ring-red-600/50 dark:ring-offset-slate-900 shadow-[0_0_40px_-10px_rgba(220,38,38,0.5)]`;
+      return `${borderColors} ring-4 ring-offset-4 ring-brand-red/50 dark:ring-offset-slate-900 shadow-[0_0_40px_-10px_rgba(239,68,68,0.5)]`;
     }
 
     return borderColors;
@@ -515,12 +515,16 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
             const isComputer = playerConfig[pid] === "computer";
             const config =
               pid === "player1"
-                ? { name: "N", color: "red", pos: "top-6 left-6" }
+                ? { name: "N", color: "brand-red", pos: "top-6 left-6" }
                 : pid === "player2"
                   ? { name: "E", color: "yellow", pos: "top-6 right-6" }
                   : pid === "player3"
                     ? { name: "W", color: "green", pos: "bottom-6 left-6" }
-                    : { name: "S", color: "blue", pos: "bottom-6 right-6" };
+                    : {
+                        name: "S",
+                        color: "brand-blue",
+                        pos: "bottom-6 right-6",
+                      };
 
             return (
               <button
@@ -529,19 +533,19 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
                 className={`absolute ${config.pos} z-40 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-sm border transition-all shadow-lg hover:scale-105 ${
                   isComputer
                     ? "bg-slate-900/90 border-slate-700 text-slate-300 hover:bg-slate-800"
-                    : `bg-white/90 dark:bg-slate-800/90 border-${config.color}-500 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700`
+                    : `bg-white/90 dark:bg-slate-800/90 border-${config.color} text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700`
                 }`}
                 title={`Toggle ${config.name} Player Type`}
               >
                 <div
-                  className={`w-2 h-2 rounded-full bg-${config.color}-500 shadow-[0_0_8px_currentColor]`}
+                  className={`w-2 h-2 rounded-full bg-${config.color} shadow-[0_0_8px_currentColor]`}
                 />
                 <span className="text-[10px] font-black uppercase tracking-wider">
                   {config.name}
                 </span>
                 <div className="w-px h-3 bg-current opacity-20" />
                 <span
-                  className={`text-[10px] font-bold uppercase tracking-wider ${isComputer ? "text-slate-400" : `text-${config.color}-500`}`}
+                  className={`text-[10px] font-bold uppercase tracking-wider ${isComputer ? "text-slate-400" : `text-${config.color}`}`}
                 >
                   {isComputer ? "CPU" : "HUMAN"}
                 </span>
@@ -556,8 +560,8 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
         <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
           {selectedProtocol === "custom" && ( // Omega - God Mode
             <div className="animate-in zoom-in-50 duration-500">
-              <div className="bg-red-600/20 p-6 rounded-full backdrop-blur-sm border-4 border-red-500/50 shadow-[0_0_50px_rgba(220,38,38,0.5)]">
-                <Edit size={64} className="text-red-500 drop-shadow-lg" />
+              <div className="bg-brand-red/20 p-6 rounded-full backdrop-blur-sm border-4 border-brand-red/50 shadow-[0_0_50px_rgba(239,68,68,0.5)]">
+                <Edit size={64} className="text-brand-red drop-shadow-lg" />
               </div>
             </div>
           )}

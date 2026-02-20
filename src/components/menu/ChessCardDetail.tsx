@@ -112,7 +112,7 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
                   ? "bg-white text-slate-900"
                   : "bg-slate-900 text-white";
               } else if (isAttack) {
-                cellClass = "bg-red-500/80";
+                cellClass = "bg-brand-red/80";
               } else if (isNewMove) {
                 cellClass = "bg-amber-500/80";
               } else if (isMove) {
@@ -249,7 +249,7 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
             >
               Move
             </span>
-            <div className="w-2 h-2 rounded-sm bg-red-500 ml-2" />
+            <div className="w-2 h-2 rounded-sm bg-brand-red ml-2" />
             <span
               className={`text-[10px] font-bold uppercase tracking-wider ${subtextColor}`}
             >

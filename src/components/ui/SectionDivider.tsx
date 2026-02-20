@@ -22,25 +22,25 @@ const SectionDivider: React.FC<SectionDividerProps> = ({
   const colorMap = {
     slate: "bg-slate-200 dark:bg-slate-800",
     amber: "bg-amber-500/20",
-    blue: "bg-blue-500/20",
+    blue: "bg-brand-blue/20",
     emerald: "bg-emerald-500/20",
-    red: "bg-red-500/20",
+    red: "bg-brand-red/20",
   };
 
   const textColorMap = {
     slate: "text-slate-400",
     amber: "text-amber-500/70",
-    blue: "text-blue-500/70",
+    blue: "text-brand-blue/70",
     emerald: "text-emerald-500/70",
-    red: "text-red-500/70",
+    red: "text-brand-red/70",
   };
 
   const accentColorMap = {
     slate: "via-slate-400/50",
     amber: "via-amber-500",
-    blue: "via-blue-500",
+    blue: "via-brand-blue",
     emerald: "via-emerald-500",
-    red: "via-red-500",
+    red: "via-brand-red",
   };
 
   return (

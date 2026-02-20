@@ -19,21 +19,21 @@ const CtaGuide: React.FC<CtaGuideProps> = ({ onBack }) => {
       description: (
         <ul className="space-y-4">
           <li className="text-xl font-bold text-slate-500 dark:text-slate-400 leading-relaxed flex items-start gap-4">
-            <div className="w-2 h-2 rounded-full bg-blue-500/60 mt-2.5 shrink-0" />
+            <div className="w-2 h-2 rounded-full bg-brand-blue/60 mt-2.5 shrink-0" />
             Capture the Army is designed for games with more than 2 players,
             creating a dynamic web of alliances and betrayals.
           </li>
           <li className="text-xl font-bold text-slate-500 dark:text-slate-400 leading-relaxed flex items-start gap-4">
-            <div className="w-2 h-2 rounded-full bg-blue-500/60 mt-2.5 shrink-0" />
+            <div className="w-2 h-2 rounded-full bg-brand-blue/60 mt-2.5 shrink-0" />
             It shines brightest when 4 commanders take the field.
           </li>
         </ul>
       ),
       sideContent: (
-        <div className="w-full aspect-square bg-slate-900/40 rounded-[2.5rem] border-2 border-blue-500/20 flex flex-col items-center justify-center p-4 relative bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/5 to-transparent">
+        <div className="w-full aspect-square bg-slate-900/40 rounded-[2.5rem] border-2 border-brand-blue/20 flex flex-col items-center justify-center p-4 relative bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-blue/5 to-transparent">
           <div className="grid grid-cols-2 grid-rows-2 gap-4 w-full h-full p-6 opacity-60">
-            <div className="bg-blue-500/10 rounded-2xl border border-blue-500/40 flex flex-col items-center justify-center shadow-lg">
-              <Crown className="text-blue-500" size={40} />
+            <div className="bg-brand-blue/10 rounded-2xl border border-brand-blue/40 flex flex-col items-center justify-center shadow-lg">
+              <Crown className="text-brand-blue" size={40} />
             </div>
             <div className="bg-emerald-500/10 rounded-2xl border border-emerald-500/40 flex flex-col items-center justify-center shadow-lg">
               <Crown className="text-emerald-500" size={40} />
@@ -41,11 +41,11 @@ const CtaGuide: React.FC<CtaGuideProps> = ({ onBack }) => {
             <div className="bg-amber-500/10 rounded-2xl border border-amber-500/40 flex flex-col items-center justify-center shadow-lg">
               <Crown className="text-amber-500" size={40} />
             </div>
-            <div className="bg-red-500/10 rounded-2xl border border-red-500/40 flex flex-col items-center justify-center shadow-lg">
-              <Crown className="text-red-500" size={40} />
+            <div className="bg-brand-red/10 rounded-2xl border border-brand-red/40 flex flex-col items-center justify-center shadow-lg">
+              <Crown className="text-brand-red" size={40} />
             </div>
           </div>
-          <span className="mt-auto text-[10px] font-black uppercase text-blue-500/60 tracking-[0.3em] pt-2">
+          <span className="mt-auto text-[10px] font-black uppercase text-brand-blue/60 tracking-[0.3em] pt-2">
             Multi-Player Zones
           </span>
         </div>
@@ -78,27 +78,27 @@ const CtaGuide: React.FC<CtaGuideProps> = ({ onBack }) => {
           <div className="absolute inset-0 bg-indigo-950/20 animate-pulse" />
           <div className="relative z-10 flex gap-4 w-full justify-center">
             <div className="flex flex-col gap-2 items-center w-1/2">
-              <div className="w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center border-2 border-blue-400 shadow-xl">
+              <div className="w-16 h-16 rounded-2xl bg-brand-blue/70 flex items-center justify-center border-2 border-brand-blue/40 shadow-xl">
                 <Crown className="text-white" size={32} />
               </div>
               <div className="text-3xl font-black text-indigo-500/80 my-2">
                 →
               </div>
               <div className="flex gap-2 flex-wrap justify-center mt-2">
-                <div className="w-5 h-5 rounded-full bg-blue-500/60 shadow-lg" />
-                <div className="w-5 h-5 rounded-full bg-blue-500/60 shadow-lg" />
-                <div className="w-5 h-5 rounded-full bg-blue-500/60 shadow-lg" />
+                <div className="w-5 h-5 rounded-full bg-brand-blue/60 shadow-lg" />
+                <div className="w-5 h-5 rounded-full bg-brand-blue/60 shadow-lg" />
+                <div className="w-5 h-5 rounded-full bg-brand-blue/60 shadow-lg" />
               </div>
             </div>
             <div className="flex flex-col gap-2 items-center w-1/2 opacity-30 grayscale">
-              <div className="w-16 h-16 rounded-2xl bg-red-600 flex items-center justify-center border-2 border-red-400">
+              <div className="w-16 h-16 rounded-2xl bg-brand-red/70 flex items-center justify-center border-2 border-brand-red/40">
                 <Crown className="text-white" size={32} />
               </div>
               <div className="text-3xl font-black text-transparent my-2">→</div>
               <div className="flex gap-2 flex-wrap justify-center mt-2">
-                <div className="w-5 h-5 rounded-full bg-red-500/60" />
-                <div className="w-5 h-5 rounded-full bg-red-500/60" />
-                <div className="w-5 h-5 rounded-full bg-red-500/60" />
+                <div className="w-5 h-5 rounded-full bg-brand-red/60" />
+                <div className="w-5 h-5 rounded-full bg-brand-red/60" />
+                <div className="w-5 h-5 rounded-full bg-brand-red/60" />
               </div>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { ChevronLeft } from "lucide-react";
 
 const routeNameMap: Record<string, string> = {
   play: "Play",
-  learn: "How to Play",
+  learn: "The Prophecy",
   trench: "The Trench",
   chess: "The Chess",
   endgame: "The Endgame",

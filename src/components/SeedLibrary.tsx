@@ -239,7 +239,7 @@ const SeedLibrary: React.FC<SeedLibraryProps> = ({
                 <div className="mt-6 grid grid-cols-2 gap-2">
                   <button
                     onClick={() => onLoadSeed(item.seed)}
-                    className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-red-500/20 cursor-pointer"
+                    className="flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red/80 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-brand-red/20 cursor-pointer"
                   >
                     <Play size={14} /> Play
                   </button>
@@ -268,7 +268,7 @@ const SeedLibrary: React.FC<SeedLibraryProps> = ({
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="flex items-center justify-center gap-2 bg-slate-100 dark:bg-white/5 hover:bg-red-500/10 hover:text-red-500 text-slate-500 dark:text-slate-400 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer"
+                    className="flex items-center justify-center gap-2 bg-slate-100 dark:bg-white/5 hover:bg-brand-red/10 hover:text-brand-red text-slate-500 dark:text-slate-400 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer"
                   >
                     <Bomb size={14} /> Delete
                   </button>

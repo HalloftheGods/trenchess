@@ -27,7 +27,7 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
 
   // CONTAINER STYLE (Matching MenuCard)
   const containerClass =
-    "group flex flex-col items-center gap-6 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border-4 border-slate-200/30 dark:border-white/5 hover:border-blue-500 shadow-2xl w-full h-full animate-in fade-in slide-in-from-bottom-8 duration-700 relative overflow-hidden transition-all hover:-translate-y-2 cursor-pointer";
+    "group flex flex-col items-center gap-6 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border-4 border-slate-200/30 dark:border-white/5 hover:border-brand-blue shadow-2xl w-full h-full animate-in fade-in slide-in-from-bottom-8 duration-700 relative overflow-hidden transition-all hover:-translate-y-2 cursor-pointer";
 
   if (!isConnected) {
     return (
@@ -37,7 +37,7 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
         description="Establishing server uplink"
         Icon={() => (
           <div className="relative w-16 h-16 flex items-center justify-center">
-            <Wifi size={64} className="text-blue-500 animate-pulse" />
+            <Wifi size={64} className="text-brand-blue animate-pulse" />
           </div>
         )}
         color="blue"
@@ -50,33 +50,34 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
     // IN LOBBY STATE
     return (
       <div className={containerClass}>
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-blue-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-blue/0 to-brand-blue/0 group-hover:from-brand-blue/5 group-hover:to-brand-blue/10" />
 
         <div className="relative w-16 h-16 flex items-center justify-center">
-          <Users size={64} className="text-blue-500" />
+          <Users size={64} className="text-brand-blue" />
         </div>
 
         <div className="text-center relative z-10">
           <h3 className="text-2xl font-black uppercase tracking-widest text-slate-900 dark:text-white">
-            Battle <span className="text-blue-500">Lobby</span>
+            Battle <span className="text-brand-blue">Lobby</span>
           </h3>
           <p className="text-slate-400 dark:text-slate-500 mt-2 font-medium leading-relaxed">
-            Room Code: <span className="text-blue-500 font-bold">{roomId}</span>
+            Room Code:{" "}
+            <span className="text-brand-blue font-bold">{roomId}</span>
           </p>
         </div>
 
         <div className="flex flex-col items-center gap-1 w-full text-center relative z-10">
           <button
             onClick={copyCode}
-            className="group/copy flex items-center justify-center gap-3 w-full py-4 rounded-2xl bg-blue-500/5 hover:bg-blue-500/10 border border-blue-500/20 transition-all cursor-pointer overflow-hidden"
+            className="group/copy flex items-center justify-center gap-3 w-full py-4 rounded-2xl bg-brand-blue/5 hover:bg-brand-blue/10 border border-brand-blue/20 transition-all cursor-pointer overflow-hidden"
             title="Click to Copy Link"
           >
-            <span className="text-3xl font-black tracking-[0.2em] font-mono text-blue-600 dark:text-blue-400 group-hover/copy:scale-105 transition-transform">
+            <span className="text-3xl font-black tracking-[0.2em] font-mono text-brand-blue dark:text-brand-blue group-hover/copy:scale-105 transition-transform">
               {roomId}
             </span>
             <Copy
               size={16}
-              className="text-blue-500 opacity-50 group-hover/copy:opacity-100"
+              className="text-brand-blue opacity-50 group-hover/copy:opacity-100"
             />
           </button>
         </div>
@@ -119,7 +120,7 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
 
           <button
             onClick={leaveGame}
-            className="group flex items-center gap-2 text-xs font-black text-red-500 hover:text-red-400 uppercase tracking-[0.2em] transition-all cursor-pointer"
+            className="group flex items-center gap-2 text-xs font-black text-brand-red hover:text-brand-red uppercase tracking-[0.2em] transition-all cursor-pointer"
           >
             <LogOut
               size={14}

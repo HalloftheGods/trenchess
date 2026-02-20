@@ -291,7 +291,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                 <span
                   className={
                     placedCount >= maxPlacement
-                      ? "text-red-500 text-lg font-black transition-all"
+                      ? "text-brand-red text-lg font-black transition-all"
                       : "text-slate-500 text-lg font-bold transition-all"
                   }
                 >
@@ -320,9 +320,9 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                   const isAlt = i % 2 === 1; // Checkerboard pattern (1D list)
                   let tileBg = isAlt ? "bg-slate-800" : "bg-slate-700"; // Fallback
 
-                  if (pColor === "red") {
+                  if (pColor === "brand-red") {
                     tileBg = isAlt ? "bg-red-900/80" : "bg-red-700/80";
-                  } else if (pColor === "blue") {
+                  } else if (pColor === "brand-blue") {
                     tileBg = isAlt ? "bg-blue-900/80" : "bg-blue-700/80";
                   } else if (pColor === "yellow") {
                     tileBg = isAlt ? "bg-yellow-700/80" : "bg-yellow-500/80";
@@ -396,9 +396,9 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
 
                   let tileBg = isAlt ? "bg-slate-800" : "bg-slate-700"; // Fallback
 
-                  if (pColor === "red") {
+                  if (pColor === "brand-red") {
                     tileBg = isAlt ? "bg-red-900/80" : "bg-red-700/80";
-                  } else if (pColor === "blue") {
+                  } else if (pColor === "brand-blue") {
                     tileBg = isAlt ? "bg-blue-900/80" : "bg-blue-700/80";
                   } else if (pColor === "yellow") {
                     tileBg = isAlt ? "bg-yellow-700/80" : "bg-yellow-500/80";
@@ -535,7 +535,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                   isAllPlaced
                     ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg cursor-pointer"
                     : isCurrentPlayerReady
-                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg cursor-pointer"
+                      ? "bg-brand-blue hover:bg-brand-blue/80 text-white shadow-lg cursor-pointer"
                       : "bg-slate-100 dark:bg-white/5 opacity-20 cursor-not-allowed"
                 }`}
               >
@@ -639,11 +639,11 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
         {gameState === "play" && (
           <div className="space-y-6">
             {inCheck && (
-              <div className="bg-red-500/10 border-2 border-red-500 rounded-2xl p-4 text-center animate-pulse">
-                <h3 className="text-2xl font-black text-red-500 uppercase tracking-tighter">
+              <div className="bg-brand-red/10 border-2 border-brand-red rounded-2xl p-4 text-center animate-pulse">
+                <h3 className="text-2xl font-black text-brand-red uppercase tracking-tighter">
                   ⚠️ CHECK DETECTED ⚠️
                 </h3>
-                <p className="text-red-400 font-bold text-xs uppercase tracking-widest mt-1">
+                <p className="text-brand-red font-bold text-xs uppercase tracking-widest mt-1">
                   Commander Under Threat
                 </p>
               </div>
@@ -753,7 +753,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
             </button>
             <button
               onClick={handleClearBoard}
-              className="py-3 bg-red-100 dark:bg-red-900/20 hover:bg-red-200 dark:hover:bg-red-900/40 rounded-2xl font-black text-[10px] uppercase tracking-widest text-red-500 dark:text-red-400 border border-red-200 dark:border-red-500/20 transition-all"
+              className="py-3 bg-red-100 dark:bg-red-900/20 hover:bg-red-200 dark:hover:bg-red-900/40 rounded-2xl font-black text-[10px] uppercase tracking-widest text-brand-red dark:text-brand-red border border-red-200 dark:border-brand-red/20 transition-all"
             >
               Clear Board
             </button>

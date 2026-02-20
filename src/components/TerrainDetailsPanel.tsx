@@ -130,10 +130,10 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
               {/* Red X Badge for Untraversable Terrain */}
               {!canTraverse && (
                 <div
-                  className="absolute -top-2 -right-2 p-1 rounded-full bg-white dark:bg-slate-900 border-2 border-red-500/50 shadow-lg z-10 flex items-center justify-center"
+                  className="absolute -top-2 -right-2 p-1 rounded-full bg-white dark:bg-slate-900 border-2 border-brand-red shadow-lg z-10 flex items-center justify-center"
                   title="Cannot traverse this terrain"
                 >
-                  <X size={12} className="text-red-500" strokeWidth={4} />
+                  <X size={12} className="text-brand-red" strokeWidth={4} />
                 </div>
               )}
             </div>
@@ -156,19 +156,19 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
         };
       case TERRAIN_TYPES.PONDS:
         return {
-          bg: "bg-blue-500/10",
-          text: "text-blue-500",
-          border: "border-blue-500/40",
-          solid: "bg-blue-500",
-          ribbonBg: "bg-blue-500",
+          bg: "bg-brand-blue/10",
+          text: "text-brand-blue",
+          border: "border-brand-blue/40",
+          solid: "bg-brand-blue",
+          ribbonBg: "bg-brand-blue",
         };
       case TERRAIN_TYPES.RUBBLE:
         return {
-          bg: "bg-red-500/10",
-          text: "text-red-500",
-          border: "border-red-500/40",
-          solid: "bg-red-500",
-          ribbonBg: "bg-red-500",
+          bg: "bg-brand-red/10",
+          text: "text-brand-red",
+          border: "border-brand-red/40",
+          solid: "bg-brand-red",
+          ribbonBg: "bg-brand-red",
         };
       case TERRAIN_TYPES.DESERT:
         return {
@@ -295,10 +295,14 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
                             : "bg-emerald-500/30";
                           break;
                         case TERRAIN_TYPES.PONDS:
-                          cellBg = isEven ? "bg-blue-500/50" : "bg-blue-500/30";
+                          cellBg = isEven
+                            ? "bg-brand-blue/50"
+                            : "bg-brand-blue/30";
                           break;
                         case TERRAIN_TYPES.RUBBLE:
-                          cellBg = isEven ? "bg-red-500/50" : "bg-red-500/30";
+                          cellBg = isEven
+                            ? "bg-brand-red/50"
+                            : "bg-brand-red/30";
                           break;
                         case TERRAIN_TYPES.DESERT:
                           cellBg = isEven

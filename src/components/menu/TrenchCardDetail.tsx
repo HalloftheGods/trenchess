@@ -107,7 +107,7 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
           isActive ? "ring-2 ring-white/20 shadow-lg" : ""
         } ${
           isBlock
-            ? "bg-red-500/5 border-red-500/20 opacity-60"
+            ? "bg-brand-red/5 border-brand-red/20 opacity-60"
             : isSanctuary
               ? `${colors.bg} ${colors.border} border-double border-4`
               : `${colors.bg} ${colors.border}`
@@ -259,7 +259,7 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
                 );
               } else if (isAttack) {
                 highlightLayer = (
-                  <div className="absolute inset-0 bg-red-500/20 z-10" />
+                  <div className="absolute inset-0 bg-brand-red/20 z-10" />
                 );
               } else if (isMove) {
                 highlightLayer = (
@@ -269,7 +269,7 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
                 const isBlockedBySanctuary = inTerrain && isProtected;
                 highlightLayer = (
                   <div
-                    className={`absolute inset-0 z-10 ${isBlockedBySanctuary ? "bg-slate-500/10 border border-dotted border-white/10" : "bg-red-500/5"}`}
+                    className={`absolute inset-0 z-10 ${isBlockedBySanctuary ? "bg-slate-500/10 border border-dotted border-white/10" : "bg-brand-red/5"}`}
                   />
                 );
               }

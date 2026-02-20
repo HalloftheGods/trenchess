@@ -47,17 +47,17 @@ const TERRAIN_LIST: TerrainDef[] = [
   {
     name: "Swamps",
     icon: <Waves />,
-    bg: "bg-blue-500/10",
-    text: "text-blue-500",
-    border: "border-blue-500/40",
+    bg: "bg-brand-blue/10",
+    text: "text-brand-blue",
+    border: "border-brand-blue/40",
     terrainTypeKey: TERRAIN_TYPES.PONDS,
   },
   {
     name: "Mountains",
     icon: <Mountain />,
-    bg: "bg-red-500/10",
-    text: "text-red-500",
-    border: "border-red-500/40",
+    bg: "bg-brand-red/10",
+    text: "text-brand-red",
+    border: "border-brand-red/40",
     terrainTypeKey: TERRAIN_TYPES.RUBBLE,
   },
   {
@@ -95,14 +95,14 @@ const UNIT_COLORS: Record<
     border: "border-orange-500/40",
   },
   [PIECES.HORSEMAN]: {
-    text: "text-red-500",
-    bg: "bg-red-500/10",
-    border: "border-red-500/40",
+    text: "text-brand-red",
+    bg: "bg-brand-red/10",
+    border: "border-brand-red/40",
   },
   [PIECES.BOT]: {
-    text: "text-blue-500",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/40",
+    text: "text-brand-blue",
+    bg: "bg-brand-blue/10",
+    border: "border-brand-blue/40",
   },
 };
 
@@ -252,8 +252,8 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
       {/* Right Logo Group */}
       <div className="flex items-center">
         <span className="text-2xl md:text-3xl font-black tracking-widest uppercase">
-          <span className="text-red-600">TREN</span>
-          <span className="text-blue-600 -ml-0.5">CHESS</span>
+          <span className="text-brand-red">TREN</span>
+          <span className="text-brand-blue -ml-0.5">CHESS</span>
         </span>
       </div>
     </div>

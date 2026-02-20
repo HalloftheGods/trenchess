@@ -55,17 +55,17 @@ const TERRAIN_LIST: TerrainDef[] = [
   {
     name: "Swamps",
     icon: <Waves />,
-    bg: "bg-blue-500/10",
-    text: "text-blue-500",
-    border: "border-blue-500/40",
+    bg: "bg-brand-blue/10",
+    text: "text-brand-blue",
+    border: "border-brand-blue/40",
     terrainTypeKey: TERRAIN_TYPES.PONDS,
   },
   {
     name: "Mountains",
     icon: <Mountain />,
-    bg: "bg-red-500/10",
-    text: "text-red-500",
-    border: "border-red-500/40",
+    bg: "bg-brand-red/10",
+    text: "text-brand-red",
+    border: "border-brand-red/40",
     terrainTypeKey: TERRAIN_TYPES.RUBBLE,
   },
   {
@@ -300,11 +300,11 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
   const getTerrainCellBg = (isEven: boolean) => {
     switch (terrain.name) {
       case "Mountains":
-        return isEven ? "bg-red-500/60" : "bg-red-500/40";
+        return isEven ? "bg-brand-red/60" : "bg-brand-red/40";
       case "Forests":
         return isEven ? "bg-emerald-500/50" : "bg-emerald-500/30";
       case "Swamps":
-        return isEven ? "bg-blue-500/50" : "bg-blue-500/30";
+        return isEven ? "bg-brand-blue/50" : "bg-brand-blue/30";
       case "Desert":
         return isEven ? "bg-amber-500/50" : "bg-amber-500/30";
       default:
@@ -317,11 +317,11 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
   const getTerrainMoveShadow = () => {
     switch (terrain.name) {
       case "Mountains":
-        return "bg-red-500 z-20 shadow-[0_0_15px_rgba(239,68,68,0.5)]";
+        return "bg-brand-red z-20 shadow-[0_0_15px_rgba(239,68,68,0.5)]";
       case "Forests":
         return "bg-emerald-500 z-20 shadow-[0_0_15px_rgba(16,185,129,0.5)]";
       case "Swamps":
-        return "bg-blue-500 z-20 shadow-[0_0_15px_rgba(59,130,246,0.5)]";
+        return "bg-brand-blue z-20 shadow-[0_0_15px_rgba(59,130,246,0.5)]";
       default:
         return "bg-amber-500 z-20 shadow-[0_0_15px_rgba(245,158,11,0.5)]";
     }
@@ -340,7 +340,7 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
             className={`text-xs font-black uppercase tracking-widest ${subtextColor} flex items-center gap-2`}
           >
             <div
-              className={`w-2.5 h-2.5 rounded-full ${isCompatible ? "bg-emerald-500" : "bg-red-500"}`}
+              className={`w-2.5 h-2.5 rounded-full ${isCompatible ? "bg-emerald-500" : "bg-brand-red"}`}
             />
             Preview
           </span>
@@ -400,7 +400,7 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
                     className={`aspect-square rounded-sm relative flex items-center justify-center transition-all duration-300
                      ${
                        isAttack
-                         ? "bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)] z-20"
+                         ? "bg-brand-red shadow-[0_0_15px_rgba(239,68,68,0.5)] z-20"
                          : isMove
                            ? inTerrain
                              ? getTerrainMoveShadow()
@@ -408,7 +408,7 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
                            : isBlocked
                              ? inTerrain
                                ? getTerrainMoveShadow()
-                               : "bg-red-950/40 z-10"
+                               : "bg-brand-red/40 z-10"
                              : cellBg
                      }
                    `}
@@ -427,7 +427,7 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
                     {isBlocked && (
                       <div
                         className={`${
-                          inTerrain ? "text-white" : "text-red-500/40"
+                          inTerrain ? "text-white" : "text-brand-red/40"
                         } z-20 scale-75`}
                       >
                         <X size={16} strokeWidth={3} />

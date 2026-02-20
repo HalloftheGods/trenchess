@@ -49,17 +49,17 @@ const TERRAIN_LIST: TerrainDef[] = [
   {
     name: "Swamps",
     icon: <Waves />,
-    bg: "bg-blue-500/10",
-    text: "text-blue-500",
-    border: "border-blue-500/40",
+    bg: "bg-brand-blue/10",
+    text: "text-brand-blue",
+    border: "border-brand-blue/40",
     terrainTypeKey: TERRAIN_TYPES.PONDS,
   },
   {
     name: "Mountains",
     icon: <Mountain />,
-    bg: "bg-red-500/10",
-    text: "text-red-500",
-    border: "border-red-500/40",
+    bg: "bg-brand-red/10",
+    text: "text-brand-red",
+    border: "border-brand-red/40",
     terrainTypeKey: TERRAIN_TYPES.RUBBLE,
   },
   {
@@ -99,14 +99,14 @@ const UNIT_COLORS: Record<
     border: "border-orange-500/40",
   },
   [PIECES.HORSEMAN]: {
-    text: "text-red-500",
-    bg: "bg-red-500/10",
-    border: "border-red-500/40",
+    text: "text-brand-red",
+    bg: "bg-brand-red/10",
+    border: "border-brand-red/40",
   },
   [PIECES.BOT]: {
-    text: "text-blue-500",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/40",
+    text: "text-brand-blue",
+    bg: "bg-brand-blue/10",
+    border: "border-brand-blue/40",
   },
 };
 
@@ -348,11 +348,11 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
   const getTerrainCellBg = (isEven: boolean) => {
     switch (terrain.name) {
       case "Mountains":
-        return isEven ? "bg-red-500/60" : "bg-red-500/40";
+        return isEven ? "bg-brand-red/60" : "bg-brand-red/40";
       case "Forests":
         return isEven ? "bg-emerald-500/50" : "bg-emerald-500/30";
       case "Swamps":
-        return isEven ? "bg-blue-500/50" : "bg-blue-500/30";
+        return isEven ? "bg-brand-blue/50" : "bg-brand-blue/30";
       case "Desert":
         return isEven ? "bg-amber-500/50" : "bg-amber-500/30";
       default:
@@ -365,11 +365,11 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
   const getTerrainMoveShadow = () => {
     switch (terrain.name) {
       case "Mountains":
-        return "bg-red-500 z-20 shadow-[0_0_15px_rgba(239,68,68,0.5)]";
+        return "bg-brand-red z-20 shadow-[0_0_15px_rgba(239,68,68,0.5)]";
       case "Forests":
         return "bg-emerald-500 z-20 shadow-[0_0_15px_rgba(16,185,129,0.5)]";
       case "Swamps":
-        return "bg-blue-500 z-20 shadow-[0_0_15px_rgba(59,130,246,0.5)]";
+        return "bg-brand-blue z-20 shadow-[0_0_15px_rgba(59,130,246,0.5)]";
       default:
         return "bg-amber-500 z-20 shadow-[0_0_15px_rgba(245,158,11,0.5)]";
     }
@@ -499,7 +499,7 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
               className={`text-[10px] font-black uppercase tracking-widest ${subtextColor} flex items-center gap-2`}
             >
               <div
-                className={`w-2 h-2 rounded-full ${isCompatible ? "bg-emerald-500" : "bg-red-500"}`}
+                className={`w-2 h-2 rounded-full ${isCompatible ? "bg-emerald-500" : "bg-brand-red"}`}
               />
               Affected Move Set
             </span>
@@ -585,7 +585,7 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
                       {isBlocked && (
                         <div
                           className={`${
-                            inTerrain ? "text-white" : "text-red-500/40"
+                            inTerrain ? "text-white" : "text-brand-red/40"
                           } z-20 scale-75`}
                         >
                           <X size={16} strokeWidth={3} />

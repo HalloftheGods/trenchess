@@ -65,7 +65,7 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
             {chessInfo?.chess || unit.type}
           </span>
           <span
-            className={`text-[10px] font-bold uppercase tracking-widest ${isBlock ? "text-red-400" : isSanctuary ? "text-amber-400" : "text-emerald-400"}`}
+            className={`text-[10px] font-bold uppercase tracking-widest ${isBlock ? "text-brand-red" : isSanctuary ? "text-amber-400" : "text-emerald-400"}`}
           >
             {isBlock
               ? "✗ Blocked"
@@ -76,7 +76,7 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
         </div>
         <div className="shrink-0">
           {isBlock ? (
-            <Ban size={16} className="text-red-400/60" />
+            <Ban size={16} className="text-brand-red/60" />
           ) : isSanctuary ? (
             <ShieldPlus size={16} className="text-amber-400/80" />
           ) : (

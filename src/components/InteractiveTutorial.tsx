@@ -54,20 +54,20 @@ const TERRAIN_LIST = [
   {
     name: "Swamps",
     icon: <Waves />,
-    bg: "bg-blue-500/10",
-    text: "text-blue-500",
-    border: "border-blue-500/40",
-    ring: "ring-blue-500/50",
+    bg: "bg-brand-blue/10",
+    text: "text-brand-blue",
+    border: "border-brand-blue/40",
+    ring: "ring-brand-blue/50",
     terrainTypeKey: TERRAIN_TYPES.PONDS,
     key: "wv",
   },
   {
     name: "Mountains",
     icon: <Mountain />,
-    bg: "bg-red-500/10",
-    text: "text-red-500",
-    border: "border-red-500/40",
-    ring: "ring-red-500/50",
+    bg: "bg-brand-red/10",
+    text: "text-brand-red",
+    border: "border-brand-red/40",
+    ring: "ring-brand-red/50",
     terrainTypeKey: TERRAIN_TYPES.RUBBLE,
     key: "mt",
   },
@@ -303,8 +303,8 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
 
                 {/* Red X Badge for Untraversable Terrain */}
                 {!canTraverse && (
-                  <div className="absolute -top-1 -right-1 p-0.5 rounded-full bg-red-500/10 border border-red-500/20 shadow-sm z-10 flex items-center justify-center">
-                    <X size={8} className="text-red-500" strokeWidth={6} />
+                  <div className="absolute -top-1 -right-1 p-0.5 rounded-full bg-brand-red/10 border border-brand-red/20 shadow-sm z-10 flex items-center justify-center">
+                    <X size={8} className="text-brand-red" strokeWidth={6} />
                   </div>
                 )}
               </div>
@@ -445,7 +445,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
                             isCenter
                               ? "bg-white z-20 shadow-md"
                               : isAttack
-                                ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)] z-10"
+                                ? "bg-brand-red shadow-[0_0_8px_rgba(239,68,68,0.4)] z-10"
                                 : isNewMove
                                   ? "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)] z-10 animate-pulse"
                                   : isMove
@@ -619,10 +619,10 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
           {/* Column 5: Result Preview — Wrapped in Trenchess Panel */}
           <div className="h-full flex flex-col relative">
             <div
-              className={`flex-1 rounded-3xl border-4 border-blue-500/60 ${cardBg} shadow-xl relative overflow-hidden`}
+              className={`flex-1 rounded-3xl border-4 border-brand-blue/60 ${cardBg} shadow-xl relative overflow-hidden`}
             >
               {/* Blue Ribbon */}
-              <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none bg-blue-600 py-2.5 shadow-lg border-b border-white/10 flex justify-center items-center">
+              <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none bg-brand-blue/80 py-2.5 shadow-lg border-b border-white/10 flex justify-center items-center">
                 <span className="text-white text-xl font-black uppercase tracking-[0.4em] drop-shadow-md">
                   Trenchess
                 </span>
@@ -643,7 +643,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
                 <button
                   onClick={handlePrevLayout}
                   disabled={filteredSeeds.length === 0}
-                  className="p-2 rounded-xl hover:bg-white/10 transition-all text-slate-400 hover:text-blue-400 cursor-pointer disabled:opacity-30 disabled:cursor-default"
+                  className="p-2 rounded-xl hover:bg-white/10 transition-all text-slate-400 hover:text-brand-blue cursor-pointer disabled:opacity-30 disabled:cursor-default"
                 >
                   <ChevronLeft size={20} />
                 </button>
@@ -665,7 +665,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
                 <button
                   onClick={handleNextLayout}
                   disabled={filteredSeeds.length === 0}
-                  className="p-2 rounded-xl hover:bg-white/10 transition-all text-slate-400 hover:text-blue-400 cursor-pointer disabled:opacity-30 disabled:cursor-default"
+                  className="p-2 rounded-xl hover:bg-white/10 transition-all text-slate-400 hover:text-brand-blue cursor-pointer disabled:opacity-30 disabled:cursor-default"
                 >
                   <ChevronRight size={20} />
                 </button>
@@ -753,10 +753,10 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
           {/* Mobile: Result Preview — Wrapped in Trenchess Panel */}
           <div className="flex flex-col">
             <div
-              className={`p-6 rounded-3xl border-4 border-blue-500/60 ${cardBg} flex flex-col gap-4 shadow-xl relative overflow-hidden`}
+              className={`p-6 rounded-3xl border-4 border-brand-blue/60 ${cardBg} flex flex-col gap-4 shadow-xl relative overflow-hidden`}
             >
               {/* Blue Ribbon */}
-              <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none bg-blue-600 py-2.5 shadow-lg border-b border-white/10 flex justify-center items-center">
+              <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none bg-brand-blue/80 py-2.5 shadow-lg border-b border-white/10 flex justify-center items-center">
                 <span className="text-white text-xl font-black uppercase tracking-[0.4em] drop-shadow-md">
                   Trenchess
                 </span>
@@ -778,7 +778,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
                 <button
                   onClick={handlePrevLayout}
                   disabled={filteredSeeds.length === 0}
-                  className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-700 transition-all text-slate-600 dark:text-slate-400 hover:text-blue-500 cursor-pointer disabled:opacity-30 disabled:cursor-default"
+                  className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-700 transition-all text-slate-600 dark:text-slate-400 hover:text-brand-blue cursor-pointer disabled:opacity-30 disabled:cursor-default"
                 >
                   <ChevronLeft size={20} />
                 </button>

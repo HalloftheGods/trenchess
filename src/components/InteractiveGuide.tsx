@@ -27,20 +27,20 @@ interface InteractiveGuideProps {
 
 const colorMaps = {
   red: {
-    border: "border-red-500/30 hover:border-red-500/50",
-    topBg: "bg-red-600",
-    iconBg: "bg-red-500/20",
-    iconText: "text-red-500",
-    iconBorder: "border-red-500/30",
-    indicatorOn: "bg-red-500 scale-125",
+    border: "border-brand-red/30 hover:border-brand-red/50",
+    topBg: "bg-brand-red/70",
+    iconBg: "bg-brand-red/20",
+    iconText: "text-brand-red",
+    iconBorder: "border-brand-red/30",
+    indicatorOn: "bg-brand-red scale-125",
   },
   blue: {
-    border: "border-blue-500/30 hover:border-blue-500/50",
-    topBg: "bg-blue-600",
-    iconBg: "bg-blue-500/20",
-    iconText: "text-blue-500",
-    iconBorder: "border-blue-500/30",
-    indicatorOn: "bg-blue-500 scale-125",
+    border: "border-brand-blue/30 hover:border-brand-blue/50",
+    topBg: "bg-brand-blue/70",
+    iconBg: "bg-brand-blue/20",
+    iconText: "text-brand-blue",
+    iconBorder: "border-brand-blue/30",
+    indicatorOn: "bg-brand-blue scale-125",
   },
   emerald: {
     border: "border-emerald-500/30 hover:border-emerald-500/50",

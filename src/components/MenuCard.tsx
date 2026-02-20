@@ -43,15 +43,15 @@ const COLOR_STYLES: Record<
   }
 > = {
   red: {
-    border: "border-red-500/20 hover:border-red-500/50",
-    shadow: "hover:shadow-red-500/20",
+    border: "border-brand-red/20 hover:border-brand-red/50",
+    shadow: "hover:shadow-brand-red/20",
     gradient:
-      "from-red-500/0 to-red-500/0 group-hover:from-red-500/5 group-hover:to-red-500/10",
-    iconColor: "text-red-500",
+      "from-brand-red/0 to-brand-red/0 group-hover:from-brand-red/5 group-hover:to-brand-red/10",
+    iconColor: "text-brand-red",
     tintedBg:
-      "bg-red-50/50 hover:bg-red-100/50 dark:bg-red-900/10 dark:hover:bg-red-900/20",
+      "bg-brand-red/5 hover:bg-brand-red/10 dark:bg-brand-red/10 dark:hover:bg-brand-red/20",
     solidBg:
-      "bg-red-100 hover:bg-red-200 dark:bg-red-900/50 dark:hover:bg-red-900/80",
+      "bg-brand-red/10 hover:bg-brand-red/20 dark:bg-brand-red/50 dark:hover:bg-brand-red/80",
   },
   orange: {
     border: "border-orange-500/20 hover:border-orange-500/50",
@@ -87,15 +87,15 @@ const COLOR_STYLES: Record<
       "bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900/50 dark:hover:bg-emerald-900/80",
   },
   blue: {
-    border: "border-blue-500/20 hover:border-blue-500/50",
-    shadow: "hover:shadow-blue-500/20",
+    border: "border-brand-blue/20 hover:border-brand-blue/50",
+    shadow: "hover:shadow-brand-blue/20",
     gradient:
-      "from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-blue-500/10",
-    iconColor: "text-blue-500",
+      "from-brand-blue/0 to-brand-blue/0 group-hover:from-brand-blue/5 group-hover:to-brand-blue/10",
+    iconColor: "text-brand-blue",
     tintedBg:
-      "bg-blue-50/50 hover:bg-blue-100/50 dark:bg-blue-900/10 dark:hover:bg-blue-900/20",
+      "bg-brand-blue/5 hover:bg-brand-blue/10 dark:bg-brand-blue/10 dark:hover:bg-brand-blue/20",
     solidBg:
-      "bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/50 dark:hover:bg-blue-900/80",
+      "bg-brand-blue/10 hover:bg-brand-blue/20 dark:bg-brand-blue/50 dark:hover:bg-brand-blue/80",
   },
   amber: {
     border: "border-amber-500/20 hover:border-amber-500/50",
@@ -182,7 +182,7 @@ const MenuCard = ({
           : "hover:-translate-y-2"
       } ${
         isSelected
-          ? "ring-4 ring-inset ring-red-600 border-transparent [--card-bg:#ffffff] dark:[--card-bg:#0f172a]"
+          ? "ring-4 ring-inset ring-brand-red border-transparent [--card-bg:#ffffff] dark:[--card-bg:#0f172a]"
           : styles.border
       } ${
         variant === "tinted"

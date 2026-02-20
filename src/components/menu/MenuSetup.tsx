@@ -266,7 +266,7 @@ const MenuSetup: React.FC = () => {
                 <div className="w-full lg:w-px h-px lg:h-12 bg-white/10" />
                 <div className="flex flex-wrap justify-center lg:justify-start gap-6">
                   <div className="flex flex-col items-center lg:items-start">
-                    <span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] mb-1">
+                    <span className="text-[10px] font-bold text-brand-red uppercase tracking-[0.2em] mb-1">
                       Objective
                     </span>
                     <span className="text-sm font-medium text-slate-300">
@@ -274,7 +274,7 @@ const MenuSetup: React.FC = () => {
                     </span>
                   </div>
                   <div className="flex flex-col items-center lg:items-start">
-                    <span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] mb-1">
+                    <span className="text-[10px] font-bold text-brand-red uppercase tracking-[0.2em] mb-1">
                       Victory
                     </span>
                     <span className="text-sm font-medium text-slate-300">

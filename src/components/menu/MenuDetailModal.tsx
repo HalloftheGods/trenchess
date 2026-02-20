@@ -30,8 +30,8 @@ const MenuDetailModal: React.FC<MenuDetailModalProps> = ({
   if (!isOpen) return null;
 
   const colorMap = {
-    red: "border-red-500/50 shadow-red-900/20 shadow-2xl",
-    blue: "border-blue-500/50 shadow-blue-900/20 shadow-2xl",
+    red: "border-brand-red/50 shadow-red-900/20 shadow-2xl",
+    blue: "border-brand-blue/50 shadow-blue-900/20 shadow-2xl",
     emerald: "border-emerald-500/50 shadow-emerald-900/20 shadow-2xl",
     amber: "border-amber-500/50 shadow-amber-900/20 shadow-2xl",
     slate: "border-slate-500/50 shadow-slate-900/20 shadow-2xl",

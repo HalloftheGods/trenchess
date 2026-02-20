@@ -74,9 +74,9 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
           const terrainColors =
             iconElement.type === Mountain
               ? {
-                  bg: "bg-red-500/10",
-                  text: "text-red-500",
-                  border: "border-red-500/20",
+                  bg: "bg-brand-red/10",
+                  text: "text-brand-red",
+                  border: "border-brand-red/20",
                 }
               : iconElement.type === Trees
                 ? {
@@ -91,9 +91,9 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
                       border: "border-amber-500/20",
                     }
                   : {
-                      bg: "bg-blue-500/10",
-                      text: "text-blue-500",
-                      border: "border-blue-500/20",
+                      bg: "bg-brand-blue/10",
+                      text: "text-brand-blue",
+                      border: "border-brand-blue/20",
                     };
           return (
             <div
@@ -156,7 +156,7 @@ const HowToPlay: React.FC<HowToPlayProps> = ({
                     isCenter
                       ? "bg-slate-800 dark:bg-white z-20 shadow-lg scale-110"
                       : isAttack
-                        ? "bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)] z-10"
+                        ? "bg-brand-red shadow-[0_0_15px_rgba(239,68,68,0.4)] z-10"
                         : newMoves.some(([nr, nc]) => nr === r && nc === c)
                           ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)] z-10 animate-pulse"
                           : isMove

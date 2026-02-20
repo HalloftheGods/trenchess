@@ -43,18 +43,40 @@ import { DesertIcon } from "./UnitIcons";
 // A simple sleek loading fallback
 const LoadingFallback = () => {
   const [activeWave, setActiveWave] = useState(0);
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [fade, setFade] = useState(true);
+
+  const messages = [
+    "Recipe",
+    "1. Open the Trench",
+    "2. Advance the Chess",
+    "3. Crack the Endgame",
+  ];
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const waveInterval = setInterval(() => {
       setActiveWave((prev) => (prev === 0 ? 3 : prev - 1));
-    }, 400);
-    return () => clearInterval(interval);
+    }, 200);
+    return () => clearInterval(waveInterval);
   }, []);
+
+  useEffect(() => {
+    if (messageIndex < messages.length - 1) {
+      const timeout = setTimeout(() => {
+        setFade(false);
+        setTimeout(() => {
+          setMessageIndex((prev) => prev + 1);
+          setFade(true);
+        }, 300);
+      }, 2000);
+      return () => clearTimeout(timeout);
+    }
+  }, [messageIndex, messages.length]);
 
   return (
     <div className="w-full h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center">
       <DesertIcon className="w-12 h-12" />
-      <span className="mt-4 text-center  font-black uppercase tracking-widest text-slate-400">
+      <span className="mt-4 text-center font-black uppercase tracking-widest text-slate-400">
         <Mountain className="float-right w-12 h-12 text-brand-red" />
         <Trees className=" w-12 h-12 text-emerald-500" />
 
@@ -74,8 +96,12 @@ const LoadingFallback = () => {
           Loading <TrenchessText />
         </div>
 
-        <div className="mt-2">
-          Please wait... <br />
+        <div
+          className={`mt-4 min-h-[1.5em] transition-opacity duration-500 ${
+            fade ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {messages[messageIndex]}
         </div>
       </span>
     </div>
@@ -137,9 +163,16 @@ const App = () => {
     navigate("/");
   };
 
-  const handleBackToLearn = () => {
-    game.setGameState("menu");
-    navigate("/learn");
+  const handleBackToTrench = () => {
+    navigate("/learn/trench");
+  };
+
+  const handleBackToChess = () => {
+    navigate("/learn/chess");
+  };
+
+  const handleBackToEndgame = () => {
+    navigate("/learn/endgame");
   };
 
   return (
@@ -191,27 +224,25 @@ const App = () => {
           <Route path="learn/endgame" element={<MenuEndgame />} />
           <Route
             path="learn/endgame/capture-the-world"
-            element={<CaptureTheWorldGuide onBack={handleBackToLearn} />}
+            element={<CaptureTheWorldGuide onBack={handleBackToEndgame} />}
           />
           <Route
             path="learn/endgame/capture-the-king"
-            element={<CtkGuide onBack={handleBackToLearn} />}
+            element={<CtkGuide onBack={handleBackToEndgame} />}
           />
           <Route
             path="learn/endgame/capture-the-army"
-            element={<CtaGuide onBack={handleBackToLearn} />}
+            element={<CtaGuide onBack={handleBackToEndgame} />}
           />
           <Route path="learn/trench" element={<MenuTrench />} />
           <Route
             path="learn/trench/:terrain"
-            element={<TrenchGuideWrapper onBack={handleBackToLearn} />}
+            element={<TrenchGuideWrapper onBack={handleBackToTrench} />}
           />
           <Route path="learn/chess" element={<MenuChess />} />
           <Route
             path="learn/chess/:unitType"
-            element={
-              <ChessGuideWrapper onBack={() => navigate("/learn/chess")} />
-            }
+            element={<ChessGuideWrapper onBack={handleBackToChess} />}
           />
           <Route
             path="zen"
