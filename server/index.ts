@@ -30,8 +30,8 @@ const io = new Server<
 const PORT = process.env.PORT || 3001;
 
 // Store room state in memory for now
-// structure: { roomId: { players: [], gameState: null } }
 const rooms: Record<string, RoomState> = {};
+const matchHistory: any[] = [];
 
 io.on(
   "connection",
@@ -51,19 +51,46 @@ io.on(
     const sendRoomList = () => {
       const roomList: any[] = [];
       for (const roomId in rooms) {
-        // Filter out empty rooms if any, or maybe show them?
-        // Let's show rooms with players or persistent rooms
         if (rooms[roomId].players.length > 0) {
           roomList.push({
             id: roomId,
             players: rooms[roomId].players.length,
             maxPlayers: 4, // hardcoded for now
-            status: rooms[roomId].gameState ? "Playing" : "Waiting",
+            status:
+              rooms[roomId].gameState?.gameState === "finished"
+                ? "Finished"
+                : rooms[roomId].gameState
+                  ? "Playing"
+                  : "Waiting",
+            mode: rooms[roomId].gameState?.mode || "Unknown",
           });
         }
       }
       socket.emit("room_list_update", roomList);
     };
+
+    const sendScoreboard = () => {
+      const activeMatches: any[] = [];
+      for (const roomId in rooms) {
+        if (
+          rooms[roomId].players.length > 0 &&
+          rooms[roomId].gameState?.gameState !== "finished"
+        ) {
+          activeMatches.push({
+            id: roomId,
+            players: rooms[roomId].players.length,
+            mode: rooms[roomId].gameState?.mode || "Unknown",
+            turn: rooms[roomId].gameState?.turn,
+          });
+        }
+      }
+      socket.emit("scoreboard_data", {
+        active: activeMatches,
+        history: matchHistory.slice(-50), // Last 50 matches
+      });
+    };
+
+    socket.on("request_scoreboard", sendScoreboard);
 
     socket.on("request_room_list", () => {
       sendRoomList();
@@ -77,35 +104,19 @@ io.on(
         rooms[roomId] = { players: [], ready: {}, gameState: null };
       }
 
-      // Add player if not already in
       if (!rooms[roomId].players.includes(socket.id)) {
         rooms[roomId].players.push(socket.id);
         rooms[roomId].ready[socket.id] = false;
       }
 
-      // Send current count
       io.to(roomId).emit("room_users", rooms[roomId].players);
       io.to(roomId).emit("room_ready_status", rooms[roomId].ready);
 
-      // Send current game state if it exists
       if (rooms[roomId].gameState) {
         socket.emit("game_state_sync", rooms[roomId].gameState);
       }
 
-      // Broadcast room list update to everyone (since player count changed)
-      // Optimally, debounced or only if new room created
-      const roomList: any[] = [];
-      for (const rId in rooms) {
-        if (rooms[rId].players.length > 0) {
-          roomList.push({
-            id: rId,
-            players: rooms[rId].players.length,
-            maxPlayers: 4,
-            status: rooms[rId].gameState ? "Playing" : "Waiting",
-          });
-        }
-      }
-      io.emit("room_list_update", roomList);
+      sendRoomList(); // Broadcast update
     });
 
     socket.on(
@@ -136,36 +147,35 @@ io.on(
 
         io.to(roomId).emit("room_users", rooms[roomId].players);
         io.to(roomId).emit("room_ready_status", rooms[roomId].ready);
-
-        // Broadcast room list update
-        const roomList: any[] = [];
-        for (const rId in rooms) {
-          if (rooms[rId].players.length > 0) {
-            roomList.push({
-              id: rId,
-              players: rooms[rId].players.length,
-              maxPlayers: 4,
-              status: rooms[rId].gameState ? "Playing" : "Waiting",
-            });
-          }
-        }
-        io.emit("room_list_update", roomList);
+        sendRoomList();
       }
     });
 
-    // Relay game state updates
     socket.on(
       "update_game_state",
       ({ roomId, newState }: { roomId: string; newState: any }) => {
         if (rooms[roomId]) {
+          // Check if transition to finished
+          const wasPlaying = rooms[roomId].gameState?.gameState !== "finished";
+          const isFinished = newState.gameState === "finished";
+
           rooms[roomId].gameState = newState;
+
+          if (wasPlaying && isFinished) {
+            matchHistory.push({
+              id: roomId,
+              mode: newState.mode,
+              winner: newState.winner || "Unknown",
+              date: new Date().toISOString(),
+            });
+            // Keep memory bounded
+            if (matchHistory.length > 200) matchHistory.shift();
+          }
         }
-        // Broadcast to everyone else in the room
         socket.to(roomId).emit("game_state_sync", newState);
       },
     );
 
-    // Relay specific move actions
     socket.on(
       "send_move",
       ({ roomId, move }: { roomId: string; move: any }) => {
@@ -177,7 +187,6 @@ io.on(
       console.log("User disconnected:", socket.id);
       io.emit("online_count_update", io.engine.clientsCount);
 
-      // Quick fix: iterate all rooms
       for (const roomId in rooms) {
         if (rooms[roomId].players.includes(socket.id)) {
           rooms[roomId].players = rooms[roomId].players.filter(
@@ -188,20 +197,7 @@ io.on(
           io.to(roomId).emit("room_ready_status", rooms[roomId].ready);
         }
       }
-
-      // Broadcast room list update
-      const roomList: any[] = [];
-      for (const rId in rooms) {
-        if (rooms[rId].players.length > 0) {
-          roomList.push({
-            id: rId,
-            players: rooms[rId].players.length,
-            maxPlayers: 4,
-            status: rooms[rId].gameState ? "Playing" : "Waiting",
-          });
-        }
-      }
-      io.emit("room_list_update", roomList);
+      sendRoomList();
     });
   },
 );
