@@ -164,7 +164,7 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
     // Use active unit or default to first sanctuary unit for the demo
     const demoUnitType = activeUnit || terrain.sanctuaryUnits[0];
     const demoUnitDetails = UNIT_DETAILS[demoUnitType];
-    const isProtected = terrain.sanctuaryUnits.includes(demoUnitType);
+    const isProtected = terrain.sanctuaryUnits.includes(demoUnitType as any);
 
     const moves = demoUnitDetails?.movePattern(center, center) || [];
     const attacks = demoUnitDetails?.attackPattern

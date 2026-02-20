@@ -12,7 +12,8 @@ const SCORES = {
   [PIECES.BOT]: 100,
 };
 
-const MOBILITY_WEIGHT = 5;
+// Material scores are sufficient for basic eval
+// const MOBILITY_WEIGHT = 5;
 const CENTER_WEIGHT = 10;
 const KING_HUNT_WEIGHT = 20;
 
@@ -53,7 +54,7 @@ export const evaluateBoard = (
   const myKingPos = hasCommander(board, maximizingPlayer);
 
   // Find enemy king (assume 2p mode for simplicity in heuristic)
-  let enemyPlayer = "";
+  // let enemyPlayer = "";
   let enemyKingPos: { r: number; c: number } | null = null;
 
   let myMaterial = 0;
@@ -79,7 +80,7 @@ export const evaluateBoard = (
         score += (BOARD_SIZE - distToCenter) * CENTER_WEIGHT;
       } else {
         enemyMaterial += value;
-        enemyPlayer = piece.player;
+        // enemyPlayer = piece.player;
         if (piece.type === PIECES.COMMANDER) {
           enemyKingPos = { r, c };
         }

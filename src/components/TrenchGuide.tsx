@@ -90,7 +90,7 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
   const renderSanctuaryBadges = (terrain: TerrainDetail) => {
     return (
       <div className="flex gap-2 flex-wrap justify-center">
-        {terrain.sanctuaryUnits.map((pk) => {
+        {terrain.sanctuaryUnits.map((pk: string) => {
           const colors = unitColorMap[pk];
           if (!colors) return null;
           return (
