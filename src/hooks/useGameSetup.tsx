@@ -117,7 +117,7 @@ export function useGameSetup(core: GameCore, interaction: GameInteraction) {
       setGameState("play");
     } else if (preset === "classic") {
       // Classic: Random Terrain + Classical Formation
-      const terrainResult = SetupLogic.randomizeTerrain(
+      const terrainResult = SetupLogic.generateElementalTerrain(
         state.terrain,
         state.board,
         state.terrainInventory,

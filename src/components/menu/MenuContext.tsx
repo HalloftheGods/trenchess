@@ -14,6 +14,7 @@ export interface PreviewConfig {
   showIcons?: boolean;
   hideUnits?: boolean;
   forcedTerrain?: TerrainType | null;
+  useDefaultFormation?: boolean;
 }
 
 export interface MenuContextType {

@@ -232,12 +232,12 @@ export const UNIT_DETAILS: Record<
     },
   },
   [PIECES.HORSEMAN]: {
-    title: "Dark Knight",
+    title: "Shadow Knight",
     subtitle: "The Knights",
     role: "The Knights rode the Mountains under Dark.",
     desc: [],
     levelUp: {
-      title: "Dark Knight",
+      title: "Shadow Knight",
       stats: [
         "Triple-Jump: Horizontal or Vertical 3 squares.",
         "Mountain Sanctuary: Safe from Rooks and Bishops.",

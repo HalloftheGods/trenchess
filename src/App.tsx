@@ -22,6 +22,7 @@ const CtkGuide = lazy(() => import("./components/CtkGuide"));
 const CtaGuide = lazy(() => import("./components/CtaGuide"));
 const TrenchGuide = lazy(() => import("./components/TrenchGuide"));
 const ChessGuide = lazy(() => import("./components/ChessGuide"));
+const RulesPage = lazy(() => import("./components/RulesPage"));
 
 // Lazy-loaded Menu Components
 const MenuLayout = lazy(() => import("./components/menu/MenuLayout"));
@@ -301,6 +302,18 @@ const App = () => {
               toggleTheme={game.toggleTheme}
               togglePieceStyle={game.togglePieceStyle}
               onTutorial={() => navigate("/tutorial")}
+            />
+          }
+        />
+        <Route
+          path="/rules"
+          element={
+            <RulesPage
+              onBack={() => navigate(-1)}
+              darkMode={game.darkMode}
+              pieceStyle={game.pieceStyle}
+              toggleTheme={game.toggleTheme}
+              togglePieceStyle={game.togglePieceStyle}
             />
           }
         />

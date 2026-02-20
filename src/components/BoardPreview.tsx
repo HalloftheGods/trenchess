@@ -9,10 +9,11 @@ import {
   type PieceStyle,
 } from "../constants";
 import type { GameMode, ArmyUnit, PieceType, TerrainType } from "../types";
-import { Edit } from "lucide-react";
+import { Edit, Ban } from "lucide-react";
 import { deserializeGame, adaptSeedToMode } from "../utils/gameUrl";
 import { TERRAIN_INTEL } from "../constants";
 import { TerraForm } from "../utils/TerraForm";
+import { TERRAIN_DETAILS } from "../data/terrainDetails";
 
 interface BoardPreviewProps {
   selectedMode: GameMode | null;
@@ -150,7 +151,6 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
     });
   }, [selectedMode, selectedProtocol, terrainSeed, seedData, forcedTerrain]);
 
-  // Deterministic pseudo-random terrain generator
   const getTerrainAt = (
     row: number,
     col: number,
@@ -192,12 +192,12 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
   };
 
   const getPlayerAt = (row: number, col: number): string | null => {
-    if (!selectedMode) return null;
+    const mode = selectedMode || "2p-ns";
 
-    if (selectedMode === "2p-ns") {
+    if (mode === "2p-ns") {
       return row < 6 ? "player1" : "player4";
     }
-    if (selectedMode === "2p-ew") {
+    if (mode === "2p-ew") {
       return col < 6 ? "player3" : "player2";
     }
     // 2v2 and 4p use quadrants
@@ -220,9 +220,12 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
       return null;
     }
 
+    const effectiveMode = selectedMode || "2p-ns";
+
     if (
-      !selectedMode ||
-      (selectedProtocol !== "classic" && selectedProtocol !== "quick")
+      selectedProtocol !== "classic" &&
+      selectedProtocol !== "quick" &&
+      selectedProtocol !== "terrainiffic"
     )
       return null;
 
@@ -270,7 +273,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
     ];
 
     // 2P North vs South (Inner 8x8: Cols 2-9, Rows 2-9)
-    if (selectedMode === "2p-ns") {
+    if (effectiveMode === "2p-ns") {
       // 8-wide centered = Cols 2 to 9
       if (col >= 2 && col <= 9) {
         const cIndex = col - 2;
@@ -294,7 +297,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
     }
 
     // 2P East vs West (Inner 8x8: Rows 2-9, Cols 2-9)
-    else if (selectedMode === "2p-ew") {
+    else if (effectiveMode === "2p-ew") {
       // 8-high centered = Rows 2 to 9
       if (row >= 2 && row <= 9) {
         const rIndex = row - 2;
@@ -319,7 +322,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
     }
 
     // 2v2 Alliance (Capture the World) - Corner King Formation
-    else if (selectedMode === "2v2") {
+    else if (effectiveMode === "2v2") {
       // Commander at [0][0] to sit in the absolute corner
       const formation = [
         [PIECES.COMMANDER, PIECES.BATTLEKNIGHT, PIECES.TANK, PIECES.TANK],
@@ -354,7 +357,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
     }
 
     // 4P Ultimate Showdown - Standard Formation
-    else if (selectedMode === "4p") {
+    else if (effectiveMode === "4p") {
       const formation = [
         [PIECES.TANK, PIECES.BATTLEKNIGHT, PIECES.COMMANDER, PIECES.TANK],
         [PIECES.HORSEMAN, PIECES.SNIPER, PIECES.SNIPER, PIECES.HORSEMAN],
@@ -412,8 +415,12 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
         {grid.map(({ row, col }) => {
           const blandStyle = getQuadrantBaseStyle(row, col, "neutral");
 
-          // Standard Bland Mode - only if no mode AND no terrain icons requested
-          if (!selectedMode && !showTerrainIcons) {
+          // Standard Bland Mode - only if no mode AND no terrain icons requested and not terrainiffic
+          if (
+            !selectedMode &&
+            !showTerrainIcons &&
+            selectedProtocol !== "terrainiffic"
+          ) {
             return (
               <div
                 key={`${row}-${col}`}
@@ -422,24 +429,59 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
             );
           }
 
-          const baseStyle = selectedMode
-            ? getQuadrantBaseStyle(row, col, selectedMode)
-            : blandStyle;
+          const baseStyle = getQuadrantBaseStyle(
+            row,
+            col,
+            selectedMode || "2p-ns",
+          );
           const pieceInfo = getPieceAt(row, col);
           const terrain = getTerrainAt(row, col, pieceInfo);
 
           let cellStyle = baseStyle;
 
           if (terrain) {
-            // Apply terrain coloring
-            if (terrain === TERRAIN_TYPES.TREES)
-              cellStyle = "bg-emerald-800/80 border-emerald-600/50"; // Forest
-            else if (terrain === TERRAIN_TYPES.PONDS)
-              cellStyle = "bg-blue-800/80 border-blue-600/50"; // Swamp
-            else if (terrain === TERRAIN_TYPES.RUBBLE)
-              cellStyle = "bg-red-800/80 border-red-600/50"; // Mountain
-            else if (terrain === TERRAIN_TYPES.DESERT)
-              cellStyle = "bg-amber-200/80 border-amber-300/50"; // Desert
+            // Determine if the cell is light or dark square for the checkered pattern
+            // (row + col) % 2 === 0 is traditionally the dark square conceptually, or light square, depending on the board's top-left corner.
+            const isDarkSquare = (row + col) % 2 !== 0;
+
+            // Apply terrain coloring, mixing in the checkerboard texture
+            if (terrain === TERRAIN_TYPES.TREES) {
+              const bgClass = isDarkSquare
+                ? "bg-emerald-800/90"
+                : "bg-emerald-700/80";
+              cellStyle = `${bgClass} border-emerald-600/50`;
+            } else if (terrain === TERRAIN_TYPES.PONDS) {
+              const bgClass = isDarkSquare
+                ? "bg-blue-800/90"
+                : "bg-blue-700/80";
+              cellStyle = `${bgClass} border-blue-600/50`;
+            } else if (terrain === TERRAIN_TYPES.RUBBLE) {
+              const bgClass = isDarkSquare ? "bg-red-800/90" : "bg-red-700/80";
+              cellStyle = `${bgClass} border-red-600/50`;
+            } else if (terrain === TERRAIN_TYPES.DESERT) {
+              const bgClass = isDarkSquare
+                ? "bg-amber-300/80"
+                : "bg-amber-200/80";
+              cellStyle = `${bgClass} border-amber-400/50`;
+            }
+          }
+
+          let isSanctuary = false;
+          let isBlocked = false;
+          let tDetails = null;
+
+          if (selectedProtocol === "terrainiffic" && terrain && pieceInfo) {
+            tDetails = TERRAIN_DETAILS.find((t) => t.key === terrain);
+            if (tDetails) {
+              isSanctuary = tDetails.sanctuaryUnits.includes(
+                pieceInfo.pieceType,
+              );
+              isBlocked = tDetails.blockedUnits.includes(pieceInfo.pieceType);
+            }
+          }
+
+          if (isSanctuary && tDetails) {
+            cellStyle += ` border-dashed border-[3px] shadow-[inset_0_0_15px_rgba(0,0,0,0.5)] z-10`;
           }
 
           const TerrainIcon =
@@ -470,13 +512,29 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
                     const config = PLAYER_CONFIGS[pieceInfo.player];
                     const pieceColorClass = config ? config.text : "text-white";
 
+                    let wrapperClass = `flex justify-center items-center pointer-events-none select-none font-bold ${pieceColorClass} leading-none ${
+                      pieceStyle !== "emoji" ? "text-xl" : "text-2xl"
+                    } w-full h-full relative z-20`;
+
+                    if (isSanctuary && tDetails) {
+                      wrapperClass += ` border-double border-4 ${tDetails.color.border} rounded-md bg-black/20 backdrop-blur-sm`;
+                    }
+
                     return (
-                      <div
-                        className={`flex justify-center items-center pointer-events-none select-none font-bold ${pieceColorClass} leading-none ${
-                          pieceStyle !== "emoji" ? "text-xl" : "text-2xl"
-                        } w-full h-full`}
-                      >
-                        {getIcon(unit, "w-[80%] h-[80%] object-contain")}
+                      <div className={wrapperClass}>
+                        <div
+                          className={`w-[80%] h-[80%] flex items-center justify-center ${isBlocked ? "opacity-40 grayscale" : ""}`}
+                        >
+                          {getIcon(unit, "w-full h-full object-contain")}
+                        </div>
+                        {isBlocked && (
+                          <div className="absolute inset-0 flex items-center justify-center z-30">
+                            <Ban
+                              className="text-red-500/80 w-3/4 h-3/4 drop-shadow-md"
+                              strokeWidth={3}
+                            />
+                          </div>
+                        )}
                       </div>
                     );
                   })()

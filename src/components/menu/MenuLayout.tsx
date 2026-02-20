@@ -103,8 +103,9 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
 
   // Logic to determine what to show on the preview
   // Based on MenuScreen.tsx getPreviewState
-  const activeCustomSeed =
-    previewConfig.protocol === "terrainiffic"
+  const activeCustomSeed = previewConfig.useDefaultFormation
+    ? undefined
+    : previewConfig.protocol === "terrainiffic"
       ? seeds[Math.floor(Math.abs(terrainSeed) * seeds.length) % seeds.length]
           ?.seed
       : currentSeed?.seed;

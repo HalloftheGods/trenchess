@@ -130,9 +130,12 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
         topLabel: terrain.tagline,
         icon: IconComp,
         previewConfig: {
+          mode: "2p-ns",
           protocol: "terrainiffic",
           showIcons: true,
-          hideUnits: true,
+          hideUnits: false,
+          forcedTerrain: terrain.key,
+          useDefaultFormation: true,
         },
         description: (
           <div className="space-y-6">
@@ -174,7 +177,7 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
           terrain.sanctuaryUnits.length > 0 ? (
             <div className="flex items-center gap-6">
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap">
-                Sanctuary Units
+                Welcomes
               </span>
               {renderSanctuaryBadges(terrain)}
             </div>
@@ -190,9 +193,11 @@ const TrenchGuide: React.FC<TrenchGuideProps> = ({
       topLabel: "Gameplay Rules",
       icon: ShieldPlus,
       previewConfig: {
+        mode: "2p-ns",
         protocol: "terrainiffic",
         showIcons: true,
         hideUnits: false,
+        useDefaultFormation: true,
       },
       description: (
         <div className="space-y-6 mt-4">

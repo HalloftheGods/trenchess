@@ -1,8 +1,16 @@
 // Theme controls component
-import { Sun, Moon, ChessKnight, Calculator, Shell } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  ChessKnight,
+  Calculator,
+  Shell,
+  FileText,
+} from "lucide-react";
 import { BattleKnightIcon } from "../UnitIcons";
 import type { PieceStyle } from "../constants";
 import { IconButton } from "./ui/IconButton";
+import { useNavigate } from "react-router-dom";
 
 interface ThemeControlsProps {
   darkMode: boolean;
@@ -22,53 +30,63 @@ const ThemeControls: React.FC<ThemeControlsProps> = ({
   onTutorial,
   onZenGarden,
   className = "",
-}) => (
-  <div
-    className={`fixed top-6 right-6 z-50 flex items-center gap-2 ${className}`}
-  >
-    {onZenGarden && (
+}) => {
+  const navigate = useNavigate();
+  return (
+    <div
+      className={`fixed top-6 right-6 z-50 flex items-center gap-2 ${className}`}
+    >
+      {onZenGarden && (
+        <IconButton
+          icon={<Shell size={20} className="text-emerald-500" />}
+          label="Zen Garden Editor"
+          onClick={onZenGarden}
+        />
+      )}
+      {onTutorial && (
+        <IconButton
+          icon={<Calculator size={20} />}
+          label="Interactive Guide"
+          onClick={onTutorial}
+        />
+      )}
       <IconButton
-        icon={<Shell size={20} className="text-emerald-500" />}
-        label="Zen Garden Editor"
-        onClick={onZenGarden}
+        onClick={togglePieceStyle}
+        icon={
+          pieceStyle === "emoji" ? (
+            <span className="text-xl">🏇</span>
+          ) : pieceStyle === "bold" ? (
+            <span className="text-xl">♞︎</span>
+          ) : pieceStyle === "outlined" ? (
+            <span className="text-xl">♘︎</span>
+          ) : pieceStyle === "custom" ? (
+            <BattleKnightIcon className="w-6 h-6" />
+          ) : (
+            <ChessKnight className="w-6 h-6" />
+          )
+        }
+        label={`Piece Style: ${pieceStyle}`}
       />
-    )}
-    {onTutorial && (
       <IconButton
-        icon={<Calculator size={20} />}
-        label="Interactive Guide"
-        onClick={onTutorial}
+        onClick={toggleTheme}
+        icon={
+          darkMode ? (
+            <Sun size={20} className="text-yellow-400" />
+          ) : (
+            <Moon size={20} className="text-slate-600" />
+          )
+        }
+        label={darkMode ? "Light Mode" : "Dark Mode"}
       />
-    )}
-    <IconButton
-      onClick={togglePieceStyle}
-      icon={
-        pieceStyle === "emoji" ? (
-          <span className="text-xl">🏇</span>
-        ) : pieceStyle === "bold" ? (
-          <span className="text-xl">♞︎</span>
-        ) : pieceStyle === "outlined" ? (
-          <span className="text-xl">♘︎</span>
-        ) : pieceStyle === "custom" ? (
-          <BattleKnightIcon className="w-6 h-6" />
-        ) : (
-          <ChessKnight className="w-6 h-6" />
-        )
-      }
-      label={`Piece Style: ${pieceStyle}`}
-    />
-    <IconButton
-      onClick={toggleTheme}
-      icon={
-        darkMode ? (
-          <Sun size={20} className="text-yellow-400" />
-        ) : (
-          <Moon size={20} className="text-slate-600" />
-        )
-      }
-      label={darkMode ? "Light Mode" : "Dark Mode"}
-    />
-  </div>
-);
+      <IconButton
+        onClick={() => navigate("/rules")}
+        icon={
+          <FileText size={20} className="text-slate-600 dark:text-slate-300" />
+        }
+        label="Rules"
+      />
+    </div>
+  );
+};
 
 export default ThemeControls;

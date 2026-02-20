@@ -442,7 +442,7 @@ const renderTerrainInteraction = (
       "text-stone-500",
       "border-stone-500/40",
       "Midnight Sanctuary",
-      "Dark Knight Base",
+      "Shadow Knight Base",
     )}
     {renderTerrainInteraction(
       "Desert",

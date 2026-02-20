@@ -33,7 +33,7 @@ export const TERRAIN_DETAILS: TerrainDetail[] = [
     key: TERRAIN_TYPES.RUBBLE as TerrainType,
     label: "Mountains",
     subtitle: "You discovered a new Trench!",
-    tagline: "Sanctuary of the Dark Knights",
+    tagline: "Sanctuary of the Shadow Knights",
     icon: Mountain,
     color: {
       text: "text-brand-red",
@@ -69,7 +69,7 @@ export const TERRAIN_DETAILS: TerrainDetail[] = [
     key: TERRAIN_TYPES.PONDS as TerrainType,
     label: "Swamp",
     subtitle: "You discovered a new Trench!",
-    tagline: "Sanctuary of the Towers",
+    tagline: "Sanctuary of the Twilight",
     icon: Waves,
     color: {
       text: "text-brand-blue",
@@ -105,7 +105,7 @@ export const TERRAIN_DETAILS: TerrainDetail[] = [
     key: TERRAIN_TYPES.TREES as TerrainType,
     label: "Forests",
     subtitle: "You discovered a new Trench!",
-    tagline: "Sanctuary of the Mages",
+    tagline: "Sanctuary of Light",
     icon: Trees,
     color: {
       text: "text-emerald-500",

@@ -42,7 +42,7 @@ const MenuLearn: React.FC = () => {
           onMouseLeave={() => setHoveredMenu(null)}
           isSelected={false}
           darkMode={darkMode}
-          title="Enter The Chess"
+          title="Advance The Chess"
           description="...the Royal Family's form, never the same, if not insane."
           Icon={ChessRook}
           color="blue"
