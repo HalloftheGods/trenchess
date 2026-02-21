@@ -403,12 +403,9 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
 
       {/* The Board Visualizer Grid */}
       <div
-        className="w-full h-full grid grid-cols-12 gap-0.5 relative z-10"
+        className="w-full h-full grid grid-cols-12 gap-[2px] relative z-10"
         style={{
           gridTemplateRows: "repeat(12, minmax(0, 1fr))",
-          perspective: "1000px",
-          transformStyle: "preserve-3d",
-          transform: "rotateX(20deg) scale(0.9)",
         }}
       >
         {grid.map(({ row, col }) => {
@@ -418,7 +415,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
           const isOuter = row < 2 || row > 9 || col < 2 || col > 9;
           const outerHighlight =
             highlightOuterSquares && isOuter
-              ? "ring-2 ring-inset ring-amber-500/60 bg-amber-500/10 animate-pulse shadow-[inset_0_0_15px_rgba(245,158,11,0.4)]"
+              ? "ring-1 ring-inset ring-amber-500/60 bg-amber-500/10 animate-pulse shadow-[inset_0_0_15px_rgba(245,158,11,0.4)]"
               : "";
 
           // Standard Bland Mode - only if no mode AND no terrain icons requested and not terrainiffic

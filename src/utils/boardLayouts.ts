@@ -50,11 +50,11 @@ export const getQuadrantBaseStyle = (
     // Matches Main Board Pattern: Inner = Dark/Saturated, Outer = Light/Desaturated
     if (isInner)
       return isAlt
-        ? "bg-slate-800/90 dark:bg-slate-700"
-        : "bg-slate-700/90 dark:bg-slate-600";
+        ? "bg-slate-800 dark:bg-slate-700"
+        : "bg-slate-700 dark:bg-slate-600";
     return isAlt
-      ? "bg-slate-300/60 dark:bg-slate-800/40"
-      : "bg-slate-200/60 dark:bg-slate-700/40";
+      ? "bg-slate-300 dark:bg-slate-800"
+      : "bg-slate-200 dark:bg-slate-700";
   };
 
   if (mode === "2p-ns") {
