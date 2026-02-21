@@ -12,6 +12,8 @@ import {
   Dices,
   Eye,
   Key,
+  LayoutGrid,
+  Omega,
 } from "lucide-react";
 import { useMenuContext } from "./MenuContext";
 import {
@@ -38,7 +40,7 @@ const MenuBreadcrumbs: React.FC = () => {
     if (playMode === "online") return <GlobeLock size={18} />;
     if (playMode === "local" || playMode === "practice")
       return <Sofa size={18} />;
-    return null;
+    return <Sofa size={18} className="opacity-40" />;
   };
 
   const getPlayerCountIcon = () => {
@@ -52,7 +54,7 @@ const MenuBreadcrumbs: React.FC = () => {
       case 4:
         return <UserPlus size={18} />;
       default:
-        return <Users size={18} />;
+        return <Bot size={18} className="opacity-40" />;
     }
   };
 
@@ -67,7 +69,7 @@ const MenuBreadcrumbs: React.FC = () => {
       case "2v2":
         return <AllianceTone size={18} />;
       default:
-        return null;
+        return <LayoutGrid size={18} className="opacity-40" />;
     }
   };
 
@@ -82,15 +84,19 @@ const MenuBreadcrumbs: React.FC = () => {
       case "custom":
         return <Eye size={18} />;
       default:
-        return null;
+        return <Omega size={18} className="opacity-40" />;
     }
   };
 
   const items = [
     {
       icon: getPlayModeIcon(),
-      label: "Mode",
-      color: (playMode === "online" ? "blue" : "red") as any,
+      label: playMode ? "Mode" : "Select Mode",
+      color: (playMode === "online"
+        ? "blue"
+        : playMode
+          ? "red"
+          : "slate") as any,
       path: "/play",
       value: playMode,
     },
@@ -99,7 +105,7 @@ const MenuBreadcrumbs: React.FC = () => {
           {
             icon: <Key size={18} />,
             label: `Lobby: ${multiplayer?.roomId?.toUpperCase() || "CODE"}`,
-            color: "blue" as any,
+            color: (multiplayer?.roomId ? "blue" : "slate") as any,
             path: "/play/lobby",
             value: multiplayer?.roomId,
           },
@@ -109,7 +115,7 @@ const MenuBreadcrumbs: React.FC = () => {
       icon: getPlayerCountIcon(),
       label: playerCount
         ? `${playerCount} Player${playerCount > 1 ? "s" : ""}`
-        : "Players",
+        : "Add Players",
       color: (playerCount === 1
         ? "red"
         : playerCount === 2
@@ -118,35 +124,39 @@ const MenuBreadcrumbs: React.FC = () => {
             ? "emerald"
             : playerCount === 4
               ? "amber"
-              : "blue") as any,
+              : "slate") as any,
       path: playMode === "online" ? "/play/lobby" : "/play/local",
       value: playerCount,
     },
     {
       icon: getBoardIcon(),
-      label: "Field",
+      label: selectedBoard ? "Field" : "Choose Field",
       color: (selectedBoard === "2p-ns"
         ? "red"
         : selectedBoard === "2v2"
           ? "slate"
-          : "emerald") as any,
+          : selectedBoard
+            ? "emerald"
+            : "slate") as any,
       path: "/play/setup?step=1",
       value: selectedBoard,
     },
     {
       icon: getSetupIcon(),
-      label: "Laws",
+      label: selectedPreset ? "Laws" : "Pick Laws",
       color: (selectedPreset === "classic"
         ? "amber"
         : selectedPreset === "quick"
           ? "blue"
           : selectedPreset === "terrainiffic"
             ? "emerald"
-            : "red") as any,
+            : selectedPreset
+              ? "red"
+              : "slate") as any,
       path: "/play/setup?step=2",
       value: selectedPreset,
     },
-  ].filter((item) => item.icon !== null);
+  ];
 
   // isComplete means every selected value is present
   const isComplete = items.every(

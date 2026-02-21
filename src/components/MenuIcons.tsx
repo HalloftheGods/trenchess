@@ -24,7 +24,7 @@ export const DualToneNS = ({ size = 24, className = "" }: MenuIconProps) => (
       x="3"
       y="3"
       rx="1.5"
-      className="text-brand-red"
+      className="stroke-brand-red outline-none"
     />
     <rect
       width="7"
@@ -32,7 +32,7 @@ export const DualToneNS = ({ size = 24, className = "" }: MenuIconProps) => (
       x="14"
       y="3"
       rx="1.5"
-      className="text-brand-red"
+      className="stroke-brand-red outline-none"
     />
     {/* Bottom Row - Blue */}
     <rect
@@ -41,7 +41,7 @@ export const DualToneNS = ({ size = 24, className = "" }: MenuIconProps) => (
       x="3"
       y="14"
       rx="1.5"
-      className="text-brand-blue"
+      className="stroke-brand-blue outline-none"
     />
     <rect
       width="7"
@@ -49,7 +49,7 @@ export const DualToneNS = ({ size = 24, className = "" }: MenuIconProps) => (
       x="14"
       y="14"
       rx="1.5"
-      className="text-brand-blue"
+      className="stroke-brand-blue outline-none"
     />
   </svg>
 );
@@ -75,7 +75,7 @@ export const DualToneEW = ({ size = 24, className = "" }: MenuIconProps) => (
       x="3"
       y="3"
       rx="1.5"
-      className="text-green-500"
+      className="stroke-green-500 outline-none"
     />
     <rect
       width="7"
@@ -83,7 +83,7 @@ export const DualToneEW = ({ size = 24, className = "" }: MenuIconProps) => (
       x="3"
       y="14"
       rx="1.5"
-      className="text-green-500"
+      className="stroke-green-500 outline-none"
     />
     {/* Right Column - Yellow (East) */}
     <rect
@@ -92,7 +92,7 @@ export const DualToneEW = ({ size = 24, className = "" }: MenuIconProps) => (
       x="14"
       y="3"
       rx="1.5"
-      className="text-yellow-500"
+      className="stroke-yellow-500 outline-none"
     />
     <rect
       width="7"
@@ -100,7 +100,7 @@ export const DualToneEW = ({ size = 24, className = "" }: MenuIconProps) => (
       x="14"
       y="14"
       rx="1.5"
-      className="text-yellow-500"
+      className="stroke-yellow-500 outline-none"
     />
   </svg>
 );
@@ -120,26 +120,40 @@ export const QuadTone = ({ size = 24, className = "" }: MenuIconProps) => (
     className={className}
   >
     {/* NW - Red */}
-    <rect width="7" height="7" x="3" y="3" rx="1" className="text-brand-red" />
+    <rect
+      width="7"
+      height="7"
+      x="3"
+      y="3"
+      rx="1.5"
+      className="stroke-brand-red"
+    />
     {/* NE - Yellow */}
     <rect
       width="7"
       height="7"
       x="14"
       y="3"
-      rx="1"
-      className="text-yellow-500"
+      rx="1.5"
+      className="stroke-yellow-500"
     />
     {/* SW - Green */}
-    <rect width="7" height="7" x="3" y="14" rx="1" className="text-green-500" />
+    <rect
+      width="7"
+      height="7"
+      x="3"
+      y="14"
+      rx="1.5"
+      className="stroke-green-500"
+    />
     {/* SE - Blue */}
     <rect
       width="7"
       height="7"
       x="14"
       y="14"
-      rx="1"
-      className="text-brand-blue"
+      rx="1.5"
+      className="stroke-brand-blue"
     />
   </svg>
 );
@@ -152,7 +166,7 @@ export const AllianceTone = ({ size = 24, className = "" }: MenuIconProps) => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth="2.5"
+    strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
     className={className}

@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Sofa } from "lucide-react";
+import { Sofa, Bot, Sword, GamepadDirectional } from "lucide-react";
 import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
@@ -21,14 +21,26 @@ const MenuPlay: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-4">
+        <MenuCard
+          onClick={() => navigate("/play/setup?mode=practice&players=1")}
+          onMouseEnter={() => setHoveredMenu("practice")}
+          onMouseLeave={() => setHoveredMenu(null)}
+          isSelected={false}
+          darkMode={darkMode}
+          title="Masters Practice"
+          description='"Fools become Masters." (A.I. Play)'
+          Icon={GamepadDirectional}
+          color="slate"
+          className="h-full w-full"
+        />
         <MenuCard
           onClick={() => navigate("/play/local")}
           onMouseEnter={() => setHoveredMenu("couch")}
           onMouseLeave={() => setHoveredMenu(null)}
           isSelected={false}
           darkMode={darkMode}
-          title="Locals Gathered"
+          title="Locals Gather"
           description='"Friends become families." (Local Play)'
           Icon={Sofa}
           color="red"
