@@ -118,26 +118,33 @@ export const AllianceTone = ({ size = 24, className = "" }: MenuIconProps) => (
       rx="1.5"
       className="stroke-slate-400 dark:stroke-white"
     />
-    {/* NE - Black outline */}
+    {/* NE - Grey outline */}
     <rect
       width="7"
       height="7"
       x="14"
       y="3"
       rx="1.5"
-      className="stroke-slate-900 dark:stroke-slate-500"
+      className="stroke-slate-300 dark:stroke-slate-600"
     />
-    {/* SW - Black outline */}
+    {/* SW - Grey outline */}
     <rect
       width="7"
       height="7"
       x="3"
       y="14"
       rx="1.5"
-      className="stroke-slate-900 dark:stroke-slate-500"
+      className="stroke-slate-300 dark:stroke-slate-600"
     />
     {/* SE - White outline */}
-    <rect width="7" height="7" x="14" y="14" rx="1.5" />
+    <rect
+      width="7"
+      height="7"
+      x="14"
+      y="14"
+      rx="1.5"
+      className="stroke-slate-400 dark:stroke-white"
+    />
   </svg>
 );
 

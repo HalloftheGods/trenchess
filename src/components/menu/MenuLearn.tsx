@@ -44,7 +44,7 @@ const MenuLearn: React.FC = () => {
           onMouseLeave={() => setHoveredMenu(null)}
           isSelected={false}
           darkMode={darkMode}
-          title="Advance The Chessmen"
+          title="Crack the Endame"
           description='"...then come the Chessmen with advanced formations."'
           Icon={ChessRook}
           color="blue"

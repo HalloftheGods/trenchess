@@ -11,6 +11,7 @@ import {
   Shell,
   Dices,
   Eye,
+  Key,
 } from "lucide-react";
 import { useMenuContext } from "./MenuContext";
 import {
@@ -30,6 +31,7 @@ const MenuBreadcrumbs: React.FC = () => {
     selectedPreset,
     onStartGame,
     playerConfig,
+    multiplayer,
   } = useMenuContext();
 
   const getPlayModeIcon = () => {
@@ -50,7 +52,7 @@ const MenuBreadcrumbs: React.FC = () => {
       case 4:
         return <UserPlus size={18} />;
       default:
-        return null;
+        return <Users size={18} />;
     }
   };
 
@@ -88,51 +90,68 @@ const MenuBreadcrumbs: React.FC = () => {
     {
       icon: getPlayModeIcon(),
       label: "Mode",
-      color: playMode === "online" ? "blue" : "red",
+      color: (playMode === "online" ? "blue" : "red") as any,
       path: "/play",
+      value: playMode,
     },
+    ...(playMode === "online"
+      ? [
+          {
+            icon: <Key size={18} />,
+            label: `Lobby: ${multiplayer?.roomId?.toUpperCase() || "CODE"}`,
+            color: "blue" as any,
+            path: "/play/lobby",
+            value: multiplayer?.roomId,
+          },
+        ]
+      : []),
     {
       icon: getPlayerCountIcon(),
-      label: "Players",
-      color:
-        playerCount === 1
-          ? "red"
-          : playerCount === 2
-            ? "blue"
-            : playerCount === 3
-              ? "emerald"
-              : playerCount === 4
-                ? "amber"
-                : "blue",
+      label: playerCount
+        ? `${playerCount} Player${playerCount > 1 ? "s" : ""}`
+        : "Players",
+      color: (playerCount === 1
+        ? "red"
+        : playerCount === 2
+          ? "blue"
+          : playerCount === 3
+            ? "emerald"
+            : playerCount === 4
+              ? "amber"
+              : "blue") as any,
       path: playMode === "online" ? "/play/lobby" : "/play/local",
+      value: playerCount,
     },
     {
       icon: getBoardIcon(),
       label: "Field",
-      color:
-        selectedBoard === "2p-ns"
-          ? "red"
-          : selectedBoard === "2v2"
-            ? "slate"
-            : "emerald",
+      color: (selectedBoard === "2p-ns"
+        ? "red"
+        : selectedBoard === "2v2"
+          ? "slate"
+          : "emerald") as any,
       path: "/play/setup?step=1",
+      value: selectedBoard,
     },
     {
       icon: getSetupIcon(),
       label: "Laws",
-      color:
-        selectedPreset === "classic"
-          ? "amber"
-          : selectedPreset === "quick"
-            ? "blue"
-            : selectedPreset === "terrainiffic"
-              ? "emerald"
-              : "red",
+      color: (selectedPreset === "classic"
+        ? "amber"
+        : selectedPreset === "quick"
+          ? "blue"
+          : selectedPreset === "terrainiffic"
+            ? "emerald"
+            : "red") as any,
       path: "/play/setup?step=2",
+      value: selectedPreset,
     },
   ].filter((item) => item.icon !== null);
 
-  const isComplete = items.length === 4;
+  // isComplete means every selected value is present
+  const isComplete = items.every(
+    (item) => item.value !== null && item.value !== undefined,
+  );
 
   const handleStart = () => {
     // Only trigger game start if clicking the swords/equal section OR the container background

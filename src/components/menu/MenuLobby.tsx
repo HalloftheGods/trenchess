@@ -33,27 +33,15 @@ const MenuLobby: React.FC = () => {
   const renderMenu = () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">
       <MenuCard
-        onClick={() => setView("global")}
-        onMouseEnter={() => {}}
-        onMouseLeave={() => {}}
-        isSelected={false}
-        darkMode={darkMode}
-        title="Global Lobby"
-        description={`${multiplayer?.onlineCount || 0} players online`}
-        Icon={Globe}
-        color="red"
-        className="h-full w-full"
-      />
-      <MenuCard
         onClick={handleCreateLobby}
         onMouseEnter={() => {}}
         onMouseLeave={() => {}}
         isSelected={false}
         darkMode={darkMode}
-        title="Create Lobby"
-        description="Host a private game"
+        title="Host Lobby"
+        description='"Leaders shall host gatherings."'
         Icon={GlobeLock}
-        color="blue"
+        color="red"
         className="h-full w-full"
       />
       <MenuCard
@@ -62,10 +50,22 @@ const MenuLobby: React.FC = () => {
         onMouseLeave={() => {}}
         isSelected={false}
         darkMode={darkMode}
-        title="Enter Code"
-        description="Join with a code"
+        title="Join Code"
+        description='"Invitations shall come in code."'
         Icon={Key}
-        color="slate"
+        color="blue"
+        className="h-full w-full"
+      />
+      <MenuCard
+        onClick={() => setView("global")}
+        onMouseEnter={() => {}}
+        onMouseLeave={() => {}}
+        isSelected={false}
+        darkMode={darkMode}
+        title="Worldwide Webwork"
+        description={`${multiplayer?.onlineCount || 0} players online`}
+        Icon={Globe}
+        color="emerald"
         className="h-full w-full"
       />
     </div>

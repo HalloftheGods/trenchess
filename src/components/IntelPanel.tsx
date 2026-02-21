@@ -378,9 +378,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
               <Info size={40} className="text-slate-400 dark:text-slate-500" />
             </div>
             <h3 className="text-4xl font-black uppercase tracking-tighter text-slate-900 dark:text-white mb-1">
-              {setupMode === "terrain"
-                ? "Open the Trench"
-                : "Advance the Chess"}
+              {setupMode === "terrain" ? "Open the Trench" : "Crack the Game"}
             </h3>
             <p className="text-sm font-black text-slate-500 dark:text-slate-400 max-w-[260px] leading-relaxed uppercase tracking-[0.2em]">
               {setupMode === "terrain"
