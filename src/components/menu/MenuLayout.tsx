@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Outlet,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import PageLayout from "../PageLayout";
 import PageHeader from "../PageHeader";
 import BoardPreview from "../BoardPreview";
@@ -32,6 +37,10 @@ interface MenuLayoutProps {
   onChessGuide: () => void;
   onTrenchGuide: (terrain?: TerrainType) => void;
   onOpenLibrary: () => void;
+  selectedBoard: GameMode | null;
+  setSelectedBoard: (mode: GameMode | null) => void;
+  selectedPreset: any;
+  setSelectedPreset: (preset: any) => void;
 }
 
 const MenuLayout: React.FC<MenuLayoutProps> = ({
@@ -48,8 +57,13 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
   onChessGuide,
   onTrenchGuide,
   onOpenLibrary,
+  selectedBoard,
+  setSelectedBoard,
+  selectedPreset,
+  setSelectedPreset,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
 
   // State lifted from MenuScreen
@@ -61,15 +75,17 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
     mode: null,
   });
   const [terrainSeed, setTerrainSeed] = useState<number>(0);
-  const [selectedPreset, setSelectedPreset] = useState<
-    "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden" | null
-  >(null);
-  const [selectedBoard, setSelectedBoard] = useState<GameMode | null>(null);
-
   const [playMode, setPlayMode] = useState<
     "local" | "online" | "practice" | null
   >(null);
   const [playerCount, setPlayerCount] = useState<number | null>(null);
+
+  // Take selectedBoard/Preset from PROPS/Hook via onStartGame context or just use they are passed?
+  // Actually they are in MenuContext. We should use them from there.
+  // But MenuLayout defines the PROVIDER.
+  // So we should use the state from useGameState (passed in via core/multiplayer if we wanted, but here it's onStartGame prop)
+  // Wait, MenuLayout is rendered in App.tsx. App.tsx has 'game' which is useGameState().
+  // We should pass 'game' or its parts to MenuLayout.
 
   const [playerConfig, setPlayerConfig] = useState<
     Record<string, "human" | "computer">
@@ -147,6 +163,33 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
     multiplayer?.roomId,
     multiplayer?.players?.length,
     window.location.pathname,
+  ]);
+
+  // --- Multiplayer Sync Logic ---
+  // A. Host: Broadcast state changes
+  useEffect(() => {
+    if (
+      multiplayer?.isHost &&
+      multiplayer?.isConnected &&
+      multiplayer?.roomId
+    ) {
+      // Sync menu states and current path
+      multiplayer.sendGameState({
+        type: "menu_sync",
+        selectedBoard,
+        selectedPreset,
+        path: location.pathname,
+        step: searchParams.get("step"),
+      });
+    }
+  }, [
+    selectedBoard,
+    selectedPreset,
+    location.pathname,
+    searchParams.get("step"),
+    multiplayer?.isHost,
+    multiplayer?.isConnected,
+    multiplayer?.roomId,
   ]);
 
   // Save config when changed

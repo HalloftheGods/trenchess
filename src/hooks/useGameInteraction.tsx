@@ -12,6 +12,7 @@ type GameCore = ReturnType<typeof useGameCore>;
 
 export function useGameInteraction(
   core: GameCore,
+  multiplayer?: any, // Pass multiplayer state for guards
   onMoveExecuted?: (move: {
     from: [number, number];
     to: [number, number];
@@ -76,6 +77,16 @@ export function useGameInteraction(
   // --- Cell Hover (setup preview) ---
   const handleCellHover = (r: number, c: number, overrideTurn?: string) => {
     const startTurn = overrideTurn || turn;
+
+    // Ready Guard: Prevent changes if already marked ready in multiplayer
+    const mp = multiplayer;
+    if (gameState === "setup" && mp?.socketId) {
+      if (mp.readyPlayers[mp.socketId]) {
+        setHoveredCell(null);
+        setPreviewMoves([]);
+        return;
+      }
+    }
 
     // Zen Garden Mode Hover Logic
     if (gameState === "zen-garden") {
@@ -409,6 +420,14 @@ export function useGameInteraction(
   // --- Cell Click ---
   const handleCellClick = (r: number, c: number, overrideTurn?: string) => {
     const startTurn = overrideTurn || turn;
+
+    // Ready Guard: Prevent changes if already marked ready in multiplayer
+    const mp = multiplayer;
+    if (gameState === "setup" && mp?.socketId) {
+      if (mp.readyPlayers[mp.socketId]) {
+        return;
+      }
+    }
 
     // Zen Garden Mode Click Logic
     if (gameState === "zen-garden") {

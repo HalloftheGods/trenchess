@@ -142,6 +142,10 @@ const App = () => {
                 navigate(t ? `/learn/trench/${t}` : "/learn/trench")
               }
               onOpenLibrary={() => navigate("/library")}
+              selectedBoard={game.mode}
+              setSelectedBoard={(m) => m && game.setMode(m)}
+              selectedPreset={game.selectedPreset}
+              setSelectedPreset={game.setSelectedPreset}
             />
           }
         >

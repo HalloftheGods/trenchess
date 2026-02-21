@@ -1,13 +1,5 @@
 // Theme controls component
-import {
-  Sun,
-  Moon,
-  ChessKnight,
-  Calculator,
-  Shell,
-  FileText,
-  Trophy,
-} from "lucide-react";
+import { Sun, Moon, ChessKnight, Shell, Trophy } from "lucide-react";
 import { BattleKnightIcon } from "../UnitIcons";
 import type { PieceStyle } from "../constants";
 import { IconButton } from "./ui/IconButton";
@@ -28,7 +20,6 @@ const ThemeControls: React.FC<ThemeControlsProps> = ({
   pieceStyle,
   toggleTheme,
   togglePieceStyle,
-  onTutorial,
   onZenGarden,
   className = "",
 }) => {
@@ -42,13 +33,6 @@ const ThemeControls: React.FC<ThemeControlsProps> = ({
           icon={<Shell size={20} className="text-emerald-500" />}
           label="Zen Garden Editor"
           onClick={onZenGarden}
-        />
-      )}
-      {onTutorial && (
-        <IconButton
-          icon={<Calculator size={20} />}
-          label="Interactive Guide"
-          onClick={onTutorial}
         />
       )}
       <IconButton
@@ -78,13 +62,6 @@ const ThemeControls: React.FC<ThemeControlsProps> = ({
           )
         }
         label={darkMode ? "Light Mode" : "Dark Mode"}
-      />
-      <IconButton
-        onClick={() => navigate("/rules")}
-        icon={
-          <FileText size={20} className="text-slate-600 dark:text-slate-300" />
-        }
-        label="Rules"
       />
       <IconButton
         onClick={() => navigate("/scoreboard")}

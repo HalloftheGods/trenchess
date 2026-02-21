@@ -8,6 +8,7 @@ import React from "react";
 import { ArrowLeft } from "lucide-react";
 import type { PieceStyle } from "../constants";
 import ThemeControls from "./ThemeControls";
+import HelpControls from "./HelpControls";
 import GameLogo from "./GameLogo";
 
 interface PageHeaderProps {
@@ -88,6 +89,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           </div>
         )}
       </div>
+
+      <HelpControls onTutorial={onTutorial} />
     </>
   );
 };

@@ -228,7 +228,9 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
             {isZen
               ? "Zen Garden"
               : gameState === "setup"
-                ? `Player ${PLAYER_CONFIGS[turn].name}` // Player {Color}
+                ? multiplayer?.roomId
+                  ? "Operation Deployment"
+                  : `Player ${PLAYER_CONFIGS[turn].name}`
                 : "Command Center"}
           </h2>
 

@@ -44,6 +44,15 @@ export function useMultiplayer(
 
   const socketRef = useRef<Socket | null>(null);
 
+  const onGameStateReceivedRef = useRef(onGameStateReceived);
+  const onMoveReceivedRef = useRef(onMoveReceived);
+
+  // Update refs on every render to ensure listeners always have the latest logic/state access
+  useEffect(() => {
+    onGameStateReceivedRef.current = onGameStateReceived;
+    onMoveReceivedRef.current = onMoveReceived;
+  });
+
   const [availableRooms, setAvailableRooms] = useState<any[]>([]);
   const [onlineCount, setOnlineCount] = useState(0);
 
@@ -83,12 +92,12 @@ export function useMultiplayer(
       // Avoid loops: verify if state is actually new/different?
       // For now, trust the caller to handle diffs
       // console.log("Received Sync:", state);
-      onGameStateReceived(state);
+      onGameStateReceivedRef.current(state);
     });
 
     socketRef.current.on("receive_move", (move: any) => {
       console.log("Received Move:", move);
-      onMoveReceived(move);
+      onMoveReceivedRef.current(move);
     });
 
     // New listeners for Global Lobby

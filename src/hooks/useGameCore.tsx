@@ -60,6 +60,9 @@ export function useGameCore() {
     player3: "human",
     player4: "human",
   });
+  const [selectedPreset, setSelectedPreset] = useState<
+    "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden" | null
+  >(null);
   const [isThinking, setIsThinking] = useState(false);
 
   const getPlayerDisplayName = useCallback(
@@ -358,6 +361,8 @@ export function useGameCore() {
     initFromSeed,
     playerTypes,
     setPlayerTypes,
+    selectedPreset,
+    setSelectedPreset,
     isThinking,
     setIsThinking,
   };
