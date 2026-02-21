@@ -22,6 +22,7 @@ interface PageHeaderProps {
   onLogoClick?: () => void;
   onBack?: () => void;
   boardPreview?: React.ReactNode;
+  breadcrumbs?: React.ReactNode;
   showTerrain?: boolean;
 }
 
@@ -37,6 +38,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   onLogoClick,
   onBack,
   boardPreview,
+  breadcrumbs,
   showTerrain = true,
 }) => {
   return (
@@ -65,16 +67,19 @@ const PageHeader: React.FC<PageHeaderProps> = ({
       />
 
       <div className="w-full max-w-7xl mt-4 mb-8 flex flex-col lg:flex-row items-center justify-between gap-8 px-4 z-10 relative">
-        <div
-          className={`${onLogoClick ? "cursor-pointer hover:scale-105" : ""} transition-transform flex-1 flex justify-center w-full`}
-          onClick={onLogoClick}
-        >
-          <GameLogo
-            size="medium"
-            logoText={logoText}
-            topText={topText}
-            showTerrain={showTerrain}
-          />
+        <div className="flex-1 flex flex-col items-center">
+          <div
+            className={`${onLogoClick ? "cursor-pointer hover:scale-105" : ""} transition-transform flex justify-center w-full`}
+            onClick={onLogoClick}
+          >
+            <GameLogo
+              size="medium"
+              logoText={logoText}
+              topText={topText}
+              showTerrain={showTerrain}
+            />
+          </div>
+          {breadcrumbs}
         </div>
 
         {boardPreview && (

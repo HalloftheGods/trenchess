@@ -137,13 +137,31 @@ export const AllianceTone = ({ size = 24, className = "" }: MenuIconProps) => (
       className="stroke-slate-900 dark:stroke-slate-500"
     />
     {/* SE - White outline */}
-    <rect
-      width="7"
-      height="7"
-      x="14"
-      y="14"
-      rx="1.5"
-      className="stroke-slate-400 dark:stroke-white"
-    />
+    <rect width="7" height="7" x="14" y="14" rx="1.5" />
+  </svg>
+);
+
+export const DualToneSwords = ({
+  size = 24,
+  className = "",
+}: MenuIconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5" stroke="#2563eb" />
+    <line x1="13" x2="19" y1="19" y2="13" stroke="#2563eb" />
+    <line x1="16" x2="20" y1="16" y2="20" stroke="#2563eb" />
+    <line x1="19" x2="21" y1="21" y2="19" stroke="#2563eb" />
+    <polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5" stroke="#dc2626" />
+    <line x1="5" x2="9" y1="14" y2="18" stroke="#dc2626" />
+    <line x1="7" x2="4" y1="17" y2="20" stroke="#dc2626" />
+    <line x1="3" x2="5" y1="19" y2="21" stroke="#dc2626" />
   </svg>
 );

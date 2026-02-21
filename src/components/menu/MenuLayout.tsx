@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
 import PageLayout from "../PageLayout";
 import PageHeader from "../PageHeader";
 import BoardPreview from "../BoardPreview";
+import MenuBreadcrumbs from "./MenuBreadcrumbs";
 import { DEFAULT_SEEDS } from "../../data/defaultSeeds";
 import type { GameMode, TerrainType } from "../../types/game";
 import type { PieceStyle } from "../../constants";
@@ -49,6 +50,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
   onOpenLibrary,
 }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   // State lifted from MenuScreen
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
@@ -62,7 +64,12 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
   const [selectedPreset, setSelectedPreset] = useState<
     "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden" | null
   >(null);
-  const [selectedBoard, setSelectedBoard] = useState<GameMode | null>(null); // Might track this for setup
+  const [selectedBoard, setSelectedBoard] = useState<GameMode | null>(null);
+
+  const [playMode, setPlayMode] = useState<
+    "local" | "online" | "practice" | null
+  >(null);
+  const [playerCount, setPlayerCount] = useState<number | null>(null);
 
   const [playerConfig, setPlayerConfig] = useState<
     Record<string, "human" | "computer">
@@ -77,7 +84,21 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
   const [seeds, setSeeds] = useState<any[]>([]);
   const [previewSeedIndex, setPreviewSeedIndex] = useState(0);
 
+  // Load last config on mount
   useEffect(() => {
+    const lastConfig = localStorage.getItem("trenchess_last_config");
+    if (lastConfig) {
+      try {
+        const config = JSON.parse(lastConfig);
+        if (config.selectedBoard) setSelectedBoard(config.selectedBoard);
+        if (config.selectedPreset) setSelectedPreset(config.selectedPreset);
+        if (config.playMode) setPlayMode(config.playMode);
+        if (config.playerCount) setPlayerCount(config.playerCount);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
     const stored = localStorage.getItem("trenchess_seeds");
     let loadedSeeds: any[] = [];
     if (stored) {
@@ -90,9 +111,58 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
     setSeeds([...loadedSeeds.reverse(), ...DEFAULT_SEEDS]);
   }, []);
 
-  const currentSeed = seeds[previewSeedIndex];
+  // Sync playMode and playerCount with URL and multiplayer state
+  useEffect(() => {
+    const mode = searchParams.get("mode") as any;
+    const players = searchParams.get("players");
+    const path = window.location.pathname;
 
-  /* cycleSeed was here but unused */
+    // Handle Online Mode Detection
+    if (multiplayer?.roomId || path.includes("/play/lobby")) {
+      setPlayMode("online");
+      if (multiplayer?.players) {
+        setPlayerCount(multiplayer.players.length);
+      }
+      return;
+    }
+
+    // Handle URL parameters (Don't wipe if missing, unless at root play)
+    if (mode) {
+      if (mode === "practice") setPlayMode("practice");
+      else if (mode === "couch") setPlayMode("local");
+    } else if (path === "/play") {
+      // Clear if we explicitly return to the start
+      setPlayMode(null);
+    } else if (path.includes("/play/local")) {
+      setPlayMode("local");
+    }
+
+    if (players) {
+      setPlayerCount(parseInt(players));
+    } else if (path === "/play") {
+      setPlayerCount(null);
+    }
+  }, [
+    searchParams,
+    multiplayer?.roomId,
+    multiplayer?.players?.length,
+    window.location.pathname,
+  ]);
+
+  // Save config when changed
+  useEffect(() => {
+    if (selectedBoard || selectedPreset || playMode || playerCount) {
+      const config = {
+        selectedBoard,
+        selectedPreset,
+        playMode,
+        playerCount,
+      };
+      localStorage.setItem("trenchess_last_config", JSON.stringify(config));
+    }
+  }, [selectedBoard, selectedPreset, playMode, playerCount]);
+
+  const currentSeed = seeds[previewSeedIndex];
 
   const togglePlayerType = (pid: string) => {
     setPlayerConfig((prev) => ({
@@ -101,8 +171,6 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
     }));
   };
 
-  // Logic to determine what to show on the preview
-  // Based on MenuScreen.tsx getPreviewState
   const activeCustomSeed = previewConfig.useDefaultFormation
     ? undefined
     : previewConfig.protocol === "terrainiffic"
@@ -110,31 +178,25 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
           ?.seed
       : currentSeed?.seed;
 
-  // We are "Ready" (showing the interactive board) if the user is in a "Setup" phase.
-  // In the original, this was currentStep >= 2.
-  // In Router land, maybe if route is /setup?
-  const isPreviewReady = false; // For now in the menu nav, we are mostly previewing.
+  const isPreviewReady = false;
 
   const boardPreviewNode = (
-    <>
-      <BoardPreview
-        selectedMode={previewConfig.mode}
-        selectedProtocol={previewConfig.protocol as any}
-        darkMode={darkMode}
-        pieceStyle={pieceStyle}
-        isReady={isPreviewReady}
-        terrainSeed={terrainSeed}
-        customSeed={activeCustomSeed}
-        playerConfig={isPreviewReady ? playerConfig : undefined}
-        onTogglePlayerType={isPreviewReady ? togglePlayerType : undefined}
-        showTerrainIcons={previewConfig.showIcons}
-        hideUnits={previewConfig.hideUnits}
-        forcedTerrain={previewConfig.forcedTerrain}
-        highlightOuterSquares={previewConfig.highlightOuterSquares}
-        labelOverride={previewConfig.label}
-      />
-      {/* Layout Switcher (Only if in Terrainiffic setup, which we might handle later) */}
-    </>
+    <BoardPreview
+      selectedMode={previewConfig.mode}
+      selectedProtocol={previewConfig.protocol as any}
+      darkMode={darkMode}
+      pieceStyle={pieceStyle}
+      isReady={isPreviewReady}
+      terrainSeed={terrainSeed}
+      customSeed={activeCustomSeed}
+      playerConfig={isPreviewReady ? playerConfig : undefined}
+      onTogglePlayerType={isPreviewReady ? togglePlayerType : undefined}
+      showTerrainIcons={previewConfig.showIcons}
+      hideUnits={previewConfig.hideUnits}
+      forcedTerrain={previewConfig.forcedTerrain}
+      highlightOuterSquares={previewConfig.highlightOuterSquares}
+      labelOverride={previewConfig.label}
+    />
   );
 
   const contextValue: MenuContextType = {
@@ -165,36 +227,44 @@ const MenuLayout: React.FC<MenuLayoutProps> = ({
     onChessGuide,
     onTrenchGuide,
     onOpenLibrary,
+    playMode,
+    setPlayMode,
+    playerCount,
+    setPlayerCount,
   };
 
-  // Handle Logo Click to reset
   const handleLogoClick = () => {
     navigate("/");
     onLogoClick();
     setHoveredMenu(null);
+    setPlayMode(null);
+    setPlayerCount(null);
+    setSelectedBoard(null);
+    setSelectedPreset(null);
   };
 
   return (
-    <PageLayout
-      darkMode={darkMode}
-      header={
-        <PageHeader
-          darkMode={darkMode}
-          pieceStyle={pieceStyle}
-          toggleTheme={toggleTheme}
-          togglePieceStyle={togglePieceStyle}
-          onTutorial={onTutorial}
-          onZenGarden={onZenGarden}
-          onLogoClick={handleLogoClick}
-          boardPreview={boardPreviewNode}
-          showTerrain={true}
-        />
-      }
-    >
-      <MenuContext.Provider value={contextValue}>
+    <MenuContext.Provider value={contextValue}>
+      <PageLayout
+        darkMode={darkMode}
+        header={
+          <PageHeader
+            darkMode={darkMode}
+            pieceStyle={pieceStyle}
+            toggleTheme={toggleTheme}
+            togglePieceStyle={togglePieceStyle}
+            onTutorial={onTutorial}
+            onZenGarden={onZenGarden}
+            onLogoClick={handleLogoClick}
+            boardPreview={boardPreviewNode}
+            breadcrumbs={<MenuBreadcrumbs />}
+            showTerrain={true}
+          />
+        }
+      >
         <Outlet />
-      </MenuContext.Provider>
-    </PageLayout>
+      </PageLayout>
+    </MenuContext.Provider>
   );
 };
 

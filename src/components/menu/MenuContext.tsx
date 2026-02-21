@@ -54,6 +54,10 @@ export interface MenuContextType {
   onChessGuide: () => void;
   onTrenchGuide: (terrain?: TerrainType) => void;
   onOpenLibrary: () => void;
+  playMode: "local" | "online" | "practice" | null;
+  setPlayMode: (mode: "local" | "online" | "practice" | null) => void;
+  playerCount: number | null;
+  setPlayerCount: (count: number | null) => void;
 }
 
 export const MenuContext = createContext<MenuContextType | undefined>(

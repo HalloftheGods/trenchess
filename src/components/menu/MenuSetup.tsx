@@ -21,22 +21,16 @@ const MenuSetup: React.FC = () => {
     setSelectedBoard,
     playerConfig,
     previewConfig,
+    playerCount,
   } = useMenuContext();
 
   const [step, setStep] = useState(1); // 1 = Board, 2 = Preset
 
   // Initialize from URL param if present
   useEffect(() => {
-    // const mode = searchParams.get("mode");
-    // If mode is "couch" or "practice", maybe pre-select board?
-    // Current logic in MenuPlay:
-    // Couch -> /play/setup?mode=couch
-    // Practice -> /play/setup?mode=practice
-    // But what does "couch" imply for board? Usually implies local.
-    // What does "practice" imply? AI.
-    // The board selection (NvS vs EvW) is still up to user?
-    // Or maybe Step 1 is board, Step 2 is Preset.
-    // Let's keep it simple.
+    const s = searchParams.get("step");
+    if (s === "1") setStep(1);
+    if (s === "2") setStep(2);
   }, [searchParams]);
 
   const handleBoardSelect = (mode: GameMode) => {
@@ -53,8 +47,7 @@ const MenuSetup: React.FC = () => {
     }
   };
 
-  const playerCount = parseInt(searchParams.get("players") || "2");
-  const isMultiplayerMode = playerCount >= 3;
+  const isMultiplayerMode = (playerCount ?? 2) >= 3;
 
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center gap-8">

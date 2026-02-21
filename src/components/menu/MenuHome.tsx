@@ -5,32 +5,7 @@ import MenuCard from "../MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import TrenchessText from "../ui/TrenchessText";
 import { useMenuContext } from "./MenuContext";
-
-// Define the icon locally or import it if it's shared
-// It was defined in MenuScreen.tsx, let's redefine it here or move it to a shared file later.
-// For now, duplicating the simple component to avoid breaking changes in other files.
-const DualColorSwordsIcon: React.FC<{ size?: number; className?: string }> = ({
-  size = 64,
-}) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5" stroke="#2563eb" />
-    <line x1="13" x2="19" y1="19" y2="13" stroke="#2563eb" />
-    <line x1="16" x2="20" y1="16" y2="20" stroke="#2563eb" />
-    <line x1="19" x2="21" y1="21" y2="19" stroke="#2563eb" />
-    <polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5" stroke="#dc2626" />
-    <line x1="5" x2="9" y1="14" y2="18" stroke="#dc2626" />
-    <line x1="7" x2="4" y1="17" y2="20" stroke="#dc2626" />
-    <line x1="3" x2="5" y1="19" y2="21" stroke="#dc2626" />
-  </svg>
-);
+import { DualToneSwords } from "../MenuIcons";
 
 const MenuHome: React.FC = () => {
   const navigate = useNavigate();
@@ -79,7 +54,7 @@ const MenuHome: React.FC = () => {
             </>
           }
           description='"Master its Wisdom"'
-          Icon={DualColorSwordsIcon}
+          Icon={DualToneSwords}
           color="red"
           className="h-full w-full"
         />
