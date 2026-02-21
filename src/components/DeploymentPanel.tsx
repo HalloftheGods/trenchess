@@ -12,6 +12,7 @@ import {
   Bomb,
   Mountain,
 } from "lucide-react";
+import { SegmentedControl } from "./ui/SegmentedControl";
 import { PLAYER_CONFIGS, MAX_TERRAIN_PER_PLAYER } from "../constants";
 import { INITIAL_ARMY } from "../data/unitDetails";
 import { TERRAIN_INTEL } from "../data/terrainDetails";
@@ -78,6 +79,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
   setTerrain,
   gameState,
   turn,
+  setupMode,
   setSetupMode,
   pieceStyle,
   inventory,
@@ -280,22 +282,48 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
         {/* Zen Garden: Name & Player Palette */}
 
         {(gameState === "setup" || isZen) && (
+          <div className="mb-6">
+            <SegmentedControl
+              options={[
+                {
+                  label: (
+                    <div className="flex items-center gap-2">
+                      <span className="text-red-400">Trench</span>
+                      <small className="opacity-60 text-[10px] font-bold">
+                        {placedCount}/{maxPlacement}
+                      </small>
+                    </div>
+                  ),
+                  value: "terrain",
+                  activeColor: "bg-slate-600 dark:bg-slate-700",
+                },
+                {
+                  label: (
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-400">Chess</span>
+                      <small className="opacity-60 text-[10px] font-bold">
+                        {16 - (inventory[turn] || []).length}/16
+                      </small>
+                    </div>
+                  ),
+                  value: "pieces",
+                  activeColor: "bg-slate-600 dark:bg-slate-700",
+                },
+              ]}
+              value={setupMode}
+              onChange={(val) => setSetupMode(val as SetupMode)}
+              className="w-full"
+            />
+          </div>
+        )}
+
+        {(gameState === "setup" || isZen) && (
           <>
             {/* --- Terrain Section --- */}
-            <div className="mb-5">
-              <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 pl-1 flex justify-between items-center">
-                <span>The Trench</span>
-                <span
-                  className={
-                    placedCount === maxPlacement
-                      ? "text-emerald-500 text-lg font-black transition-all animate-pulse"
-                      : "text-amber-500 text-lg font-black transition-all"
-                  }
-                >
-                  {placedCount}/{maxPlacement}
-                </span>
-              </div>
-              <div className="flex justify-center gap-2 px-2">
+            <div
+              className={`mb-5 ${setupMode === "terrain" ? "block" : "hidden"}`}
+            >
+              <div className="flex flex-wrap justify-center gap-2 px-2">
                 {[
                   TERRAIN_TYPES.TREES,
                   TERRAIN_TYPES.PONDS,
@@ -315,16 +343,16 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                   // Determine tile style based on player color
                   const pColor = PLAYER_CONFIGS[turn].color;
                   const isAlt = i % 2 === 1; // Checkerboard pattern (1D list)
-                  let tileBg = isAlt ? "bg-slate-800" : "bg-slate-700"; // Fallback
+                  let tileBg = isAlt ? "bg-slate-800/60" : "bg-slate-700/60"; // Fallback
 
                   if (pColor === "brand-red") {
-                    tileBg = isAlt ? "bg-red-900/80" : "bg-red-700/80";
+                    tileBg = isAlt ? "bg-red-950/60" : "bg-red-900/40";
                   } else if (pColor === "brand-blue") {
-                    tileBg = isAlt ? "bg-blue-900/80" : "bg-blue-700/80";
+                    tileBg = isAlt ? "bg-blue-950/60" : "bg-blue-900/40";
                   } else if (pColor === "yellow") {
-                    tileBg = isAlt ? "bg-yellow-700/80" : "bg-yellow-500/80";
+                    tileBg = isAlt ? "bg-yellow-950/60" : "bg-yellow-900/40";
                   } else if (pColor === "green") {
-                    tileBg = isAlt ? "bg-emerald-900/80" : "bg-emerald-700/80";
+                    tileBg = isAlt ? "bg-emerald-950/60" : "bg-emerald-900/40";
                   }
 
                   const isActive = placementTerrain === tType;
@@ -333,8 +361,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                     <button
                       key={tType}
                       disabled={
-                        (!isZen && count === 0) ||
-                        (isZen && placedCount >= maxPlacement)
+                        (!isZen && count === 0) || placedCount >= maxPlacement
                       }
                       title={intel.label}
                       onClick={() => {
@@ -342,7 +369,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                         setPlacementPiece(null);
                         setSetupMode("terrain");
                       }}
-                      className={`relative w-14 h-14 rounded-sm border transition-all flex flex-col items-center justify-center gap-0 ${isActive ? "border-white scale-105 z-10 shadow-xl" : "border-transparent opacity-80 hover:opacity-100 hover:scale-[1.02]"} ${tileBg} ${(!isZen && count === 0) || (isZen && placedCount >= maxPlacement) ? "cursor-not-allowed contrast-50" : "cursor-pointer"}`}
+                      className={`relative w-32 rounded-sm border transition-all flex flex-col items-center justify-center gap-0 ${isActive ? "border-white scale-105 z-10 shadow-xl" : "border-transparent opacity-80 hover:opacity-100 hover:scale-[1.02]"} ${tileBg} ${(!isZen && count === 0) || (isZen && placedCount >= maxPlacement) ? "cursor-not-allowed contrast-50" : "cursor-pointer"}`}
                     >
                       <IconComp
                         size={32}
@@ -355,32 +382,8 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
             </div>
 
             {/* --- Units Section --- */}
-            <div>
-              <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 pl-1 flex justify-between items-center">
-                <span>
-                  The Chess{" "}
-                  {isZen &&
-                    `(${
-                      turn === "player1"
-                        ? "Red"
-                        : turn === "player2"
-                          ? "Yellow"
-                          : turn === "player3"
-                            ? "Green"
-                            : "Blue"
-                    })`}
-                </span>
-                <span
-                  className={
-                    (inventory[turn] || []).length === 0
-                      ? "text-emerald-500 text-lg font-black transition-all animate-pulse"
-                      : "text-amber-500 text-lg font-black transition-all"
-                  }
-                >
-                  {16 - (inventory[turn] || []).length}/16
-                </span>
-              </div>
-              <div className="grid grid-cols-6 gap-1">
+            <div className={setupMode === "pieces" ? "block" : "hidden"}>
+              <div className="grid grid-cols-3 gap-1">
                 {INITIAL_ARMY.map((unit, i) => {
                   const count =
                     (inventory[turn]?.filter((u) => u === unit.type) || [])
@@ -395,23 +398,21 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                   // Row 1: Col 0 (i=2) -> Light, Col 1 (i=3) -> Dark
                   // Row 2: Col 0 (i=4) -> Dark, Col 1 (i=5) -> Light
 
-                  // Math:
-                  // r = floor(i/2), c = i%2
-                  // isAlt = (r+c)%2 === 1
-                  const r = Math.floor(i / 2);
-                  const c = i % 2;
+                  // Row/Col for 3-column grid checkerboard
+                  const r = Math.floor(i / 3);
+                  const c = i % 3;
                   const isAlt = (r + c) % 2 === 1;
 
-                  let tileBg = isAlt ? "bg-slate-800" : "bg-slate-700"; // Fallback
+                  let tileBg = isAlt ? "bg-slate-800/60" : "bg-slate-700/60"; // Fallback
 
                   if (pColor === "brand-red") {
-                    tileBg = isAlt ? "bg-red-900/80" : "bg-red-700/80";
+                    tileBg = isAlt ? "bg-red-950/60" : "bg-red-900/40";
                   } else if (pColor === "brand-blue") {
-                    tileBg = isAlt ? "bg-blue-900/80" : "bg-blue-700/80";
+                    tileBg = isAlt ? "bg-blue-950/60" : "bg-blue-900/40";
                   } else if (pColor === "yellow") {
-                    tileBg = isAlt ? "bg-yellow-700/80" : "bg-yellow-500/80";
+                    tileBg = isAlt ? "bg-yellow-950/60" : "bg-yellow-900/40";
                   } else if (pColor === "green") {
-                    tileBg = isAlt ? "bg-emerald-900/80" : "bg-emerald-700/80";
+                    tileBg = isAlt ? "bg-emerald-950/60" : "bg-emerald-900/40";
                   }
 
                   const isActive = placementPiece === unit.type;
@@ -425,7 +426,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                         setPlacementTerrain(null);
                         setSetupMode("pieces");
                       }}
-                      className={`relative aspect-square p-1 rounded-sm border transition-all flex flex-col items-center justify-center gap-0 ${isActive ? "border-white scale-105 z-10 shadow-xl" : "border-transparent opacity-80 hover:opacity-100 hover:scale-[1.02]"} ${tileBg} ${count === 0 ? "cursor-not-allowed contrast-50" : "cursor-pointer"}`}
+                      className={` relative aspect-square p-1 rounded-sm border transition-all flex flex-col items-center justify-center gap-0 ${isActive ? "border-white scale-105 z-10 shadow-xl" : "border-transparent opacity-80 hover:opacity-100 hover:scale-[1.02]"} ${tileBg} ${count === 0 ? "cursor-not-allowed contrast-50" : "cursor-pointer"}`}
                     >
                       <div
                         className={`flex items-center justify-center w-full h-full ${count === 0 ? "grayscale opacity-40" : ""}`}
@@ -451,55 +452,59 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
             {/* --- Actions Section --- */}
             {!isZen && (
               <div className="space-y-2 mt-6">
-                <div className="flex gap-2">
-                  <button
-                    onClick={randomizeTerrain}
-                    className="flex-1 py-2 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 border border-emerald-500/30 hover:border-emerald-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-emerald-400 hover:text-emerald-300 hover:scale-[1.02] active:scale-95"
-                  >
-                    <Shuffle size={14} /> Random
-                  </button>
-                  {generateElementalTerrain && (
+                {setupMode === "terrain" && (
+                  <div className="flex gap-2">
                     <button
-                      onClick={generateElementalTerrain}
+                      onClick={randomizeTerrain}
                       className="flex-1 py-2 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 border border-emerald-500/30 hover:border-emerald-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-emerald-400 hover:text-emerald-300 hover:scale-[1.02] active:scale-95"
                     >
-                      <Mountain size={14} /> Natural
+                      <Shuffle size={14} /> Random
                     </button>
-                  )}
-                  {resetTerrain && (
-                    <button
-                      onClick={resetTerrain}
-                      className="py-2 px-3 bg-red-50 dark:bg-white/5 hover:bg-red-100 dark:hover:bg-red-900/20 border border-slate-200 dark:border-white/5 hover:border-red-200 dark:hover:border-red-500/30 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-red-500 hover:scale-[1.02] active:scale-95"
-                      title="Reset Terrain"
-                    >
-                      <Bomb size={14} />
-                    </button>
-                  )}
-                </div>
+                    {generateElementalTerrain && (
+                      <button
+                        onClick={generateElementalTerrain}
+                        className="flex-1 py-2 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 border border-emerald-500/30 hover:border-emerald-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-emerald-400 hover:text-emerald-300 hover:scale-[1.02] active:scale-95"
+                      >
+                        <Mountain size={14} /> Natural
+                      </button>
+                    )}
+                    {resetTerrain && (
+                      <button
+                        onClick={resetTerrain}
+                        className="py-2 px-3 bg-red-50 dark:bg-white/5 hover:bg-red-100 dark:hover:bg-red-900/20 border border-slate-200 dark:border-white/5 hover:border-red-200 dark:hover:border-red-500/30 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-red-500 hover:scale-[1.02] active:scale-95"
+                        title="Reset Terrain"
+                      >
+                        <Bomb size={14} />
+                      </button>
+                    )}
+                  </div>
+                )}
 
-                <div className="flex gap-2">
-                  <button
-                    onClick={randomizeUnits}
-                    className="flex-1 py-2 bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 hover:from-violet-600/30 hover:to-fuchsia-600/30 border border-violet-500/30 hover:border-violet-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-violet-400 hover:text-violet-300 hover:scale-[1.02] active:scale-95"
-                  >
-                    <Shuffle size={14} /> Units
-                  </button>
-                  <button
-                    onClick={setClassicalFormation}
-                    className="flex-1 py-2 bg-gradient-to-r from-amber-600/20 to-orange-600/20 hover:from-amber-600/30 hover:to-orange-600/30 border border-amber-500/30 hover:border-amber-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-amber-400 hover:text-amber-300 hover:scale-[1.02] active:scale-95"
-                  >
-                    <LayoutGrid size={14} /> Classic
-                  </button>
-                  {resetUnits && (
+                {setupMode === "pieces" && (
+                  <div className="flex gap-2">
                     <button
-                      onClick={resetUnits}
-                      className="py-2 px-3 bg-red-50 dark:bg-white/5 hover:bg-red-100 dark:hover:bg-red-900/20 border border-slate-200 dark:border-white/5 hover:border-red-200 dark:hover:border-red-500/30 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-red-500 hover:scale-[1.02] active:scale-95"
-                      title="Reset Units"
+                      onClick={randomizeUnits}
+                      className="flex-1 py-2 bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 hover:from-violet-600/30 hover:to-fuchsia-600/30 border border-violet-500/30 hover:border-violet-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-violet-400 hover:text-violet-300 hover:scale-[1.02] active:scale-95"
                     >
-                      <Bomb size={14} />
+                      <Shuffle size={14} /> Units
                     </button>
-                  )}
-                </div>
+                    <button
+                      onClick={setClassicalFormation}
+                      className="flex-1 py-2 bg-gradient-to-r from-amber-600/20 to-orange-600/20 hover:from-amber-600/30 hover:to-orange-600/30 border border-amber-500/30 hover:border-amber-400/50 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-amber-400 hover:text-amber-300 hover:scale-[1.02] active:scale-95"
+                    >
+                      <LayoutGrid size={14} /> Classic
+                    </button>
+                    {resetUnits && (
+                      <button
+                        onClick={resetUnits}
+                        className="py-2 px-3 bg-red-50 dark:bg-white/5 hover:bg-red-100 dark:hover:bg-red-900/20 border border-slate-200 dark:border-white/5 hover:border-red-200 dark:hover:border-red-500/30 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-red-500 hover:scale-[1.02] active:scale-95"
+                        title="Reset Units"
+                      >
+                        <Bomb size={14} />
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </>
@@ -543,8 +548,8 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
                   isAllPlaced
                     ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg cursor-pointer"
                     : isCurrentPlayerReady
-                      ? "bg-brand-blue hover:bg-brand-blue/80 text-white shadow-lg cursor-pointer"
-                      : "bg-slate-100 dark:bg-white/5 opacity-20 cursor-not-allowed"
+                      ? `${PLAYER_CONFIGS[turn].bg} hover:brightness-110 text-white shadow-lg cursor-pointer`
+                      : "bg-slate-100 dark:bg-white/5 opacity-40 cursor-not-allowed"
                 }`}
               >
                 {isAllPlaced ? "Commence War" : "Finish Deployment"}

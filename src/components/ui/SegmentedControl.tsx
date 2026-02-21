@@ -1,5 +1,5 @@
 interface Option {
-  label: string;
+  label: React.ReactNode;
   value: any;
   activeColor: string; // e.g. "bg-red-600"
   inactiveColor?: string;
@@ -28,7 +28,7 @@ export const SegmentedControl = ({
           <button
             key={String(option.value)}
             onClick={() => onChange(option.value)}
-            className={`px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-2 ${
+            className={`flex-1 px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
               isActive
                 ? `${option.activeColor} text-white shadow-lg`
                 : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"

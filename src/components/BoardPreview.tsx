@@ -463,9 +463,9 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
               cellStyle = `${bgClass} border-red-600/50`;
             } else if (terrain === TERRAIN_TYPES.DESERT) {
               const bgClass = isDarkSquare
-                ? "bg-amber-300/80"
-                : "bg-amber-200/80";
-              cellStyle = `${bgClass} border-amber-400/50`;
+                ? "bg-amber-700/40"
+                : "bg-amber-600/30";
+              cellStyle = `${bgClass} border-amber-600/50`;
             }
           }
 
@@ -496,7 +496,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
               className={`${cellStyle} ${outerHighlight} rounded-[1px] transition-all duration-500 relative flex items-center justify-center`}
             >
               {TerrainIcon && (
-                <div className="absolute inset-0 flex items-center justify-center opacity-40">
+                <div className="absolute inset-0 flex items-center justify-center opacity-60">
                   <TerrainIcon
                     size="60%"
                     className="text-white drop-shadow-md"

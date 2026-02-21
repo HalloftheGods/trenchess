@@ -9,7 +9,11 @@ import type {
   TerrainType,
   BoardPiece,
 } from "../types/game";
-import { PLAYER_CONFIGS, BOARD_SIZE, MAX_TERRAIN_PER_PLAYER } from "../constants";
+import {
+  PLAYER_CONFIGS,
+  BOARD_SIZE,
+  MAX_TERRAIN_PER_PLAYER,
+} from "../constants";
 import { INITIAL_ARMY } from "../data/unitDetails";
 import { TERRAIN_TYPES } from "../data/terrainDetails";
 import { getPlayerCells } from "../utils/setupLogic";
@@ -73,6 +77,12 @@ export function useGameCore() {
     [mode],
   );
 
+  const getQuota = useCallback((m: GameMode) => {
+    return m === "2p-ns" || m === "2p-ew"
+      ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+      : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+  }, []);
+
   const isPlayerReady = useCallback(
     (p: string) => {
       // 0. Safety check
@@ -88,17 +98,12 @@ export function useGameCore() {
         if (terrain[r][c] !== TERRAIN_TYPES.FLAT) terrainCount++;
       }
 
-      const players = getPlayersForMode(mode);
-      const targetTerrain =
-        players.length === 2
-          ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-          : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
-
+      const targetTerrain = getQuota(mode);
       const terrainPlaced = terrainCount === targetTerrain;
 
       return unitsPlaced && terrainPlaced;
     },
-    [inventory, terrain, mode],
+    [inventory, terrain, mode, getQuota],
   );
 
   const isAllPlaced = activePlayers.every((p) => isPlayerReady(p));
@@ -187,14 +192,7 @@ export function useGameCore() {
         // --- Calculate Inventory & Validation ---
         const newInventory: Record<string, PieceType[]> = {};
         const newTerrainInventory: Record<string, TerrainType[]> = {};
-        const handSize =
-          players.length === 2
-            ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-            : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
-        const maxTerrain =
-          players.length === 2
-            ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-            : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+        const quota = getQuota(data.mode);
 
         let allReady = true;
 
@@ -229,26 +227,18 @@ export function useGameCore() {
             if (loadedTerrain[r][c] !== TERRAIN_TYPES.FLAT) terrainCount++;
           }
 
-          if (terrainCount < maxTerrain) allReady = false;
-
-          // Fill invalid/remaining terrain slots with random content so they can finish setup
-          const cardsNeeded = handSize - terrainCount;
-          const newTerrainCards: TerrainType[] = [];
-
-          if (cardsNeeded > 0) {
-            const types = [
-              TERRAIN_TYPES.TREES,
-              TERRAIN_TYPES.PONDS,
-              TERRAIN_TYPES.RUBBLE,
-              TERRAIN_TYPES.DESERT,
-            ];
-            for (let i = 0; i < cardsNeeded; i++) {
-              newTerrainCards.push(
-                types[Math.floor(Math.random() * types.length)],
-              );
-            }
+          if (terrainCount < quota) {
+            allReady = false;
+            // Give them enough of each to finish what's left
+            newTerrainInventory[p] = [
+              ...Array(quota).fill(TERRAIN_TYPES.TREES),
+              ...Array(quota).fill(TERRAIN_TYPES.PONDS),
+              ...Array(quota).fill(TERRAIN_TYPES.RUBBLE),
+              ...Array(quota).fill(TERRAIN_TYPES.DESERT),
+            ] as TerrainType[];
+          } else {
+            newTerrainInventory[p] = [];
           }
-          newTerrainInventory[p] = newTerrainCards;
         });
 
         setInventory(newInventory);

@@ -373,11 +373,19 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
     return (
       <div className="xl:col-span-3 order-3">
         <div className="bg-white/60 dark:bg-slate-900/40 p-8 rounded-[2.5rem] border border-slate-200 dark:border-white/5 sticky top-24 min-h-[400px] flex flex-col items-center justify-center text-center">
-          <div className="opacity-30 flex flex-col items-center gap-4">
-            <Info size={64} className="text-slate-500" />
-            <p className="text-sm font-black uppercase tracking-[0.3em] text-slate-500">
-              Select {setupMode === "pieces" ? "Unit" : "Terrain"} <br /> for
-              Field Intel
+          <div className="flex flex-col items-center gap-4 animate-in fade-in zoom-in-95 duration-700">
+            <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center mb-2 border border-slate-200 dark:border-white/5 shadow-inner">
+              <Info size={40} className="text-slate-400 dark:text-slate-500" />
+            </div>
+            <h3 className="text-4xl font-black uppercase tracking-tighter text-slate-900 dark:text-white mb-1">
+              {setupMode === "terrain"
+                ? "Open the Trench"
+                : "Advance the Chess"}
+            </h3>
+            <p className="text-sm font-black text-slate-500 dark:text-slate-400 max-w-[260px] leading-relaxed uppercase tracking-[0.2em]">
+              {setupMode === "terrain"
+                ? "Lay 16 pieces of trench however you wish."
+                : "Lay your Chessmen however you wish."}
             </p>
           </div>
         </div>

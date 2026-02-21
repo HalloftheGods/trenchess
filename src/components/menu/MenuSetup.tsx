@@ -181,7 +181,7 @@ const MenuSetup: React.FC = () => {
               }}
               darkMode={darkMode}
               title="π Pi"
-              description='"Hot Slice of Classic - ready to go."'
+              description='"Grab a hot slice of Classic."'
               Icon={Pizza}
               color="amber"
               badge="EZ as Pi"

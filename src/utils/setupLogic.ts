@@ -1,4 +1,4 @@
-import { BOARD_SIZE, TERRAIN_CARDS_PER_TYPE, MAX_TERRAIN_PER_PLAYER } from "../constants";
+import { BOARD_SIZE, MAX_TERRAIN_PER_PLAYER } from "../constants";
 import { PIECES, INITIAL_ARMY } from "../data/unitDetails";
 import { TERRAIN_TYPES } from "../data/terrainDetails";
 import type {
@@ -74,7 +74,7 @@ const shuffle = <T>(array: T[]) => {
 };
 
 export const createInitialState = (
-  _mode: GameMode,
+  mode: GameMode,
   players: string[],
 ): SetupResult => {
   const board: (BoardPiece | null)[][] = Array(BOARD_SIZE)
@@ -84,32 +84,26 @@ export const createInitialState = (
     .fill(null)
     .map(() => Array(BOARD_SIZE).fill(TERRAIN_TYPES.FLAT as TerrainType));
 
-  // Generate Deck
-  const deck: TerrainType[] = [];
-  const types = [
-    TERRAIN_TYPES.TREES,
-    TERRAIN_TYPES.PONDS,
-    TERRAIN_TYPES.RUBBLE,
-    TERRAIN_TYPES.DESERT,
-  ];
-  types.forEach((t) => {
-    for (let i = 0; i < TERRAIN_CARDS_PER_TYPE; i++)
-      deck.push(t as TerrainType);
-  });
-  shuffle(deck);
-
   const inventory: Record<string, PieceType[]> = {};
   const terrainInventory: Record<string, TerrainType[]> = {};
+
+  const isTwoPlayer = mode === "2p-ns" || mode === "2p-ew";
+  const quota = isTwoPlayer
+    ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+    : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+
   players.forEach((p) => {
     inventory[p] = INITIAL_ARMY.flatMap((unit) =>
       Array(unit.count).fill(unit.type),
     );
-    // Distribute exactly the quota
-    const share =
-      players.length === 2
-        ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-        : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
-    terrainInventory[p] = deck.splice(0, share);
+
+    // Give each player enough of EACH type to satisfy the total quota with any combination
+    terrainInventory[p] = [
+      ...Array(quota).fill(TERRAIN_TYPES.TREES),
+      ...Array(quota).fill(TERRAIN_TYPES.PONDS),
+      ...Array(quota).fill(TERRAIN_TYPES.RUBBLE),
+      ...Array(quota).fill(TERRAIN_TYPES.DESERT),
+    ] as TerrainType[];
   });
 
   return { board, terrain, inventory, terrainInventory };
@@ -159,11 +153,16 @@ export const randomizeTerrain = (
   const nextTerrain = currentTerrain.map((row) => [...row]);
   const nextTInv = { ...terrainInventory };
 
+  const isTwoPlayer = mode === "2p-ns" || mode === "2p-ew";
+  const quota = isTwoPlayer
+    ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+    : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+
   players.forEach((p) => {
     const myCells = getPlayerCells(p, mode);
     const playerTerrain = [...(nextTInv[p] || [])];
 
-    // Clear existing terrain for player
+    // Clear existing terrain for player and reclaim to pool
     for (const [r, c] of myCells) {
       if (nextTerrain[r][c] !== TERRAIN_TYPES.FLAT) {
         playerTerrain.push(nextTerrain[r][c]);
@@ -173,27 +172,19 @@ export const randomizeTerrain = (
 
     shuffle(playerTerrain);
 
-    const available = myCells.filter(([r, c]) => {
-      // Find empty cells or cells with compatible unit
-      if (!currentBoard[r][c]) return true;
-      // If there's a unit, we cannot know the terrain until we pop it, so we'll check compatibility when placing.
-      // But for simple placement, let's just use empty cells if possible, or we'll skip later.
-      return true;
-    });
+    const available = [...myCells];
     shuffle(available);
 
-    const quota =
-      players.length === 2
-        ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-        : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
     let placedCount = 0;
-
     const remaining: TerrainType[] = [];
+
+    // Attempt to place exactly quota pieces from the shuffled pool
     for (const terrType of playerTerrain) {
       if (placedCount >= quota) {
         remaining.push(terrType);
         continue;
       }
+
       // Find compatible cell
       const cellIdx = available.findIndex(([r, c]) => {
         const unit = currentBoard[r][c];

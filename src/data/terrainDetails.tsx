@@ -152,7 +152,7 @@ export const TERRAIN_DETAILS: TerrainDetail[] = [
       "Movement ends immediately upon entry.",
     ],
     color: {
-      bg: "bg-amber-500/10",
+      bg: "bg-amber-600/20",
       text: "text-amber-500",
       headerBg: "bg-amber-600",
       iconBg: "bg-amber-500/20",

@@ -140,11 +140,11 @@ const BoardCell: React.FC<BoardCellProps> = ({
       )}
       {!fogged && terrainType === TERRAIN_TYPES.DESERT && (
         <div
-          className={`absolute inset-0 border border-amber-500/50 dark:border-amber-400/50 ${hasUnit ? "bg-amber-900/50 dark:bg-amber-950/50" : "bg-amber-100/40 dark:bg-amber-900/10"} flex items-center justify-center`}
+          className={`absolute inset-0 border border-amber-600/50 dark:border-amber-400/50 ${hasUnit ? "bg-amber-900/50 dark:bg-amber-950/50" : "bg-amber-600/30 dark:bg-amber-900/20"} flex items-center justify-center`}
           style={{ transform: isFlipped ? "rotate(180deg)" : "rotate(0deg)" }}
         >
           {!hasUnit && (
-            <DesertIcon className="w-[70%] h-[70%] text-amber-500 dark:text-amber-400 opacity-40" />
+            <DesertIcon className="w-[70%] h-[70%] text-amber-600 dark:text-amber-400 opacity-60" />
           )}
         </div>
       )}
