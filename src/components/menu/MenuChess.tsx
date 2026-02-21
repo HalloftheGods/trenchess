@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { ChessPawn, Trophy, Mountain } from "lucide-react";
 
-import MenuCard from "../MenuCard";
+import MenuCard from "./MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
 import ForwardButton from "../ui/ForwardButton";
@@ -14,7 +14,7 @@ import {
   PIECES,
   UNIT_DETAILS,
   unitColorMap,
-} from "../../data/unitDetails";
+} from "../../data/configs/unitDetails";
 
 const MenuChess: React.FC = () => {
   const navigate = useNavigate();

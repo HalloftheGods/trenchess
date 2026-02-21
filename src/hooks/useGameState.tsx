@@ -6,7 +6,7 @@ import { useGameSetup } from "./useGameSetup";
 import { useComputerOpponent } from "./useComputerOpponent";
 import { useMultiplayer } from "./useMultiplayer";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getPlayerCells } from "../utils/setupLogic";
+import { getPlayerCells } from "../utils/setup/setupLogic";
 
 import { Client } from "boardgame.io/client";
 import { TrenchGame } from "../game/Game";
@@ -16,47 +16,6 @@ export function useGameState() {
   const location = useLocation();
   const theme = useGameTheme();
   const core = useGameCore();
-
-  const clientRef = useRef<any>(null);
-
-  // Initialize boardgame.io client
-  useEffect(() => {
-    clientRef.current = Client({
-      game: TrenchGame,
-      numPlayers: 2, // Default
-      // multiplayer: Local(), // For local testing
-    });
-    clientRef.current.start();
-
-    const unsubscribe = clientRef.current.subscribe((state: any) => {
-      if (!state) return;
-      const { G, ctx } = state;
-
-      // Map boardgame.io state (G) back to our existing core state
-      // This is a bridge during migration
-      core.setBoard(G.board);
-      core.setTerrain(G.terrain);
-      core.setInventory(G.inventory);
-      core.setTerrainInventory(G.terrainInventory);
-      core.setCapturedBy(G.capturedBy);
-      core.setMode(G.mode);
-      core.setActivePlayers(G.activePlayers);
-
-      // Map turn (ctx.currentPlayer is "0", "1", etc)
-      const PLAYER_ID_MAP: Record<string, string> = {
-        "0": "player1",
-        "1": "player2",
-        "2": "player3",
-        "3": "player4",
-      };
-      core.setTurn(PLAYER_ID_MAP[ctx.currentPlayer] || "player1");
-    });
-
-    return () => {
-      clientRef.current.stop();
-      unsubscribe();
-    };
-  }, [core]);
 
   // Ref to break circular dependency: onGameStateReceived needs multiplayer,
   // and useMultiplayer needs onGameStateReceived.
@@ -72,6 +31,191 @@ export function useGameState() {
     },
   );
 
+  const clientRef = useRef<any>(null);
+  const unsubscribeRef = useRef<(() => void) | null>(null);
+  const lastClientParamsRef = useRef<{
+    playerID?: string;
+    numPlayers?: number;
+    gameState?: string;
+  }>({});
+  // Use refs for values needed in the boardgame.io subscription
+  // to avoid re-subscribing when they change, yet always having latest values.
+  const gameStateRef = useRef(core.gameState);
+  const roomIdRef = useRef(multiplayer.roomId);
+  const isConnectedRef = useRef(multiplayer.isConnected);
+
+  useEffect(() => {
+    gameStateRef.current = core.gameState;
+    roomIdRef.current = multiplayer.roomId;
+    isConnectedRef.current = multiplayer.isConnected;
+
+    // Reset local identity if we are not in a room
+    if (!multiplayer.roomId && core.localPlayerName) {
+      core.setLocalPlayerName("");
+    }
+  }, [
+    core.gameState,
+    multiplayer.roomId,
+    multiplayer.isConnected,
+    core.localPlayerName,
+  ]);
+
+  const syncWithClient = useCallback(
+    (client: any) => {
+      if (unsubscribeRef.current) unsubscribeRef.current();
+
+      const {
+        setBoard,
+        setTerrain,
+        setInventory,
+        setTerrainInventory,
+        setCapturedBy,
+        setMode,
+        setActivePlayers,
+        setTurn,
+      } = core;
+
+      unsubscribeRef.current = client.subscribe((state: any) => {
+        if (!state) return;
+        const { G, ctx } = state;
+
+        // In multiplayer setup, the Socket.io sync is the source of truth.
+        if (
+          gameStateRef.current === "setup" &&
+          roomIdRef.current &&
+          isConnectedRef.current
+        ) {
+          // Skip boardgame.io sync during setup to prevent overwriting local placements
+        } else {
+          setBoard(G.board);
+          setTerrain(G.terrain);
+          setInventory(G.inventory);
+          setTerrainInventory(G.terrainInventory);
+          setCapturedBy(G.capturedBy);
+          setMode(G.mode);
+          setActivePlayers(G.activePlayers);
+        }
+
+        const PLAYER_ID_MAP: Record<string, string> = {
+          "0": "player1",
+          "1": "player2",
+          "2": "player3",
+          "3": "player4",
+        };
+        setTurn(PLAYER_ID_MAP[ctx.currentPlayer] || "player1");
+
+        // Sync local player identity
+        const myPid = client.playerID; // "0", "1", etc.
+        if (myPid && G.playerMap && G.playerMap[myPid]) {
+          core.setLocalPlayerName(G.playerMap[myPid]);
+        } else if (myPid && PLAYER_ID_MAP[myPid]) {
+          core.setLocalPlayerName(PLAYER_ID_MAP[myPid]);
+        }
+      });
+    },
+    // Stabilize by only depending on setters which are guaranteed stable by React/hooks
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      core.setBoard,
+      core.setTerrain,
+      core.setInventory,
+      core.setTerrainInventory,
+      core.setCapturedBy,
+      core.setMode,
+      core.setActivePlayers,
+      core.setTurn,
+    ],
+  );
+
+  // Initialize boardgame.io client
+  useEffect(() => {
+    const numPlayers = core.mode === "4p" ? 4 : 2;
+    console.log("useGameState: Initializing client");
+    const setupData = {
+      mode: core.mode,
+      board: core.board,
+      terrain: core.terrain,
+      inventory: core.inventory,
+      terrainInventory: core.terrainInventory,
+    };
+
+    clientRef.current = Client({
+      game: TrenchGame,
+      numPlayers,
+      debug: false,
+      setupData,
+    } as any);
+    clientRef.current.start();
+
+    lastClientParamsRef.current = { numPlayers };
+    syncWithClient(clientRef.current);
+
+    return () => {
+      clientRef.current?.stop();
+      if (unsubscribeRef.current) unsubscribeRef.current();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Update client with playerID when playerIndex is available
+  useEffect(() => {
+    if (
+      multiplayer.isConnected &&
+      multiplayer.playerIndex !== null &&
+      multiplayer.playerIndex !== undefined
+    ) {
+      const playerID = String(multiplayer.playerIndex);
+      const numPlayers = core.mode === "4p" ? 4 : 2;
+
+      if (
+        lastClientParamsRef.current.playerID === playerID &&
+        lastClientParamsRef.current.numPlayers === numPlayers &&
+        lastClientParamsRef.current.gameState === core.gameState
+      ) {
+        return;
+      }
+
+      console.log(
+        "useGameState: Re-initializing client. Reason: ID/Num/State change",
+        { playerID, numPlayers, gameState: core.gameState },
+      );
+
+      if (clientRef.current) {
+        clientRef.current.stop();
+      }
+
+      const setupData = {
+        mode: core.mode,
+        board: core.board,
+        terrain: core.terrain,
+        inventory: core.inventory,
+        terrainInventory: core.terrainInventory,
+      };
+
+      clientRef.current = Client({
+        game: TrenchGame,
+        numPlayers,
+        debug: false,
+        playerID,
+        setupData,
+      } as any);
+      clientRef.current.start();
+
+      lastClientParamsRef.current = {
+        playerID,
+        numPlayers,
+        gameState: core.gameState,
+      };
+      syncWithClient(clientRef.current);
+    }
+  }, [
+    multiplayer.playerIndex,
+    multiplayer.isConnected,
+    syncWithClient,
+    core.mode,
+    core.gameState,
+  ]);
+
   const onGameStateReceived = useCallback(
     (state: any) => {
       // Guard: Ignore our own updates if we're the sender
@@ -81,6 +225,7 @@ export function useGameState() {
 
       // Menu Sync Handling
       if (state.type === "menu_sync") {
+        console.log("Multiplayer: Syncing Menu", state);
         if (state.selectedBoard) core.setMode(state.selectedBoard);
         if (state.selectedPreset) core.setSelectedPreset(state.selectedPreset);
 
@@ -90,10 +235,23 @@ export function useGameState() {
         if (targetPath && currentPath !== targetPath) {
           const step = state.step;
           const fullPath = step ? `${targetPath}?step=${step}` : targetPath;
+          console.log("Multiplayer: Navigating to", fullPath);
           navigate(fullPath);
+
+          // Force local gameState sync based on path if sync didn't include it
+          if (targetPath.includes("/play/lobby")) core.setGameState("menu");
+          if (targetPath.includes("/play/setup")) core.setGameState("setup");
+          if (targetPath.includes("/play/game")) core.setGameState("play");
         }
         return;
       }
+
+      console.log(
+        "Multiplayer: Received Sync:",
+        state.type || "state_update",
+        state.gameState,
+        state.mode,
+      );
 
       if (state.board) {
         if (core.gameState === "setup" && state.senderId) {
@@ -181,6 +339,16 @@ export function useGameState() {
       if (state.capturedBy) core.setCapturedBy(state.capturedBy);
       if (state.mode) core.setMode(state.mode);
       if (state.activePlayers) core.setActivePlayers(state.activePlayers);
+
+      // When transitioning from setup to play in multiplayer,
+      // we need to ensure the boardgame.io client is synced.
+      if (
+        state.gameState === "play" &&
+        core.gameState === "setup" &&
+        multiplayer.roomId
+      ) {
+      }
+
       if (state.gameState) core.setGameState(state.gameState);
     },
     [
@@ -197,14 +365,29 @@ export function useGameState() {
     onGameStateReceivedRef.current = onGameStateReceived;
   }, [onGameStateReceived]);
 
-  // Sync Game Start: When host enters "play", broadcast the initial state
+  // --- Consolidated Broadcast Logic ---
+  const lastBroadcastRef = useRef<number>(0);
+  const broadcastThrottle = 500; // ms
+
   useEffect(() => {
     if (
-      multiplayer.isHost &&
-      multiplayer.isConnected &&
-      multiplayer.roomId &&
-      (core.gameState === "play" || core.gameState === "setup")
-    ) {
+      !multiplayer.isConnected ||
+      !multiplayer.roomId ||
+      !multiplayer.socketId
+    )
+      return;
+
+    // Only broadcast if we ARE the host (for game state) OR if we are in setup (active placement)
+    const isGameActive =
+      core.gameState === "play" || core.gameState === "finished";
+    const isSetupActive = core.gameState === "setup";
+
+    if (multiplayer.isHost && isGameActive) {
+      // Throttle game state broadcasts from host
+      const now = Date.now();
+      if (now - lastBroadcastRef.current < broadcastThrottle) return;
+      lastBroadcastRef.current = now;
+
       multiplayer.sendGameState({
         senderId: multiplayer.socketId,
         gameState: core.gameState,
@@ -215,31 +398,18 @@ export function useGameState() {
         capturedBy: core.capturedBy,
         activePlayers: core.activePlayers,
       });
-    }
-  }, [
-    core.gameState,
-    multiplayer.isHost,
-    multiplayer.isConnected,
-    multiplayer.roomId,
-    core.mode,
-    core.board,
-    core.terrain,
-    core.turn,
-    core.capturedBy,
-    core.activePlayers,
-  ]);
+    } else if (isSetupActive) {
+      // Setup updates: every player broadcasts their own state (merged on receiver)
+      // We still throttle to prevent flooding
+      const now = Date.now();
+      if (now - lastBroadcastRef.current < broadcastThrottle) return;
+      lastBroadcastRef.current = now;
 
-  // Handle local setup changes broadcasting
-  useEffect(() => {
-    if (
-      core.gameState === "setup" &&
-      multiplayer.isConnected &&
-      multiplayer.roomId &&
-      multiplayer.socketId
-    ) {
       multiplayer.sendGameState({
         type: "setup_update",
         senderId: multiplayer.socketId,
+        gameState: core.gameState,
+        mode: core.mode,
         board: core.board,
         terrain: core.terrain,
         inventory: core.inventory,
@@ -250,9 +420,33 @@ export function useGameState() {
     core.board,
     core.terrain,
     core.gameState,
+    core.turn,
+    core.mode,
+    core.capturedBy,
+    core.activePlayers,
+    core.inventory,
+    core.terrainInventory,
     multiplayer.isConnected,
     multiplayer.roomId,
     multiplayer.socketId,
+    multiplayer.isHost,
+  ]);
+
+  // Host-side final sync trigger when starting game
+  useEffect(() => {
+    if (
+      core.gameState === "play" &&
+      multiplayer.isHost &&
+      multiplayer.roomId &&
+      multiplayer.isConnected
+    ) {
+      console.log("Multiplayer Host: Final Sync started");
+    }
+  }, [
+    core.gameState,
+    multiplayer.isHost,
+    multiplayer.roomId,
+    multiplayer.isConnected,
   ]);
 
   const interaction = useGameInteraction(
@@ -298,5 +492,5 @@ export function useGameState() {
     ...interaction,
     ...setup,
     multiplayer, // Expose multiplayer controls to UI
-  };
+  } as any;
 }

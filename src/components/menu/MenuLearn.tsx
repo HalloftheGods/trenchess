@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ChessRook, Mountain } from "lucide-react";
-import MenuCard from "../MenuCard";
+import MenuCard from "./MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
 import ForwardButton from "../ui/ForwardButton";
@@ -44,7 +44,7 @@ const MenuLearn: React.FC = () => {
           onMouseLeave={() => setHoveredMenu(null)}
           isSelected={false}
           darkMode={darkMode}
-          title="Crack the Endame"
+          title="Endgame Cracks"
           description='"...then come the Chessmen with advanced formations."'
           Icon={ChessRook}
           color="blue"

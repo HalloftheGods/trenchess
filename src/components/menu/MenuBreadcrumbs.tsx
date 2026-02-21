@@ -22,7 +22,7 @@ import {
   QuadTone,
   AllianceTone,
   DualToneSwords,
-} from "../MenuIcons";
+} from "./MenuIcons";
 
 const MenuBreadcrumbs: React.FC = () => {
   const navigate = useNavigate();

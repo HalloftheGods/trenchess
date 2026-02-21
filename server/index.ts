@@ -63,6 +63,7 @@ io.on(
                   ? "Playing"
                   : "Waiting",
             mode: rooms[roomId].gameState?.mode || "Unknown",
+            isPrivate: rooms[roomId].isPrivate || false,
           });
         }
       }
@@ -101,7 +102,12 @@ io.on(
       console.log(`User ${socket.id} joined room: ${roomId}`);
 
       if (!rooms[roomId]) {
-        rooms[roomId] = { players: [], ready: {}, gameState: null };
+        rooms[roomId] = {
+          players: [],
+          ready: {},
+          gameState: null,
+          isPrivate: roomId.length <= 6, // Short codes are "privateish"
+        };
       }
 
       if (!rooms[roomId].players.includes(socket.id)) {
@@ -115,6 +121,9 @@ io.on(
       if (rooms[roomId].gameState) {
         socket.emit("game_state_sync", rooms[roomId].gameState);
       }
+
+      const playerIndex = rooms[roomId].players.indexOf(socket.id);
+      socket.emit("join_success", { playerIndex });
 
       sendRoomList(); // Broadcast update
     });
@@ -180,6 +189,23 @@ io.on(
       "send_move",
       ({ roomId, move }: { roomId: string; move: any }) => {
         socket.to(roomId).emit("receive_move", move);
+      },
+    );
+
+    socket.on(
+      "send_chat_message",
+      ({ roomId, text }: { roomId: string; text: string }) => {
+        if (rooms[roomId]) {
+          const playerIndex = rooms[roomId].players.indexOf(socket.id);
+          const message = {
+            id: Math.random().toString(36).substring(2, 9),
+            senderId: socket.id,
+            text,
+            timestamp: Date.now(),
+            playerIndex,
+          };
+          io.to(roomId).emit("receive_chat_message", message);
+        }
       },
     );
 

@@ -9,20 +9,20 @@ import {
 import { useGameState } from "./hooks/useGameState"; // Assuming this path
 
 // Lazy-loaded Components
-const GameScreen = lazy(() => import("./components/GameScreen"));
-const HowToPlay = lazy(() => import("./components/HowToPlay"));
-const SeedLibrary = lazy(() => import("./components/SeedLibrary"));
+const GameScreen = lazy(() => import("./components/game/GameScreen"));
+const HowToPlay = lazy(() => import("./components/guides/HowToPlay"));
+const SeedLibrary = lazy(() => import("./components/library/SeedLibrary"));
 const InteractiveTutorial = lazy(
-  () => import("./components/InteractiveTutorial"),
+  () => import("./components/tutorial/InteractiveTutorial"),
 );
 const CaptureTheWorldGuide = lazy(
-  () => import("./components/CaptureTheWorldGuide"),
+  () => import("./components/guides/CaptureTheWorldGuide"),
 );
-const CtkGuide = lazy(() => import("./components/CtkGuide"));
-const CtaGuide = lazy(() => import("./components/CtaGuide"));
-const TrenchGuide = lazy(() => import("./components/TrenchGuide"));
-const ChessGuide = lazy(() => import("./components/ChessGuide"));
-const RulesPage = lazy(() => import("./components/RulesPage"));
+const CtkGuide = lazy(() => import("./components/guides/CtkGuide"));
+const CtaGuide = lazy(() => import("./components/guides/CtaGuide"));
+const TrenchGuide = lazy(() => import("./components/guides/TrenchGuide"));
+const ChessGuide = lazy(() => import("./components/guides/ChessGuide"));
+const RulesPage = lazy(() => import("./components/guides/RulesPage"));
 
 // Lazy-loaded Menu Components
 const MenuLayout = lazy(() => import("./components/menu/MenuLayout"));
@@ -56,7 +56,18 @@ const App = () => {
   const location = useLocation();
   // Keep for "Back" functionality in wrappers if left out
 
+  const { roomId: routeRoomId } = useParams();
+
   // Sync GameState with Route (Basic)
+  useEffect(() => {
+    // Only join if we are NOT already in that room
+    if (routeRoomId && game.multiplayer.roomId !== routeRoomId) {
+      console.log("App: Room ID detected in URL, joining:", routeRoomId);
+      game.multiplayer.joinGame(routeRoomId);
+    }
+  }, [routeRoomId, game.multiplayer.roomId, game.multiplayer.joinGame]);
+
+  // Handle Game State Navigation
   useEffect(() => {
     // Handle direct navigation to /zen
     if (location.pathname === "/zen") {
@@ -65,15 +76,19 @@ const App = () => {
     }
 
     // If we are in specific routes, update game state if needed, or vice-versa
-    if (
-      (game.gameState === "play" ||
-        game.gameState === "setup" ||
-        game.gameState === "zen-garden") &&
-      location.pathname !== "/game"
-    ) {
-      navigate("/game");
+    const isGameRoute = location.pathname.startsWith("/game");
+    const isGameActive =
+      game.gameState === "play" ||
+      game.gameState === "setup" ||
+      game.gameState === "zen-garden";
+
+    if (isGameActive && !isGameRoute) {
+      const target = game.multiplayer.roomId
+        ? `/game/${game.multiplayer.roomId}`
+        : "/game";
+      navigate(target);
     }
-  }, [game.gameState, navigate, location.pathname]);
+  }, [game.gameState, navigate, location.pathname, game.multiplayer.roomId]);
 
   // If we are at /game but gameState is menu (e.g. refresh), redirect to menu
   useEffect(() => {
@@ -195,6 +210,17 @@ const App = () => {
               game={game}
               onMenuClick={handleBackToMenu}
               onHowToPlayClick={() => navigate("/learn/manual")} // In-game help
+              onLibraryClick={() => navigate("/library")}
+            />
+          }
+        />
+        <Route
+          path="/game/:roomId"
+          element={
+            <GameScreen
+              game={game}
+              onMenuClick={handleBackToMenu}
+              onHowToPlayClick={() => navigate("/learn/manual")}
               onLibraryClick={() => navigate("/library")}
             />
           }

@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Bot, User, Users, UserPlus } from "lucide-react";
-import MenuCard from "../MenuCard";
+import MenuCard from "./MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
 import { useMenuContext } from "./MenuContext";

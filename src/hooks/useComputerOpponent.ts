@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { getBestMove } from "../utils/aiLogic";
-import { getValidMoves } from "../utils/gameLogic";
-import { engineService } from "../utils/stockfishLogic";
+import { getBestMove } from "../utils/core/aiLogic";
+import { getValidMoves } from "../utils/core/gameLogic";
+import { engineService } from "../utils/core/stockfishLogic";
 import type { GameMode, BoardPiece, TerrainType } from "../types/game";
 
 interface UseComputerOpponentProps {

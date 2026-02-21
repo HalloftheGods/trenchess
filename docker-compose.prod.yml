@@ -1,0 +1,24 @@
+services:
+  frontend:
+    build:
+      context: .
+      target: prod
+    ports:
+      - "80:80"
+    environment:
+      - VITE_SERVER_URL=http://your-production-url:3001
+    networks:
+      - battle-chess-net
+
+  backend:
+    build:
+      context: ./server
+      target: prod
+    ports:
+      - "3001:3001"
+    networks:
+      - battle-chess-net
+
+networks:
+  battle-chess-net:
+    driver: bridge

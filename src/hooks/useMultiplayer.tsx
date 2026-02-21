@@ -21,6 +21,9 @@ export interface MultiplayerState {
   isHost: boolean;
   availableRooms: any[];
   onlineCount: number;
+  playerIndex: number | null;
+  chatMessages: any[];
+  sendMessage: (text: string) => void;
   joinGame: (roomId: string) => void;
   hostGame: () => string; // returns new room ID
   leaveGame: () => void;
@@ -34,32 +37,37 @@ export function useMultiplayer(
   onGameStateReceived: (state: any) => void,
   onMoveReceived: (move: any) => void,
 ): MultiplayerState {
+  // 1. All useState hooks grouped at the top
   const [isConnected, setIsConnected] = useState(false);
-  const [roomId, setRoomId] = useState<string | null>(null);
+  const [roomId, setRoomId] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("battle-chess-room-id");
+    }
+    return null;
+  });
   const [players, setPlayers] = useState<string[]>([]);
   const [isHost, setIsHost] = useState(false);
   const [socketId, setSocketId] = useState<string | null>(null);
-
   const [readyPlayers, setReadyPlayers] = useState<Record<string, boolean>>({});
+  const [availableRooms, setAvailableRooms] = useState<any[]>([]);
+  const [onlineCount, setOnlineCount] = useState(0);
+  const [playerIndex, setPlayerIndex] = useState<number | null>(null);
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
 
+  // 2. All useRef hooks
   const socketRef = useRef<Socket | null>(null);
-
   const onGameStateReceivedRef = useRef(onGameStateReceived);
   const onMoveReceivedRef = useRef(onMoveReceived);
+  const hasAttemptedRejoin = useRef(false);
 
-  // Update refs on every render to ensure listeners always have the latest logic/state access
+  // 3. Effects
   useEffect(() => {
     onGameStateReceivedRef.current = onGameStateReceived;
     onMoveReceivedRef.current = onMoveReceived;
-  });
-
-  const [availableRooms, setAvailableRooms] = useState<any[]>([]);
-  const [onlineCount, setOnlineCount] = useState(0);
+  }, [onGameStateReceived, onMoveReceived]);
 
   // Initialize socket
   useEffect(() => {
-    // Only connect when explicitly joining/hosting?
-    // Or connect immediately? Let's connect immediately for now.
     const url = getServerUrl();
     socketRef.current = io(url);
 
@@ -67,8 +75,16 @@ export function useMultiplayer(
       console.log("Connected to Space Station (Server)");
       setIsConnected(true);
       if (socketRef.current) setSocketId(socketRef.current.id || null);
+
       // Request initial data
       socketRef.current?.emit("request_room_list");
+
+      // Auto-rejoin if we have a room ID
+      if (roomId && !hasAttemptedRejoin.current) {
+        console.log("Attempting to auto-rejoin room:", roomId);
+        socketRef.current?.emit("join_room", roomId);
+        hasAttemptedRejoin.current = true;
+      }
     });
 
     socketRef.current.on("disconnect", () => {
@@ -102,12 +118,20 @@ export function useMultiplayer(
 
     // New listeners for Global Lobby
     socketRef.current.on("room_list_update", (rooms: any[]) => {
-      console.log("Received Room List:", rooms);
       setAvailableRooms(rooms);
     });
 
     socketRef.current.on("online_count_update", (count: number) => {
       setOnlineCount(count);
+    });
+
+    socketRef.current.on("join_success", (data: { playerIndex: number }) => {
+      console.log("Joined Room Index:", data.playerIndex);
+      setPlayerIndex(data.playerIndex);
+    });
+
+    socketRef.current.on("receive_chat_message", (message: any) => {
+      setChatMessages((prev) => [...prev, message]);
     });
 
     return () => {
@@ -119,6 +143,7 @@ export function useMultiplayer(
     if (!socketRef.current) return;
     socketRef.current.emit("join_room", id);
     setRoomId(id);
+    localStorage.setItem("battle-chess-room-id", id);
     setIsHost(false);
   }, []);
 
@@ -128,6 +153,7 @@ export function useMultiplayer(
     const code = Math.random().toString(36).substring(2, 6).toUpperCase();
     socketRef.current.emit("join_room", code);
     setRoomId(code);
+    localStorage.setItem("battle-chess-room-id", code);
     setIsHost(true);
     return code;
   }, []);
@@ -136,6 +162,7 @@ export function useMultiplayer(
     if (!socketRef.current || !roomId) return;
     socketRef.current.emit("leave_room", roomId);
     setRoomId(null);
+    localStorage.removeItem("battle-chess-room-id");
     setPlayers([]);
     setReadyPlayers({});
     setIsHost(false);
@@ -172,6 +199,14 @@ export function useMultiplayer(
     socketRef.current.emit("request_room_list");
   }, []);
 
+  const sendMessage = useCallback(
+    (text: string) => {
+      if (!socketRef.current || !roomId) return;
+      socketRef.current.emit("send_chat_message", { roomId, text });
+    },
+    [roomId],
+  );
+
   return {
     isConnected,
     roomId,
@@ -181,6 +216,9 @@ export function useMultiplayer(
     isHost,
     availableRooms,
     onlineCount,
+    playerIndex,
+    chatMessages,
+    sendMessage,
     joinGame,
     hostGame,
     leaveGame,

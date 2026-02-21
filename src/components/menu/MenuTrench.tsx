@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Trees, Waves, Mountain, ChessRook } from "lucide-react";
-import MenuCard from "../MenuCard";
+import MenuCard from "./MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
 import ForwardButton from "../ui/ForwardButton";
@@ -11,7 +11,7 @@ import { Route } from "lucide-react";
 import type { TerrainType } from "../../types/game";
 
 import { useParams } from "react-router-dom";
-import { TERRAIN_DETAILS } from "../../data/terrainDetails";
+import { TERRAIN_DETAILS } from "../../data/configs/terrainDetails";
 import MenuDetailModal from "./MenuDetailModal";
 import TrenchCardDetail from "./TrenchCardDetail";
 

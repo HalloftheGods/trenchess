@@ -1,13 +1,13 @@
 import type { Game } from "boardgame.io";
 import { INVALID_MOVE } from "boardgame.io/core";
 import { MAX_TERRAIN_PER_PLAYER, BOARD_SIZE } from "../constants";
-import { TERRAIN_TYPES } from "../data/terrainDetails";
-import { PIECES } from "../data/unitDetails";
+import { TERRAIN_TYPES } from "../data/configs/terrainDetails";
+import { PIECES } from "../data/configs/unitDetails";
 import {
   createInitialState,
   canPlaceUnit,
   getPlayerCells,
-} from "../utils/setupLogic";
+} from "../utils/setup/setupLogic";
 import type {
   GameMode,
   BoardPiece,
@@ -24,25 +24,57 @@ export interface TrenchGameState {
   mode: GameMode;
   activePlayers: string[];
   readyPlayers: Record<string, boolean>;
+  playerMap: Record<string, string>;
 }
 
-const PLAYER_ID_MAP: Record<string, string> = {
-  "0": "player1",
-  "1": "player2",
-  "2": "player3",
-  "3": "player4",
-};
+export interface TrenchGameSetupData {
+  mode?: GameMode;
+  board?: (BoardPiece | null)[][];
+  terrain?: TerrainType[][];
+  inventory?: Record<string, PieceType[]>;
+  terrainInventory?: Record<string, TerrainType[]>;
+}
 
-export const TrenchGame: Game<TrenchGameState> = {
+export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
   name: "battle-chess",
 
-  setup: () => {
-    const mode: GameMode = "2p-ns";
-    const players = ["player1", "player4"];
-    const { board, terrain, inventory, terrainInventory } = createInitialState(
-      mode,
-      players,
-    );
+  setup: ({ ctx, setupData }) => {
+    const data = setupData as TrenchGameSetupData;
+    const mode: GameMode = data?.mode || "2p-ns";
+    let players: string[] = [];
+
+    // Initialize playerMap based on mode
+    const playerMap: Record<string, string> = {
+      "0": "player1",
+      "1": "player2",
+      "2": "player3",
+      "3": "player4",
+    };
+
+    if (mode === "2p-ns") {
+      players = ["player1", "player4"];
+      playerMap["0"] = "player1";
+      playerMap["1"] = "player4";
+    } else if (mode === "2p-ew") {
+      players = ["player3", "player2"];
+      playerMap["0"] = "player3";
+      playerMap["1"] = "player2";
+    } else {
+      players = ["player1", "player2", "player3", "player4"];
+    }
+
+    // Default to classic initial state if no board/terrain provided in setupData
+    const {
+      board: initialBoard,
+      terrain: initialTerrain,
+      inventory: initialInventory,
+      terrainInventory: initialTerrainInventory,
+    } = createInitialState(mode, players);
+
+    const board = data?.board || initialBoard;
+    const terrain = data?.terrain || initialTerrain;
+    const inventory = data?.inventory || initialInventory;
+    const terrainInventory = data?.terrainInventory || initialTerrainInventory;
 
     return {
       board,
@@ -58,6 +90,7 @@ export const TrenchGame: Game<TrenchGameState> = {
       mode,
       activePlayers: players,
       readyPlayers: {},
+      playerMap,
     };
   },
 
@@ -75,8 +108,8 @@ export const TrenchGame: Game<TrenchGameState> = {
           c: number,
           type: PieceType | null,
         ) => {
-          const pid = PLAYER_ID_MAP[playerID];
-          if (!G.activePlayers.includes(pid)) return INVALID_MOVE;
+          const pid = G.playerMap[playerID];
+          if (!pid || !G.activePlayers.includes(pid)) return INVALID_MOVE;
 
           // 1. Check territory
           const myCells = getPlayerCells(pid, G.mode);
@@ -117,8 +150,8 @@ export const TrenchGame: Game<TrenchGameState> = {
           c: number,
           type: TerrainType,
         ) => {
-          const pid = PLAYER_ID_MAP[playerID];
-          if (!G.activePlayers.includes(pid)) return INVALID_MOVE;
+          const pid = G.playerMap[playerID];
+          if (!pid || !G.activePlayers.includes(pid)) return INVALID_MOVE;
 
           // 1. Check territory
           const myCells = getPlayerCells(pid, G.mode);
@@ -170,12 +203,12 @@ export const TrenchGame: Game<TrenchGameState> = {
         },
 
         ready: ({ G, playerID }) => {
-          const pid = PLAYER_ID_MAP[playerID];
-          G.readyPlayers[pid] = true;
+          const pid = G.playerMap[playerID];
+          if (pid) G.readyPlayers[pid] = true;
         },
       },
       endIf: ({ G }) => {
-        return G.activePlayers.every((p) => G.readyPlayers[p]);
+        return G.activePlayers.every((p: string) => G.readyPlayers[p]);
       },
     },
 
@@ -188,11 +221,13 @@ export const TrenchGame: Game<TrenchGameState> = {
       },
       moves: {
         movePiece: (
-          { G, ctx, playerID },
+          { G, playerID },
           from: [number, number],
           to: [number, number],
         ) => {
-          const pid = PLAYER_ID_MAP[playerID];
+          const pid = G.playerMap[playerID];
+          if (!pid) return INVALID_MOVE;
+
           const [fromR, fromC] = from;
           const [toR, toC] = to;
           const piece = G.board[fromR][fromC];
@@ -244,7 +279,9 @@ export const TrenchGame: Game<TrenchGameState> = {
             // Commander Capture Logic
             if (captured.type === PIECES.COMMANDER) {
               const victim = captured.player;
-              G.activePlayers = G.activePlayers.filter((p) => p !== victim);
+              G.activePlayers = G.activePlayers.filter(
+                (p: string) => p !== victim,
+              );
 
               // Transfer army
               for (let r = 0; r < BOARD_SIZE; r++) {
@@ -272,7 +309,7 @@ export const TrenchGame: Game<TrenchGameState> = {
                     // Commander dies on desert -> entire army eliminated (reclaimed by environment)
                     const victim = p.player;
                     G.activePlayers = G.activePlayers.filter(
-                      (ap) => ap !== victim,
+                      (ap: string) => ap !== victim,
                     );
                     for (let row = 0; row < BOARD_SIZE; row++) {
                       for (let col = 0; col < BOARD_SIZE; col++) {
@@ -289,11 +326,12 @@ export const TrenchGame: Game<TrenchGameState> = {
           }
         },
       },
-      endIf: ({ G }) => {
-        if (G.activePlayers.length === 1) {
-          return { winner: G.activePlayers[0] };
-        }
-      },
     },
+  },
+
+  endIf: ({ G }) => {
+    if (G.activePlayers.length === 1) {
+      return { winner: G.activePlayers[0] };
+    }
   },
 };

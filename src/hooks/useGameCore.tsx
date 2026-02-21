@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { isPlayerInCheck, hasAnyValidMoves } from "../utils/gameLogic";
-import { serializeGame, deserializeGame } from "../utils/gameUrl";
+import { isPlayerInCheck, hasAnyValidMoves } from "../utils/core/gameLogic";
+import { serializeGame, deserializeGame } from "../utils/shared/gameUrl";
 import type {
   GameMode,
   GameState as GameStateType,
@@ -14,9 +14,9 @@ import {
   BOARD_SIZE,
   MAX_TERRAIN_PER_PLAYER,
 } from "../constants";
-import { INITIAL_ARMY } from "../data/unitDetails";
-import { TERRAIN_TYPES } from "../data/terrainDetails";
-import { getPlayerCells } from "../utils/setupLogic";
+import { INITIAL_ARMY } from "../data/configs/unitDetails";
+import { TERRAIN_TYPES } from "../data/configs/terrainDetails";
+import { getPlayerCells } from "../utils/setup/setupLogic";
 
 const getPlayersForMode = (m: GameMode) =>
   m === "2p-ns"
@@ -64,6 +64,7 @@ export function useGameCore() {
     "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden" | null
   >(null);
   const [isThinking, setIsThinking] = useState(false);
+  const [localPlayerName, setLocalPlayerName] = useState("");
 
   const getPlayerDisplayName = useCallback(
     (pid: string) => {
@@ -182,6 +183,7 @@ export function useGameCore() {
       const data = deserializeGame(seed);
       if (data) {
         setMode(data.mode);
+        setLocalPlayerName(""); // Reset player identity on new game load
         const loadedBoard = data.board;
         setBoard(loadedBoard);
         const loadedTerrain = data.terrain;
@@ -365,5 +367,7 @@ export function useGameCore() {
     setSelectedPreset,
     isThinking,
     setIsThinking,
+    localPlayerName,
+    setLocalPlayerName,
   };
 }

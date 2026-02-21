@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Eye, Pizza, Shell, Dices, Globe } from "lucide-react";
-import MenuCard from "../MenuCard";
+import MenuCard from "./MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
 import { useMenuContext } from "./MenuContext";
-import { DualToneNS, DualToneEW, QuadTone, AllianceTone } from "../MenuIcons";
+import { DualToneNS, DualToneEW, QuadTone, AllianceTone } from "./MenuIcons";
 import type { GameMode } from "../../types/game";
 
 const MenuSetup: React.FC = () => {
@@ -22,6 +22,7 @@ const MenuSetup: React.FC = () => {
     playerConfig,
     previewConfig,
     playerCount,
+    multiplayer,
   } = useMenuContext();
 
   const [step, setStep] = useState(1); // 1 = Board, 2 = Preset
@@ -48,6 +49,8 @@ const MenuSetup: React.FC = () => {
   };
 
   const isMultiplayerMode = (playerCount ?? 2) >= 3;
+  const isOnline = !!multiplayer?.roomId;
+  const isHost = multiplayer?.isHost || !isOnline;
 
   return (
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center gap-8">
@@ -55,21 +58,28 @@ const MenuSetup: React.FC = () => {
       <div className="relative w-full mb-8">
         <SectionDivider
           label={
-            step === 1 ? '"A dance is chosen"' : '"And the Stage is flung"'
+            isOnline && !isHost
+              ? '"Observing the Host\'s Will"'
+              : step === 1
+                ? '"A dance is chosen"'
+                : '"And the Stage is flung"'
           }
-          color="amber"
+          color={isOnline && !isHost ? "blue" : "amber"}
           animate
         />
         <BackButton
           onClick={() => {
+            if (isOnline && !isHost) return;
             if (step === 2) {
               setStep(1);
             } else {
-              navigate("/play/local");
+              navigate(isOnline ? "/play/lobby" : "/play/local");
             }
           }}
-          label={step === 2 ? "Choose Board" : "Local Gathering"}
-          className="absolute left-0 -top-8"
+          label={
+            step === 2 ? "Choose Board" : isOnline ? "Lobby" : "Local Gathering"
+          }
+          className={`absolute left-0 -top-8 ${isOnline && !isHost ? "opacity-30 cursor-not-allowed" : ""}`}
         />
       </div>
       {/* Cards Grid */}
@@ -83,7 +93,7 @@ const MenuSetup: React.FC = () => {
             {!isMultiplayerMode ? (
               <>
                 <MenuCard
-                  onClick={() => handleBoardSelect("2p-ns")}
+                  onClick={() => isHost && handleBoardSelect("2p-ns")}
                   isSelected={selectedBoard === "2p-ns"}
                   preview={{
                     mode: "2p-ns",
@@ -103,7 +113,7 @@ const MenuSetup: React.FC = () => {
                   className={`custom-border-[conic-gradient(from_315deg,_#ef4444_0deg_90deg,_#ffffff_90deg_180deg,_#3b82f6_180deg_270deg,_#ffffff_270deg_360deg)] w-full`}
                 />
                 <MenuCard
-                  onClick={() => handleBoardSelect("2p-ew")}
+                  onClick={() => isHost && handleBoardSelect("2p-ew")}
                   isSelected={selectedBoard === "2p-ew"}
                   preview={{
                     mode: "2p-ew",
@@ -126,7 +136,7 @@ const MenuSetup: React.FC = () => {
             ) : (
               <>
                 <MenuCard
-                  onClick={() => handleBoardSelect("4p")}
+                  onClick={() => isHost && handleBoardSelect("4p")}
                   isSelected={selectedBoard === "4p"}
                   preview={{
                     mode: "4p",
@@ -140,7 +150,7 @@ const MenuSetup: React.FC = () => {
                   className={`custom-border-[conic-gradient(from_315deg,_#ef4444_0deg_90deg,_#eab308_90deg_180deg,_#3b82f6_180deg_270deg,_#22c55e_270deg_360deg)] w-full`}
                 />
                 <MenuCard
-                  onClick={() => handleBoardSelect("2v2")}
+                  onClick={() => isHost && handleBoardSelect("2v2")}
                   isSelected={selectedBoard === "2v2"}
                   preview={{
                     mode: "2v2",
@@ -159,7 +169,7 @@ const MenuSetup: React.FC = () => {
         ) : (
           <>
             <MenuCard
-              onClick={() => handlePresetSelect("custom")}
+              onClick={() => isHost && handlePresetSelect("custom")}
               isSelected={selectedPreset === "custom"}
               preview={{
                 mode: selectedBoard,
@@ -176,7 +186,7 @@ const MenuSetup: React.FC = () => {
               className="w-full"
             />
             <MenuCard
-              onClick={() => handlePresetSelect("classic")}
+              onClick={() => isHost && handlePresetSelect("classic")}
               isSelected={selectedPreset === "classic"}
               preview={{
                 mode: selectedBoard,
@@ -195,7 +205,7 @@ const MenuSetup: React.FC = () => {
             />
             <MenuCard
               onClick={() => {
-                handlePresetSelect("terrainiffic");
+                isHost && handlePresetSelect("terrainiffic");
               }}
               isSelected={selectedPreset === "terrainiffic"}
               preview={{
@@ -214,7 +224,7 @@ const MenuSetup: React.FC = () => {
               className="w-full"
             />
             <MenuCard
-              onClick={() => handlePresetSelect("quick")}
+              onClick={() => isHost && handlePresetSelect("quick")}
               isSelected={selectedPreset === "quick"}
               preview={{
                 mode: selectedBoard,

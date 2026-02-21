@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Globe, Key } from "lucide-react";
 import BackButton from "../ui/BackButton";
 import { useMenuContext } from "./MenuContext";
-import MenuCard from "../MenuCard";
+import MenuCard from "./MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import { GlobeLock } from "lucide-react";
+import Shoutbox from "./Shoutbox";
 
 const MenuLobby: React.FC = () => {
   const navigate = useNavigate();
@@ -95,11 +96,7 @@ const MenuLobby: React.FC = () => {
         onClick={() => {
           if (joinLobbyCode) {
             multiplayer?.joinGame(joinLobbyCode);
-            // Optionally redirect to a "waiting" state or just stay here showing status
-            // For now, let's assume successful join will be reflected in multiplayer state
-            // behaving like "host" view but not starting game immediately?
-            // Actually, usually we'd go to a dedicated lobby screen (setup).
-            // But let's reuse "host" view for now if it shows players.
+            navigate(`/game/${joinLobbyCode}`);
             setView("host");
           }
         }}
@@ -136,28 +133,43 @@ const MenuLobby: React.FC = () => {
           </span>
         </h4>
         <div className="space-y-2">
-          {multiplayer?.players.map((p: string, i: number) => (
-            <div
-              key={p}
-              className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-blue to-brand-blue/60 flex items-center justify-center text-white font-bold text-sm">
-                  P{i + 1}
+          {multiplayer?.players.map((p: string, i: number) => {
+            const isMe = p === multiplayer.socketId;
+            const pIdx = i; // Server should ideally provide this, but order is consistent
+            const isWhite = pIdx === 0;
+            const isBlack = pIdx === 1;
+
+            return (
+              <div
+                key={p}
+                className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm ${
+                      isWhite
+                        ? "bg-white text-slate-900 border border-slate-300"
+                        : isBlack
+                          ? "bg-slate-900 text-white"
+                          : "bg-slate-500 text-white"
+                    }`}
+                  >
+                    {isWhite ? "W" : isBlack ? "B" : `P${i + 1}`}
+                  </div>
+                  <span
+                    className={`font-medium ${isMe ? "text-brand-blue font-bold" : "text-slate-700 dark:text-slate-200"}`}
+                  >
+                    {isMe ? "You (Operator)" : `Player ${p.slice(0, 4)}`}
+                  </span>
                 </div>
-                <span className="font-medium text-slate-700 dark:text-slate-200">
-                  {p === multiplayer.socketId
-                    ? "You"
-                    : `Player ${p.slice(0, 4)}`}
-                </span>
+                {multiplayer.readyPlayers[p] && (
+                  <span className="text-xs font-bold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">
+                    READY
+                  </span>
+                )}
               </div>
-              {multiplayer.readyPlayers[p] && (
-                <span className="text-xs font-bold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">
-                  READY
-                </span>
-              )}
-            </div>
-          ))}
+            );
+          })}
           {multiplayer?.players.length === 0 && (
             <div className="text-center text-slate-400 italic py-4">
               Waiting for players...
@@ -165,6 +177,11 @@ const MenuLobby: React.FC = () => {
           )}
         </div>
       </div>
+
+      <div className="h-px bg-slate-200 dark:bg-slate-700 w-full" />
+
+      {/* Shoutbox Integration */}
+      <Shoutbox multiplayer={multiplayer} darkMode={darkMode} />
 
       {/* Only host can start? Or automtic? Logic exists in App usually? 
            For now, just a "Start Game" button if host, or "Ready" toggle?
@@ -200,7 +217,8 @@ const MenuLobby: React.FC = () => {
             Global Lobby
           </h3>
           <p className="text-slate-500 font-medium">
-            {multiplayer?.onlineCount || 0} Operators Online
+            {multiplayer?.availableRooms?.length || 0} Operations Active |{" "}
+            {multiplayer?.onlineCount || 0} Online
           </p>
         </div>
         <button
@@ -208,7 +226,6 @@ const MenuLobby: React.FC = () => {
           className="p-2 text-slate-400 hover:text-brand-blue transition-colors"
           title="Refresh"
         >
-          {/* Refresh Icon */}
           <svg
             width="24"
             height="24"
@@ -227,29 +244,56 @@ const MenuLobby: React.FC = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto">
-        {multiplayer?.availableRooms?.map((room: any) => (
-          <div
-            key={room.id}
-            className="border-2 border-slate-200 dark:border-slate-700 rounded-xl p-4 hover:border-brand-blue transition-all cursor-pointer bg-slate-50 dark:bg-slate-800/50"
-            onClick={() => {
-              multiplayer.joinGame(room.id);
-              setView("host");
-            }}
-          >
-            <div className="flex justify-between items-center mb-2">
-              <span className="font-bold text-lg text-slate-700 dark:text-slate-200">
-                {room.id}
-              </span>
-              <span className="text-xs font-bold bg-brand-blue/10 text-brand-blue px-2 py-1 rounded">
-                {room.players}/{room.maxPlayers || 4}
-              </span>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+        {multiplayer?.availableRooms?.map((room: any) => {
+          const isPrivate = room.isPrivate;
+          return (
+            <div
+              key={room.id}
+              className={`border-2 rounded-xl p-4 transition-all bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between group ${
+                isPrivate
+                  ? "border-amber-200 dark:border-amber-900/30"
+                  : "border-slate-200 dark:border-slate-700 hover:border-brand-blue"
+              }`}
+            >
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-bold text-lg text-slate-700 dark:text-slate-200">
+                    {isPrivate ? "Private Operation" : room.id}
+                  </span>
+                  {isPrivate && <Key size={14} className="text-amber-500" />}
+                </div>
+                <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                  {room.mode} • {room.status}
+                </div>
+              </div>
+
+              <div className="flex flex-col items-end gap-2">
+                <span className="text-xs font-black bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-2 py-1 rounded">
+                  {room.players}/{room.maxPlayers || 4}
+                </span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (isPrivate) {
+                      setView("join");
+                    } else {
+                      multiplayer.joinGame(room.id);
+                      setView("host");
+                    }
+                  }}
+                  className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-widest transition-all ${
+                    isPrivate
+                      ? "bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20"
+                      : "bg-brand-blue hover:bg-brand-blue/80 text-white shadow-lg shadow-brand-blue/20"
+                  }`}
+                >
+                  {isPrivate ? "Enter Code" : "Join"}
+                </button>
+              </div>
             </div>
-            <div className="text-sm text-slate-500">
-              {room.status || "Waiting"}
-            </div>
-          </div>
-        ))}
+          );
+        })}
         {(!multiplayer?.availableRooms ||
           multiplayer.availableRooms.length === 0) && (
           <div className="col-span-full py-12 text-center text-slate-400 italic">
@@ -297,7 +341,7 @@ const MenuLobby: React.FC = () => {
 
       {view === "menu" && renderMenu()}
       {view === "join" && renderJoinParams()}
-      {view === "host" && renderHost()}
+      {(view === "host" || multiplayer?.roomId) && renderHost()}
       {view === "global" && renderGlobal()}
     </div>
   );

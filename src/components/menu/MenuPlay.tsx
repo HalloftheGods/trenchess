@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Sofa, Bot, Sword, GamepadDirectional } from "lucide-react";
-import MenuCard from "../MenuCard";
+import MenuCard from "./MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import BackButton from "../ui/BackButton";
-import HeaderLobby from "../HeaderLobby";
+import HeaderLobby from "../game/HeaderLobby";
 import { useMenuContext } from "./MenuContext";
 
 const MenuPlay: React.FC = () => {

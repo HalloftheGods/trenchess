@@ -5,11 +5,11 @@ import {
   useLocation,
   useSearchParams,
 } from "react-router-dom";
-import PageLayout from "../PageLayout";
-import PageHeader from "../PageHeader";
-import BoardPreview from "../BoardPreview";
+import PageLayout from "../layout/PageLayout";
+import PageHeader from "../layout/PageHeader";
+import BoardPreview from "../game/BoardPreview";
 import MenuBreadcrumbs from "./MenuBreadcrumbs";
-import { DEFAULT_SEEDS } from "../../data/defaultSeeds";
+import { DEFAULT_SEEDS } from "../../data/configs/defaultSeeds";
 import type { GameMode, TerrainType } from "../../types/game";
 import type { PieceStyle } from "../../constants";
 import {

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import * as SetupLogic from "../utils/setupLogic";
+import * as SetupLogic from "../utils/setup/setupLogic";
 import type { useGameCore } from "./useGameCore";
 import type { useGameInteraction } from "./useGameInteraction";
 import type {
@@ -8,9 +8,9 @@ import type {
   BoardPiece,
   PieceType,
 } from "../types/game";
-import { INITIAL_ARMY } from "../data/unitDetails";
-import { TERRAIN_TYPES } from "../data/terrainDetails";
-import { deserializeGame, adaptSeedToMode } from "../utils/gameUrl";
+import { INITIAL_ARMY } from "../data/configs/unitDetails";
+import { TERRAIN_TYPES } from "../data/configs/terrainDetails";
+import { deserializeGame, adaptSeedToMode } from "../utils/shared/gameUrl";
 
 type GameCore = ReturnType<typeof useGameCore>;
 type GameInteraction = ReturnType<typeof useGameInteraction>;
@@ -457,7 +457,7 @@ export function useGameSetup(
         }
       }
 
-      nextInv[turn] = [...(nextInv[turn] || []), ...reclaimed];
+      nextInv[turn] = [...(inventory[turn] || []), ...reclaimed];
       setBoard(nextBoard);
       setInventory(nextInv);
       setPlacementPiece(null);
@@ -470,5 +470,12 @@ export function useGameSetup(
       setInventory,
       setPlacementPiece,
     ]),
+
+    // boardgame.io helpers
+    ready: useCallback(() => {
+      if (bgioClient) {
+        bgioClient.moves.ready();
+      }
+    }, [bgioClient]),
   };
 }

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { ShieldPlus, UserPlus } from "lucide-react";
-import { PIECES, INITIAL_ARMY } from "../../data/unitDetails";
-import { isUnitProtected } from "../../utils/gameLogic";
-import { canUnitTraverseTerrain } from "../../utils/terrainCompat";
-import { UNIT_DETAILS, unitColorMap } from "../../data/unitDetails";
-import { TERRAIN_DETAILS } from "../../data/terrainDetails";
+import { PIECES, INITIAL_ARMY } from "../../data/configs/unitDetails";
+import { isUnitProtected } from "../../utils/core/gameLogic";
+import { canUnitTraverseTerrain } from "../../utils/setup/terrainCompat";
+import { UNIT_DETAILS, unitColorMap } from "../../data/configs/unitDetails";
+import { TERRAIN_DETAILS } from "../../data/configs/terrainDetails";
 import type { PieceType, TerrainType } from "../../types/game";
 
 interface ChessCardDetailProps {

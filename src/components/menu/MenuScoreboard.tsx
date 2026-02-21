@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { ArrowLeft, RefreshCw, Trophy, Eye } from "lucide-react";
-import MenuCard from "../MenuCard";
+import MenuCard from "./MenuCard";
 
 const getServerUrl = () => {
   if (typeof window === "undefined") return "http://localhost:3001";

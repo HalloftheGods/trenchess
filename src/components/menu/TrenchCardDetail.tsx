@@ -1,11 +1,11 @@
 import React from "react";
 import { ShieldPlus, Ban, Zap, Sparkles } from "lucide-react";
-import { INITIAL_ARMY, PIECES } from "../../data/unitDetails";
-import { TERRAIN_TYPES } from "../../data/terrainDetails";
-import { isUnitProtected } from "../../utils/gameLogic";
-import { canUnitTraverseTerrain } from "../../utils/terrainCompat";
-import { UNIT_DETAILS, unitColorMap } from "../../data/unitDetails";
-import { TERRAIN_DETAILS } from "../../data/terrainDetails";
+import { INITIAL_ARMY, PIECES } from "../../data/configs/unitDetails";
+import { TERRAIN_TYPES } from "../../data/configs/terrainDetails";
+import { isUnitProtected } from "../../utils/core/gameLogic";
+import { canUnitTraverseTerrain } from "../../utils/setup/terrainCompat";
+import { UNIT_DETAILS, unitColorMap } from "../../data/configs/unitDetails";
+import { TERRAIN_DETAILS } from "../../data/configs/terrainDetails";
 import type { TerrainType, PieceType } from "../../types/game";
 import type { PieceStyle } from "../../constants";
 

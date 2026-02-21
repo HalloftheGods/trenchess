@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Baby } from "lucide-react";
-import MenuCard from "../MenuCard";
+import MenuCard from "./MenuCard";
 import SectionDivider from "../ui/SectionDivider";
 import TrenchessText from "../ui/TrenchessText";
 import { useMenuContext } from "./MenuContext";
-import { DualToneSwords } from "../MenuIcons";
+import { DualToneSwords } from "./MenuIcons";
 
 const MenuHome: React.FC = () => {
   const navigate = useNavigate();
