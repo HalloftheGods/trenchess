@@ -2,7 +2,12 @@ import { useCallback } from "react";
 import * as SetupLogic from "../utils/setupLogic";
 import type { useGameCore } from "./useGameCore";
 import type { useGameInteraction } from "./useGameInteraction";
-import type { GameMode, TerrainType, BoardPiece, PieceType } from "../types/game";
+import type {
+  GameMode,
+  TerrainType,
+  BoardPiece,
+  PieceType,
+} from "../types/game";
 import { INITIAL_ARMY } from "../data/unitDetails";
 import { TERRAIN_TYPES } from "../data/terrainDetails";
 import { deserializeGame, adaptSeedToMode } from "../utils/gameUrl";
@@ -10,7 +15,11 @@ import { deserializeGame, adaptSeedToMode } from "../utils/gameUrl";
 type GameCore = ReturnType<typeof useGameCore>;
 type GameInteraction = ReturnType<typeof useGameInteraction>;
 
-export function useGameSetup(core: GameCore, interaction: GameInteraction) {
+export function useGameSetup(
+  core: GameCore,
+  interaction: GameInteraction,
+  bgioClient?: any,
+) {
   const {
     gameState,
     mode,

@@ -8,11 +8,55 @@ import { useMultiplayer } from "./useMultiplayer";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getPlayerCells } from "../utils/setupLogic";
 
+import { Client } from "boardgame.io/client";
+import { TrenchGame } from "../game/Game";
+
 export function useGameState() {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useGameTheme();
   const core = useGameCore();
+
+  const clientRef = useRef<any>(null);
+
+  // Initialize boardgame.io client
+  useEffect(() => {
+    clientRef.current = Client({
+      game: TrenchGame,
+      numPlayers: 2, // Default
+      // multiplayer: Local(), // For local testing
+    });
+    clientRef.current.start();
+
+    const unsubscribe = clientRef.current.subscribe((state: any) => {
+      if (!state) return;
+      const { G, ctx } = state;
+
+      // Map boardgame.io state (G) back to our existing core state
+      // This is a bridge during migration
+      core.setBoard(G.board);
+      core.setTerrain(G.terrain);
+      core.setInventory(G.inventory);
+      core.setTerrainInventory(G.terrainInventory);
+      core.setCapturedBy(G.capturedBy);
+      core.setMode(G.mode);
+      core.setActivePlayers(G.activePlayers);
+
+      // Map turn (ctx.currentPlayer is "0", "1", etc)
+      const PLAYER_ID_MAP: Record<string, string> = {
+        "0": "player1",
+        "1": "player2",
+        "2": "player3",
+        "3": "player4",
+      };
+      core.setTurn(PLAYER_ID_MAP[ctx.currentPlayer] || "player1");
+    });
+
+    return () => {
+      clientRef.current.stop();
+      unsubscribe();
+    };
+  }, [core]);
 
   // Ref to break circular dependency: onGameStateReceived needs multiplayer,
   // and useMultiplayer needs onGameStateReceived.
@@ -162,6 +206,7 @@ export function useGameState() {
       (core.gameState === "play" || core.gameState === "setup")
     ) {
       multiplayer.sendGameState({
+        senderId: multiplayer.socketId,
         gameState: core.gameState,
         mode: core.mode,
         board: core.board,
@@ -210,12 +255,19 @@ export function useGameState() {
     multiplayer.socketId,
   ]);
 
-  const interaction = useGameInteraction(core, multiplayer, (move) => {
-    if (multiplayer.isConnected) {
-      // Send local move to server
-      multiplayer.sendMove(move);
-    }
-  });
+  const interaction = useGameInteraction(
+    core,
+    multiplayer,
+    (move) => {
+      if (multiplayer.isConnected) {
+        // Send local move to server (Legacy sync - keep for now as fallback)
+        multiplayer.sendMove(move);
+      }
+      // boardgame.io moves go here
+      clientRef.current?.moves.movePiece(move.from, move.to);
+    },
+    clientRef.current,
+  );
 
   // Update the ref to point to the current executeMove
   useEffect(() => {
@@ -226,7 +278,7 @@ export function useGameState() {
     };
   }, [interaction.executeMove]);
 
-  const setup = useGameSetup(core, interaction);
+  const setup = useGameSetup(core, interaction, clientRef.current);
 
   useComputerOpponent({
     gameState: core.gameState,

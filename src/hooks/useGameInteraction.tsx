@@ -17,6 +17,7 @@ export function useGameInteraction(
     from: [number, number];
     to: [number, number];
   }) => void,
+  bgioClient?: any,
 ) {
   const {
     gameState,
@@ -607,13 +608,17 @@ export function useGameInteraction(
       if (setupMode === "terrain") {
         const currentTerrain = terrain[r][c];
         if (currentTerrain !== TERRAIN_TYPES.FLAT) {
-          const newTerrain = terrain.map((row) => [...row]);
-          newTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
-          setTerrain(newTerrain);
-          setTerrainInventory((prev) => ({
-            ...prev,
-            [startTurn]: [...(prev[startTurn] || []), currentTerrain],
-          }));
+          if (bgioClient) {
+            bgioClient.moves.placeTerrain(r, c, TERRAIN_TYPES.FLAT);
+          } else {
+            const newTerrain = terrain.map((row) => [...row]);
+            newTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+            setTerrain(newTerrain);
+            setTerrainInventory((prev) => ({
+              ...prev,
+              [startTurn]: [...(prev[startTurn] || []), currentTerrain],
+            }));
+          }
         } else if (placementTerrain && !board[r][c]) {
           // Check placement limit
           const maxPlacement =
@@ -631,18 +636,28 @@ export function useGameInteraction(
             return;
           }
 
-          const tInv = { ...terrainInventory };
-          const idx = (tInv[startTurn] || []).indexOf(placementTerrain);
-          if (idx === -1) return;
-          tInv[startTurn].splice(idx, 1);
-          const newTerrain = terrain.map((row) => [...row]);
-          newTerrain[r][c] = placementTerrain;
-          setTerrain(newTerrain);
-          setTerrainInventory(tInv);
-          const remaining = tInv[startTurn].filter(
-            (t) => t === placementTerrain,
-          ).length;
-          if (remaining === 0) setPlacementTerrain(null);
+          if (bgioClient) {
+            bgioClient.moves.placeTerrain(r, c, placementTerrain);
+            const tInv = { ...terrainInventory };
+            const idx = (tInv[startTurn] || []).indexOf(placementTerrain);
+            const remaining = (tInv[startTurn] || []).filter(
+              (t: any) => t === placementTerrain,
+            ).length;
+            if (remaining <= 1) setPlacementTerrain(null);
+          } else {
+            const tInv = { ...terrainInventory };
+            const idx = (tInv[startTurn] || []).indexOf(placementTerrain);
+            if (idx === -1) return;
+            tInv[startTurn].splice(idx, 1);
+            const newTerrain = terrain.map((row) => [...row]);
+            newTerrain[r][c] = placementTerrain;
+            setTerrain(newTerrain);
+            setTerrainInventory(tInv);
+            const remaining = tInv[startTurn].filter(
+              (t) => t === placementTerrain,
+            ).length;
+            if (remaining === 0) setPlacementTerrain(null);
+          }
         }
         return;
       }
@@ -651,61 +666,44 @@ export function useGameInteraction(
         if (board[r][c]) return;
 
         const targetTerrain = terrain[r][c];
-        // Reuse validation logic if possible or copy
-        // ... (Logic same as hover)
-        if (
-          placementPiece === PIECES.TANK &&
-          targetTerrain === TERRAIN_TYPES.TREES
-        )
-          return;
-        if (
-          placementPiece === PIECES.HORSEMAN &&
-          targetTerrain === TERRAIN_TYPES.TREES
-        )
-          return;
-        if (
-          placementPiece === PIECES.HORSEMAN &&
-          targetTerrain === TERRAIN_TYPES.PONDS
-        )
-          return;
-        if (
-          placementPiece === PIECES.SNIPER &&
-          targetTerrain === TERRAIN_TYPES.PONDS
-        )
-          return;
-        if (
-          placementPiece === PIECES.TANK &&
-          targetTerrain === TERRAIN_TYPES.RUBBLE
-        )
-          return;
-        if (
-          placementPiece === PIECES.SNIPER &&
-          targetTerrain === TERRAIN_TYPES.RUBBLE
-        )
-          return;
+        if (!canPlaceUnit(placementPiece, targetTerrain)) return;
 
-        const newBoard = [...board.map((row) => [...row])];
-        newBoard[r][c] = { type: placementPiece, player: startTurn };
-        setBoard(newBoard);
-        setPreviewMoves([]);
-        const newInv = { ...inventory };
-        const idx = newInv[startTurn].indexOf(placementPiece);
-        newInv[startTurn].splice(idx, 1);
-        setInventory(newInv);
-        const remaining = newInv[startTurn].filter(
-          (u) => u === placementPiece,
-        ).length;
-        if (remaining === 0) setPlacementPiece(null);
+        if (bgioClient) {
+          bgioClient.moves.placePiece(r, c, placementPiece);
+          const newInv = { ...inventory };
+          const remaining = (newInv[startTurn] || []).filter(
+            (u) => u === placementPiece,
+          ).length;
+          if (remaining <= 1) setPlacementPiece(null);
+        } else {
+          const newBoard = [...board.map((row) => [...row])];
+          newBoard[r][c] = { type: placementPiece, player: startTurn };
+          setBoard(newBoard);
+          setPreviewMoves([]);
+          const newInv = { ...inventory };
+          const idx = newInv[startTurn].indexOf(placementPiece);
+          newInv[startTurn].splice(idx, 1);
+          setInventory(newInv);
+          const remaining = newInv[startTurn].filter(
+            (u) => u === placementPiece,
+          ).length;
+          if (remaining === 0) setPlacementPiece(null);
+        }
       } else if (board[r][c] && board[r][c]!.player === startTurn) {
-        const piece = board[r][c]!.type;
-        const newBoard = [...board.map((row) => [...row])];
-        newBoard[r][c] = null;
-        setBoard(newBoard);
-        setPreviewMoves([]);
-        setInventory((prev) => ({
-          ...prev,
-          [startTurn]: [...(prev[startTurn] || []), piece],
-        }));
+        if (bgioClient) {
+          // Remove piece
+          bgioClient.moves.placePiece(r, c, null);
+        } else {
+          const piece = board[r][c]!.type;
+          const newBoard = [...board.map((row) => [...row])];
+          newBoard[r][c] = null;
+          setBoard(newBoard);
+          setPreviewMoves([]);
+          setInventory((prev) => ({
+            ...prev,
+            [startTurn]: [...(prev[startTurn] || []), piece],
+          }));
+        }
       }
       return;
     }
