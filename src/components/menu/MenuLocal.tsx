@@ -14,7 +14,7 @@ const MenuLocal: React.FC = () => {
     <div className="w-full max-w-7xl animate-in slide-in-from-bottom-8 fade-in duration-700 pb-20 flex flex-col items-center">
       <div className="relative w-full max-w-7xl mb-12">
         <SectionDivider
-          label="Locals Gathered - Songs were sung"
+          label="Locals Gather - Songs are sung"
           color="amber"
           animate
         />

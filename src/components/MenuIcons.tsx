@@ -4,7 +4,7 @@ interface MenuIconProps {
 }
 
 export const DualToneNS = ({ size = 24, className = "" }: MenuIconProps) => (
-  // Mimicking Lucide 'Users' but Red/Blue
+  // 2x2 grid: Top Red, Bottom Blue
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -17,21 +17,45 @@ export const DualToneNS = ({ size = 24, className = "" }: MenuIconProps) => (
     strokeLinejoin="round"
     className={className}
   >
-    {/* Front User - Red */}
-    <g className="text-brand-red">
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-    </g>
-    {/* Back User - Blue */}
-    <g className="text-brand-blue">
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </g>
+    {/* Top Row - Red */}
+    <rect
+      width="7"
+      height="7"
+      x="3"
+      y="3"
+      rx="1.5"
+      className="text-brand-red"
+    />
+    <rect
+      width="7"
+      height="7"
+      x="14"
+      y="3"
+      rx="1.5"
+      className="text-brand-red"
+    />
+    {/* Bottom Row - Blue */}
+    <rect
+      width="7"
+      height="7"
+      x="3"
+      y="14"
+      rx="1.5"
+      className="text-brand-blue"
+    />
+    <rect
+      width="7"
+      height="7"
+      x="14"
+      y="14"
+      rx="1.5"
+      className="text-brand-blue"
+    />
   </svg>
 );
 
 export const DualToneEW = ({ size = 24, className = "" }: MenuIconProps) => (
-  // Mimicking Lucide 'Users' but Green/Yellow
+  // 2x2 grid: Left Green (now West), Right Yellow (now East)
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -44,16 +68,40 @@ export const DualToneEW = ({ size = 24, className = "" }: MenuIconProps) => (
     strokeLinejoin="round"
     className={className}
   >
-    {/* Front User - Yellow (West) */}
-    <g className="text-yellow-500">
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-    </g>
-    {/* Back User - Green (East) */}
-    <g className="text-green-500">
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </g>
+    {/* Left Column - Green (West) */}
+    <rect
+      width="7"
+      height="7"
+      x="3"
+      y="3"
+      rx="1.5"
+      className="text-green-500"
+    />
+    <rect
+      width="7"
+      height="7"
+      x="3"
+      y="14"
+      rx="1.5"
+      className="text-green-500"
+    />
+    {/* Right Column - Yellow (East) */}
+    <rect
+      width="7"
+      height="7"
+      x="14"
+      y="3"
+      rx="1.5"
+      className="text-yellow-500"
+    />
+    <rect
+      width="7"
+      height="7"
+      x="14"
+      y="14"
+      rx="1.5"
+      className="text-yellow-500"
+    />
   </svg>
 );
 

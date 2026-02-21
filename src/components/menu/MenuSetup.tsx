@@ -91,6 +91,12 @@ const MenuSetup: React.FC = () => {
                   }}
                   darkMode={darkMode}
                   title="North vs South"
+                  titleNode={
+                    <>
+                      <span className="text-brand-red">North</span> vs{" "}
+                      <span className="text-brand-blue">South</span>
+                    </>
+                  }
                   description='"Roses are Red, Violets are Blue..."'
                   Icon={DualToneNS}
                   color="red"
@@ -105,6 +111,12 @@ const MenuSetup: React.FC = () => {
                   }}
                   darkMode={darkMode}
                   title="West vs East"
+                  titleNode={
+                    <>
+                      <span className="text-green-500">West</span> vs{" "}
+                      <span className="text-yellow-500">East</span>
+                    </>
+                  }
                   description='"Zinnias come in Green, and Tulips dress Yellow too..."'
                   Icon={DualToneEW}
                   color="emerald"
