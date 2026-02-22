@@ -7,24 +7,24 @@ import {
   ChessPawn,
 } from "lucide-react";
 import {
-  CommanderIcon,
-  BattleKnightIcon,
-  TankIcon,
-  SniperIcon,
-  HorsemanIcon,
-  BotIcon,
+  KingIcon,
+  QueenIcon,
+  RookIcon,
+  BishopIcon,
+  KnightIcon,
+  PawnIcon,
 } from "@/app/routes/game/components/atoms/UnitIcons";
 import type { TerrainType, PieceType, ArmyUnit } from "@engineTypes/game";
 import type { UnitIntelEntry } from "@engineTypes/guide";
 
 // --- Piece Types ---
 export const PIECES: Record<string, PieceType> = {
-  BOT: "bot",
-  HORSEMAN: "horseman",
-  SNIPER: "sniper",
-  TANK: "tank",
-  BATTLEKNIGHT: "battleknight",
-  COMMANDER: "commander",
+  PAWN: "pawn",
+  KNIGHT: "knight",
+  BISHOP: "bishop",
+  ROOK: "rook",
+  QUEEN: "queen",
+  KING: "king",
 };
 
 export const unitColorMap: Record<
@@ -38,7 +38,7 @@ export const unitColorMap: Record<
     ring: string;
   }
 > = {
-  [PIECES.COMMANDER]: {
+  [PIECES.KING]: {
     text: "text-purple-500",
     bg: "bg-purple-500/10",
     border: "border-purple-500/40",
@@ -46,7 +46,7 @@ export const unitColorMap: Record<
     ribbonBg: "bg-purple-500",
     ring: "ring-purple-500/50",
   },
-  [PIECES.BATTLEKNIGHT]: {
+  [PIECES.QUEEN]: {
     text: "text-emerald-500",
     bg: "bg-emerald-500/10",
     border: "border-emerald-500/40",
@@ -54,7 +54,7 @@ export const unitColorMap: Record<
     ribbonBg: "bg-emerald-500",
     ring: "ring-emerald-500/50",
   },
-  [PIECES.TANK]: {
+  [PIECES.ROOK]: {
     text: "text-yellow-500",
     bg: "bg-yellow-500/10",
     border: "border-yellow-500/40",
@@ -62,7 +62,7 @@ export const unitColorMap: Record<
     ribbonBg: "bg-yellow-500",
     ring: "ring-yellow-500/50",
   },
-  [PIECES.SNIPER]: {
+  [PIECES.BISHOP]: {
     text: "text-orange-500",
     bg: "bg-orange-500/10",
     border: "border-orange-500/40",
@@ -70,7 +70,7 @@ export const unitColorMap: Record<
     ribbonBg: "bg-orange-500",
     ring: "ring-orange-500/50",
   },
-  [PIECES.HORSEMAN]: {
+  [PIECES.KNIGHT]: {
     text: "text-brand-red",
     bg: "bg-brand-red/10",
     border: "border-brand-red/40",
@@ -78,7 +78,7 @@ export const unitColorMap: Record<
     ribbonBg: "bg-brand-red",
     ring: "ring-brand-red/50",
   },
-  [PIECES.BOT]: {
+  [PIECES.PAWN]: {
     text: "text-brand-blue",
     bg: "bg-brand-blue/10",
     border: "border-brand-blue/40",
@@ -105,10 +105,10 @@ export const UNIT_DETAILS: Record<
     attackPattern?: (r: number, c: number) => number[][];
   }
 > = {
-  [PIECES.COMMANDER]: {
+  [PIECES.KING]: {
     title: "Equinox King",
     subtitle: "The Kings",
-    role: '"The King clears 2 steps forward."',
+    role: '"The King bull-dozes 2 steps forward."',
     desc: [],
     levelUp: {
       title: "Sovereign Lancer",
@@ -141,7 +141,7 @@ export const UNIT_DETAILS: Record<
       [r, c + 1],
     ],
   },
-  [PIECES.BATTLEKNIGHT]: {
+  [PIECES.QUEEN]: {
     title: "Sacred Queen",
     subtitle: "The Queens",
     role: '"The Queen rides the sacred steed."',
@@ -176,7 +176,7 @@ export const UNIT_DETAILS: Record<
         [2, 1],
       ].map(([dr, dc]) => [r + dr, c + dc]),
   },
-  [PIECES.TANK]: {
+  [PIECES.ROOK]: {
     title: "Twilight Fortress",
     subtitle: "The Rooks",
     role: '"Rooks fortify the Swamps, Dusk-to-Dusk."',
@@ -205,7 +205,7 @@ export const UNIT_DETAILS: Record<
       return moves;
     },
   },
-  [PIECES.SNIPER]: {
+  [PIECES.BISHOP]: {
     title: "Light Seer",
     subtitle: "The Bishops",
     role: '"The Bishop hunts the Forest with Light."',
@@ -239,7 +239,7 @@ export const UNIT_DETAILS: Record<
       return moves;
     },
   },
-  [PIECES.HORSEMAN]: {
+  [PIECES.KNIGHT]: {
     title: "Shadow Knight",
     subtitle: "The Knights",
     role: '"The Knight rides the Mountains under Dark."',
@@ -273,7 +273,7 @@ export const UNIT_DETAILS: Record<
       [r + 2, c + 1],
     ],
   },
-  [PIECES.BOT]: {
+  [PIECES.PAWN]: {
     title: "Nimbus Jumper",
     subtitle: "The Pawns",
     role: '"The Pawn learns the way of the backflip."',
@@ -304,85 +304,85 @@ export const UNIT_DETAILS: Record<
 // --- Initial Army ---
 export const INITIAL_ARMY: ArmyUnit[] = [
   {
-    type: PIECES.COMMANDER,
+    type: PIECES.KING,
     count: 1,
     emoji: "👑",
     bold: "♚︎",
     outlined: "♔︎",
-    custom: CommanderIcon,
+    custom: KingIcon,
     lucide: ChessKing,
   },
   {
-    type: PIECES.BATTLEKNIGHT,
+    type: PIECES.QUEEN,
     count: 1,
     emoji: "👸",
     bold: "♛︎",
     outlined: "♕︎",
-    custom: BattleKnightIcon,
+    custom: QueenIcon,
     lucide: ChessQueen,
   },
   {
-    type: PIECES.TANK,
+    type: PIECES.ROOK,
     count: 2,
     emoji: "🛡️",
     bold: "♜︎",
     outlined: "♖︎",
-    custom: TankIcon,
+    custom: RookIcon,
     lucide: ChessRook,
   },
   {
-    type: PIECES.SNIPER,
+    type: PIECES.BISHOP,
     count: 2,
     emoji: "🎯",
     bold: "♝︎",
     outlined: "♗︎",
-    custom: SniperIcon,
+    custom: BishopIcon,
     lucide: ChessBishop,
   },
   {
-    type: PIECES.HORSEMAN,
+    type: PIECES.KNIGHT,
     count: 2,
     emoji: "🏇",
     bold: "♞︎",
     outlined: "♘︎",
-    custom: HorsemanIcon,
+    custom: KnightIcon,
     lucide: ChessKnight,
   },
   {
-    type: PIECES.BOT,
+    type: PIECES.PAWN,
     count: 8,
     emoji: "🤖",
     bold: "♟︎",
     outlined: "♙︎",
-    custom: BotIcon,
+    custom: PawnIcon,
     lucide: ChessPawn,
   },
 ];
 
 // --- Unit Intel (simple tooltips) ---
 export const UNIT_INTEL: Record<string, UnitIntelEntry> = {
-  [PIECES.COMMANDER]: {
-    title: "Commander",
+  [PIECES.KING]: {
+    title: "King",
     desc: "The Leader. Moves 2 spaces in a straight line or 1 space diagonally. Cannot pass through a square guarded by an enemy. Capture to win.",
   },
-  [PIECES.BATTLEKNIGHT]: {
-    title: "BattleKnight",
-    desc: "Elite unit. Moves like a Queen AND a Horseman. Can occupy any terrain. Cannot pass through walls but can jump them in L-shape moves.",
+  [PIECES.QUEEN]: {
+    title: "Queen",
+    desc: "Elite unit. Moves like a Queen AND a Knight. Can occupy any terrain. Cannot pass through walls but can jump them in L-shape moves.",
   },
-  [PIECES.TANK]: {
-    title: "Tank",
+  [PIECES.ROOK]: {
+    title: "Rook",
     desc: "Heavy Armor. Moves like a Rook. Cannot enter Forest or Mountains. Thrives in Swamp. Only unit that can traverse Tundra.",
   },
-  [PIECES.SNIPER]: {
-    title: "Sniper",
+  [PIECES.BISHOP]: {
+    title: "Bishop",
     desc: "Ranged Specialist. Moves diagonally like a Bishop. Gains cover in Forest. Blocked by Swamp and Mountains.",
   },
-  [PIECES.HORSEMAN]: {
-    title: "Horseman",
+  [PIECES.KNIGHT]: {
+    title: "Knight",
     desc: "Cavalry. Moves in an L-shape, jumping over units and walls. Thrives in Mountains. Bogs down in Swamp and Forest.",
   },
-  [PIECES.BOT]: {
-    title: "Bot",
+  [PIECES.PAWN]: {
+    title: "Pawn",
     desc: "Infantry. Moves like a Pawn, but can also perform a 'Backflip' (jump 2 squares backward) to reposition or capture unexpectedly.",
   },
 };

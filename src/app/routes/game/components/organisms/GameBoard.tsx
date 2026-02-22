@@ -1,8 +1,8 @@
 // Game board component
-import BoardCell from "@/app/routes/game/components/molecules/BoardCell";
-import VictoryOverlay from "@/app/routes/game/components/molecules/VictoryOverlay";
+import BoardCell from "@/app/routes/game/components/organisms/BoardCell";
+import VictoryOverlay from "@/app/routes/game/components/atoms/VictoryOverlay";
 import { EyeOff } from "lucide-react";
-import { PLAYER_CONFIGS } from "@constants/constants";
+import { PLAYER_CONFIGS } from "@constants/unit.constants";
 import type {
   BoardPiece,
   TerrainType,

@@ -1,18 +1,8 @@
 // Intel panel component
-import {
-  Info,
-  Waves,
-  Users,
-  ThumbsUp,
-  ThumbsDown,
-  AlertTriangle,
-  Trees,
-  Mountain,
-} from "lucide-react";
-import { DesertIcon } from "@/app/routes/game/components/atoms/UnitIcons";
-import { getValidMoves, isUnitProtected } from "@logic/gameLogic";
+import { Info, Users, ThumbsUp, ThumbsDown, AlertTriangle } from "lucide-react";
+import { isUnitProtected } from "@logic/gameLogic";
 import { getTraversableTerrains } from "@setup/terrainCompat";
-import { PLAYER_CONFIGS } from "@constants/constants";
+import { PLAYER_CONFIGS } from "@constants/unit.constants";
 import { PIECES, INITIAL_ARMY } from "@engineConfigs/unitDetails";
 import { TERRAIN_INTEL } from "@engineConfigs/terrainDetails";
 import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
@@ -29,169 +19,12 @@ import type {
   TerrainIntelPanelEntry,
 } from "@engineTypes/guide";
 
-// --- Detailed intel data for the panel ---
-const UNIT_INTEL_PANEL: Record<string, UnitIntelPanelEntry> = {
-  [PIECES.COMMANDER]: {
-    title: "Commander",
-    role: "Leader",
-    points: "∞",
-    movePattern: (r, c) => [
-      [r - 1, c],
-      [r + 1, c],
-      [r, c - 1],
-      [r, c + 1],
-      [r - 2, c],
-      [r + 2, c],
-      [r, c - 2],
-      [r, c + 2],
-      [r - 1, c - 1],
-      [r - 1, c + 1],
-      [r + 1, c - 1],
-      [r + 1, c + 1],
-    ],
-    desc: "The Leader. Capture to win.",
-  },
-  [PIECES.BATTLEKNIGHT]: {
-    title: "BattleKnight",
-    role: "Elite",
-    points: 9,
-    movePattern: (r, c) => {
-      const moves: number[][] = [];
-      const knightMoves = [
-        [-2, -1],
-        [-2, 1],
-        [-1, -2],
-        [-1, 2],
-        [1, -2],
-        [-2, -1],
-        [-2, 1],
-        [-1, -2],
-        [-1, 2],
-        [1, -2],
-        [1, 2],
-        [2, -1],
-        [2, 1],
-      ];
-      knightMoves.forEach(([dr, dc]) => moves.push([r + dr, c + dc]));
-      for (let i = 1; i < 8; i++) {
-        moves.push([r + i, c], [r - i, c], [r, c + i], [r, c - i]);
-        moves.push(
-          [r + i, c + i],
-          [r - i, c - i],
-          [r + i, c - i],
-          [r - i, c + i],
-        );
-      }
-      return moves;
-    },
-    desc: "Moves like Queen + Horseman. Jump tundra and units in L-shape.",
-  },
-  [PIECES.TANK]: {
-    title: "Tank",
-    role: "Heavy Armor",
-    points: 5,
-    movePattern: (r, c) => {
-      const moves: number[][] = [];
-      for (let i = 1; i < 8; i++) {
-        moves.push([r + i, c], [r - i, c], [r, c + i], [r, c - i]);
-      }
-      return moves;
-    },
-    desc: "Traverses Swamps. Claims Tundra.",
-  },
-  [PIECES.SNIPER]: {
-    title: "Sniper",
-    role: "Ranged",
-    points: 3,
-    movePattern: (r, c) => {
-      const moves: number[][] = [];
-      for (let i = 1; i < 8; i++) {
-        moves.push(
-          [r + i, c + i],
-          [r - i, c - i],
-          [r + i, c - i],
-          [r - i, c + i],
-        );
-      }
-      return moves;
-    },
-    desc: "Hides in Forest. Diagonals only.",
-  },
-  [PIECES.HORSEMAN]: {
-    title: "Horseman",
-    role: "Cavalry",
-    points: 3,
-    movePattern: (r, c) => [
-      [r - 2, c - 1],
-      [r - 2, c + 1],
-      [r - 1, c - 2],
-      [r - 1, c + 2],
-      [r + 1, c - 2],
-      [r + 1, c + 2],
-      [r + 2, c - 1],
-      [r + 2, c + 1],
-    ],
-    desc: "Jumps tundra/units. Agile in Mountains.",
-  },
-  [PIECES.BOT]: {
-    title: "Bot",
-    role: "Infantry",
-    points: 1,
-    movePattern: (r, c) => [[r - 1, c]],
-    desc: "Moves forward 1. All-Terrain Walker.",
-  },
-};
-
-const TERRAIN_INTEL_PANEL: Record<string, TerrainIntelPanelEntry> = {
-  [TERRAIN_TYPES.PONDS]: {
-    label: "Swamps",
-    icon: Waves,
-    color: "brand-blue",
-    interactions: [
-      { unit: "Tank", status: "allow", text: "Pushes Through" },
-      { unit: "BattleKnight", status: "allow", text: "Can Enter" },
-      { unit: "Bot", status: "allow", text: "Slowly Wades" },
-      { unit: "Commander", status: "allow", text: "Can Enter" },
-      { unit: "Horseman", status: "block", text: "Bogged Down" },
-      { unit: "Sniper", status: "block", text: "Bogged Down" },
-    ],
-  },
-  [TERRAIN_TYPES.TREES]: {
-    label: "Forests",
-    icon: Trees,
-    color: "emerald",
-    interactions: [
-      { unit: "Sniper", status: "allow", text: "Perfect Cover" },
-      { unit: "BattleKnight", status: "allow", text: "Can Enter" },
-      { unit: "Bot", status: "allow", text: "Slowly Passes" },
-      { unit: "Commander", status: "allow", text: "Can Enter" },
-      { unit: "Tank", status: "block", text: "Too Dense" },
-      { unit: "Horseman", status: "block", text: "Too Dense" },
-    ],
-  },
-  [TERRAIN_TYPES.RUBBLE]: {
-    label: "Mountains",
-    icon: Mountain,
-    color: "brand-red",
-    interactions: [
-      { unit: "Horseman", status: "allow", text: "Agile Climb" },
-      { unit: "BattleKnight", status: "allow", text: "Can Enter" },
-      { unit: "Bot", status: "allow", text: "Climbs Over" },
-      { unit: "Commander", status: "allow", text: "Can Enter" },
-      { unit: "Tank", status: "block", text: "Too Steep" },
-      { unit: "Sniper", status: "block", text: "No Line of Sight" },
-    ],
-  },
-  [TERRAIN_TYPES.DESERT]: {
-    label: "Desert",
-    icon: DesertIcon,
-    color: "amber",
-    interactions: [
-      { unit: "Tank", status: "allow", text: "Traverses Dunes" },
-      { unit: "Others", status: "block", text: "Impassable" },
-    ],
-  },
-};
+import {
+  UNIT_INTEL_PANEL,
+  TERRAIN_INTEL_PANEL,
+} from "@constants/intel.constants";
+import { UnitIntelCard } from "../molecules/UnitIntelCard";
+import { TerrainPreviewGrid } from "../molecules/TerrainPreviewGrid";
 
 interface IntelPanelProps {
   gameState: GameState;
@@ -257,7 +90,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
 
             <div className="space-y-4">
               {activePlayers.map((pid) => {
-                const config = PLAYER_CONFIGS[pid];
+                PLAYER_CONFIGS[pid];
                 // Calculate army value
                 let armyValue = 0;
 
@@ -294,73 +127,14 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                 });
 
                 return (
-                  <div
+                  <UnitIntelCard
                     key={pid}
-                    className={`relative overflow-hidden rounded-2xl border bg-white/50 dark:bg-slate-800/50 p-4 transition-all border-${config.color}/20`}
-                  >
-                    <div className="flex items-center justify-between mb-3 relative z-10">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-3 h-3 rounded-full ${config.bg} shadow-[0_0_10px_rgba(0,0,0,0.3)] animate-pulse`}
-                        />
-                        <span className="text-sm font-black uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                          {config.name}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1 bg-slate-100 dark:bg-black/20 px-2 py-1 rounded-lg border border-slate-200 dark:border-white/5">
-                          <span className="text-[10px] items-center font-bold uppercase tracking-wider text-slate-400">
-                            Army
-                          </span>
-                          <span
-                            className={`text-sm font-black ${config.text} ml-1`}
-                          >
-                            {armyValue}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1 bg-slate-100 dark:bg-black/20 px-2 py-1 rounded-lg border border-slate-200 dark:border-white/5">
-                          <span className="text-[10px] items-center font-bold uppercase tracking-wider text-slate-400">
-                            Prisoners
-                          </span>
-                          <span className="text-sm font-black text-rose-500 ml-1">
-                            {captureValue}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Prisoners */}
-                    <div>
-                      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
-                        <span>Prisoners</span>
-                        <div className="h-px flex-1 bg-slate-200 dark:bg-white/5" />
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {capturedUnits.length === 0 ? (
-                          <span className="text-[10px] text-slate-400 italic pl-1">
-                            None
-                          </span>
-                        ) : (
-                          capturedUnits.map((piece, i) => {
-                            const unit = INITIAL_ARMY.find(
-                              (u) => u.type === piece.type,
-                            );
-                            if (!unit) return null;
-                            const ownerConfig = PLAYER_CONFIGS[piece.player];
-                            return (
-                              <div
-                                key={i}
-                                className="flex items-center justify-center w-14 h-14 hover:scale-110 transition-all origin-left bg-slate-100 dark:bg-black/20 rounded-xl border border-slate-200 dark:border-white/5 shadow-sm text-2xl"
-                                title={`Captured ${unit.type} (from ${ownerConfig.name})`}
-                              >
-                                {getIcon(unit, `w-9 h-9 ${ownerConfig.text}`)}
-                              </div>
-                            );
-                          })
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                    pid={pid}
+                    armyValue={armyValue}
+                    captureValue={captureValue}
+                    capturedUnits={capturedUnits}
+                    getIcon={getIcon}
+                  />
                 );
               })}
             </div>
@@ -571,162 +345,6 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
     textClass = "text-amber-500 dark:text-amber-400";
   }
 
-  // Helper to render a preview of a unit on this terrain
-  const renderTerrainPreview = (unitType: string) => {
-    // 3x3 Grid
-    const gridSize = 3;
-    const center = 1;
-
-    // Map piece string to PieceType
-    const pType =
-      PIECES[unitType.toUpperCase()] || (unitType === "Bot" ? "bot" : null);
-    if (!pType) return null;
-
-    // Create mini board/terrain
-    // We want to see if the unit can ENTER the terrain (if in center) or move through it?
-    // The textual descriptions say "Can Enter", "Blocked", etc.
-    // Let's place the unit in the center (1,1) and surround it with the target terrain.
-    // OR place it at (0,1) and make (1,1) the target terrain?
-    // Most interactions are about *entering* or *traversing*.
-    // Let's try placing unit at center, and filling the WHOLE 3x3 with the terrain.
-    // If it can move, it will show valid moves.
-    // EXCEPT "Desert" + "Tank" -> "Traverses Dunes".
-    // "Forest" + "Tank" -> "Too Dense" (cannot move).
-
-    // Let's make the center current terrain (or flat?) and the surroundings the target terrain.
-    // Actually, simply filling the 3x3 with the target terrain is best.
-    const miniTerrain = Array(gridSize)
-      .fill(null)
-      .map(() =>
-        Array(gridSize).fill(
-          unitType === "Horseman" && terrainData.label === "Forest"
-            ? TERRAIN_TYPES.TREES // Special case if needed? No, just use terrainData type.
-            : TERRAIN_TYPES[
-                terrainData.label.toUpperCase() === "MOUNTAINS"
-                  ? "RUBBLE"
-                  : terrainData.label.toUpperCase() === "SWAMP"
-                    ? "PONDS"
-                    : terrainData.label.toUpperCase()
-              ],
-        ),
-      );
-
-    // Fix terrain type mapping relying on label is risky if label changes?
-    // Let's find key by panel entry?
-    // Better: We know the activeData key from how we selected it?
-    // activeData doesn't store its key.
-    // But `terrainData` came from `TERRAIN_INTEL_PANEL[...]`.
-    // Let's assume we can map label back or pass it in.
-    // Actually, let's just look at `terrain` prop from parent? No we don't have the key.
-    // Let's deduce Type from label.
-    let tType = TERRAIN_TYPES.FLAT;
-    if (terrainData.label === "Swamp") tType = TERRAIN_TYPES.PONDS;
-    if (terrainData.label === "Forest") tType = TERRAIN_TYPES.TREES;
-    if (terrainData.label === "Mountains") tType = TERRAIN_TYPES.RUBBLE;
-    if (terrainData.label === "Desert") tType = TERRAIN_TYPES.DESERT;
-
-    // Fill 3x3 with this terrain
-    for (let r = 0; r < gridSize; r++) {
-      for (let c = 0; c < gridSize; c++) {
-        miniTerrain[r][c] = tType;
-      }
-    }
-
-    // Place unit at center
-    const miniBoard = Array(gridSize)
-      .fill(null)
-      .map(() => Array(gridSize).fill(null));
-    miniBoard[center][center] = { type: pType as PieceType, player: "player1" };
-
-    // Calculate moves
-    // We need to pass a "mode" -> standard "2p-ns" is fine
-    // We need to pass the board/terrain to getValidMoves
-    // BUT `getValidMoves` expects 12x12 board...
-    // Our utility function *checks bounds* (nr < BOARD_SIZE).
-    // If we pass a 3x3 board, it might break or we have to mock BOARD_SIZE.
-    // ACTUALLY: `getValidMoves` imports `BOARD_SIZE` from constants (which is 12).
-    // So passing a 3x3 array will cause out of bounds errors probably if it tries to check `terrain[r][c]` where r > 2.
-    // We should probably create a full size board for the simulation but only care about the area around user.
-    // OR we can make `getValidMoves` accept board size? No, it's imported constant.
-
-    // Workaround: Mock a full board, place unit at 6,6 (center of 12x12), fill surroundings with terrain.
-    const simSize = 12; // Must match BOARD_SIZE
-    const simCenter = 6;
-    const simBoard = Array(simSize)
-      .fill(null)
-      .map(() => Array(simSize).fill(null));
-    const simTerrain = Array(simSize)
-      .fill(null)
-      .map(() => Array(simSize).fill(TERRAIN_TYPES.FLAT)); // Default flat
-
-    // Fill a small area around center with the target terrain
-    for (let r = simCenter - 1; r <= simCenter + 1; r++) {
-      for (let c = simCenter - 1; c <= simCenter + 1; c++) {
-        simTerrain[r][c] = tType;
-      }
-    }
-
-    simBoard[simCenter][simCenter] = {
-      type: pType as PieceType,
-      player: "player1",
-    };
-
-    const moves = getValidMoves(
-      simCenter,
-      simCenter,
-      simBoard[simCenter][simCenter]!,
-      "player1",
-      simBoard,
-      simTerrain,
-      "2p-ns",
-    );
-
-    // Check if unit allows moving into any of the surrounding squares
-    // (which are all the target terrain).
-    // If moves > 0, shows it can move/interact.
-
-    // We can render just the 3x3 surrounding area.
-    return (
-      <div className="grid grid-cols-3 gap-[1px] bg-slate-200 dark:bg-slate-700/50 p-[2px] rounded overflow-hidden">
-        {[-1, 0, 1].map((dr) =>
-          [-1, 0, 1].map((dc) => {
-            const fr = simCenter + dr;
-            const fc = simCenter + dc;
-            const isCenter = dr === 0 && dc === 0;
-            const isMove = moves.some(([mr, mc]) => mr === fr && mc === fc);
-
-            let cellColor = "bg-slate-300 dark:bg-white/5";
-            if (tType === TERRAIN_TYPES.TREES)
-              cellColor = "bg-emerald-200 dark:bg-emerald-900/40";
-            if (tType === TERRAIN_TYPES.PONDS)
-              cellColor = "bg-blue-200 dark:bg-blue-900/40";
-            if (tType === TERRAIN_TYPES.RUBBLE)
-              cellColor = "bg-red-200 dark:bg-red-900/40";
-            if (tType === TERRAIN_TYPES.DESERT)
-              cellColor = "bg-amber-100 dark:bg-amber-900/40";
-
-            return (
-              <div
-                key={`${dr}-${dc}`}
-                className={`w-3 h-3 flex items-center justify-center ${cellColor}`}
-              >
-                {isCenter && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-white" />
-                )}
-                {!isCenter && isMove && (
-                  <div className="w-1 h-1 rounded-full bg-green-500/80" />
-                )}
-                {!isCenter && !isMove && (
-                  <div className="w-0.5 h-0.5 rounded-full bg-red-500/20" />
-                )}
-              </div>
-            );
-          }),
-        )}
-      </div>
-    );
-  };
-
   return (
     <div className="xl:col-span-3 order-3">
       <div className="bg-white/60 dark:bg-slate-900/40 p-8 rounded-[2.5rem] border border-slate-200 dark:border-white/5 sticky top-24 min-h-[400px] flex flex-col items-center justify-center text-center">
@@ -759,9 +377,9 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                   {(() => {
                     const uType =
                       PIECES[rule.unit.toUpperCase()] ||
-                      (rule.unit === "Tank" ? PIECES.TANK : null) ||
-                      (rule.unit === "Sniper" ? PIECES.SNIPER : null) ||
-                      (rule.unit === "Horseman" ? PIECES.HORSEMAN : null);
+                      (rule.unit === "Tank" ? PIECES.ROOK : null) ||
+                      (rule.unit === "Sniper" ? PIECES.BISHOP : null) ||
+                      (rule.unit === "Horseman" ? PIECES.KNIGHT : null);
                     const u = INITIAL_ARMY.find((x) => x.type === uType);
 
                     // We need to know which terrain this is to check protection
@@ -833,7 +451,12 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                   </div>
                 </div>
 
-                {rule.unit !== "Others" && renderTerrainPreview(rule.unit)}
+                {rule.unit !== "Others" && (
+                  <TerrainPreviewGrid
+                    unitType={rule.unit}
+                    terrainData={terrainData}
+                  />
+                )}
               </div>
             ))}
           </div>

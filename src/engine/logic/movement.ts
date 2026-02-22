@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from "@constants/constants";
+import { BOARD_SIZE } from "@constants/core.constants";
 import { PIECES } from "@engineConfigs/unitDetails";
 import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
 import type { BoardPiece, TerrainType, GameMode } from "@engineTypes/game";
@@ -32,21 +32,21 @@ export const getValidMoves = (
     }
 
     // Swamp: Pro Tank. Blocks Horseman, Sniper
-    if (piece.type === PIECES.HORSEMAN && targetTerrain === TERRAIN_TYPES.PONDS)
+    if (piece.type === PIECES.KNIGHT && targetTerrain === TERRAIN_TYPES.PONDS)
       return false;
-    if (piece.type === PIECES.SNIPER && targetTerrain === TERRAIN_TYPES.PONDS)
+    if (piece.type === PIECES.BISHOP && targetTerrain === TERRAIN_TYPES.PONDS)
       return false;
 
     // Forest: Pro Sniper. Blocks Tank, Horseman
-    if (piece.type === PIECES.TANK && targetTerrain === TERRAIN_TYPES.TREES)
+    if (piece.type === PIECES.ROOK && targetTerrain === TERRAIN_TYPES.TREES)
       return false;
-    if (piece.type === PIECES.HORSEMAN && targetTerrain === TERRAIN_TYPES.TREES)
+    if (piece.type === PIECES.KNIGHT && targetTerrain === TERRAIN_TYPES.TREES)
       return false;
 
     // Mountains: Pro Horseman. Blocks Tank, Sniper
-    if (piece.type === PIECES.TANK && targetTerrain === TERRAIN_TYPES.RUBBLE)
+    if (piece.type === PIECES.ROOK && targetTerrain === TERRAIN_TYPES.RUBBLE)
       return false;
-    if (piece.type === PIECES.SNIPER && targetTerrain === TERRAIN_TYPES.RUBBLE)
+    if (piece.type === PIECES.BISHOP && targetTerrain === TERRAIN_TYPES.RUBBLE)
       return false;
 
     if (!targetPiece) {
@@ -59,7 +59,7 @@ export const getValidMoves = (
     return false;
   };
 
-  if (piece.type === PIECES.BOT) {
+  if (piece.type === PIECES.PAWN) {
     if (mode === "2p-ew") {
       const dir = player === "player3" ? 1 : -1;
 
@@ -226,7 +226,7 @@ export const getValidMoves = (
     }
   }
 
-  if (piece.type === PIECES.HORSEMAN || piece.type === PIECES.BATTLEKNIGHT) {
+  if (piece.type === PIECES.KNIGHT || piece.type === PIECES.QUEEN) {
     [
       [-2, -1],
       [-2, 1],
@@ -242,7 +242,7 @@ export const getValidMoves = (
       if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
         const targetPiece = board[nr][nc];
         const targetTerrain = terrain[nr][nc];
-        if (piece.type === PIECES.HORSEMAN) {
+        if (piece.type === PIECES.KNIGHT) {
           if (
             targetTerrain === TERRAIN_TYPES.PONDS ||
             targetTerrain === TERRAIN_TYPES.TREES
@@ -254,7 +254,7 @@ export const getValidMoves = (
     });
   }
 
-  if (piece.type === PIECES.SNIPER || piece.type === PIECES.BATTLEKNIGHT) {
+  if (piece.type === PIECES.BISHOP || piece.type === PIECES.QUEEN) {
     [
       [1, 1],
       [1, -1],
@@ -272,7 +272,7 @@ export const getValidMoves = (
     });
   }
 
-  if (piece.type === PIECES.TANK || piece.type === PIECES.BATTLEKNIGHT) {
+  if (piece.type === PIECES.ROOK || piece.type === PIECES.QUEEN) {
     [
       [0, 1],
       [0, -1],
@@ -290,7 +290,7 @@ export const getValidMoves = (
     });
   }
 
-  if (piece.type === PIECES.COMMANDER) {
+  if (piece.type === PIECES.KING) {
     [
       [-1, -1],
       [-1, 1],

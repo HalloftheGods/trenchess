@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from "@constants/constants";
+import { BOARD_SIZE } from "@constants/core.constants";
 import { PIECES } from "@engineConfigs/unitDetails";
 import { TERRAIN_TYPES, TERRAIN_DETAILS } from "@engineConfigs/terrainDetails";
 import type { PieceType, TerrainType } from "@engineTypes/game";
@@ -70,12 +70,12 @@ export function getTraversableTerrains(unitType: PieceType): TerrainType[] {
 
 export function getTraversableUnits(terrainType: TerrainType): PieceType[] {
   const unitTypes: PieceType[] = [
-    PIECES.COMMANDER as PieceType,
-    PIECES.BATTLEKNIGHT as PieceType,
-    PIECES.TANK as PieceType,
-    PIECES.SNIPER as PieceType,
-    PIECES.HORSEMAN as PieceType,
-    PIECES.BOT as PieceType,
+    PIECES.KING as PieceType,
+    PIECES.QUEEN as PieceType,
+    PIECES.ROOK as PieceType,
+    PIECES.BISHOP as PieceType,
+    PIECES.KNIGHT as PieceType,
+    PIECES.PAWN as PieceType,
   ];
 
   return unitTypes.filter((u) => canUnitTraverseTerrain(u, terrainType));

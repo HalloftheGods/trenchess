@@ -1,8 +1,5 @@
 import { io } from "socket.io-client";
-import {
-  createInitialState,
-  applyClassicalFormation,
-} from "@setup/setupLogic";
+import { createInitialState, applyClassicalFormation } from "@setup/setupLogic";
 import { getBestMove } from "@ai/aiLogic";
 import { getValidMoves, isPlayerInCheck } from "@logic/gameLogic";
 
@@ -36,7 +33,7 @@ const isKingAlive = (board: any[][], player: string) => {
   for (let r = 0; r < 12; r++) {
     for (let c = 0; c < 12; c++) {
       const p = board[r][c];
-      if (p && p.player === player && p.type === "commander") return true;
+      if (p && p.player === player && p.type === "king") return true;
     }
   }
   return false;

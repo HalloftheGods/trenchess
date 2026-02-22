@@ -1,6 +1,6 @@
 import React from "react";
-import { Users, Copy, Wifi, LogOut, GlobeLock } from "lucide-react";
-import MenuCard from "@/app/routes/menu/components/molecules/MenuCard";
+import { Users, Copy, Wifi, LogOut, GlobeLock, Globe } from "lucide-react";
+import RouteCard from "@/app/routes/shared/components/molecules/RouteCard";
 
 interface HeaderLobbyProps {
   multiplayer: any;
@@ -31,7 +31,7 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
 
   if (!isConnected) {
     return (
-      <MenuCard
+      <RouteCard
         onClick={() => {}}
         title="Connecting"
         description="Establishing server uplink"
@@ -135,13 +135,14 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
 
   // NO LOBBY - CLEAN CARD
   return (
-    <MenuCard
+    <RouteCard
       onClick={onClick || (() => {})}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       title="Worlds Change"
       description='"Borders become Barbeques." (Online Play)'
-      Icon={GlobeLock}
+      Icon={Globe}
+      HoverIcon={GlobeLock}
       color="blue"
       className="w-full h-full"
     />

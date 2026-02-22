@@ -1,6 +1,6 @@
 import Stockfish from "fairy-stockfish-nnue.wasm/stockfish.js";
 import type { BoardPiece } from "@engineTypes/game";
-import { BOARD_SIZE } from "@constants/constants";
+import { BOARD_SIZE } from "@constants/core.constants";
 import { PIECES } from "@engineConfigs/unitDetails";
 
 class StockfishEngine {
@@ -124,22 +124,22 @@ class StockfishEngine {
           }
           let char = "";
           switch (p.type) {
-            case PIECES.BOT:
+            case PIECES.PAWN:
               char = "p";
               break;
-            case PIECES.HORSEMAN:
+            case PIECES.KNIGHT:
               char = "n";
               break;
-            case PIECES.SNIPER:
+            case PIECES.BISHOP:
               char = "b";
               break;
-            case PIECES.TANK:
+            case PIECES.ROOK:
               char = "r";
               break;
-            case PIECES.BATTLEKNIGHT:
+            case PIECES.QUEEN:
               char = "q";
               break;
-            case PIECES.COMMANDER:
+            case PIECES.KING:
               char = "k";
               break;
           }

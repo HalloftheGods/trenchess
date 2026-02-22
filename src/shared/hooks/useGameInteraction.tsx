@@ -1,9 +1,10 @@
+import { BOARD_SIZE } from "@constants/core.constants";
 import { useState, useCallback } from "react";
 import { getValidMoves as getValidMovesUtil } from "@logic/gameLogic";
 import { getPlayerCells, canPlaceUnit } from "@setup/setupLogic";
 import type { useGameCore } from "@hooks/useGameCore";
 import type { PieceType, TerrainType, BoardPiece } from "@engineTypes/game";
-import { BOARD_SIZE, MAX_TERRAIN_PER_PLAYER } from "@constants/constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@constants/terrain.constants";
 import { PIECES } from "@engineConfigs/unitDetails";
 import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
 
@@ -182,7 +183,7 @@ export function useGameInteraction(
         newBoard[toR][toC] = movingPiece;
         newBoard[fromR][fromC] = null;
 
-        if (movingPiece.type === PIECES.BOT) {
+        if (movingPiece.type === PIECES.PAWN) {
           let promoted = false;
           if (mode === "2p-ns") {
             if (turn === "player1" && toR === BOARD_SIZE - 1) promoted = true;
@@ -205,7 +206,7 @@ export function useGameInteraction(
           if (promoted) {
             newBoard[toR][toC] = {
               ...movingPiece,
-              type: PIECES.BATTLEKNIGHT as PieceType,
+              type: PIECES.QUEEN as PieceType,
             };
           }
         }
@@ -215,7 +216,7 @@ export function useGameInteraction(
             ...prev,
             [captor]: [...(prev[captor] || []), captured],
           }));
-          if (captured.type === PIECES.COMMANDER) {
+          if (captured.type === PIECES.KING) {
             const victim = captured.player;
             const remainingPlayers = activePlayers.filter((p) => p !== victim);
             for (let row = 0; row < BOARD_SIZE; row++) {
@@ -238,7 +239,7 @@ export function useGameInteraction(
               terrain[row][col] === TERRAIN_TYPES.DESERT
             ) {
               if (row !== toR || col !== toC) {
-                if (p.type === PIECES.COMMANDER) {
+                if (p.type === PIECES.KING) {
                   const victim = p.player;
                   const remainingPlayers = activePlayers.filter(
                     (ap) => ap !== victim,

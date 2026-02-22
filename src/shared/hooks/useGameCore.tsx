@@ -1,3 +1,4 @@
+import { BOARD_SIZE } from "@constants/core.constants";
 import { useState, useEffect, useCallback } from "react";
 import { isPlayerInCheck, hasAnyValidMoves } from "@logic/gameLogic";
 import { serializeGame, deserializeGame } from "@utils/gameUrl";
@@ -9,11 +10,8 @@ import type {
   TerrainType,
   BoardPiece,
 } from "@engineTypes/game";
-import {
-  PLAYER_CONFIGS,
-  BOARD_SIZE,
-  MAX_TERRAIN_PER_PLAYER,
-} from "@constants/constants";
+import { PLAYER_CONFIGS } from "@constants/unit.constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@constants/terrain.constants";
 import { INITIAL_ARMY } from "@engineConfigs/unitDetails";
 import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
 import { getPlayerCells } from "@setup/setupLogic";
@@ -26,7 +24,13 @@ const getPlayersForMode = (m: GameMode) =>
       : ["player1", "player2", "player3", "player4"];
 
 export function useGameCore() {
-  const [mode, setMode] = useState<GameMode>("2p-ns");
+  const [mode, setMode] = useState<GameMode>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("trenchess_mode");
+      if (saved) return saved as GameMode;
+    }
+    return "2p-ns";
+  });
   const [gameState, setGameState] = useState<GameStateType>("menu");
   const [turn, setTurn] = useState("player1");
   const [setupMode, setSetupMode] = useState<SetupMode>("terrain");
@@ -62,7 +66,13 @@ export function useGameCore() {
   });
   const [selectedPreset, setSelectedPreset] = useState<
     "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden" | null
-  >(null);
+  >(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("trenchess_preset");
+      if (saved) return saved as any;
+    }
+    return null;
+  });
   const [isThinking, setIsThinking] = useState(false);
   const [localPlayerName, setLocalPlayerName] = useState("");
 
@@ -111,6 +121,23 @@ export function useGameCore() {
   );
 
   const isAllPlaced = activePlayers.every((p) => isPlayerReady(p));
+
+  // --- Persistence Logic ---
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("trenchess_mode", mode);
+    }
+  }, [mode]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (selectedPreset) {
+        localStorage.setItem("trenchess_preset", selectedPreset);
+      } else {
+        localStorage.removeItem("trenchess_preset");
+      }
+    }
+  }, [selectedPreset]);
 
   // --- Turn Logic: Check & Skip ---
   useEffect(() => {

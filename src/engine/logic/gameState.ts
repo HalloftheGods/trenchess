@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from "@constants/constants";
+import { BOARD_SIZE } from "@constants/core.constants";
 import { PIECES } from "@engineConfigs/unitDetails";
 import type { BoardPiece, TerrainType, GameMode } from "@engineTypes/game";
 import { getValidMoves } from "./movement";
@@ -14,7 +14,7 @@ export const isPlayerInCheck = (
   for (let r = 0; r < BOARD_SIZE; r++) {
     for (let c = 0; c < BOARD_SIZE; c++) {
       const p = board[r][c];
-      if (p && p.player === player && p.type === PIECES.COMMANDER) {
+      if (p && p.player === player && p.type === PIECES.KING) {
         kingPos = [r, c];
         break;
       }

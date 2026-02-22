@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from "@constants/constants";
+import { BOARD_SIZE } from "@constants/core.constants";
 import { PIECES } from "@engineConfigs/unitDetails";
 import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
 import type {
@@ -17,16 +17,16 @@ export const getClassicalFormationTargets = (
   const targets: { r: number; c: number; type: PieceType }[] = [];
   if (mode === "2p-ns") {
     const backRank = [
-      PIECES.TANK,
-      PIECES.HORSEMAN,
-      PIECES.SNIPER,
-      PIECES.BATTLEKNIGHT,
-      PIECES.COMMANDER,
-      PIECES.SNIPER,
-      PIECES.HORSEMAN,
-      PIECES.TANK,
+      PIECES.ROOK,
+      PIECES.KNIGHT,
+      PIECES.BISHOP,
+      PIECES.QUEEN,
+      PIECES.KING,
+      PIECES.BISHOP,
+      PIECES.KNIGHT,
+      PIECES.ROOK,
     ];
-    const pawnRank = Array(8).fill(PIECES.BOT);
+    const pawnRank = Array(8).fill(PIECES.PAWN);
     if (p === "player1") {
       backRank.forEach((type, i) => targets.push({ r: 2, c: 2 + i, type }));
       pawnRank.forEach((type, i) => targets.push({ r: 3, c: 2 + i, type }));
@@ -36,16 +36,16 @@ export const getClassicalFormationTargets = (
     }
   } else if (mode === "2p-ew") {
     const backRank = [
-      PIECES.TANK,
-      PIECES.HORSEMAN,
-      PIECES.SNIPER,
-      PIECES.BATTLEKNIGHT,
-      PIECES.COMMANDER,
-      PIECES.SNIPER,
-      PIECES.HORSEMAN,
-      PIECES.TANK,
+      PIECES.ROOK,
+      PIECES.KNIGHT,
+      PIECES.BISHOP,
+      PIECES.QUEEN,
+      PIECES.KING,
+      PIECES.BISHOP,
+      PIECES.KNIGHT,
+      PIECES.ROOK,
     ];
-    const pawnRank = Array(8).fill(PIECES.BOT);
+    const pawnRank = Array(8).fill(PIECES.PAWN);
     if (p === "player3") {
       backRank.forEach((type, i) => targets.push({ r: 2 + i, c: 2, type }));
       pawnRank.forEach((type, i) => targets.push({ r: 2 + i, c: 3, type }));
@@ -55,10 +55,10 @@ export const getClassicalFormationTargets = (
     }
   } else {
     const formation = [
-      [PIECES.TANK, PIECES.BATTLEKNIGHT, PIECES.COMMANDER, PIECES.TANK],
-      [PIECES.HORSEMAN, PIECES.SNIPER, PIECES.SNIPER, PIECES.HORSEMAN],
-      [PIECES.BOT, PIECES.BOT, PIECES.BOT, PIECES.BOT],
-      [PIECES.BOT, PIECES.BOT, PIECES.BOT, PIECES.BOT],
+      [PIECES.ROOK, PIECES.QUEEN, PIECES.KING, PIECES.ROOK],
+      [PIECES.KNIGHT, PIECES.BISHOP, PIECES.BISHOP, PIECES.KNIGHT],
+      [PIECES.PAWN, PIECES.PAWN, PIECES.PAWN, PIECES.PAWN],
+      [PIECES.PAWN, PIECES.PAWN, PIECES.PAWN, PIECES.PAWN],
     ];
     let rOrigins = 0,
       cOrigins = 0,

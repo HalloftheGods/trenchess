@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from "@constants/constants"; // This one might need a better alias
+import { BOARD_SIZE } from "@constants/core.constants";
 import type { BoardPiece, TerrainType, GameMode } from "@engineTypes/game";
 import { getValidMoves, isPlayerInCheck } from "@logic/gameLogic";
 import { SCORES, hasCommander, evaluateBoard } from "@ai/evaluation";

@@ -19,12 +19,12 @@ export type GameOverReason = "checkmate" | "stalemate" | "forfeit" | null;
 export type TerrainType = "flat" | "trees" | "ponds" | "rubble" | "desert";
 
 export type PieceType =
-  | "bot"
-  | "horseman"
-  | "sniper"
-  | "tank"
-  | "battleknight"
-  | "commander";
+  | "pawn"
+  | "knight"
+  | "bishop"
+  | "rook"
+  | "queen"
+  | "king";
 
 export interface BoardPiece {
   type: PieceType;

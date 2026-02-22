@@ -4,7 +4,7 @@ import type {
   TerrainType,
   PieceType,
 } from "@engineTypes/game";
-import { BOARD_SIZE } from "@constants/constants";
+import { BOARD_SIZE } from "@constants/core.constants";
 import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
 
 interface GameSeed {
@@ -13,6 +13,15 @@ interface GameSeed {
   t: { r: number; c: number; v: string }[]; // terrain: row, col, value (type)
   n?: string; // name of layout
 }
+
+const LEGACY_PIECE_MAP: Record<string, string> = {
+  bot: "pawn",
+  horseman: "knight",
+  sniper: "bishop",
+  tank: "rook",
+  battleknight: "queen",
+  commander: "king",
+};
 
 /**
  * Encodes the current board and terrain configuration into a base64 string.
@@ -82,8 +91,9 @@ export const deserializeGame = (
           item.c >= 0 &&
           item.c < BOARD_SIZE
         ) {
+          const pieceType = (LEGACY_PIECE_MAP[item.t] || item.t) as PieceType;
           board[item.r][item.c] = {
-            type: item.t as PieceType,
+            type: pieceType,
             player: item.p,
           };
         }

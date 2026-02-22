@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   Routes,
   Route,
@@ -7,15 +7,17 @@ import {
   useParams,
 } from "react-router-dom";
 import { useGameState } from "@hooks/useGameState";
-import * as RoutesConfig from "@/app/routes/routes";
-import { ROUTES } from "@/app/routes/routes";
+import * as RoutesConfig from "@/app/routes/lazy.routes";
+import { ROUTES } from "@/app/routes/lazy.routes";
 import type { TerrainType } from "@engineTypes/game";
 import { LoadingFallback } from "@/shared/components/molecules/LoadingFallback";
+import { RouteProvider } from "@/app/context/RouteContext";
+import { DEFAULT_SEEDS } from "@engineConfigs/defaultSeeds";
 
 const TrenchGuideWrapper = (props: any) => {
   const { terrain } = useParams();
   return (
-    <RoutesConfig.LazyTrenchGuide
+    <RoutesConfig.LazyLearnTrenchDetailView
       {...props}
       initialTerrain={terrain as TerrainType}
     />
@@ -24,7 +26,17 @@ const TrenchGuideWrapper = (props: any) => {
 
 const ChessGuideWrapper = (props: any) => {
   const { unitType } = useParams();
-  return <RoutesConfig.LazyChessGuide {...props} initialUnit={unitType} />;
+  return (
+    <RoutesConfig.LazyLearnChessDetailView {...props} initialUnit={unitType} />
+  );
+};
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
 };
 
 const App = () => {
@@ -42,6 +54,12 @@ const App = () => {
   }, [routeRoomId, game.multiplayer.roomId, game.multiplayer.joinGame]);
 
   useEffect(() => {
+    if (location.pathname === ROUTES.GAME_MMO) {
+      if (game.gameState === "menu") {
+        game.initGameWithPreset("2p-ns", "2p-ns");
+      }
+      return;
+    }
     if (location.pathname === ROUTES.ZEN) {
       game.initGameWithPreset("2p-ns", "zen-garden");
       return;
@@ -60,7 +78,11 @@ const App = () => {
   }, [game.gameState, navigate, location.pathname, game.multiplayer.roomId]);
 
   useEffect(() => {
-    if (location.pathname === ROUTES.GAME && game.gameState === "menu") {
+    if (
+      location.pathname === ROUTES.GAME &&
+      !location.pathname.startsWith(ROUTES.GAME_MMO) &&
+      game.gameState === "menu"
+    ) {
       navigate(ROUTES.HOME);
     }
   }, [location.pathname, game.gameState, navigate]);
@@ -70,6 +92,69 @@ const App = () => {
     navigate(ROUTES.HOME);
   };
 
+  // State lifted for global RouteContext
+  const [seeds, setSeeds] = useState<any[]>([]);
+  const [previewSeedIndex, setPreviewSeedIndex] = useState(0);
+
+  // Load seeds on mount
+  useEffect(() => {
+    const stored = localStorage.getItem("trenchess_seeds");
+    let loadedSeeds: any[] = [];
+    if (stored) {
+      try {
+        loadedSeeds = JSON.parse(stored);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    setSeeds([...loadedSeeds.reverse(), ...DEFAULT_SEEDS]);
+  }, []);
+
+  const routeContextValue = useMemo(() => {
+    const isOnline = !!game.multiplayer?.roomId;
+    const playMode = isOnline
+      ? "online"
+      : location.pathname.includes("/play/local")
+        ? "local"
+        : "practice";
+
+    return {
+      darkMode: game.darkMode,
+      multiplayer: game.multiplayer,
+      pieceStyle: game.pieceStyle,
+      toggleTheme: game.toggleTheme,
+      togglePieceStyle: game.togglePieceStyle,
+      onTutorial: () => {
+        game.setGameState("tutorial");
+        navigate(ROUTES.TUTORIAL);
+      },
+      onLogoClick: () => {
+        game.setGameState("menu");
+        navigate(ROUTES.HOME);
+      },
+      onZenGarden: () => navigate(ROUTES.ZEN),
+      onStartGame: (mode: any, preset: any, playerTypes: any, seed: any) =>
+        game.initGameWithPreset(mode, preset, playerTypes, seed),
+      onCtwGuide: () => navigate(ROUTES.LEARN_ENDGAME_CTW),
+      onChessGuide: () => navigate(ROUTES.LEARN_CHESS),
+      onTrenchGuide: (t?: string) =>
+        navigate(t ? `${ROUTES.LEARN_TRENCH}/${t}` : ROUTES.LEARN_TRENCH),
+      onOpenLibrary: () => navigate(ROUTES.LIBRARY),
+      selectedBoard: game.mode,
+      setSelectedBoard: (m: any) => m && game.setMode(m),
+      selectedPreset: game.selectedPreset,
+      setSelectedPreset: game.setSelectedPreset,
+      playerConfig: game.playerTypes,
+      activePlayers: game.activePlayers,
+      playMode,
+      playerCount: game.activePlayers.length,
+      previewConfig: { mode: game.mode },
+      seeds,
+      previewSeedIndex,
+      setPreviewSeedIndex,
+    };
+  }, [game, location.pathname, navigate, seeds, previewSeedIndex]);
+
   // Shared game screen props
   const gameScreenProps = {
     game,
@@ -78,23 +163,26 @@ const App = () => {
     onLibraryClick: () => navigate(ROUTES.LIBRARY),
   };
 
-  // Menu sub-routes (rendered inside MenuLayout)
+  // Menu sub-routes (rendered inside RouteLayout)
   const menuSubRoutes: {
     path?: string;
     index?: true;
     element: React.ReactNode;
   }[] = [
-    { index: true, element: <RoutesConfig.LazyMenuHome /> },
-    { path: "play", element: <RoutesConfig.LazyMenuPlay /> },
-    { path: "play/local", element: <RoutesConfig.LazyMenuLocal /> },
-    { path: "play/lobby", element: <RoutesConfig.LazyMenuLobby /> },
-    { path: "play/setup", element: <RoutesConfig.LazyMenuSetup /> },
-    { path: "learn", element: <RoutesConfig.LazyMenuLearn /> },
-    { path: "learn/endgame", element: <RoutesConfig.LazyMenuEndgame /> },
+    { index: true, element: <RoutesConfig.LazyHomeView /> },
+    { path: "play", element: <RoutesConfig.LazyPlayView /> },
+    { path: "play/local", element: <RoutesConfig.LazyPlayLocalView /> },
+    { path: "play/lobby", element: <RoutesConfig.LazyPlayLobbyView /> },
+    { path: "play/setup", element: <RoutesConfig.LazyPlaySetupView /> },
+    { path: "learn", element: <RoutesConfig.LazyLearnView /> },
+    {
+      path: "learn/endgame",
+      element: <RoutesConfig.LazyLearnEndgameMainView />,
+    },
     {
       path: "learn/endgame/capture-the-world",
       element: (
-        <RoutesConfig.LazyCaptureTheWorldGuide
+        <RoutesConfig.LazyLearnEndgameCtwView
           onBack={() => navigate(ROUTES.LEARN_ENDGAME)}
         />
       ),
@@ -102,7 +190,7 @@ const App = () => {
     {
       path: "learn/endgame/capture-the-king",
       element: (
-        <RoutesConfig.LazyCtkGuide
+        <RoutesConfig.LazyLearnEndgameCtkView
           onBack={() => navigate(ROUTES.LEARN_ENDGAME)}
         />
       ),
@@ -110,19 +198,19 @@ const App = () => {
     {
       path: "learn/endgame/capture-the-army",
       element: (
-        <RoutesConfig.LazyCtaGuide
+        <RoutesConfig.LazyLearnEndgameCtaView
           onBack={() => navigate(ROUTES.LEARN_ENDGAME)}
         />
       ),
     },
-    { path: "learn/trench", element: <RoutesConfig.LazyMenuTrench /> },
+    { path: "learn/trench", element: <RoutesConfig.LazyLearnTrenchMainView /> },
     {
       path: "learn/trench/:terrain",
       element: (
         <TrenchGuideWrapper onBack={() => navigate(ROUTES.LEARN_TRENCH)} />
       ),
     },
-    { path: "learn/chess", element: <RoutesConfig.LazyMenuChess /> },
+    { path: "learn/chess", element: <RoutesConfig.LazyLearnChessMainView /> },
     {
       path: "learn/chess/:unitType",
       element: (
@@ -132,7 +220,7 @@ const App = () => {
     {
       path: "scoreboard",
       element: (
-        <RoutesConfig.LazyMenuScoreboard
+        <RoutesConfig.LazyScoreboardView
           darkMode={game.darkMode}
           pieceStyle={game.pieceStyle}
         />
@@ -141,7 +229,7 @@ const App = () => {
     {
       path: "rules",
       element: (
-        <RoutesConfig.LazyRulesPage
+        <RoutesConfig.LazyRulesView
           onBack={() => navigate(-1)}
           darkMode={game.darkMode}
         />
@@ -153,6 +241,10 @@ const App = () => {
   // Top-level routes outside the menu layout
   const topLevelRoutes: { path: string; element: React.ReactNode }[] = [
     {
+      path: ROUTES.GAME_MMO,
+      element: <RoutesConfig.LazyMmoView game={game} />,
+    },
+    {
       path: ROUTES.GAME,
       element: <RoutesConfig.LazyGameScreen {...gameScreenProps} />,
     },
@@ -163,7 +255,7 @@ const App = () => {
     {
       path: ROUTES.TUTORIAL,
       element: (
-        <RoutesConfig.LazyInteractiveTutorial
+        <RoutesConfig.LazyTutorialView
           onBack={handleBackToMenu}
           darkMode={game.darkMode}
         />
@@ -172,7 +264,7 @@ const App = () => {
     {
       path: ROUTES.LEARN_MANUAL,
       element: (
-        <RoutesConfig.LazyHowToPlay
+        <RoutesConfig.LazyLearnManualView
           onBack={handleBackToMenu}
           darkMode={game.darkMode}
           pieceStyle={game.pieceStyle}
@@ -194,66 +286,57 @@ const App = () => {
   ];
 
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <Routes>
-        {/* Menu layout with nested sub-routes */}
-        <Route
-          path={ROUTES.HOME}
-          element={
-            <RoutesConfig.LazyMenuLayout
-              darkMode={game.darkMode}
-              pieceStyle={game.pieceStyle}
-              toggleTheme={game.toggleTheme}
-              togglePieceStyle={game.togglePieceStyle}
-              onTutorial={() => {
-                game.setGameState("tutorial");
-                navigate(ROUTES.TUTORIAL);
-              }}
-              onLogoClick={() => {
-                game.setGameState("menu");
-                navigate(ROUTES.HOME);
-              }}
-              onZenGarden={() => navigate(ROUTES.ZEN)}
-              multiplayer={game.multiplayer}
-              onStartGame={(mode, preset, playerTypes, seed) =>
-                game.initGameWithPreset(mode, preset, playerTypes, seed)
-              }
-              onCtwGuide={() => navigate(ROUTES.LEARN_ENDGAME_CTW)}
-              onChessGuide={() => navigate(ROUTES.LEARN_CHESS)}
-              onTrenchGuide={(t?: string) =>
-                navigate(
-                  t ? `${ROUTES.LEARN_TRENCH}/${t}` : ROUTES.LEARN_TRENCH,
-                )
-              }
-              onOpenLibrary={() => navigate(ROUTES.LIBRARY)}
-              selectedBoard={game.mode}
-              setSelectedBoard={(m: any) => m && game.setMode(m)}
-              selectedPreset={game.selectedPreset}
-              setSelectedPreset={game.setSelectedPreset}
-              playerTypes={game.playerTypes}
-              activePlayers={game.activePlayers}
-            />
-          }
-        >
-          {menuSubRoutes.map((route) =>
-            route.index ? (
-              <Route key="index" index element={route.element} />
-            ) : (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={route.element}
+    <RouteProvider value={routeContextValue}>
+      <ScrollToTop />
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          {/* Menu layout with nested sub-routes */}
+          <Route
+            path={ROUTES.HOME}
+            element={
+              <RoutesConfig.LazyRouteLayout
+                darkMode={game.darkMode}
+                pieceStyle={game.pieceStyle}
+                toggleTheme={game.toggleTheme}
+                togglePieceStyle={game.togglePieceStyle}
+                onTutorial={routeContextValue.onTutorial}
+                onLogoClick={routeContextValue.onLogoClick}
+                onZenGarden={routeContextValue.onZenGarden}
+                multiplayer={game.multiplayer}
+                onStartGame={routeContextValue.onStartGame}
+                onCtwGuide={routeContextValue.onCtwGuide}
+                onChessGuide={routeContextValue.onChessGuide}
+                onTrenchGuide={routeContextValue.onTrenchGuide}
+                onOpenLibrary={routeContextValue.onOpenLibrary}
+                selectedBoard={game.mode}
+                setSelectedBoard={routeContextValue.setSelectedBoard}
+                selectedPreset={game.selectedPreset}
+                setSelectedPreset={game.setSelectedPreset}
+                playerTypes={game.playerTypes}
+                activePlayers={game.activePlayers}
               />
-            ),
-          )}
-        </Route>
+            }
+          >
+            {menuSubRoutes.map((route) =>
+              route.index ? (
+                <Route key="index" index element={route.element} />
+              ) : (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={route.element}
+                />
+              ),
+            )}
+          </Route>
 
-        {/* Top-level routes */}
-        {topLevelRoutes.map(({ path, element }) => (
-          <Route key={path} path={path} element={element} />
-        ))}
-      </Routes>
-    </Suspense>
+          {/* Top-level routes */}
+          {topLevelRoutes.map(({ path, element }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
+        </Routes>
+      </Suspense>
+    </RouteProvider>
   );
 };
 

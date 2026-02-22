@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from "@constants/constants";
+import { BOARD_SIZE } from "@constants/core.constants";
 import type { GameMode } from "@engineTypes/game";
 
 export const getPlayerCells = (

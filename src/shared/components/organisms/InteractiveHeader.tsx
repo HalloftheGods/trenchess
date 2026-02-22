@@ -5,17 +5,13 @@
  * InteractiveHeader - Top banner with controls for the Interactive Tutorial
  */
 import React from "react";
-import { Trees, Waves, Mountain, ArrowLeft } from "lucide-react";
-import { DesertIcon } from "@/app/routes/game/components/atoms/UnitIcons";
-import { PIECES, INITIAL_ARMY } from "@engineConfigs/unitDetails";
-import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
+import { ArrowLeft } from "lucide-react";
+import { INITIAL_ARMY } from "@engineConfigs/unitDetails";
 import { isUnitProtected } from "@logic/gameLogic";
 import { canUnitTraverseTerrain } from "@setup/terrainCompat";
+import { UNIT_COLORS, UNIT_NAMES, ALL_UNITS } from "@constants/unit.constants";
+import { TERRAIN_LIST } from "@constants/terrain.constants";
 import type { PieceType, TerrainType } from "@engineTypes/game";
-
-import ThemeControls from "@/shared/components/molecules/ThemeControls";
-import HelpControls from "@/app/routes/game/components/molecules/HelpControls";
-import type { PieceStyle } from "@/constants/constants";
 
 interface InteractiveHeaderProps {
   darkMode: boolean;
@@ -24,111 +20,7 @@ interface InteractiveHeaderProps {
   selectedTerrainIdx: number;
   onTerrainSelect: (index: number) => void;
   onBack: () => void;
-  // Optional theme/control props (not required when used outside MenuProvider)
-  pieceStyle?: PieceStyle;
-  toggleTheme?: () => void;
-  togglePieceStyle?: () => void;
-  onTutorial?: () => void;
 }
-
-interface TerrainDef {
-  name: string;
-  icon: React.ReactNode;
-  bg: string;
-  text: string;
-  border: string;
-  terrainTypeKey: string;
-}
-
-// Re-using these definitions from TerrainIntelTool (eventually centralized)
-const TERRAIN_LIST: TerrainDef[] = [
-  {
-    name: "Forests",
-    icon: <Trees />,
-    bg: "bg-emerald-500/10",
-    text: "text-emerald-500",
-    border: "border-emerald-500/40",
-    terrainTypeKey: TERRAIN_TYPES.TREES,
-  },
-  {
-    name: "Swamps",
-    icon: <Waves />,
-    bg: "bg-brand-blue/10",
-    text: "text-brand-blue",
-    border: "border-brand-blue/40",
-    terrainTypeKey: TERRAIN_TYPES.PONDS,
-  },
-  {
-    name: "Mountains",
-    icon: <Mountain />,
-    bg: "bg-brand-red/10",
-    text: "text-brand-red",
-    border: "border-brand-red/40",
-    terrainTypeKey: TERRAIN_TYPES.RUBBLE,
-  },
-  {
-    name: "Desert",
-    icon: <DesertIcon className="w-6 h-6" />,
-    bg: "bg-amber-500/10",
-    text: "text-amber-500",
-    border: "border-amber-500/40",
-    terrainTypeKey: TERRAIN_TYPES.DESERT,
-  },
-];
-
-const UNIT_COLORS: Record<
-  string,
-  { text: string; bg: string; border: string }
-> = {
-  [PIECES.COMMANDER]: {
-    text: "text-purple-500",
-    bg: "bg-purple-500/10",
-    border: "border-purple-500/40",
-  },
-  [PIECES.BATTLEKNIGHT]: {
-    text: "text-emerald-500",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/40",
-  },
-  [PIECES.TANK]: {
-    text: "text-yellow-500",
-    bg: "bg-yellow-500/10",
-    border: "border-yellow-500/40",
-  },
-  [PIECES.SNIPER]: {
-    text: "text-orange-500",
-    bg: "bg-orange-500/10",
-    border: "border-orange-500/40",
-  },
-  [PIECES.HORSEMAN]: {
-    text: "text-brand-red",
-    bg: "bg-brand-red/10",
-    border: "border-brand-red/40",
-  },
-  [PIECES.BOT]: {
-    text: "text-brand-blue",
-    bg: "bg-brand-blue/10",
-    border: "border-brand-blue/40",
-  },
-};
-
-const UNIT_NAMES: Record<string, string> = {
-  [PIECES.COMMANDER]: "King",
-  [PIECES.BATTLEKNIGHT]: "Queen",
-  [PIECES.TANK]: "Rooks",
-  [PIECES.SNIPER]: "Bishops",
-  [PIECES.HORSEMAN]: "Knights",
-  [PIECES.BOT]: "Pawns",
-};
-
-const ALL_UNITS = [
-  PIECES.COMMANDER,
-  PIECES.BATTLEKNIGHT,
-  PIECES.TANK,
-  PIECES.SNIPER,
-  PIECES.HORSEMAN,
-  PIECES.BOT,
-];
 
 const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
   darkMode,
@@ -137,10 +29,6 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
   selectedTerrainIdx,
   onTerrainSelect,
   onBack,
-  pieceStyle,
-  toggleTheme,
-  togglePieceStyle,
-  onTutorial,
 }) => {
   const cardBg = darkMode ? "bg-slate-900/50" : "bg-white/70";
   const borderColor = darkMode ? "border-white/10" : "border-slate-200";
@@ -164,16 +52,6 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
           <ArrowLeft size={20} />
           <span className="hidden md:inline">Back</span>
         </button>
-
-        <div className="hidden lg:flex items-center gap-2">
-          <HelpControls onTutorial={onTutorial || (() => {})} />
-          <ThemeControls
-            darkMode={darkMode}
-            pieceStyle={pieceStyle || "bold"}
-            toggleTheme={toggleTheme || (() => {})}
-            togglePieceStyle={togglePieceStyle || (() => {})}
-          />
-        </div>
       </div>
 
       {/* Center Controls Group */}

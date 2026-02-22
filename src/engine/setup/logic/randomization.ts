@@ -1,4 +1,5 @@
-import { MAX_TERRAIN_PER_PLAYER, BOARD_SIZE } from "@constants/constants";
+import { BOARD_SIZE } from "@constants/core.constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@constants/terrain.constants";
 import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
 import type {
   GameMode,
@@ -31,7 +32,7 @@ export const generateElementalTerrain = (
     symmetry: "rotational",
   });
 
-  const nextTInv: Record<string, TerrainType[]> = {};
+  const nextTInv: Record<string, TerrainType[]> = {} ;
   players.forEach((p) => {
     nextTInv[p] = [];
   });

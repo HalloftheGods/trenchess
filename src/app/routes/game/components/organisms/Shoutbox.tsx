@@ -8,10 +8,15 @@ interface ShoutboxProps {
 
 const Shoutbox: React.FC<ShoutboxProps> = ({ multiplayer, darkMode }) => {
   const [text, setText] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   };
 
   useEffect(() => {
@@ -55,7 +60,10 @@ const Shoutbox: React.FC<ShoutboxProps> = ({ multiplayer, darkMode }) => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar"
+      >
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center opacity-30 text-center px-8">
             <MessageSquare size={48} className="mb-2" />
@@ -120,7 +128,6 @@ const Shoutbox: React.FC<ShoutboxProps> = ({ multiplayer, darkMode }) => {
             );
           })
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}

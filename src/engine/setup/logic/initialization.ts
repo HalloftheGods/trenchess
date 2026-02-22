@@ -1,4 +1,5 @@
-import { BOARD_SIZE, MAX_TERRAIN_PER_PLAYER } from "@constants/constants";
+import { BOARD_SIZE } from "@constants/core.constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@constants/terrain.constants";
 import { INITIAL_ARMY } from "@engineConfigs/unitDetails";
 import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
 import type {
@@ -26,8 +27,8 @@ export const createInitialState = (
     .fill(null)
     .map(() => Array(BOARD_SIZE).fill(TERRAIN_TYPES.FLAT as TerrainType));
 
-  const inventory: Record<string, PieceType[]> = {};
-  const terrainInventory: Record<string, TerrainType[]> = {};
+  const inventory: Record<string, PieceType[]> = {} ;
+  const terrainInventory: Record<string, TerrainType[]> = {} ;
 
   const isTwoPlayer = mode === "2p-ns" || mode === "2p-ew";
   const quota = isTwoPlayer

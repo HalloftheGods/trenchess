@@ -1,6 +1,7 @@
+import { BOARD_SIZE } from "@constants/core.constants";
 import type { Game } from "boardgame.io";
 import { INVALID_MOVE } from "boardgame.io/core";
-import { MAX_TERRAIN_PER_PLAYER, BOARD_SIZE } from "@constants/constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@constants/terrain.constants";
 import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
 import { PIECES } from "@engineConfigs/unitDetails";
 import {
@@ -241,7 +242,7 @@ export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
           G.board[fromR][fromC] = null;
 
           // --- Pawn Promotion Logic ---
-          if (piece.type === PIECES.BOT) {
+          if (piece.type === PIECES.PAWN) {
             let promoted = false;
             if (G.mode === "2p-ns") {
               if (pid === "player1" && toR === BOARD_SIZE - 1) promoted = true;
@@ -266,7 +267,7 @@ export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
             if (promoted) {
               G.board[toR][toC] = {
                 ...piece,
-                type: PIECES.BATTLEKNIGHT as PieceType,
+                type: PIECES.QUEEN as PieceType,
               };
             }
           }
@@ -277,7 +278,7 @@ export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
             G.capturedBy[pid].push(captured);
 
             // Commander Capture Logic
-            if (captured.type === PIECES.COMMANDER) {
+            if (captured.type === PIECES.KING) {
               const victim = captured.player;
               G.activePlayers = G.activePlayers.filter(
                 (p: string) => p !== victim,
@@ -305,7 +306,7 @@ export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
               ) {
                 if (r !== toR || c !== toC) {
                   // Eliminate piece left on desert
-                  if (p.type === PIECES.COMMANDER) {
+                  if (p.type === PIECES.KING) {
                     // Commander dies on desert -> entire army eliminated (reclaimed by environment)
                     const victim = p.player;
                     G.activePlayers = G.activePlayers.filter(

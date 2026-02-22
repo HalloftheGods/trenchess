@@ -102,7 +102,7 @@ describe("Live Simulation Stream", () => {
       let kings = 0;
       board.forEach((row) =>
         row.forEach((p) => {
-          if (p?.type === "commander") kings++;
+          if (p?.type === "king") kings++;
         }),
       );
       if (kings < 2) {

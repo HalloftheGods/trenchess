@@ -40,7 +40,7 @@ export const LoadingFallback = ({
 
   return (
     <div
-      className={`flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 ${fullScreen ? "w-full h-screen" : "w-full h-full min-h-[100vh] p-4 shadow-inner"}`}
+      className={`flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 ${fullScreen ? "w-full h-screen" : "w-full h-full min-h-[400px] p-4 shadow-inner rounded-3xl"}`}
     >
       <DesertIcon className="w-12 h-12" />
       <div className="mt-4 text-center font-black uppercase tracking-widest text-slate-400">

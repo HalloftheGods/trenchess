@@ -1,0 +1,98 @@
+import type { PlayerConfig } from "@engineTypes/game";
+import { PIECES } from "@engineConfigs/unitDetails";
+
+// --- Piece Style Options ---
+export const PIECE_STYLES = [
+  "emoji",
+  "bold",
+  "outlined",
+  "custom",
+  "lucide",
+] as const;
+export type PieceStyle = (typeof PIECE_STYLES)[number];
+
+// --- Player Configs ---
+export const PLAYER_CONFIGS: Record<string, PlayerConfig> = {
+  player1: {
+    name: "Red",
+    color: "brand-red",
+    text: "text-brand-red",
+    bg: "bg-brand-red",
+    shadow: "shadow-brand-red/40",
+  },
+  player2: {
+    name: "Yellow",
+    color: "yellow",
+    text: "text-yellow-500",
+    bg: "bg-yellow-500",
+    shadow: "shadow-yellow-900/40",
+  },
+  player3: {
+    name: "Green",
+    color: "green",
+    text: "text-green-500",
+    bg: "bg-green-600",
+    shadow: "shadow-green-900/40",
+  },
+  player4: {
+    name: "Blue",
+    color: "brand-blue",
+    text: "text-brand-blue",
+    bg: "bg-brand-blue",
+    shadow: "shadow-brand-blue/40",
+  },
+};
+
+export const UNIT_COLORS: Record<
+  string,
+  { text: string; bg: string; border: string }
+> = {
+  [PIECES.KING]: {
+    text: "text-purple-500",
+    bg: "bg-purple-500/10",
+    border: "border-purple-500/40",
+  },
+  [PIECES.QUEEN]: {
+    text: "text-emerald-500",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/40",
+  },
+  [PIECES.ROOK]: {
+    text: "text-yellow-500",
+    bg: "bg-yellow-500/10",
+    border: "border-yellow-500/40",
+  },
+  [PIECES.BISHOP]: {
+    text: "text-orange-500",
+    bg: "bg-orange-500/10",
+    border: "border-orange-500/40",
+  },
+  [PIECES.KNIGHT]: {
+    text: "text-brand-red",
+    bg: "bg-brand-red/10",
+    border: "border-brand-red/40",
+  },
+  [PIECES.PAWN]: {
+    text: "text-brand-blue",
+    bg: "bg-brand-blue/10",
+    border: "border-brand-blue/40",
+  },
+};
+
+export const UNIT_NAMES: Record<string, string> = {
+  [PIECES.KING]: "King",
+  [PIECES.QUEEN]: "Queen",
+  [PIECES.ROOK]: "Rooks",
+  [PIECES.BISHOP]: "Bishops",
+  [PIECES.KNIGHT]: "Knights",
+  [PIECES.PAWN]: "Pawns",
+};
+
+export const ALL_UNITS = [
+  PIECES.KING,
+  PIECES.QUEEN,
+  PIECES.ROOK,
+  PIECES.BISHOP,
+  PIECES.KNIGHT,
+  PIECES.PAWN,
+];

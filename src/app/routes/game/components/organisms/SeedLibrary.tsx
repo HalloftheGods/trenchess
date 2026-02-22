@@ -2,7 +2,7 @@
  * Copyright (c) 2006 - 2026 Hall of the Gods, Inc.
  * All Rights Reserved.
  */
-import React, { lazy, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ChevronLeft,
   Play,
@@ -14,7 +14,7 @@ import {
   Bomb,
 } from "lucide-react";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
-import { PLAYER_CONFIGS } from "@constants/constants";
+import { PLAYER_CONFIGS } from "@constants/unit.constants";
 import { INITIAL_ARMY } from "@engineConfigs/unitDetails";
 import { getQuadrantBaseStyle } from "@setup/boardLayouts";
 import type { GameMode } from "@engineTypes/game";
@@ -281,4 +281,3 @@ const SeedLibrary: React.FC<SeedLibraryProps> = ({
 };
 
 export default SeedLibrary;
-export const LazySeedLibrary = lazy(() => import("./SeedLibrary"));

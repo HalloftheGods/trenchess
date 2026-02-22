@@ -2,16 +2,7 @@ import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import { ChevronRight, Home } from "lucide-react";
 
-const routeNameMap: Record<string, string> = {
-  play: "Play",
-  learn: "How to Play",
-  trench: "The Trench",
-  chess: "The Chess",
-  endgame: "The Endgame",
-  lobby: "Lobby",
-  couch: "Couch Mode",
-  practice: "Practice",
-};
+import { ROUTE_NAME_MAP } from "@constants/core.constants";
 
 const Breadcrumbs = () => {
   const location = useLocation();
@@ -31,7 +22,7 @@ const Breadcrumbs = () => {
       {pathnames.map((value, index) => {
         const to = `/${pathnames.slice(0, index + 1).join("/")}`;
         const isLast = index === pathnames.length - 1;
-        const name = routeNameMap[value] || value;
+        const name = ROUTE_NAME_MAP[value] || value;
 
         return (
           <React.Fragment key={to}>

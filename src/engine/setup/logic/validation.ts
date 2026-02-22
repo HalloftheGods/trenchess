@@ -6,19 +6,19 @@ export const canPlaceUnit = (
   unitType: PieceType,
   terrainType: TerrainType,
 ): boolean => {
-  if (terrainType === TERRAIN_TYPES.DESERT && unitType !== PIECES.TANK)
+  if (terrainType === TERRAIN_TYPES.DESERT && unitType !== PIECES.ROOK)
     return false;
-  if (unitType === PIECES.TANK && terrainType === TERRAIN_TYPES.TREES)
+  if (unitType === PIECES.ROOK && terrainType === TERRAIN_TYPES.TREES)
     return false;
-  if (unitType === PIECES.HORSEMAN && terrainType === TERRAIN_TYPES.TREES)
+  if (unitType === PIECES.KNIGHT && terrainType === TERRAIN_TYPES.TREES)
     return false;
-  if (unitType === PIECES.HORSEMAN && terrainType === TERRAIN_TYPES.PONDS)
+  if (unitType === PIECES.KNIGHT && terrainType === TERRAIN_TYPES.PONDS)
     return false;
-  if (unitType === PIECES.SNIPER && terrainType === TERRAIN_TYPES.PONDS)
+  if (unitType === PIECES.BISHOP && terrainType === TERRAIN_TYPES.PONDS)
     return false;
-  if (unitType === PIECES.TANK && terrainType === TERRAIN_TYPES.RUBBLE)
+  if (unitType === PIECES.ROOK && terrainType === TERRAIN_TYPES.RUBBLE)
     return false;
-  if (unitType === PIECES.SNIPER && terrainType === TERRAIN_TYPES.RUBBLE)
+  if (unitType === PIECES.BISHOP && terrainType === TERRAIN_TYPES.RUBBLE)
     return false;
   return true;
 };

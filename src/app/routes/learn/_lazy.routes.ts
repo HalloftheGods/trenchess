@@ -1,0 +1,11 @@
+import { lazy } from "react";
+export const LazyLearnView = lazy(() => import("./index"));
+export const LazyLearnManualView = lazy(() => import("./manual"));
+export const LazyLearnEndgameMainView = lazy(() => import("./endgame-main"));
+export const LazyLearnEndgameCtwView = lazy(() => import("./ctw"));
+export const LazyLearnEndgameCtkView = lazy(() => import("./ctk"));
+export const LazyLearnEndgameCtaView = lazy(() => import("./cta"));
+export const LazyLearnTrenchMainView = lazy(() => import("./trench-main"));
+export const LazyLearnTrenchDetailView = lazy(() => import("./trench-detail"));
+export const LazyLearnChessMainView = lazy(() => import("./chess-main"));
+export const LazyLearnChessDetailView = lazy(() => import("./chess-detail"));

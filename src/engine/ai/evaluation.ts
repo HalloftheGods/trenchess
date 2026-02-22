@@ -1,20 +1,18 @@
-import { BOARD_SIZE } from "@constants/constants";
+import { BOARD_SIZE } from "@constants/core.constants";
+import { CENTER_WEIGHT, KING_HUNT_WEIGHT } from "@constants/ai.constants";
 import { PIECES } from "@engineConfigs/unitDetails";
 import type { BoardPiece, TerrainType, GameMode } from "@engineTypes/game";
 import { isPlayerInCheck } from "../logic/gameState";
 
 // --- Heuristic Weights ---
 export const SCORES: Record<string, number> = {
-  [PIECES.COMMANDER]: 100000,
-  [PIECES.BATTLEKNIGHT]: 900,
-  [PIECES.TANK]: 500,
-  [PIECES.SNIPER]: 400,
-  [PIECES.HORSEMAN]: 300,
-  [PIECES.BOT]: 100,
+  [PIECES.KING]: 100000,
+  [PIECES.QUEEN]: 900,
+  [PIECES.ROOK]: 500,
+  [PIECES.BISHOP]: 400,
+  [PIECES.KNIGHT]: 300,
+  [PIECES.PAWN]: 100,
 };
-
-export const CENTER_WEIGHT = 10;
-export const KING_HUNT_WEIGHT = 20;
 
 // Helper: Calculate Manhattan Distance
 export const manhattanDistance = (
@@ -34,7 +32,7 @@ export const hasCommander = (
   for (let r = 0; r < BOARD_SIZE; r++) {
     for (let c = 0; c < BOARD_SIZE; c++) {
       const p = board[r][c];
-      if (p && p.player === player && p.type === PIECES.COMMANDER) {
+      if (p && p.player === player && p.type === PIECES.KING) {
         return { r, c };
       }
     }
@@ -80,7 +78,7 @@ export const evaluateBoard = (
         score += (BOARD_SIZE - distToCenter) * CENTER_WEIGHT;
       } else {
         enemyMaterial += value;
-        if (piece.type === PIECES.COMMANDER) {
+        if (piece.type === PIECES.KING) {
           enemyKingPos = { r, c };
         }
       }
