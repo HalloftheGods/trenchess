@@ -1,0 +1,19 @@
+@utility terrain-badge {
+  @apply rounded-2xl border backdrop-blur-sm flex items-center justify-center transition-all duration-300;
+}
+
+@utility terrain-badge-green {
+  @apply bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)];
+}
+
+@utility terrain-badge-blue {
+  @apply bg-brand-blue/10 text-brand-blue border-brand-blue/20 shadow-[0_0_15px_rgba(59,130,246,0.1)];
+}
+
+@utility terrain-badge-red {
+  @apply bg-brand-red/10 text-brand-red border-brand-red/20 shadow-[0_0_15px_rgba(239,68,68,0.1)];
+}
+
+@utility terrain-badge-amber {
+  @apply bg-amber-500/10 text-amber-500 border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)];
+}

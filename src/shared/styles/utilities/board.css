@@ -1,0 +1,19 @@
+@utility board-container {
+  @apply bg-white dark:bg-slate-900 border-4 p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden w-full aspect-square flex items-center justify-center transition-all duration-500;
+}
+
+@utility board-cell-base {
+  @apply relative aspect-square w-full h-full flex items-center justify-center cursor-pointer transition-all border-[0.5px] border-black/20;
+}
+
+@utility board-outer-highlight {
+  @apply ring-1 ring-inset ring-amber-500/60 bg-amber-500/10 animate-pulse shadow-[inset_0_0_15px_rgba(245,158,11,0.4)];
+}
+
+@utility board-crt-overlay {
+  @apply absolute inset-0 bg-[linear-gradient(transparent_50%,_rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] pointer-events-none z-20 opacity-20;
+}
+
+@utility board-glow-ready {
+  @apply ring-4 ring-offset-4 ring-brand-red/50 dark:ring-offset-slate-900 shadow-[0_0_40px_-10px_rgba(239,68,68,0.5)];
+}

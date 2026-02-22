@@ -1,0 +1,23 @@
+.guide-description-container ul {
+  @apply flex flex-wrap gap-4 justify-center list-none p-0 !m-0;
+}
+
+.guide-description-container li {
+  @apply bg-slate-500/10 dark:bg-white/5 border border-slate-500/20 dark:border-white/10 px-6 py-3 rounded-2xl backdrop-blur-md shadow-lg flex items-center gap-3 !m-0;
+}
+
+.guide-description-container li div {
+  @apply hidden; /* Hide the dots since we have the ribbon background */
+}
+
+@utility guide-card {
+  @apply p-10 rounded-[2.5rem] border-4 flex flex-col relative overflow-hidden shadow-2xl transition-all;
+}
+
+@utility guide-nav-button {
+  @apply p-4 rounded-full bg-slate-800/10 hover:bg-slate-800/20 dark:bg-slate-800/40 dark:hover:bg-slate-700/60 transition-all text-slate-800 dark:text-slate-100;
+}
+
+@utility guide-indicator {
+  @apply w-3 h-3 rounded-full transition-all;
+}

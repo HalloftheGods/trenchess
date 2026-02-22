@@ -1,101 +1,107 @@
 const fs = require("fs");
 const path = require("path");
 
-function walk(dir, callback) {
-  fs.readdirSync(dir).forEach((f) => {
-    let dirPath = path.join(dir, f);
-    let isDir = fs.statSync(dirPath).isDirectory();
-    if (isDir) {
-      if (
-        !dirPath.includes("node_modules") &&
-        !dirPath.includes(".git") &&
-        !dirPath.includes("_archive")
-      ) {
-        walk(dirPath, callback);
-      }
+const rootDir = process.cwd();
+const srcDir = path.resolve(rootDir, "src");
+
+const aliases = [
+  { name: "@atoms", prefix: "components/ui/atoms" },
+  { name: "@molecules", prefix: "components/ui/molecules" },
+  { name: "@organisms", prefix: "components/ui/organisms" },
+  { name: "@templates", prefix: "components/ui/templates" },
+  { name: "@views", prefix: "components/ui/views" },
+  { name: "@ui", prefix: "components/ui" },
+  { name: "@components", prefix: "components" },
+  { name: "@hooks", prefix: "hooks" },
+  { name: "@utils", prefix: "utils" },
+  { name: "@types", prefix: "types" },
+  { name: "@data", prefix: "data" },
+  { name: "@assets", prefix: "assets" },
+  { name: "@", prefix: "" },
+];
+
+function getAllFiles(dirPath, arrayOfFiles) {
+  const files = fs.readdirSync(dirPath);
+  arrayOfFiles = arrayOfFiles || [];
+
+  files.forEach(function (file) {
+    const fullPath = path.join(dirPath, file);
+    if (fs.statSync(fullPath).isDirectory()) {
+      arrayOfFiles = getAllFiles(fullPath, arrayOfFiles);
     } else {
-      callback(dirPath);
+      if (file.endsWith(".ts") || file.endsWith(".tsx")) {
+        arrayOfFiles.push(fullPath);
+      }
     }
   });
+
+  return arrayOfFiles;
 }
 
-const CONSTANTS_REGEX =
-  /import\s+\{([^}]+)\}\s+from\s+["'](\.\.?\/.*constants)["']/g;
-const SRC_DIR = "./src";
+const files = getAllFiles(srcDir);
 
-walk(SRC_DIR, (filePath) => {
-  if (!filePath.endsWith(".ts") && !filePath.endsWith(".tsx")) return;
-  if (filePath.includes("constants.ts")) return; // skip the file itself
-  if (filePath.includes("boardLayouts.ts")) return;
-  if (filePath.includes("terrainDetails.tsx")) return;
-  if (filePath.includes("unitDetails.ts")) return; // skip because it already has it
+files.forEach((file) => {
+  let content = fs.readFileSync(file, "utf8");
+  let changed = false;
 
-  let content = fs.readFileSync(filePath, "utf8");
-  let originalContent = content;
+  // Regex to match imports and exports with paths
+  // Supports: import ... from "path", import "path", export ... from "path", etc.
+  content = content.replace(
+    /(import|from|import\() (['"])(.*?)(\2)/g,
+    (match, p1, p2, p3, p4) => {
+      if (p3.startsWith(".") && !p3.startsWith("..") && p3.length === 1)
+        return match; // Skip "."
 
-  let hasChanges = false;
+      if (p3.startsWith(".")) {
+        // Resolve the import path relative to the file's directory
+        const fileDir = path.dirname(file);
+        const absoluteImportPath = path.resolve(fileDir, p3);
 
-  let newMap = {
-    TERRAIN_TYPES: "data/terrainDetails",
-    TERRAIN_INTEL: "data/terrainDetails",
-    getQuadrantBaseStyle: "utils/boardLayouts",
-    isUnitProtected: "utils/gameLogic",
-    PIECES: "data/unitDetails",
-    INITIAL_ARMY: "data/unitDetails",
-    UNIT_INTEL: "data/unitDetails",
-  };
+        if (absoluteImportPath.startsWith(srcDir)) {
+          // Get path relative to src
+          let relativeToSrc = path.relative(srcDir, absoluteImportPath);
+          // On Windows, path.relative might use backslashes
+          relativeToSrc = relativeToSrc.replace(/\\/g, "/");
 
-  content = content.replace(CONSTANTS_REGEX, (match, importsStr, fromPath) => {
-    let imports = importsStr
-      .split(",")
-      .map((s) => s.trim())
-      .filter((s) => s);
-    let keptImports = [];
-    let extractedImports = {
-      "data/terrainDetails": [],
-      "utils/boardLayouts": [],
-      "utils/gameLogic": [],
-      "data/unitDetails": [],
-    };
+          // Find the most specific alias
+          for (const alias of aliases) {
+            if (
+              relativeToSrc === alias.prefix ||
+              relativeToSrc.startsWith(alias.prefix + "/")
+            ) {
+              let newPath;
+              if (relativeToSrc === alias.prefix) {
+                newPath = alias.name;
+              } else {
+                newPath =
+                  alias.name +
+                  "/" +
+                  relativeToSrc.substring(
+                    alias.prefix.length + (alias.prefix ? 1 : 0),
+                  );
+              }
 
-    let changedThisMatch = false;
-    for (const imp of imports) {
-      if (newMap[imp]) {
-        extractedImports[newMap[imp]].push(imp);
-        changedThisMatch = true;
-      } else {
-        keptImports.push(imp);
+              // Clean up any trailing / or leading /
+              newPath = newPath.replace(/\/+/g, "/");
+
+              if (newPath !== p3) {
+                // console.log(`  ${p3} -> ${newPath}`);
+                changed = true;
+                return `${p1} ${p2}${newPath}${p4}`;
+              }
+              break; // Use the first (most specific) alias found
+            }
+          }
+        }
       }
-    }
+      return match;
+    },
+  );
 
-    if (!changedThisMatch) return match;
-    hasChanges = true;
-
-    // Determine relative path depth from the importing file
-    // fromPath is relative to the importing file, like "../constants" or "../../constants"
-    let depth = fromPath.split("../").length - 1;
-    let upDir = depth > 0 ? "../".repeat(depth) : "./";
-
-    let replacements = [];
-    if (keptImports.length > 0) {
-      replacements.push(
-        `import { ${keptImports.join(", ")} } from "${fromPath}"`,
-      );
-    }
-
-    for (const [mod, imps] of Object.entries(extractedImports)) {
-      if (imps.length > 0) {
-        let newFromPath = upDir + mod;
-        let newImportStr = `import { ${imps.join(", ")} } from "${newFromPath}"`;
-        replacements.push(newImportStr);
-      }
-    }
-
-    return replacements.join(";\n");
-  });
-
-  if (hasChanges) {
-    fs.writeFileSync(filePath, content, "utf8");
-    console.log(`Updated ${filePath}`);
+  if (changed) {
+    fs.writeFileSync(file, content, "utf8");
+    console.log(`Updated ${path.relative(rootDir, file)}`);
   }
 });
+
+console.log("Refactor complete.");

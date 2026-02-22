@@ -1,0 +1,15 @@
+@utility heading-hero {
+  @apply text-8xl font-black tracking-tighter uppercase leading-none;
+}
+
+@utility text-badge-label {
+  @apply text-[10px] font-black uppercase tracking-[0.15em] z-20;
+}
+
+@utility text-sans {
+  font-family: var(--font-sans);
+}
+
+@utility text-serif {
+  font-family: var(--font-serif);
+}

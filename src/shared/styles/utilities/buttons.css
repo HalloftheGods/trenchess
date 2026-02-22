@@ -1,0 +1,7 @@
+@utility btn-primary-lg {
+  @apply px-16 py-8 bg-slate-900 dark:bg-white text-white dark:text-black rounded-3xl font-black text-3xl hover:scale-105 transition-all;
+}
+
+@utility btn-base {
+  @apply transition-all duration-200 active:scale-95;
+}

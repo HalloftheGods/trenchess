@@ -1,0 +1,7 @@
+@utility overlay-backdrop {
+  @apply absolute inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-3xl rounded-2xl;
+}
+
+@utility modal-container {
+  @apply text-center p-20 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-[5rem];
+}

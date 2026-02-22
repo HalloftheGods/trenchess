@@ -1,0 +1,466 @@
+/*
+ * Copyright (c) 2006 - 2026 Hall of the Gods, Inc.
+ * All Rights Reserved.
+ *
+ * This software is the confidential and proprietary information of Trenchess.
+ */
+import React, { lazy } from "react";
+import { Waves, Crosshair, ShieldPlus, Zap } from "lucide-react";
+import BoardPreview from "@/app/routes/game/components/molecules/BoardPreview";
+import TerrainIntelTool from "@/app/routes/game/components/molecules/TerrainIntelTool";
+import { PIECES, INITIAL_ARMY } from "@/engine/configs/unitDetails";
+import { DesertIcon } from "@/app/routes/game/components/atoms/UnitIcons";
+import { UNIT_DETAILS, unitColorMap } from "@/engine/configs/unitDetails";
+import type { PieceStyle } from "@/constants/constants";
+import PageLayout from "@/shared/components/templates/PageLayout";
+import PageHeader from "@/shared/components/templates/PageHeader";
+import { UnitMovePreview } from "@/app/routes/guides/components/molecules/UnitMovePreview";
+import { TerrainIconBadge } from "@/app/routes/guides/components/atoms/TerrainIconBadge";
+import { GuideBullet } from "@/app/routes/guides/components/atoms/GuideBullet";
+import SectionDivider from "@/shared/components/molecules/SectionDivider";
+
+interface HowToPlayProps {
+  onBack: () => void;
+  darkMode: boolean;
+  pieceStyle: PieceStyle;
+}
+
+const HowToPlay: React.FC<HowToPlayProps> = ({
+  onBack,
+  darkMode,
+  pieceStyle,
+}) => {
+  const textColor = darkMode ? "text-slate-100" : "text-slate-800";
+  const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";
+
+  const cardBg = darkMode ? "bg-slate-900/50" : "bg-white/70";
+  const borderColor = darkMode ? "border-white/10" : "border-slate-200";
+
+  const renderSectionTitle = (
+    title: string,
+    icon: React.ReactNode,
+    isGold?: boolean,
+  ) => (
+    <div className="flex items-center gap-3 mb-6">
+      <div
+        className={`p-2 rounded-lg ${isGold ? "bg-amber-500/20 text-amber-500 border border-amber-500/30" : darkMode ? "bg-blue-500/20 text-blue-400" : "bg-blue-100 text-blue-600"}`}
+      >
+        {icon}
+      </div>
+      <h2
+        className={`text-2xl font-black tracking-widest ${isGold ? "text-amber-500" : textColor}`}
+      >
+        {title}
+      </h2>
+    </div>
+  );
+
+  const boardPreviewNode = (
+    <BoardPreview
+      key="how-to-play-preview"
+      selectedMode={null}
+      selectedProtocol={"terrainiffic" as any}
+      darkMode={darkMode}
+      pieceStyle={pieceStyle}
+      isReady={false}
+      terrainSeed={12345}
+      showTerrainIcons={true}
+      hideUnits={true}
+    />
+  );
+
+  return (
+    <PageLayout
+      darkMode={darkMode}
+      header={
+        <PageHeader onLogoClick={onBack} boardPreview={boardPreviewNode} />
+      }
+    >
+      <div className="max-w-5xl mx-auto w-full">
+        {/* New Classes & Abilities Header */}
+        <div className="flex flex-col items-center mb-16">
+          <SectionDivider
+            label="You've Unlocked New Classes & Abilities!"
+            color="amber"
+            animate={true}
+          />
+        </div>
+
+        {/* New Classes Section */}
+        <div className="mb-12">
+          <div className="grid grid-cols-1 gap-8">
+            {[PIECES.HORSEMAN, PIECES.SNIPER, PIECES.TANK].map((type) => {
+              const unit = INITIAL_ARMY.find((u) => u.type === type);
+              if (!unit) return null;
+
+              const details = UNIT_DETAILS[unit.type];
+              if (!details) return null;
+
+              const colors = unitColorMap[unit.type];
+              const IconComp = unit.lucide;
+
+              return (
+                <div
+                  key={unit.type}
+                  className={`relative p-8 rounded-3xl border-4 ${cardBg} ${colors.border} flex flex-col gap-6 transition-all hover:shadow-lg overflow-hidden`}
+                >
+                  <div className="flex flex-col sm:flex-row gap-10 items-center">
+                    {/* Unit Icon (Left) */}
+                    <div className="flex flex-col shrink-0 gap-4 items-center">
+                      <div
+                        className={`w-36 h-36 sm:w-48 sm:h-48 rounded-[2.5rem] ${colors.bg} ${colors.text} flex items-center justify-center shadow-inner border border-white/5 transition-transform hover:-rotate-3 group`}
+                      >
+                        <IconComp className="w-24 h-24 sm:w-32 sm:h-32 transition-transform group-hover:scale-110" />
+                      </div>
+                      {/* Terrain Icons Below Main Icon */}
+                      {details.levelUp?.sanctuaryTerrain && (
+                        <div className="flex justify-center">
+                          <div className="flex gap-2">
+                            {details.levelUp.sanctuaryTerrain.map(
+                              (key: any, idx: any) => (
+                                <TerrainIconBadge key={idx} terrainKey={key} />
+                              ),
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Description (Middle) */}
+                    <div className="flex-1 min-w-0 flex flex-col text-center sm:text-left justify-center py-2">
+                      <div className="flex flex-col gap-1 items-center sm:items-start mb-6">
+                        <div className="flex items-center gap-4 justify-center sm:justify-start w-full">
+                          <h3
+                            className={`text-4xl font-black uppercase tracking-tighter ${textColor}`}
+                          >
+                            {details.title}
+                          </h3>
+                          <div
+                            className={`px-4 py-1.5 rounded-xl ${colors.bg} ${colors.text} text-[11px] font-black uppercase tracking-widest border border-white/5`}
+                          >
+                            {details.role}
+                          </div>
+                        </div>
+                        {details.subtitle && (
+                          <span
+                            className={`text-sm font-bold uppercase tracking-[0.2em] ${colors.text} opacity-80`}
+                          >
+                            {details.subtitle}
+                          </span>
+                        )}
+                      </div>
+
+                      <ul className="space-y-3">
+                        {details.levelUp && (
+                          <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10 mb-6 relative">
+                            <div className="flex items-center gap-2 text-amber-500 font-black text-sm uppercase italic tracking-wider mb-2">
+                              <Zap size={14} className="fill-amber-500" />
+                              {details.levelUp.title}
+                            </div>
+                            <ul className="space-y-1">
+                              {details.levelUp.stats.map((stat, sIdx) => (
+                                <li
+                                  key={sIdx}
+                                  className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-2 text-left"
+                                >
+                                  <GuideBullet color="amber" size="sm" />
+                                  {stat}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {details.desc?.map((bullet, idx) => {
+                          const parts = bullet.split(": ");
+                          const header = parts[0];
+                          const content = parts.slice(1).join(": ");
+                          return (
+                            <li
+                              key={idx}
+                              className={`text-sm text-center sm:text-left`}
+                            >
+                              <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
+                                <span
+                                  className={`font-black uppercase tracking-tight text-xs ${colors.text} shrink-0`}
+                                >
+                                  {header
+                                    .replace(/\*\*/g, "")
+                                    .replace("New! ", "✨ ")}
+                                </span>
+                                <span
+                                  className={`${subtextColor} font-medium leading-relaxed`}
+                                >
+                                  {content}
+                                </span>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+
+                    {/* Move Preview (Right) */}
+                    <div className="shrink-0 flex flex-col gap-3 items-center sm:items-start">
+                      <span
+                        className={`text-[10px] font-black uppercase tracking-widest ${subtextColor} flex items-center gap-2`}
+                      >
+                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                        Move Set
+                      </span>
+                      <UnitMovePreview unitType={unit.type} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* New Abilities Section */}
+        <div className="mb-12">
+          <div className="grid grid-cols-1 gap-8">
+            {[PIECES.BOT, PIECES.BATTLEKNIGHT, PIECES.COMMANDER].map((type) => {
+              const unit = INITIAL_ARMY.find((u) => u.type === type);
+              if (!unit) return null;
+
+              const details = UNIT_DETAILS[unit.type];
+              if (!details) return null;
+
+              const colors = unitColorMap[unit.type];
+              const IconComp = unit.lucide;
+
+              return (
+                <div
+                  key={unit.type}
+                  className={`relative p-8 rounded-3xl border-4 ${cardBg} ${colors.border} flex flex-col gap-6 transition-all hover:shadow-lg overflow-hidden`}
+                >
+                  <div className="flex flex-col sm:flex-row gap-10 items-center">
+                    {/* Unit Icon (Left) */}
+                    <div className="flex flex-col shrink-0 gap-4 items-center">
+                      <div
+                        className={`w-36 h-36 sm:w-48 sm:h-48 rounded-[2.5rem] ${colors.bg} ${colors.text} flex items-center justify-center shadow-inner border border-white/5 transition-transform hover:-rotate-3 group`}
+                      >
+                        <IconComp className="w-24 h-24 sm:w-32 sm:h-32 transition-transform group-hover:scale-110" />
+                      </div>
+                      {/* Terrain Icons Below Main Icon */}
+                      {details.levelUp?.sanctuaryTerrain && (
+                        <div className="flex justify-center">
+                          <div className="flex gap-2">
+                            {details.levelUp.sanctuaryTerrain.map(
+                              (key: any, idx: any) => (
+                                <TerrainIconBadge key={idx} terrainKey={key} />
+                              ),
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Description (Middle) */}
+                    <div className="flex-1 min-w-0 flex flex-col text-center sm:text-left justify-center py-2">
+                      <div className="flex flex-col gap-1 items-center sm:items-start mb-6">
+                        <div className="flex items-center gap-4 justify-center sm:justify-start w-full">
+                          <h3
+                            className={`text-4xl font-black uppercase tracking-tighter ${textColor}`}
+                          >
+                            {details.title}
+                          </h3>
+                          <div
+                            className={`px-4 py-1.5 rounded-xl ${colors.bg} ${colors.text} text-[11px] font-black uppercase tracking-widest border border-white/5`}
+                          >
+                            {details.role}
+                          </div>
+                        </div>
+                        {details.subtitle && (
+                          <span
+                            className={`text-sm font-bold uppercase tracking-[0.2em] ${colors.text} opacity-80`}
+                          >
+                            {details.subtitle}
+                          </span>
+                        )}
+                      </div>
+
+                      <ul className="space-y-3">
+                        {details.levelUp && (
+                          <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10 mb-6 relative">
+                            <div className="flex items-center gap-2 text-amber-500 font-black text-sm uppercase italic tracking-wider mb-2">
+                              <Zap size={14} className="fill-amber-500" />
+                              {details.levelUp.title}
+                            </div>
+                            <ul className="space-y-1">
+                              {details.levelUp.stats.map((stat, sIdx) => (
+                                <li
+                                  key={sIdx}
+                                  className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-2 text-left"
+                                >
+                                  <div className="w-1 h-1 rounded-full bg-amber-500/40" />
+                                  {stat}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {details.desc?.map((bullet, idx) => {
+                          const parts = bullet.split(": ");
+                          const header = parts[0];
+                          const content = parts.slice(1).join(": ");
+                          return (
+                            <li
+                              key={idx}
+                              className={`text-sm text-center sm:text-left`}
+                            >
+                              <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
+                                <span
+                                  className={`font-black uppercase tracking-tight text-xs ${colors.text} shrink-0`}
+                                >
+                                  {header
+                                    .replace(/\*\*/g, "")
+                                    .replace("New! ", "✨ ")}
+                                </span>
+                                <span
+                                  className={`${subtextColor} font-medium leading-relaxed`}
+                                >
+                                  {content}
+                                </span>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+
+                    {/* Move Preview (Right) */}
+                    <div className="shrink-0 flex flex-col gap-3 items-center sm:items-start">
+                      <span
+                        className={`text-[10px] font-black uppercase tracking-widest ${subtextColor} flex items-center gap-2`}
+                      >
+                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                        Basic Move Set
+                      </span>
+                      <UnitMovePreview unitType={unit.type} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        {/* Battlefield Intelligence Section */}
+        <div className="mb-12">
+          {renderSectionTitle(
+            "The Battlefield - Terrain Intel",
+            <ShieldPlus size={24} />,
+            true,
+          )}
+
+          {/* Key Terrain Rules Note */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div
+              className={`p-6 rounded-3xl border-2 border-amber-500/30 ${cardBg} backdrop-blur-xl shadow-lg relative overflow-hidden group`}
+            >
+              <div className="absolute -right-8 -top-8 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-all" />
+              <h4
+                className={`text-lg font-black uppercase tracking-tight mb-3 flex items-center gap-2 ${darkMode ? "text-amber-500" : "text-amber-600"}`}
+              >
+                <DesertIcon className="w-6 h-6" />
+                The Desert Rule
+              </h4>
+              <p
+                className={`text-sm leading-relaxed ${subtextColor} font-bold`}
+              >
+                Deserts are dead-ends.{" "}
+                <span className="text-slate-900 dark:text-white underline decoration-amber-500/50 underline-offset-4">
+                  Deserts end movement immediately on entry
+                </span>
+                . Units trapped in the desert must exit on their very next turn
+                or they are lost to the sands.
+              </p>
+            </div>
+
+            <div
+              className={`p-6 rounded-3xl border-2 border-blue-500/30 ${cardBg} backdrop-blur-xl shadow-lg relative overflow-hidden group`}
+            >
+              <div className="absolute -right-8 -top-8 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all" />
+              <h4
+                className={`text-lg font-black uppercase tracking-tight mb-3 flex items-center gap-2 ${darkMode ? "text-blue-400" : "text-blue-600"}`}
+              >
+                <Waves size={24} />
+                Strategic Sanctuary
+              </h4>
+              <p
+                className={`text-sm leading-relaxed ${subtextColor} font-bold`}
+              >
+                Use forests, swamps, and mountains to shield your units. When a
+                unit is in its{" "}
+                <span className="text-slate-900 dark:text-white underline decoration-blue-500/50 underline-offset-4">
+                  Sanctuary Terrain
+                </span>
+                , it becomes invisible to specific enemy classes.
+              </p>
+            </div>
+          </div>
+
+          <TerrainIntelTool darkMode={darkMode} />
+        </div>
+
+        {/* Engagement Rules */}
+        <div
+          className={`mb-12 p-8 rounded-3xl border ${cardBg} ${borderColor} backdrop-blur-xl shadow-xl`}
+        >
+          {renderSectionTitle("Engagement Rules", <Crosshair size={24} />)}
+          <div className="space-y-4">
+            <div className="flex gap-4">
+              <div
+                className={`flex items-center justify-center w-8 h-8 rounded-full border shrink-0 ${darkMode ? "border-slate-700 bg-slate-800" : "border-slate-200 bg-white"} font-bold`}
+              >
+                1
+              </div>
+              <div>
+                <h4 className={`font-bold ${textColor}`}>
+                  Turn Based Strategy
+                </h4>
+                <p className={`text-sm ${subtextColor}`}>
+                  Players take turns maneuvering their units across the board.
+                  Strategy is key—position your army to control the center and
+                  trap your opponent.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div
+                className={`flex items-center justify-center w-8 h-8 rounded-full border shrink-0 ${darkMode ? "border-slate-700 bg-slate-800" : "border-slate-200 bg-white"} font-bold`}
+              >
+                2
+              </div>
+              <div>
+                <h4 className={`font-bold ${textColor}`}>Capture & Combat</h4>
+                <p className={`text-sm ${subtextColor}`}>
+                  Capture enemy pieces by landing exactly on their tile. Each
+                  unit has a unique movement and attack profile—master them to
+                  dominate the board.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div
+                className={`flex items-center justify-center w-8 h-8 rounded-full border shrink-0 ${darkMode ? "border-slate-700 bg-slate-800" : "border-slate-200 bg-white"} font-bold`}
+              >
+                3
+              </div>
+              <div>
+                <h4 className={`font-bold ${textColor}`}>Victory Conditions</h4>
+                <p className={`text-sm ${subtextColor}`}>
+                  The game is won by capturing the enemy King or by reaching the
+                  center flag tiles in Capture the World mode.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </PageLayout>
+  );
+};
+
+export default HowToPlay;
+export const LazyHowToPlay = lazy(() => import("./HowToPlay"));

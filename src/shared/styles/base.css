@@ -1,0 +1,8 @@
+body {
+  font-family: var(--font-sans);
+  @apply min-h-screen bg-stone-100 dark:bg-[#050b15] text-slate-800 dark:text-slate-100 overflow-x-hidden transition-colors;
+}
+
+#root {
+  @apply min-h-screen flex flex-col w-full;
+}

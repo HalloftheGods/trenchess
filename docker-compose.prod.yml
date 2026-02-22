@@ -1,5 +1,5 @@
 services:
-  frontend:
+  trenchess:
     build:
       context: .
       target: prod
@@ -8,17 +8,17 @@ services:
     environment:
       - VITE_SERVER_URL=http://your-production-url:3001
     networks:
-      - battle-chess-net
+      - trenchess-net
 
-  backend:
+  server:
     build:
       context: ./server
       target: prod
     ports:
       - "3001:3001"
     networks:
-      - battle-chess-net
+      - trenchess-net
 
 networks:
-  battle-chess-net:
+  trenchess-net:
     driver: bridge

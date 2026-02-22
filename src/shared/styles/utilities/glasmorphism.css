@@ -1,0 +1,11 @@
+@utility glass-panel {
+  @apply bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-white/5 shadow-2xl rounded-3xl;
+}
+
+@utility glass-button {
+  @apply bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-white/5 shadow-2xl transition-all cursor-pointer;
+}
+
+@utility glass-interactive {
+  @apply hover:border-amber-500/50 hover:scale-105 active:scale-95 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white;
+}

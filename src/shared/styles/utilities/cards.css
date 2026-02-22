@@ -1,0 +1,15 @@
+@utility card-base {
+  @apply border-2 p-8 rounded-[2.5rem] transition-all duration-500 flex flex-col items-center gap-6 shadow-2xl relative overflow-hidden cursor-pointer backdrop-blur-md bg-white dark:bg-slate-900 border-slate-200 dark:border-white/10;
+}
+
+@utility card-hover {
+  @apply hover:-translate-y-4 hover:scale-[1.02] hover:shadow-brand-red/30 hover:border-brand-red/30;
+}
+
+@utility card-selected {
+  @apply ring-4 ring-inset ring-brand-red border-transparent shadow-[0_0_60px_-15px_rgba(239,68,68,0.5)] bg-white dark:bg-slate-900;
+}
+
+@utility card-disabled {
+  @apply opacity-30 cursor-not-allowed grayscale scale-95;
+}

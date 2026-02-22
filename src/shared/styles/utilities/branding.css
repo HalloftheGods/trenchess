@@ -1,0 +1,11 @@
+@utility brand-title-red {
+  @apply text-brand-red font-black uppercase tracking-tighter;
+}
+
+@utility brand-title-blue {
+  @apply text-brand-blue font-black uppercase tracking-tighter;
+}
+
+@utility brand-logo-shadow {
+  @apply drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)];
+}

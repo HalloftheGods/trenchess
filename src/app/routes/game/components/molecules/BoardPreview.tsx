@@ -1,0 +1,650 @@
+import React from "react";
+import {
+  BOARD_SIZE,
+  PLAYER_CONFIGS,
+  type PieceStyle,
+} from "@constants/constants";
+import { INITIAL_ARMY, PIECES } from "@engineConfigs/unitDetails";
+import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
+import { getQuadrantBaseStyle } from "@setup/boardLayouts";
+import type {
+  GameMode,
+  ArmyUnit,
+  PieceType,
+  TerrainType,
+} from "@engineTypes/game";
+import { Edit, Ban } from "lucide-react";
+import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
+import { TERRAIN_INTEL } from "@engineConfigs/terrainDetails";
+import { TerraForm } from "@setup/TerraForm";
+import { TERRAIN_DETAILS } from "@engineConfigs/terrainDetails";
+
+interface BoardPreviewProps {
+  selectedMode: GameMode | null;
+  selectedProtocol:
+    | "classic"
+    | "quick"
+    | "terrainiffic"
+    | "custom"
+    | "zen-garden"
+    | null;
+  darkMode: boolean;
+  pieceStyle: PieceStyle;
+  isReady?: boolean;
+  terrainSeed?: number;
+  customSeed?: string;
+  playerConfig?: Record<string, "human" | "computer">;
+  onTogglePlayerType?: (pid: string) => void;
+  showTerrainIcons?: boolean;
+  hideUnits?: boolean;
+  forcedTerrain?: TerrainType | null;
+  highlightOuterSquares?: boolean;
+  labelOverride?: string;
+}
+
+const BoardPreview: React.FC<BoardPreviewProps> = ({
+  selectedMode,
+  selectedProtocol,
+  pieceStyle,
+  isReady,
+  terrainSeed = 0,
+  customSeed,
+  playerConfig,
+  onTogglePlayerType,
+  showTerrainIcons,
+  hideUnits,
+  forcedTerrain,
+  highlightOuterSquares,
+  labelOverride,
+}) => {
+  // Parse custom seed if present
+  const seedData = React.useMemo(() => {
+    if (customSeed) {
+      const parsed = deserializeGame(customSeed);
+      // Adapt if necessary (e.g. NS seed in EW mode)
+      if (parsed && selectedMode) {
+        return adaptSeedToMode(parsed, selectedMode);
+      }
+      return parsed;
+    }
+    return null;
+  }, [customSeed, selectedMode]);
+  // Generate a 12x12 grid
+  const grid = Array.from({ length: BOARD_SIZE * BOARD_SIZE }, (_, i) => {
+    const row = Math.floor(i / BOARD_SIZE);
+    const col = i % BOARD_SIZE;
+    return { row, col };
+  });
+
+  const getBorderClasses = () => {
+    // Define base border sides for mixing
+    const baseT = "border-t-slate-200/30 dark:border-t-white/5";
+    const baseB = "border-b-slate-200/30 dark:border-b-white/5";
+    const baseL = "border-l-slate-200/30 dark:border-l-white/5";
+    const baseR = "border-r-slate-200/30 dark:border-r-white/5";
+
+    let borderColors = "border-slate-200/30 dark:border-white/5"; // Default fallback
+
+    switch (selectedMode) {
+      case "2p-ns":
+        borderColors = `${baseL} ${baseR} border-t-brand-red border-b-brand-blue`;
+        break;
+      case "2p-ew":
+        borderColors = `${baseT} ${baseB} border-l-emerald-500 border-r-yellow-500`;
+        break;
+      case "2v2":
+        borderColors =
+          "border-t-orange-500 border-l-purple-500 border-b-teal-500 border-r-lime-500";
+        break;
+      case "4p":
+        // Showdown: Red (Top), Yellow (Right), Blue (Bottom), Green (Left)
+        borderColors =
+          "border-t-brand-red border-r-yellow-500 border-b-brand-blue border-l-emerald-500";
+        break;
+    }
+
+    // Add Ready State Glow
+    if (isReady) {
+      return `${borderColors} ring-4 ring-offset-4 ring-brand-red/50 dark:ring-offset-slate-900 shadow-[0_0_40px_-10px_rgba(239,68,68,0.5)]`;
+    }
+
+    return borderColors;
+  };
+
+  const getIcon = (unit: ArmyUnit, className = "") => {
+    if (pieceStyle === "custom") {
+      const Icon = unit.custom;
+      return <Icon className={className} />;
+    }
+    if (pieceStyle === "lucide") {
+      const Icon = unit.lucide;
+      return <Icon className={className} />;
+    }
+    return (
+      <span className={className}>
+        {unit[pieceStyle as "emoji" | "bold" | "outlined"]}
+      </span>
+    );
+  };
+
+  // Generate terrain using TerraForm if needed
+  const generatedTerrain = React.useMemo(() => {
+    // 0. Forced Terrain (Menu Hover Mode)
+    if (forcedTerrain) {
+      return TerraForm.generate({
+        mode: selectedMode || "2p-ns", // Default to 2p-ns for preview if no mode
+        seed: terrainSeed, // Use existing seed prop for consistency or animation
+        symmetry: "rotational",
+        allowedTypes: [forcedTerrain], // <--- RESTRICTION
+      });
+    }
+
+    if (seedData && seedData.terrain) return seedData.terrain; // Custom seed
+
+    // Only generate for classic/quick/default modes
+    if (
+      selectedProtocol &&
+      selectedProtocol !== "classic" &&
+      selectedProtocol !== "quick" &&
+      selectedProtocol !== "terrainiffic"
+    )
+      return null;
+
+    // Use TerraForm
+    // We use the terrainSeed prop for the seed
+    return TerraForm.generate({
+      mode: selectedMode || "2p-ns",
+      seed: terrainSeed,
+      symmetry: "rotational",
+    });
+  }, [selectedMode, selectedProtocol, terrainSeed, seedData, forcedTerrain]);
+
+  const getTerrainAt = (
+    row: number,
+    col: number,
+    pieceAt: { pieceType: PieceType; player: string } | null,
+  ): TerrainType | null => {
+    // 1. Custom Seed (Chi Mode) or TerraForm
+    // If we have a generated grid, use it
+    if (generatedTerrain) {
+      const t = generatedTerrain[row][col];
+      if (t === TERRAIN_TYPES.FLAT) return null;
+
+      // Logic: terrain cant be placed on a unit that cant traverse it
+      // TerraForm doesn't know about unit placement, so we filter valid placements here
+      // similar to before
+      if (pieceAt) {
+        if (
+          pieceAt.pieceType === PIECES.TANK &&
+          (t === TERRAIN_TYPES.RUBBLE || t === TERRAIN_TYPES.TREES)
+        )
+          return null;
+        if (
+          pieceAt.pieceType === PIECES.SNIPER &&
+          (t === TERRAIN_TYPES.PONDS || t === TERRAIN_TYPES.RUBBLE)
+        )
+          return null;
+        if (
+          pieceAt.pieceType === PIECES.HORSEMAN &&
+          (t === TERRAIN_TYPES.TREES || t === TERRAIN_TYPES.PONDS)
+        )
+          return null;
+        if (pieceAt.pieceType === PIECES.BOT) return t;
+        if (pieceAt.pieceType === PIECES.COMMANDER) return null;
+        if (pieceAt.pieceType === PIECES.BATTLEKNIGHT) return t;
+      }
+      return t;
+    }
+
+    return null;
+  };
+
+  const getPlayerAt = (row: number, col: number): string | null => {
+    const mode = selectedMode || "2p-ns";
+
+    if (mode === "2p-ns") {
+      return row < 6 ? "player1" : "player4";
+    }
+    if (mode === "2p-ew") {
+      return col < 6 ? "player3" : "player2";
+    }
+    // 2v2 and 4p use quadrants
+    if (row < 6 && col < 6) return "player1";
+    if (row < 6 && col >= 6) return "player2";
+    if (row >= 6 && col < 6) return "player3";
+    return "player4";
+  };
+
+  const getPieceAt = (
+    row: number,
+    col: number,
+  ): { pieceType: PieceType; player: string } | null => {
+    // 1. Custom Seed (Chi Mode)
+    if (seedData && seedData.board) {
+      // NOTE: seedData.board is (BoardPiece | null)[][]
+      // We need to return { pieceType, player } for compatibility
+      const p = seedData.board[row]?.[col];
+      if (p) return { pieceType: p.type, player: p.player };
+      return null;
+    }
+
+    const effectiveMode = selectedMode || "2p-ns";
+
+    if (
+      selectedProtocol !== "classic" &&
+      selectedProtocol !== "quick" &&
+      selectedProtocol !== "terrainiffic"
+    )
+      return null;
+
+    // Randomize pieces for Alpha (Quick) Protocol
+    if (selectedProtocol === "quick") {
+      const player = getPlayerAt(row, col);
+      if (!player) return null;
+
+      // Seed based on coordinates + terrainSeed for deterministic variation
+      const presenceSeed =
+        Math.sin(row * 13.5 + col * 31.7 + terrainSeed * 88.3) * 10000;
+      const randPresence = presenceSeed - Math.floor(presenceSeed);
+
+      // Chance per mode (approximating 16 pieces per zone)
+      // 2P: 72 squares per zone -> 16/72 approx 0.22
+      // 4P/2v2: 36 squares per zone -> 16/36 approx 0.44
+      const threshold =
+        selectedMode === "2p-ns" || selectedMode === "2p-ew" ? 0.22 : 0.44;
+
+      if (randPresence < threshold) {
+        const typeSeed =
+          Math.sin(row * 99.1 + col * 77.2 + terrainSeed * 50.3) * 10000;
+        const pieceOptionValues = Object.values(PIECES);
+        const randIndex = Math.floor(
+          (typeSeed - Math.floor(typeSeed)) * pieceOptionValues.length,
+        );
+        return { pieceType: pieceOptionValues[randIndex], player };
+      }
+      return null;
+    }
+
+    let pieceType: PieceType | null = null;
+    let player: string = "";
+
+    // 8-wide Standard Army (16 pieces = 2 rows of 8)
+    const backRow = [
+      PIECES.TANK,
+      PIECES.HORSEMAN,
+      PIECES.SNIPER,
+      PIECES.BATTLEKNIGHT,
+      PIECES.COMMANDER,
+      PIECES.SNIPER,
+      PIECES.HORSEMAN,
+      PIECES.TANK,
+    ];
+
+    // 2P North vs South (Inner 8x8: Cols 2-9, Rows 2-9)
+    if (effectiveMode === "2p-ns") {
+      // 8-wide centered = Cols 2 to 9
+      if (col >= 2 && col <= 9) {
+        const cIndex = col - 2;
+        // Player 1 (Top)
+        if (row === 2) {
+          pieceType = backRow[cIndex];
+          player = "player1";
+        } else if (row === 3) {
+          pieceType = PIECES.BOT;
+          player = "player1";
+        }
+        // Player 4 (Bottom)
+        else if (row === 9) {
+          pieceType = backRow[cIndex];
+          player = "player4";
+        } else if (row === 8) {
+          pieceType = PIECES.BOT;
+          player = "player4";
+        }
+      }
+    }
+
+    // 2P East vs West (Inner 8x8: Rows 2-9, Cols 2-9)
+    else if (effectiveMode === "2p-ew") {
+      // 8-high centered = Rows 2 to 9
+      if (row >= 2 && row <= 9) {
+        const rIndex = row - 2;
+        // Player 3 (Left)
+        if (col === 2) {
+          pieceType = backRow[rIndex];
+          player = "player3";
+        } else if (col === 3) {
+          pieceType = PIECES.BOT;
+          player = "player3";
+        }
+
+        // Player 2 (Right)
+        else if (col === 9) {
+          pieceType = backRow[rIndex];
+          player = "player2";
+        } else if (col === 8) {
+          pieceType = PIECES.BOT;
+          player = "player2";
+        }
+      }
+    }
+
+    // 2v2 Alliance (Capture the World) - Corner King Formation
+    else if (effectiveMode === "2v2") {
+      // Commander at [0][0] to sit in the absolute corner
+      const formation = [
+        [PIECES.COMMANDER, PIECES.BATTLEKNIGHT, PIECES.TANK, PIECES.TANK],
+        [PIECES.HORSEMAN, PIECES.SNIPER, PIECES.SNIPER, PIECES.HORSEMAN],
+        [PIECES.BOT, PIECES.BOT, PIECES.BOT, PIECES.BOT],
+        [PIECES.BOT, PIECES.BOT, PIECES.BOT, PIECES.BOT],
+      ];
+
+      const getQuadPiece = (
+        rOrigin: number,
+        cOrigin: number,
+        rStep: number,
+        cStep: number,
+        ply: string,
+      ) => {
+        const rRel = (row - rOrigin) * rStep;
+        const cRel = (col - cOrigin) * cStep;
+        if (rRel >= 0 && rRel < 4 && cRel >= 0 && cRel < 4) {
+          pieceType = formation[rRel][cRel];
+          player = ply;
+        }
+      };
+
+      // NW (Red) - Corner (0,0)
+      getQuadPiece(0, 0, 1, 1, "player1");
+      // NE (Yellow) - Corner (0,11)
+      getQuadPiece(0, 11, 1, -1, "player2");
+      // SW (Green) - Corner (11,0)
+      getQuadPiece(11, 0, -1, 1, "player3");
+      // SE (Blue) - Corner (11,11)
+      getQuadPiece(11, 11, -1, -1, "player4");
+    }
+
+    // 4P Ultimate Showdown - Standard Formation
+    else if (effectiveMode === "4p") {
+      const formation = [
+        [PIECES.TANK, PIECES.BATTLEKNIGHT, PIECES.COMMANDER, PIECES.TANK],
+        [PIECES.HORSEMAN, PIECES.SNIPER, PIECES.SNIPER, PIECES.HORSEMAN],
+        [PIECES.BOT, PIECES.BOT, PIECES.BOT, PIECES.BOT],
+        [PIECES.BOT, PIECES.BOT, PIECES.BOT, PIECES.BOT],
+      ];
+
+      const getQuadPiece = (
+        rOrigin: number,
+        cOrigin: number,
+        rStep: number,
+        ply: string,
+      ) => {
+        const rRel = (row - rOrigin) * rStep;
+        const cRel = col - cOrigin;
+        if (rRel >= 0 && rRel < 4 && cRel >= 0 && cRel < 4) {
+          pieceType = formation[rRel][cRel];
+          player = ply;
+        }
+      };
+
+      // NW (Red)
+      getQuadPiece(1, 1, 1, "player1");
+      // NE (Yellow)
+      getQuadPiece(1, 7, 1, "player2");
+      // SW (Green)
+      getQuadPiece(10, 1, -1, "player3");
+      // SE (Blue)
+      getQuadPiece(10, 7, -1, "player4");
+    }
+
+    if (!pieceType) return null;
+
+    return { pieceType, player };
+  };
+
+  return (
+    <div
+      className={`board-container group ${getBorderClasses()} ${isReady ? "board-glow-ready" : ""}`}
+    >
+      {/* CRT Scanline Effect Overlay (Moved within container) */}
+      <div className="board-crt-overlay" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none z-20 mix-blend-overlay" />
+
+      {/* The Board Visualizer Grid */}
+      <div
+        className="w-full h-full grid grid-cols-12 gap-[2px] relative z-10"
+        style={{
+          gridTemplateRows: "repeat(12, minmax(0, 1fr))",
+        }}
+      >
+        {grid.map(({ row, col }) => {
+          const blandStyle = getQuadrantBaseStyle(row, col, "neutral");
+
+          // Outer Ring Highlight (12x12 vs 8x8)
+          const isOuter = row < 2 || row > 9 || col < 2 || col > 9;
+          const outerHighlight =
+            highlightOuterSquares && isOuter
+              ? "ring-1 ring-inset ring-amber-500/60 bg-amber-500/10 animate-pulse shadow-[inset_0_0_15px_rgba(245,158,11,0.4)]"
+              : "";
+
+          // Standard Bland Mode - only if no mode AND no terrain icons requested and not terrainiffic
+          if (
+            !selectedMode &&
+            !showTerrainIcons &&
+            selectedProtocol !== "terrainiffic"
+          ) {
+            return (
+              <div
+                key={`${row}-${col}`}
+                className={`${blandStyle} ${outerHighlight} rounded-[1px] transition-all duration-500`}
+              />
+            );
+          }
+
+          const baseStyle = getQuadrantBaseStyle(
+            row,
+            col,
+            selectedMode || "2p-ns",
+          );
+          const pieceInfo = getPieceAt(row, col);
+          const terrain = getTerrainAt(row, col, pieceInfo);
+
+          let cellStyle = baseStyle;
+
+          if (terrain) {
+            // Determine if the cell is light or dark square for the checkered pattern
+            // (row + col) % 2 === 0 is traditionally the dark square conceptually, or light square, depending on the board's top-left corner.
+            const isDarkSquare = (row + col) % 2 !== 0;
+
+            // Apply terrain coloring, mixing in the checkerboard texture
+            if (terrain === TERRAIN_TYPES.TREES) {
+              const bgClass = isDarkSquare
+                ? "bg-emerald-800/90"
+                : "bg-emerald-700/80";
+              cellStyle = `${bgClass} border-emerald-600/50`;
+            } else if (terrain === TERRAIN_TYPES.PONDS) {
+              const bgClass = isDarkSquare
+                ? "bg-blue-800/90"
+                : "bg-blue-700/80";
+              cellStyle = `${bgClass} border-blue-600/50`;
+            } else if (terrain === TERRAIN_TYPES.RUBBLE) {
+              const bgClass = isDarkSquare ? "bg-red-800/90" : "bg-red-700/80";
+              cellStyle = `${bgClass} border-red-600/50`;
+            } else if (terrain === TERRAIN_TYPES.DESERT) {
+              const bgClass = isDarkSquare
+                ? "bg-amber-700/40"
+                : "bg-amber-600/30";
+              cellStyle = `${bgClass} border-amber-600/50`;
+            }
+          }
+
+          let isSanctuary = false;
+          let isBlocked = false;
+          let tDetails = null;
+
+          if (selectedProtocol === "terrainiffic" && terrain && pieceInfo) {
+            tDetails = TERRAIN_DETAILS.find((t) => t.key === terrain);
+            if (tDetails) {
+              isSanctuary = tDetails.sanctuaryUnits.includes(
+                pieceInfo.pieceType,
+              );
+              isBlocked = tDetails.blockedUnits.includes(pieceInfo.pieceType);
+            }
+          }
+
+          if (isSanctuary && tDetails) {
+            cellStyle += ` border-dashed border-[3px] shadow-[inset_0_0_15px_rgba(0,0,0,0.5)] z-10`;
+          }
+
+          const TerrainIcon =
+            terrain && showTerrainIcons ? TERRAIN_INTEL[terrain]?.icon : null;
+
+          return (
+            <div
+              key={`${row}-${col}`}
+              className={`${cellStyle} ${outerHighlight} rounded-[1px] transition-all duration-500 relative flex items-center justify-center`}
+            >
+              {TerrainIcon && (
+                <div className="absolute inset-0 flex items-center justify-center opacity-60">
+                  <TerrainIcon
+                    size="60%"
+                    className="text-white drop-shadow-md"
+                  />
+                </div>
+              )}
+              {
+                /* Render the unit if present */
+                pieceInfo &&
+                  !hideUnits &&
+                  (() => {
+                    const unit = INITIAL_ARMY.find(
+                      (u) => u.type === pieceInfo.pieceType,
+                    );
+                    if (!unit) return null;
+                    const config = PLAYER_CONFIGS[pieceInfo.player];
+                    const pieceColorClass = config ? config.text : "text-white";
+
+                    let wrapperClass = `flex justify-center items-center pointer-events-none select-none font-bold ${pieceColorClass} leading-none ${
+                      pieceStyle !== "emoji" ? "text-xl" : "text-2xl"
+                    } w-full h-full relative z-20`;
+
+                    if (isSanctuary && tDetails) {
+                      wrapperClass += ` border-double border-4 ${tDetails.color.border} rounded-md bg-black/20 backdrop-blur-sm`;
+                    }
+
+                    return (
+                      <div className={wrapperClass}>
+                        <div
+                          className={`w-[80%] h-[80%] flex items-center justify-center ${isBlocked ? "opacity-40 grayscale" : ""}`}
+                        >
+                          {getIcon(unit, "w-full h-full object-contain")}
+                        </div>
+                        {isBlocked && (
+                          <div className="absolute inset-0 flex items-center justify-center z-30">
+                            <Ban
+                              className="text-red-500/80 w-3/4 h-3/4 drop-shadow-md"
+                              strokeWidth={3}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()
+              }
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Overlay Text for Board Type (Centered on Hover) */}
+      <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-500">
+        <div className="bg-slate-900/90 text-white px-6 py-3 rounded-2xl backdrop-blur-md border border-white/10 shadow-2xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-500">
+          <span className="text-sm font-black uppercase tracking-[0.2em] leading-none text-center">
+            {labelOverride ||
+              (selectedMode
+                ? selectedMode === "2v2"
+                  ? "Capture the World"
+                  : selectedMode === "4p"
+                    ? "Ultimate Showdown"
+                    : selectedMode === "2p-ns"
+                      ? "North vs South"
+                      : "East vs West"
+                : "Awaiting Protocol")}
+          </span>
+        </div>
+      </div>
+
+      {/* Player Toggles (Absolute Corners) */}
+      {selectedMode && playerConfig && onTogglePlayerType && (
+        <div className="pointer-events-auto">
+          {(selectedMode === "2p-ns"
+            ? ["player1", "player4"]
+            : selectedMode === "2p-ew"
+              ? ["player3", "player2"]
+              : ["player1", "player2", "player3", "player4"]
+          ).map((pid) => {
+            const isComputer = playerConfig[pid] === "computer";
+            const config =
+              pid === "player1"
+                ? { name: "N", color: "brand-red", pos: "top-6 left-6" }
+                : pid === "player2"
+                  ? { name: "E", color: "yellow", pos: "top-6 right-6" }
+                  : pid === "player3"
+                    ? { name: "W", color: "green", pos: "bottom-6 left-6" }
+                    : {
+                        name: "S",
+                        color: "brand-blue",
+                        pos: "bottom-6 right-6",
+                      };
+
+            return (
+              <button
+                key={pid}
+                onClick={() => onTogglePlayerType(pid)}
+                className={`absolute ${config.pos} z-40 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-sm border transition-all shadow-lg hover:scale-105 ${
+                  isComputer
+                    ? "bg-slate-900/90 border-slate-700 text-slate-300 hover:bg-slate-800"
+                    : `bg-white/90 dark:bg-slate-800/90 border-${config.color} text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700`
+                }`}
+                title={`Toggle ${config.name} Player Type`}
+              >
+                <div
+                  className={`w-2 h-2 rounded-full bg-${config.color} shadow-[0_0_8px_currentColor]`}
+                />
+                <span className="text-[10px] font-black uppercase tracking-wider">
+                  {config.name}
+                </span>
+                <div className="w-px h-3 bg-current opacity-20" />
+                <span
+                  className={`text-[10px] font-bold uppercase tracking-wider ${isComputer ? "text-slate-400" : `text-${config.color}`}`}
+                >
+                  {isComputer ? "CPU" : "HUMAN"}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Protocol Overlays */}
+      {selectedProtocol && selectedProtocol !== "classic" && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+          {selectedProtocol === "custom" && ( // Omega - God Mode
+            <div className="animate-in zoom-in-50 duration-500">
+              <div className="bg-brand-red/20 p-6 rounded-full backdrop-blur-sm border-4 border-brand-red/50 shadow-[0_0_50px_rgba(239,68,68,0.5)]">
+                <Edit size={64} className="text-brand-red drop-shadow-lg" />
+              </div>
+            </div>
+          )}
+
+          {selectedProtocol === "terrainiffic" && ( // Chi - Flow Mode
+            // No overlay icon for Chi mode anymore - we show the preview!
+            <div className="hidden" />
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default BoardPreview;

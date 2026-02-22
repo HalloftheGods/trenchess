@@ -1,0 +1,11 @@
+export { LazyMenuHome } from "@/app/routes/menu/components/views/MenuHome";
+export { LazyMenuPlay } from "@/app/routes/menu/components/views/MenuPlay";
+export { LazyMenuLearn } from "@/app/routes/menu/components/views/MenuLearn";
+export { LazyMenuEndgame } from "@/app/routes/menu/components/views/MenuEndgame";
+export { LazyMenuTrench } from "@/app/routes/menu/components/views/MenuTrench";
+export { LazyMenuLobby } from "@/app/routes/menu/components/views/MenuLobby";
+export { LazyMenuLocal } from "@/app/routes/menu/components/views/MenuLocal";
+export { LazyMenuSetup } from "@/app/routes/menu/components/views/MenuSetup";
+export { LazyMenuChess } from "@/app/routes/menu/components/views/MenuChess";
+export { LazyMenuScoreboard } from "@/app/routes/menu/components/views/MenuScoreboard";
+export { LazyMenuLayout } from "@/app/routes/menu/components/templates/MenuLayout";

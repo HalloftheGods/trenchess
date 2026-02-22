@@ -1,0 +1,11 @@
+@utility section-divider-container {
+  @apply flex items-center justify-center gap-4 w-full;
+}
+
+@utility section-divider-line {
+  @apply h-px flex-1 relative overflow-hidden;
+}
+
+@utility section-divider-label {
+  @apply text-sm font-bold text-center uppercase tracking-[0.2em] whitespace-nowrap;
+}

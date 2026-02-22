@@ -4,8 +4,8 @@ import {
   createInitialState,
   applyClassicalFormation,
   generateElementalTerrain,
-} from "../utils/setupLogic";
-import { getBestMove } from "../utils/aiLogic";
+} from "@setup/setupLogic";
+import { getBestMove } from "@ai/aiLogic";
 
 const SERVER_URL = "http://localhost:3001";
 const ROOM_ID =
