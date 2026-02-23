@@ -3,8 +3,16 @@ import type { BoardPiece } from "@/shared/types/game";
 import { BOARD_SIZE } from "@/shared/constants/core.constants";
 import { PIECES } from "@/core/data/unitDetails";
 
+interface StockfishInstance {
+  addMessageListener: (cb: (line: string) => void) => void;
+  postMessage: (msg: string) => void;
+  FS: {
+    writeFile: (path: string, content: string) => void;
+  };
+}
+
 class StockfishEngine {
-  private engine: any = null;
+  private engine: StockfishInstance | null = null;
   private ready: Promise<void>;
   private onResolveBestMove: ((move: string) => void) | null = null;
 
@@ -14,7 +22,7 @@ class StockfishEngine {
 
   private async init() {
     try {
-      // @ts-expect-error
+      // @ts-expect-error: Stockfish is a WASM module with non-standard initialization
       this.engine = await Stockfish({
         mainScriptUrlOrBlob:
           (typeof window !== "undefined" ? window.location.origin : "") +
@@ -29,6 +37,8 @@ class StockfishEngine {
           return path;
         },
       });
+
+      if (!this.engine) return;
 
       // Setup listener
       this.engine.addMessageListener((line: string) => {

@@ -161,7 +161,13 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
     <RoutePageLayout className="pb-8">
       <RoutePageHeader
         label={title}
-        color={labelColor === "indigo" ? "blue" : (labelColor as any)}
+        color={
+          (labelColor === "indigo" || labelColor === "purple"
+            ? "blue"
+            : labelColor === "orange"
+              ? "amber"
+              : labelColor) as "slate" | "amber" | "blue" | "emerald" | "red"
+        }
         onBackClick={onBack}
         className="mb-0"
       />

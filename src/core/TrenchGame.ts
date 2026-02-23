@@ -8,10 +8,11 @@ import type {
 import { setupPhase } from "@/core/phases/setupPhase";
 import { playPhase } from "@/core/phases/playPhase";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
   name: "battle-chess",
 
-  setup: ({ setupData }: { setupData?: TrenchGameSetupData }) => {
+  setup: (_, setupData) => {
     const data = setupData as TrenchGameSetupData;
     const mode: GameMode = data?.mode || "2p-ns";
     let players: string[];

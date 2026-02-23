@@ -41,7 +41,7 @@ export const TerrainIconBadge: React.FC<TerrainIconBadgeProps> = ({
 
   // Fallback if not in TERRAIN_DETAILS
   let badgeType = "terrain-badge-blue";
-  let IconComp: any = Waves;
+  let IconComp: React.ElementType = Waves;
 
   if (terrainKey === TERRAIN_TYPES.RUBBLE) {
     badgeType = "terrain-badge-red";

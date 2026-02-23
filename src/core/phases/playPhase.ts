@@ -2,19 +2,20 @@ import { INVALID_MOVE } from "boardgame.io/core";
 import { BOARD_SIZE } from "@/shared/constants/core.constants";
 import { PIECES } from "@/core/data/unitDetails";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
-import type { PieceType } from "@/shared/types/game";
+import type { PieceType, TrenchGameState } from "@/types/game";
+import type { Ctx } from "boardgame.io";
 
 export const playPhase = {
   turn: {
     order: {
       first: () => 0,
-      next: ({ G, ctx }: any) =>
+      next: ({ G, ctx }: { G: TrenchGameState; ctx: Ctx }) =>
         (ctx.playOrderPos + 1) % G.activePlayers.length,
     },
   },
   moves: {
     movePiece: (
-      { G, playerID, ctx }: any,
+      { G, playerID, ctx }: { G: TrenchGameState; playerID?: string; ctx: Ctx },
       from: [number, number],
       to: [number, number],
     ) => {

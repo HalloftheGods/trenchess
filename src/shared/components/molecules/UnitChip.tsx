@@ -1,15 +1,8 @@
 import React from "react";
 import { Ban, ShieldPlus, Zap } from "lucide-react";
-import { PIECES, INITIAL_ARMY, unitColorMap } from "@/core/data/unitDetails";
+import { INITIAL_ARMY, unitColorMap } from "@/core/data/unitDetails";
 
-export const CHESS_NAME: Record<string, { chess: string; role: string }> = {
-  [PIECES.ROOK]: { chess: "Rook", role: "Heavy Armor" },
-  [PIECES.BISHOP]: { chess: "Bishop", role: "Ranged" },
-  [PIECES.KNIGHT]: { chess: "Knight", role: "Cavalry" },
-  [PIECES.QUEEN]: { chess: "Queen", role: "Elite" },
-  [PIECES.KING]: { chess: "King", role: "Leader" },
-  [PIECES.PAWN]: { chess: "Pawn", role: "Infantry" },
-};
+import { CHESS_NAME } from "@/shared/constants/unit.constants";
 
 interface UnitChipProps {
   pieceKey: string;

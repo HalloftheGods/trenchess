@@ -33,10 +33,13 @@ export const TerrainBadge: React.FC<TerrainBadgeProps> = ({
       onClick={onClick}
       className={`p-2.5 rounded-2xl ${bg} ${text} border ${border} shadow-sm backdrop-blur-md relative transition-all group/t cursor-pointer hover:scale-110 hover:shadow-lg hover:border-white/20 ${isActive ? "opacity-100" : !canTraverse ? "opacity-[0.42] grayscale-[0.5]" : "opacity-[0.85]"} ${isActive ? `ring-2 ${ring} scale-110 shadow-lg` : ""} ${isProtected ? "border-double border-4" : !canTraverse ? "border-dotted border-4" : ""}`}
     >
-      {React.cloneElement(icon as React.ReactElement<any>, {
-        size: 24,
-        className: "fill-current/10",
-      })}
+      {React.cloneElement(
+        icon as React.ReactElement<{ size?: number; className?: string }>,
+        {
+          size: 24,
+          className: "fill-current/10",
+        },
+      )}
 
       {/* Shield Badge for Protection */}
       {isProtected && (

@@ -276,7 +276,7 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
               TERRAIN_LIST[
                 (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
                   TERRAIN_LIST.length
-              ].icon as React.ReactElement<any>,
+              ].icon as React.ReactElement<{ size?: number }>,
               { size: 20 },
             )
           : undefined
@@ -285,7 +285,7 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
         selectedTerrainIdx >= 0
           ? React.cloneElement(
               TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
-                .icon as React.ReactElement<any>,
+                .icon as React.ReactElement<{ size?: number }>,
               { size: 20 },
             )
           : undefined

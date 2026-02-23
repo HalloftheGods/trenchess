@@ -96,3 +96,12 @@ export const ALL_UNITS = [
   PIECES.KNIGHT,
   PIECES.PAWN,
 ];
+
+export const CHESS_NAME: Record<string, { chess: string; role: string }> = {
+  [PIECES.ROOK]: { chess: "Rook", role: "Heavy Armor" },
+  [PIECES.BISHOP]: { chess: "Bishop", role: "Ranged" },
+  [PIECES.KNIGHT]: { chess: "Knight", role: "Cavalry" },
+  [PIECES.QUEEN]: { chess: "Queen", role: "Elite" },
+  [PIECES.KING]: { chess: "King", role: "Leader" },
+  [PIECES.PAWN]: { chess: "Pawn", role: "Infantry" },
+};

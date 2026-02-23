@@ -9,7 +9,7 @@ export type GuideColor =
   | "violet"
   | "slate";
 
-export const getGuideBgColor = (color: GuideColor) => {
+const getGuideBgColor = (color: GuideColor) => {
   const map: Record<GuideColor, string> = {
     emerald: "bg-emerald-500",
     amber: "bg-amber-500",
@@ -18,19 +18,6 @@ export const getGuideBgColor = (color: GuideColor) => {
     indigo: "bg-indigo-500",
     violet: "bg-violet-500",
     slate: "bg-slate-500",
-  };
-  return map[color] || map.slate;
-};
-
-export const getGuideTextColor = (color: GuideColor) => {
-  const map: Record<GuideColor, string> = {
-    emerald: "text-emerald-500",
-    amber: "text-amber-500",
-    red: "text-brand-red",
-    blue: "text-brand-blue",
-    indigo: "text-indigo-500",
-    violet: "text-violet-500",
-    slate: "text-slate-500",
   };
   return map[color] || map.slate;
 };

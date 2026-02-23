@@ -9,6 +9,7 @@ import { Trees, Waves, Mountain, ShieldPlus, X } from "lucide-react";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { PIECES } from "@/core/data/unitDetails";
 import { isUnitProtected } from "@/core/rules/gameLogic";
+import type { TerrainType } from "@/types/game";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
 
 /** Which terrain icon keys each unit has in its levelUp data. */
@@ -240,7 +241,7 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
   const isCompatible = isTraversable || isDesertTank;
   const isProtected = isUnitProtected(
     selectedUnit,
-    terrain.terrainTypeKey as any,
+    terrain.terrainTypeKey as TerrainType,
   );
 
   // ── Move preview grid computation ─────────────────────────────────

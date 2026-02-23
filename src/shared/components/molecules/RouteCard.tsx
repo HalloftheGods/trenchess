@@ -1,4 +1,5 @@
 import { type LucideIcon } from "lucide-react";
+import { type PreviewConfig } from "@/types/game";
 import { useRouteContext } from "@/route.context";
 
 type ColorVariant =
@@ -30,7 +31,7 @@ interface MenuCardProps {
   /** Optional: override the title rendering with custom JSX */
   titleNode?: React.ReactNode;
   /** Optional: configuration for the board preview when this card is hovered */
-  preview?: any;
+  preview?: PreviewConfig;
   /** Visual variant of the card. Default is 'tinted' */
   variant?: "tinted" | "solid" | "transparent";
 }

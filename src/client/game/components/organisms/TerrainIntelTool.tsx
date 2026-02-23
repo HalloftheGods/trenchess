@@ -10,6 +10,7 @@ import { ShieldPlus, X } from "lucide-react";
 import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
 import { TERRAIN_INTEL } from "@/core/data/terrainDetails";
 import { isUnitProtected } from "@/core/rules/gameLogic";
+import type { TerrainType } from "@/types/game";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -70,7 +71,7 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
   const isCompatible = isTraversable || isDesertTank;
   const isProtected = isUnitProtected(
     selectedUnit,
-    terrain.terrainTypeKey as any,
+    terrain.terrainTypeKey as TerrainType,
   );
 
   // ── Move preview grid computation ─────────────────────────────────
@@ -190,7 +191,7 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
               const isActive = selectedUnit === uType;
               const uProtected = isUnitProtected(
                 uType,
-                terrain.terrainTypeKey as any,
+                terrain.terrainTypeKey as TerrainType,
               );
 
               return (
@@ -231,9 +232,12 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
           <div
             className={`w-20 h-20 sm:w-28 sm:h-28 rounded-2xl ${terrain.bg} ${terrain.text} flex items-center justify-center shadow-inner border ${terrain.border} transition-all`}
           >
-            {React.cloneElement(terrain.icon as React.ReactElement<any>, {
-              className: "w-12 h-12 sm:w-16 sm:h-16",
-            })}
+            {React.cloneElement(
+              terrain.icon as React.ReactElement<{ className?: string }>,
+              {
+                className: "w-12 h-12 sm:w-16 sm:h-16",
+              },
+            )}
           </div>
 
           {/* Terrain selector: 2x2 Grid */}
@@ -395,9 +399,12 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
           <div
             className={`w-16 h-16 rounded-2xl ${terrain.bg} ${terrain.text} flex items-center justify-center shadow-inner border ${terrain.border} shrink-0`}
           >
-            {React.cloneElement(terrain.icon as React.ReactElement<any>, {
-              className: "w-8 h-8",
-            })}
+            {React.cloneElement(
+              terrain.icon as React.ReactElement<{ className?: string }>,
+              {
+                className: "w-8 h-8",
+              },
+            )}
           </div>
           <div className="flex-1 text-center sm:text-left">
             <h4

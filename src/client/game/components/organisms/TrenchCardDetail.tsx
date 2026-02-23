@@ -48,10 +48,10 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
 
   // Dynamic border style based on unit affinity
   const unitProtected = activeUnit
-    ? isUnitProtected(activeUnit as PieceType, terrainType as any)
+    ? isUnitProtected(activeUnit as PieceType, terrainType)
     : false;
   const unitCanTraverse = activeUnit
-    ? canUnitTraverseTerrain(activeUnit as any, terrainType as TerrainType)
+    ? canUnitTraverseTerrain(activeUnit as PieceType, terrainType)
     : true;
   const panelBorderStyle = unitProtected
     ? "border-8 border-dotted scale-[0.98]"

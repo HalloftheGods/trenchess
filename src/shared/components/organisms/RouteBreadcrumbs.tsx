@@ -24,6 +24,8 @@ import {
   DualToneSwords,
 } from "../atoms/RouteIcons";
 
+type BreadcrumbColor = "red" | "blue" | "emerald" | "amber" | "slate";
+
 export const RouteBreadcrumbs: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -131,7 +133,7 @@ export const RouteBreadcrumbs: React.FC = () => {
         ? "blue"
         : effectivePlayMode
           ? "red"
-          : "slate") as any,
+          : "slate") as BreadcrumbColor,
       path: "/play",
       value: effectivePlayMode,
     },
@@ -140,7 +142,7 @@ export const RouteBreadcrumbs: React.FC = () => {
           {
             icon: <Key size={18} />,
             label: `Lobby: ${multiplayer?.roomId?.toUpperCase() || "CODE"}`,
-            color: (multiplayer?.roomId ? "blue" : "slate") as any,
+            color: (multiplayer?.roomId ? "blue" : "slate") as BreadcrumbColor,
             path: "/play/lobby",
             value: multiplayer?.roomId,
           },
@@ -159,7 +161,7 @@ export const RouteBreadcrumbs: React.FC = () => {
             ? "emerald"
             : effectivePlayerCount === 4
               ? "amber"
-              : "slate") as any,
+              : "slate") as BreadcrumbColor,
       path: effectivePlayMode === "online" ? "/play/lobby" : "/play/local",
       value: effectivePlayerCount,
       badge: effectivePlayerCount > 0 ? effectivePlayerCount : undefined,
@@ -173,7 +175,7 @@ export const RouteBreadcrumbs: React.FC = () => {
           ? "slate"
           : selectedBoard
             ? "emerald"
-            : "slate") as any,
+            : "slate") as BreadcrumbColor,
       path: "/play/setup?step=1",
       value: selectedBoard,
     },
@@ -188,7 +190,7 @@ export const RouteBreadcrumbs: React.FC = () => {
             ? "emerald"
             : selectedPreset
               ? "red"
-              : "slate") as any,
+              : "slate") as BreadcrumbColor,
       path: "/play/setup?step=2",
       value: selectedPreset,
     },

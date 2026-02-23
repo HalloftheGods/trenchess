@@ -8,6 +8,7 @@ import {
   UNIT_DETAILS,
   INITIAL_ARMY,
 } from "@/core/data/unitDetails";
+import type { TerrainType } from "@/shared/types/game";
 import { TERRAIN_DETAILS, TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { useRouteContext } from "@/route.context";
 import type { PieceStyle } from "@/shared/constants/unit.constants";
@@ -257,7 +258,7 @@ export const StatsView = () => {
                     UNIT_DETAILS[selectedPiece]?.levelUp?.sanctuaryTerrain ||
                     [];
                   const isSanctuary = sanctuaryList.includes(
-                    terrain.key as any,
+                    terrain.key as TerrainType,
                   );
 
                   // Aggregate stats for this piece starting on this terrain across ALL defenders

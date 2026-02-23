@@ -1,7 +1,8 @@
 import React from "react";
 import { INITIAL_ARMY, unitColorMap } from "@/core/data/unitDetails";
-import { CHESS_NAME } from "./UnitChip";
+import { CHESS_NAME } from "@/shared/constants/unit.constants";
 import type { TerrainDetail } from "@/core/data/terrainDetails";
+import type { ArmyUnit } from "@/types/game";
 
 interface SanctuaryBadgeListProps {
   terrain: TerrainDetail;
@@ -14,7 +15,7 @@ export const SanctuaryBadgeList: React.FC<SanctuaryBadgeListProps> = ({
     <div className="flex gap-2 flex-wrap justify-center">
       {terrain.sanctuaryUnits.map((pk: string) => {
         const colors = unitColorMap[pk];
-        const unit = INITIAL_ARMY.find((u: any) => u.type === pk);
+        const unit = INITIAL_ARMY.find((u: ArmyUnit) => u.type === pk);
         if (!colors || !unit) return null;
         const Icon = unit.lucide;
         return (

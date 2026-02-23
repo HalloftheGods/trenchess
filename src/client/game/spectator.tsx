@@ -73,10 +73,7 @@ const SpectatorView: React.FC<SpectatorViewProps> = ({
         />
       }
       shoutbox={
-        <Shoutbox
-          multiplayer={game.multiplayer as any}
-          darkMode={game.darkMode}
-        />
+        <Shoutbox multiplayer={game.multiplayer} darkMode={game.darkMode} />
       }
     />
   );

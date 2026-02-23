@@ -2,7 +2,8 @@ import { INVALID_MOVE } from "boardgame.io/core";
 import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
-import type { PieceType, TerrainType } from "@/shared/types/game";
+import type { PieceType, TerrainType, TrenchGameState } from "@/types/game";
+import type { Ctx } from "boardgame.io";
 
 export const setupPhase = {
   start: true,
@@ -12,7 +13,7 @@ export const setupPhase = {
   },
   moves: {
     placePiece: (
-      { G, playerID, ctx }: any,
+      { G, playerID, ctx }: { G: TrenchGameState; playerID?: string; ctx: Ctx },
       r: number,
       c: number,
       type: PieceType | null,
@@ -54,7 +55,7 @@ export const setupPhase = {
     },
 
     placeTerrain: (
-      { G, playerID, ctx }: any,
+      { G, playerID, ctx }: { G: TrenchGameState; playerID?: string; ctx: Ctx },
       r: number,
       c: number,
       type: TerrainType,
@@ -110,7 +111,10 @@ export const setupPhase = {
       G.terrainInventory[pid].splice(idx, 1);
     },
 
-    ready: ({ G, playerID, ctx }: any, explicitPid?: string) => {
+    ready: (
+      { G, playerID, ctx }: { G: TrenchGameState; playerID?: string; ctx: Ctx },
+      explicitPid?: string,
+    ) => {
       const pid =
         explicitPid ||
         (playerID !== undefined
@@ -119,7 +123,7 @@ export const setupPhase = {
       if (pid) G.readyPlayers[pid] = true;
     },
   },
-  endIf: ({ G }: any) => {
+  endIf: ({ G }: { G: TrenchGameState }) => {
     return G.activePlayers.every((p: string) => G.readyPlayers[p]);
   },
 };
