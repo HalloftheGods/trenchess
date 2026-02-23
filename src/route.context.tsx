@@ -1,7 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState } from "react";
-import type { GameMode, PreviewConfig, SeedItem } from "@/shared/types/game";
-import type { MultiplayerState } from "@hooks/useMultiplayer";
+import type {
+  GameMode,
+  PreviewConfig,
+  SeedItem,
+  MultiplayerState,
+} from "@/types";
 
 interface RouteContextType {
   hoveredMenu: string | null;

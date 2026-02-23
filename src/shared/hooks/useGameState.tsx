@@ -23,20 +23,7 @@ import { TrenchGame } from "@/core/TrenchGame";
 import type { TrenchGameState } from "@/types/game";
 import { createInitialState, getPlayersForMode } from "@/core/setup/setupLogic";
 import type { Ctx } from "boardgame.io";
-import type {
-  GameStateHook,
-  BoardState,
-  TurnState,
-  GameConfigState,
-  GameCore,
-  PlacementManager,
-  MoveExecution,
-  BoardInteraction,
-  ZenGardenInteraction,
-  SetupActions,
-  BgioClient,
-  MultiplayerState,
-} from "@/types";
+import type { GameStateHook, BgioClient } from "@/types";
 
 export function useGameState(): GameStateHook {
   const theme = useGameTheme();

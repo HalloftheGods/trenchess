@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArrowLeft, Target, Shield, Crosshair } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import statsDataObj from "@/assets/statistics.json";
+import statsDataObj from "@assets/statistics.json";
 import {
   PIECES,
   unitColorMap,

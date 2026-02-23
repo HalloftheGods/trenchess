@@ -10,7 +10,6 @@ import type {
   ArmyUnit,
   PieceStyle,
 } from "@/types";
-healthcare;
 
 export interface UseBoardPreviewProps {
   selectedMode: GameMode | null;

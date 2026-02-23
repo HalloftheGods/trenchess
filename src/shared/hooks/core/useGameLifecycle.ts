@@ -2,17 +2,13 @@ import { useEffect, useCallback } from "react";
 import { isPlayerInCheck } from "@/core/rules/gameLogic";
 import { serializeGame } from "@utils/gameUrl";
 import type {
-  GameState,
   BoardPiece,
   TerrainType,
   BoardState,
   TurnState,
   GameConfigState,
-  BgioClient,
   GameCore,
 } from "@/types";
-import type { TrenchGameState } from "@/types/game";
-import type { Ctx } from "boardgame.io";
 import {
   getPlayersForMode,
   getQuota,

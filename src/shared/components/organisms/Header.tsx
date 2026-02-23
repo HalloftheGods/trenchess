@@ -72,7 +72,7 @@ const Header = ({
       <div className="flex flex-col items-center justify-center gap-3">
         <SegmentedControl
           value={isFlipped}
-          onChange={setIsFlipped}
+          onChange={(val) => setIsFlipped(val as boolean)}
           options={[
             {
               label: "North",

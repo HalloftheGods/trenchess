@@ -1,11 +1,11 @@
 import { describe, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
-import { PIECES } from "../core/configs/unitDetails";
+import { PIECES } from "../core/data/unitDetails";
 import { getValidMoves } from "../core/rules/movement";
-import { TERRAIN_TYPES } from "../core/configs/terrainDetails";
+import { TERRAIN_TYPES } from "../core/data/terrainDetails";
 import { BOARD_SIZE } from "../shared/constants/core.constants";
-import type { BoardPiece, TerrainType } from "../shared/types/game";
+import type { BoardPiece, TerrainType, PieceType } from "@/types";
 
 const ITERATIONS_PER_MATCHUP = 500_000;
 const MAX_TURNS = 10;
@@ -82,10 +82,10 @@ describe("Piece Statistics Generator", () => {
       >
     > = {};
 
-    for (const attacker of pieceKeys) {
+    for (const attacker of pieceKeys as PieceType[]) {
       stats[attacker] = {};
 
-      for (const defender of pieceKeys) {
+      for (const defender of pieceKeys as PieceType[]) {
         let totalPlacements = 0;
         let captures = 0;
 
