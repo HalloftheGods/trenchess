@@ -12,8 +12,8 @@ export interface UnitBlueprint {
 }
 
 export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
-  [KING.id]: {
-    type: KING.id,
+  [KING]: {
+    type: KING,
     movePattern: (r: number, c: number) => [
       [r - 1, c],
       [r + 1, c],
@@ -38,8 +38,8 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
     ],
     sanctuaryTerrain: ["rubble", "trees", "ponds"],
   },
-  [QUEEN.id]: {
-    type: QUEEN.id,
+  [QUEEN]: {
+    type: QUEEN,
     movePattern: (r: number, c: number) => {
       const moves: [number, number][] = [];
       for (let i = 1; i < 12; i++) {
@@ -66,8 +66,8 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
       ].map(([dr, dc]) => [r + dr, c + dc]) as [number, number][],
     sanctuaryTerrain: ["rubble", "trees", "ponds"],
   },
-  [ROOK.id]: {
-    type: ROOK.id,
+  [ROOK]: {
+    type: ROOK,
     movePattern: (r: number, c: number) => {
       const moves: [number, number][] = [];
       for (let i = 1; i < 12; i++) {
@@ -83,8 +83,8 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
     ],
     sanctuaryTerrain: ["ponds"],
   },
-  [BISHOP.id]: {
-    type: BISHOP.id,
+  [BISHOP]: {
+    type: BISHOP,
     movePattern: (r: number, c: number) => {
       const moves: [number, number][] = [];
       for (let i = 1; i < 12; i++) {
@@ -105,8 +105,8 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
     ],
     sanctuaryTerrain: ["trees"],
   },
-  [KNIGHT.id]: {
-    type: KNIGHT.id,
+  [KNIGHT]: {
+    type: KNIGHT,
     movePattern: (r: number, c: number) => [
       [r - 2, c - 1],
       [r - 2, c + 1],
@@ -125,8 +125,8 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
     ],
     sanctuaryTerrain: ["rubble"],
   },
-  [PAWN.id]: {
-    type: PAWN.id,
+  [PAWN]: {
+    type: PAWN,
     movePattern: (r: number, c: number) => [[r - 1, c]],
     newMovePattern: (r: number, c: number) => [
       [r + 2, c],

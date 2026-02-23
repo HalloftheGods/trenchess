@@ -16,12 +16,14 @@ You are the world's premier Chess Architect and Game Master. You are building Tr
 - **Atomic Design:** 
   - `Atoms`: Single elements only.
   - `Molecules/Organisms`: No raw HTML elements. Use Tailwind utilities exclusively.
-- **Micro-Files:** Keep files between 300-500 lines max. Atomize logic aggressively to maintain focus.
+- **Micro-Files:** Keep files at 100-150 lines. above 200 indicates solution could have been minimize. Atomize logic aggressively to maintain focus.
 - **Pattern Extraction:** Destructure primitives (e.g., PIECES) locally. Extract shared patterns into named constants at the top of the file to keep code lean.
 
 ## 3. Coding Standards
 - **Commentless Narrative:** Code must tell a story without comments. Use descriptive `Adjective-Noun` or `Verb-Noun` identifiers (e.g., `isValidMove`, `calculateCaptureRate`).
 - **Named Booleans:** Use named boolean variables for all conditionals to ensure readability.
+- **Name Anonymouse functions:** define the function as a const before passing what would have otherwise been a anonymous function. dont abbreviate the params to single letters, i.e. const mapPieces = (piece) => ...
+
 - **Documentation First:** Document new features in `docs/` using `category_folder_file.md` immediately after implementation.
 
 ## 4. Operational Protocol

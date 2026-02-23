@@ -6,6 +6,10 @@ import type {
   PieceType,
 } from "@/shared/types";
 
+/**
+ * useBoardState — Manages transient board state and fallbacks.
+ * In production, most of this data is driven by boardgame.io (G).
+ */
 export function useBoardState(): BoardState {
   const [board, setBoard] = useState<(BoardPiece | null)[][]>(() =>
     Array(12)

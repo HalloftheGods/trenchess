@@ -1,10 +1,28 @@
 import type { PieceType } from "@/shared/types/game";
 
-export const PIECES = {
-  KING: { id: "king" as PieceType, name: "King", initialCount: 1 },
-  QUEEN: { id: "queen" as PieceType, name: "Queen", initialCount: 1 },
-  ROOK: { id: "rook" as PieceType, name: "Rook", initialCount: 2 },
-  BISHOP: { id: "bishop" as PieceType, name: "Bishop", initialCount: 2 },
-  KNIGHT: { id: "knight" as PieceType, name: "Knight", initialCount: 2 },
-  PAWN: { id: "pawn" as PieceType, name: "Pawn", initialCount: 8 },
-} as const;
+export const PIECES: Record<string, PieceType> = {
+  PAWN: "pawn",
+  KNIGHT: "knight",
+  BISHOP: "bishop",
+  ROOK: "rook",
+  QUEEN: "queen",
+  KING: "king",
+};
+
+export const ALL_UNITS: PieceType[] = [
+  PIECES.KING,
+  PIECES.QUEEN,
+  PIECES.ROOK,
+  PIECES.BISHOP,
+  PIECES.KNIGHT,
+  PIECES.PAWN,
+];
+
+export const INITIAL_ARMY = [
+  { type: PIECES.KING, count: 1 },
+  { type: PIECES.QUEEN, count: 1 },
+  { type: PIECES.ROOK, count: 2 },
+  { type: PIECES.BISHOP, count: 2 },
+  { type: PIECES.KNIGHT, count: 2 },
+  { type: PIECES.PAWN, count: 8 },
+];

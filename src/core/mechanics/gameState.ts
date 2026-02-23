@@ -16,7 +16,7 @@ export const isPlayerInCheck = (
   for (let r = 0; r < BOARD_SIZE; r++) {
     for (let c = 0; c < BOARD_SIZE; c++) {
       const p = board[r][c];
-      if (p && p.player === player && p.type === KING.id) {
+      if (p && p.player === player && p.type === KING) {
         kingPos = [r, c];
         break;
       }

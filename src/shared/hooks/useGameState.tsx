@@ -1,157 +1,81 @@
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useState } from "react";
 import { useGameTheme } from "@hooks/useGameTheme";
-import { useMultiplayer, getServerUrl } from "@hooks/useMultiplayer";
+import { useMultiplayer } from "@hooks/useMultiplayer";
 import { useComputerOpponent } from "@hooks/useComputerOpponent";
 
-// Core State Atoms
+// Core State Atoms (Fallback/Transient)
 import { useBoardState } from "./core/useBoardState";
 import { useTurnState } from "./core/useTurnState";
 import { useGameConfig } from "./core/useGameConfig";
 
-// Logic Directors
+// Logic Directors & Micro-Artifacts
+import { useGameEngine } from "./core/useGameEngine";
 import { useGameLifecycle } from "./core/useGameLifecycle";
 import { usePlacementManager } from "./core/usePlacementManager";
 import { useMoveExecution } from "./core/useMoveExecution";
 import { useBoardInteraction } from "./core/useBoardInteraction";
 import { useZenGardenInteraction } from "./core/useZenGardenInteraction";
 import { useSetupActions } from "./core/useSetupActions";
-import { useBgioSync } from "./core/useBgioSync";
 
-import { Client } from "boardgame.io/client";
-import { SocketIO } from "boardgame.io/multiplayer";
-import { Trenchess } from "@/core/Trenchess";
-import type { TrenchessState } from "@/shared/types/game";
-import { createInitialState, getPlayersForMode } from "@/core/setup/setupLogic";
-import type { Ctx } from "boardgame.io";
-import type { GameStateHook, BgioClient } from "@/shared/types";
+import type { GameStateHook } from "@/shared/types";
 
+/**
+ * useGameState — The Grand Architect's Primary Hook.
+ * Orchestrates the boardgame.io engine and provides a unified,
+ * single-source-of-truth interface for the entire UI.
+ */
 export function useGameState(): GameStateHook {
   const theme = useGameTheme();
   const multiplayer = useMultiplayer();
 
-  // 1. Core State
+  // 1. Fallback states used before the engine is initialized
   const boardState = useBoardState();
   const turnState = useTurnState();
   const configState = useGameConfig();
-
-  // 2. BGIO Sync State
-  const [bgioState, setBgioState] = useState<{
-    G: TrenchessState;
-    ctx: Ctx;
-  } | null>(null);
+  
+  // 2. Transient UI states
   const [isStarted, setIsStarted] = useState(false);
 
-  // 3. Calculated master values for sync
-  const syncedGameState =
-    bgioState?.ctx?.phase === "setup"
-      ? "setup"
-      : bgioState?.ctx?.phase === "play"
-        ? "play"
-        : isStarted
-          ? "setup"
-          : "menu";
-  const syncedBoard = bgioState?.G?.board ?? boardState.board;
-  const syncedTerrain = bgioState?.G?.terrain ?? boardState.terrain;
+  // 3. Authoritative Engine Instance
+  const { bgioState, clientRef, isEngineActive } = useGameEngine({
+    mode: configState.mode,
+    showBgDebug: configState.showBgDebug,
+    multiplayer,
+    isStarted,
+  });
 
-  // 4. Lifecycle Orchestrator
+  // 4. Derive authoritative values from engine (G/ctx)
+  const board = isEngineActive ? bgioState!.G.board : boardState.board;
+  const terrain = isEngineActive ? bgioState!.G.terrain : boardState.terrain;
+  const inventory = isEngineActive ? bgioState!.G.inventory : boardState.inventory;
+  const terrainInventory = isEngineActive ? bgioState!.G.terrainInventory : boardState.terrainInventory;
+  const capturedBy = isEngineActive ? bgioState!.G.capturedBy : boardState.capturedBy;
+
+  const turn = isEngineActive && bgioState!.G.playerMap && bgioState!.ctx
+    ? bgioState!.G.playerMap[bgioState!.ctx.currentPlayer] || turnState.turn
+    : turnState.turn;
+    
+  const activePlayers = isEngineActive ? bgioState!.G.activePlayers : turnState.activePlayers;
+  const readyPlayers = isEngineActive ? bgioState!.G.readyPlayers : turnState.readyPlayers;
+  const winner = isEngineActive ? (bgioState!.ctx.gameover?.winner ?? null) : turnState.winner;
+
+  const gameState = isEngineActive
+    ? (bgioState!.ctx.phase as "setup" | "play")
+    : isStarted ? "setup" : "menu";
+
+  // 5. Lifecycle Orchestrator
   const core = useGameLifecycle(
     boardState,
     turnState,
     configState,
-    syncedBoard,
-    syncedTerrain,
+    board,
+    terrain,
   );
 
-  const clientRef = useRef<BgioClient | undefined>(undefined);
-  const lastClientParamsRef = useRef<{
-    playerID?: string;
-    roomId?: string;
-    debug?: boolean;
-  }>({});
-
-  const initClient = useCallback(() => {
-    const isOnline = !!multiplayer.roomId;
-    const numPlayers = core.configState.mode === "4p" ? 4 : 2;
-
-    const playerID = isOnline
-      ? multiplayer.playerIndex !== null
-        ? String(multiplayer.playerIndex)
-        : "0"
-      : undefined;
-
-    const clientConfig = {
-      game: Trenchess,
-      numPlayers,
-      debug: core.configState.showBgDebug,
-      playerID,
-      setupData: createInitialState(
-        core.configState.mode,
-        getPlayersForMode(core.configState.mode),
-      ),
-    } as Parameters<typeof Client>[0];
-
-    if (multiplayer.roomId && multiplayer.playerCredentials) {
-      clientConfig.multiplayer = SocketIO({ server: getServerUrl() });
-      clientConfig.matchID = multiplayer.roomId;
-      clientConfig.credentials = multiplayer.playerCredentials;
-    }
-
-    if (clientRef.current) {
-      clientRef.current.stop();
-    }
-
-    clientRef.current = Client(
-      clientConfig,
-    ) as unknown as typeof clientRef.current;
-    clientRef.current?.start();
-
-    lastClientParamsRef.current = {
-      playerID,
-      roomId: multiplayer.roomId || undefined,
-      debug: core.configState.showBgDebug,
-    };
-  }, [
-    core.configState.mode,
-    core.configState.showBgDebug,
-    multiplayer.playerIndex,
-    multiplayer.roomId,
-    multiplayer.playerCredentials,
-  ]);
-
-  useEffect(() => {
-    const isOnline = !!multiplayer.roomId;
-    const playerID = isOnline
-      ? multiplayer.playerIndex !== null
-        ? String(multiplayer.playerIndex)
-        : "0"
-      : undefined;
-    const local = lastClientParamsRef.current;
-
-    const shouldStart = isStarted || !!multiplayer.roomId;
-
-    if (
-      shouldStart &&
-      (local.playerID !== playerID ||
-        local.roomId !== multiplayer.roomId ||
-        local.debug !== core.configState.showBgDebug)
-    ) {
-      initClient();
-    }
-  }, [
-    multiplayer.playerIndex,
-    multiplayer.roomId,
-    core.configState.mode, // Added mode to dependencies
-    core.configState.showBgDebug,
-    initClient,
-    isStarted,
-  ]);
-
-  // 4. Sync State
-  useBgioSync(clientRef, setBgioState);
-
-  // 5. Action Managers
+  // 6. Action Managers
   const placementManager = usePlacementManager(bgioState, core);
   const moveExecution = useMoveExecution(core, clientRef);
+  
   const isOnline = !!multiplayer.roomId;
   const playerID = isOnline
     ? multiplayer.playerIndex !== null
@@ -168,6 +92,7 @@ export function useGameState(): GameStateHook {
     clientRef,
     playerID,
   );
+  
   const zenGardenInteraction = useZenGardenInteraction(
     bgioState,
     core,
@@ -181,21 +106,16 @@ export function useGameState(): GameStateHook {
     placementManager.setPreviewMoves,
   );
 
-  // 6. Computer Opponent
-  const syncedTurn =
-    bgioState?.G?.playerMap && bgioState?.ctx
-      ? bgioState.G.playerMap[bgioState.ctx.currentPlayer] || turnState.turn
-      : turnState.turn;
-
+  // 7. AI Integration
   useComputerOpponent({
-    gameState: syncedGameState,
-    turn: syncedTurn,
-    board: syncedBoard,
-    terrain: syncedTerrain,
-    mode: bgioState?.G?.mode ?? configState.mode,
+    gameState,
+    turn,
+    board,
+    terrain,
+    mode: isEngineActive ? bgioState!.G.mode : configState.mode,
     playerTypes: core.turnState.playerTypes,
     executeMove: moveExecution.executeMove,
-    winner: bgioState?.ctx?.gameover?.winner ?? turnState.winner,
+    winner,
     setIsThinking: core.turnState.setIsThinking,
   });
 
@@ -205,41 +125,17 @@ export function useGameState(): GameStateHook {
     ...turnState,
     ...configState,
 
-    // Override getters with engine state if available
-    board:
-      bgioState?.G?.board ??
-      createInitialState(configState.mode, getPlayersForMode(configState.mode))
-        .board,
-    terrain:
-      bgioState?.G?.terrain ??
-      createInitialState(configState.mode, getPlayersForMode(configState.mode))
-        .terrain,
-    inventory:
-      bgioState?.G?.inventory ??
-      createInitialState(configState.mode, getPlayersForMode(configState.mode))
-        .inventory,
-    terrainInventory:
-      bgioState?.G?.terrainInventory ??
-      createInitialState(configState.mode, getPlayersForMode(configState.mode))
-        .terrainInventory,
-    capturedBy: bgioState?.G?.capturedBy ?? boardState.capturedBy,
-
-    turn:
-      bgioState?.G?.playerMap && bgioState?.ctx
-        ? bgioState.G.playerMap[bgioState.ctx.currentPlayer] || turnState.turn
-        : turnState.turn,
-    activePlayers: bgioState?.G?.activePlayers ?? turnState.activePlayers,
-    readyPlayers: bgioState?.G?.readyPlayers ?? turnState.readyPlayers,
-    winner: bgioState?.ctx?.gameover?.winner ?? turnState.winner,
-
-    gameState:
-      bgioState?.ctx?.phase === "setup"
-        ? "setup"
-        : bgioState?.ctx?.phase === "play"
-          ? "play"
-          : isStarted
-            ? "setup"
-            : "menu",
+    // Authority Overrides
+    board,
+    terrain,
+    inventory,
+    terrainInventory,
+    capturedBy,
+    turn,
+    activePlayers,
+    readyPlayers,
+    winner,
+    gameState,
 
     ...core,
     ...placementManager,
@@ -248,12 +144,13 @@ export function useGameState(): GameStateHook {
     ...zenGardenInteraction,
     ...setupActions,
     bgioState,
+    
     ready: () => {
       if (multiplayer.roomId) {
         if (clientRef.current) clientRef.current.moves.ready();
       } else {
         if (clientRef.current) {
-          core.turnState.activePlayers.forEach((p) => {
+          activePlayers.forEach((p) => {
             clientRef.current!.moves.ready(p);
           });
         }

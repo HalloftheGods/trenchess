@@ -39,47 +39,47 @@ import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 
 const UNIT_INTEL_PANEL: Record<string, UnitIntelPanelEntry> = {
-  [KING.id]: {
-    title: UNIT_DETAILS[KING.id]?.title || "King",
-    role: CHESS_NAME[KING.id]?.role || "Leader",
+  [KING]: {
+    title: UNIT_DETAILS[KING]?.title || "King",
+    role: CHESS_NAME[KING]?.role || "Leader",
     points: "∞",
-    movePattern: UNIT_DETAILS[KING.id]?.movePattern,
-    desc: UNIT_INTEL[KING.id]?.desc || "",
+    movePattern: UNIT_DETAILS[KING]?.movePattern,
+    desc: UNIT_INTEL[KING]?.desc || "",
   },
-  [QUEEN.id]: {
-    title: UNIT_DETAILS[QUEEN.id]?.title || "Queen",
-    role: CHESS_NAME[QUEEN.id]?.role || "Elite",
+  [QUEEN]: {
+    title: UNIT_DETAILS[QUEEN]?.title || "Queen",
+    role: CHESS_NAME[QUEEN]?.role || "Elite",
     points: 9,
-    movePattern: UNIT_DETAILS[QUEEN.id]?.movePattern,
-    desc: UNIT_INTEL[QUEEN.id]?.desc || "",
+    movePattern: UNIT_DETAILS[QUEEN]?.movePattern,
+    desc: UNIT_INTEL[QUEEN]?.desc || "",
   },
-  [ROOK.id]: {
-    title: UNIT_DETAILS[ROOK.id]?.title || "Rook",
-    role: CHESS_NAME[ROOK.id]?.role || "Heavy Armor",
+  [ROOK]: {
+    title: UNIT_DETAILS[ROOK]?.title || "Rook",
+    role: CHESS_NAME[ROOK]?.role || "Heavy Armor",
     points: 5,
-    movePattern: UNIT_DETAILS[ROOK.id]?.movePattern,
-    desc: UNIT_INTEL[ROOK.id]?.desc || "",
+    movePattern: UNIT_DETAILS[ROOK]?.movePattern,
+    desc: UNIT_INTEL[ROOK]?.desc || "",
   },
-  [BISHOP.id]: {
-    title: UNIT_DETAILS[BISHOP.id]?.title || "Bishop",
-    role: CHESS_NAME[BISHOP.id]?.role || "Ranged",
+  [BISHOP]: {
+    title: UNIT_DETAILS[BISHOP]?.title || "Bishop",
+    role: CHESS_NAME[BISHOP]?.role || "Ranged",
     points: 3,
-    movePattern: UNIT_DETAILS[BISHOP.id]?.movePattern,
-    desc: UNIT_INTEL[BISHOP.id]?.desc || "",
+    movePattern: UNIT_DETAILS[BISHOP]?.movePattern,
+    desc: UNIT_INTEL[BISHOP]?.desc || "",
   },
-  [KNIGHT.id]: {
-    title: UNIT_DETAILS[KNIGHT.id]?.title || "Knight",
-    role: CHESS_NAME[KNIGHT.id]?.role || "Cavalry",
+  [KNIGHT]: {
+    title: UNIT_DETAILS[KNIGHT]?.title || "Knight",
+    role: CHESS_NAME[KNIGHT]?.role || "Cavalry",
     points: 3,
-    movePattern: UNIT_DETAILS[KNIGHT.id]?.movePattern,
-    desc: UNIT_INTEL[KNIGHT.id]?.desc || "",
+    movePattern: UNIT_DETAILS[KNIGHT]?.movePattern,
+    desc: UNIT_INTEL[KNIGHT]?.desc || "",
   },
-  [PAWN.id]: {
-    title: UNIT_DETAILS[PAWN.id]?.title || "Pawn",
-    role: CHESS_NAME[PAWN.id]?.role || "Infantry",
+  [PAWN]: {
+    title: UNIT_DETAILS[PAWN]?.title || "Pawn",
+    role: CHESS_NAME[PAWN]?.role || "Infantry",
     points: 1,
-    movePattern: UNIT_DETAILS[PAWN.id]?.movePattern,
-    desc: UNIT_INTEL[PAWN.id]?.desc || "",
+    movePattern: UNIT_DETAILS[PAWN]?.movePattern,
+    desc: UNIT_INTEL[PAWN]?.desc || "",
   },
 };
 
@@ -254,7 +254,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
             <h3 className="text-4xl font-black uppercase tracking-tighter text-slate-900 dark:text-white mb-1">
               {setupMode === "terrain" ? "Open the Trench" : "Crack the Game"}
             </h3>
-            <p className="text-sm font-black text-slate-500 dark:text-slate-400 max-w-[260px] leading-relaxed uppercase tracking-[0.2em]">
+            <p className="text-sm font-black text-slate-500 dark:text-slate-400 max-w-[260px] vertical leading-relaxed uppercase tracking-[0.2em]">
               {setupMode === "terrain"
                 ? "Lay 16 pieces of trench however you wish."
                 : "Lay your Chessmen however you wish."}
@@ -477,11 +477,10 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                 <div className="flex items-center gap-3">
                   {(() => {
                     const uType =
-                      PIECES[rule.unit.toUpperCase() as keyof typeof PIECES]
-                        ?.id ||
-                      (rule.unit === "Tank" ? ROOK.id : null) ||
-                      (rule.unit === "Sniper" ? BISHOP.id : null) ||
-                      (rule.unit === "Horseman" ? KNIGHT.id : null);
+                      PIECES[rule.unit.toUpperCase() as keyof typeof PIECES] ||
+                      (rule.unit === "Tank" ? ROOK : null) ||
+                      (rule.unit === "Sniper" ? BISHOP : null) ||
+                      (rule.unit === "Horseman" ? KNIGHT : null);
                     const u = INITIAL_ARMY.find((x) => x.type === uType);
 
                     // We need to know which terrain this is to check protection

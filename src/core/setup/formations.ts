@@ -19,16 +19,16 @@ export const getClassicalFormationTargets = (
   const targets: { r: number; c: number; type: PieceType }[] = [];
   if (mode === "2p-ns") {
     const backRank = [
-      ROOK.id,
-      KNIGHT.id,
-      BISHOP.id,
-      QUEEN.id,
-      KING.id,
-      BISHOP.id,
-      KNIGHT.id,
-      ROOK.id,
+      ROOK,
+      KNIGHT,
+      BISHOP,
+      QUEEN,
+      KING,
+      BISHOP,
+      KNIGHT,
+      ROOK,
     ];
-    const pawnRank = Array(8).fill(PAWN.id);
+    const pawnRank = Array(8).fill(PAWN);
     if (p === "red") {
       backRank.forEach((type, i) => targets.push({ r: 2, c: 2 + i, type }));
       pawnRank.forEach((type, i) => targets.push({ r: 3, c: 2 + i, type }));
@@ -38,16 +38,16 @@ export const getClassicalFormationTargets = (
     }
   } else if (mode === "2p-ew") {
     const backRank = [
-      ROOK.id,
-      KNIGHT.id,
-      BISHOP.id,
-      QUEEN.id,
-      KING.id,
-      BISHOP.id,
-      KNIGHT.id,
-      ROOK.id,
+      ROOK,
+      KNIGHT,
+      BISHOP,
+      QUEEN,
+      KING,
+      BISHOP,
+      KNIGHT,
+      ROOK,
     ];
-    const pawnRank = Array(8).fill(PAWN.id);
+    const pawnRank = Array(8).fill(PAWN);
     if (p === "green") {
       backRank.forEach((type, i) => targets.push({ r: 2 + i, c: 2, type }));
       pawnRank.forEach((type, i) => targets.push({ r: 2 + i, c: 3, type }));
@@ -57,10 +57,10 @@ export const getClassicalFormationTargets = (
     }
   } else {
     const formation = [
-      [ROOK.id, QUEEN.id, KING.id, ROOK.id],
-      [KNIGHT.id, BISHOP.id, BISHOP.id, KNIGHT.id],
-      [PAWN.id, PAWN.id, PAWN.id, PAWN.id],
-      [PAWN.id, PAWN.id, PAWN.id, PAWN.id],
+      [ROOK, QUEEN, KING, ROOK],
+      [KNIGHT, BISHOP, BISHOP, KNIGHT],
+      [PAWN, PAWN, PAWN, PAWN],
+      [PAWN, PAWN, PAWN, PAWN],
     ];
     let rOrigins: number,
       cOrigins: number,

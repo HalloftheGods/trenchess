@@ -21,7 +21,7 @@ export const applyDesertRule = (
       if (p && p.player === pid && G.terrain[r][c] === TERRAIN_TYPES.DESERT) {
         // If it wasn't the piece that just moved, it perishes
         if (!justMoved || r !== justMoved.r || c !== justMoved.c) {
-          if (p.type === KING.id) {
+          if (p.type === KING) {
             const victim = p.player;
             G.activePlayers = G.activePlayers.filter(
               (ap: string) => ap !== victim,

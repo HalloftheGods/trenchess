@@ -3,7 +3,7 @@ import {
   MAX_TERRAIN_PER_PLAYER,
   TERRAIN_TYPES,
 } from "@/core/primitives/terrain";
-import { PIECES } from "@/core/primitives/pieces";
+import { INITIAL_ARMY } from "@/core/primitives/pieces";
 import type {
   GameMode,
   BoardPiece,
@@ -37,11 +37,10 @@ export const createInitialState = (
     ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
     : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
 
-  const getPieceArray = (piece: (typeof PIECES)[keyof typeof PIECES]) =>
-    Array(piece.initialCount).fill(piece.id);
-
   players.forEach((p) => {
-    inventory[p] = Object.values(PIECES).flatMap(getPieceArray);
+    inventory[p] = INITIAL_ARMY.flatMap((unit) =>
+      Array(unit.count).fill(unit.type),
+    );
 
     terrainInventory[p] = [
       ...Array(quota).fill(TERRAIN_TYPES.TREES),

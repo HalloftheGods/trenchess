@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER } from "@/core/primitives/terrain";
 import type {
   BoardInteraction,
   MultiplayerState,
@@ -10,46 +10,44 @@ import type {
 } from "@/shared/types";
 import type { TrenchessState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
-import { MAX_TERRAIN_PER_PLAYER } from "@/core/primitives/terrain";
 
+/**
+ * useBoardInteraction — Handles user input on the game board.
+ * Refactored to rely on authoritative engine state and emit moves via bgioClient.
+ */
 export function useBoardInteraction(
   bgioState: { G: TrenchessState; ctx: Ctx } | null,
   core: GameCore,
   placementManager: PlacementManager,
   executeMove: (
-    fromR: number,
-    fromC: number,
-    toR: number,
-    toC: number,
+    fromRow: number,
+    fromCol: number,
+    toRow: number,
+    toCol: number,
     isAiMove?: boolean,
   ) => void,
-  multiplayer?: MultiplayerState,
+  _multiplayer?: MultiplayerState,
   bgioClientRef?: React.MutableRefObject<BgioClient | undefined>,
   playerID?: string,
 ): BoardInteraction {
-  const { boardState, turnState, configState } = core;
+  const { configState } = core;
 
-  // Authoritative state from engine
-  const board = bgioState?.G?.board ?? boardState.board;
-  const terrain = bgioState?.G?.terrain ?? boardState.terrain;
-  const turn =
-    bgioState?.G?.playerMap && bgioState?.ctx
-      ? bgioState.G.playerMap[bgioState.ctx.currentPlayer] || turnState.turn
-      : turnState.turn;
-  const activePlayers = bgioState?.G?.activePlayers ?? turnState.activePlayers;
-  const localPlayerName =
-    bgioState?.G?.playerMap && playerID
-      ? bgioState.G.playerMap[playerID]
-      : turnState.localPlayerName;
+  // Derive Authoritative Truths
+  const board = bgioState?.G.board || [];
+  const terrain = bgioState?.G.terrain || [];
+  const mode = bgioState?.G.mode || configState.mode;
+  
+  const currentPlayerName = bgioState?.G.playerMap && bgioState?.ctx
+    ? bgioState.G.playerMap[bgioState.ctx.currentPlayer]
+    : "red";
 
-  const gameState =
-    bgioState?.ctx?.phase === "setup"
-      ? "setup"
-      : bgioState?.ctx?.phase === "play"
-        ? "play"
-        : configState.gameState;
-  const { mode, setupMode } = configState;
+  const localPlayerName = bgioState?.G.playerMap && playerID
+    ? bgioState.G.playerMap[playerID]
+    : currentPlayerName;
 
+  const currentPhase = bgioState?.ctx.phase || "menu";
+  const isSetupPhase = currentPhase === "setup";
+  
   const {
     selectedCell,
     setSelectedCell,
@@ -65,50 +63,37 @@ export function useBoardInteraction(
   } = placementManager;
 
   const handleCellHover = useCallback(
-    (r: number, c: number, overrideTurn?: string) => {
-      const startTurn = overrideTurn || turn;
-
-      if (
-        gameState === "setup" &&
-        multiplayer?.socketId &&
-        multiplayer.readyPlayers[multiplayer.socketId]
-      ) {
+    (row: number, col: number) => {
+      if (!isSetupPhase || (!placementPiece && !placementTerrain)) {
         setHoveredCell(null);
         setPreviewMoves([]);
         return;
       }
 
-      if (gameState !== "setup" || (!placementPiece && !placementTerrain)) {
+      // In setup, we only care about the local player's area
+      const myCells = getPlayerCells(localPlayerName, mode);
+      const isWithinMyTerritory = myCells.some(([r, c]) => r === row && c === col);
+
+      if (!isWithinMyTerritory || board[row][col]) {
         setHoveredCell(null);
         setPreviewMoves([]);
         return;
       }
 
-      const perspectiveTurn =
-        gameState === "setup" && localPlayerName ? localPlayerName : startTurn;
-      const myCells = getPlayerCells(perspectiveTurn, mode);
-      const isMyArea = myCells.some(([cr, cc]) => cr === r && cc === c);
-
-      if (!isMyArea || board[r][c]) {
-        setHoveredCell(null);
+      if (configState.setupMode === "terrain" && placementTerrain) {
+        setHoveredCell([row, col]);
         setPreviewMoves([]);
         return;
       }
 
-      if (setupMode === "terrain" && placementTerrain) {
-        setHoveredCell([r, c]);
-        setPreviewMoves([]);
-        return;
-      }
-
-      if (placementPiece && canPlaceUnit(placementPiece, terrain[r][c])) {
-        setHoveredCell([r, c]);
+      if (placementPiece && canPlaceUnit(placementPiece, terrain[row][col])) {
+        setHoveredCell([row, col]);
         setPreviewMoves(
           getValidMovesForPiece(
-            r,
-            c,
-            { type: placementPiece, player: startTurn },
-            startTurn,
+            row,
+            col,
+            { type: placementPiece, player: localPlayerName },
+            localPlayerName,
           ),
         );
       } else {
@@ -119,136 +104,98 @@ export function useBoardInteraction(
     [
       board,
       getValidMovesForPiece,
-      gameState,
+      isSetupPhase,
       localPlayerName,
       mode,
-      multiplayer,
       placementPiece,
       placementTerrain,
       setHoveredCell,
       setPreviewMoves,
       terrain,
-      turn,
-      setupMode,
+      configState.setupMode,
     ],
   );
 
   const handleCellClick = useCallback(
-    (r: number, c: number, overrideTurn?: string) => {
-      const startTurn = overrideTurn || turn;
+    (row: number, col: number) => {
       const bgioClient = bgioClientRef?.current;
+      if (!bgioClient) return;
 
-      if (
-        gameState === "setup" &&
-        multiplayer?.socketId &&
-        multiplayer.readyPlayers[multiplayer.socketId]
-      )
-        return;
+      if (isSetupPhase) {
+        const myCells = getPlayerCells(localPlayerName, mode);
+        const isWithinMyTerritory = myCells.some(([r, c]) => r === row && c === col);
+        if (!isWithinMyTerritory) return;
 
-      if (gameState === "setup") {
-        const perspectiveTurn =
-          gameState === "setup" && localPlayerName
-            ? localPlayerName
-            : startTurn;
-        const myCells = getPlayerCells(perspectiveTurn, mode);
-        if (!myCells.some(([cr, cc]) => cr === r && cc === c)) return;
-
-        if (setupMode === "terrain") {
-          const current = terrain[r][c];
-          if (current !== TERRAIN_TYPES.FLAT) {
-            if (bgioClient)
-              bgioClient.moves.placeTerrain(
-                r,
-                c,
-                TERRAIN_TYPES.FLAT,
-                perspectiveTurn,
-              );
-          } else if (placementTerrain && !board[r][c]) {
-            const max =
-              activePlayers.length === 2
-                ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-                : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
-            let count = 0;
-            for (const [pr, pc] of myCells)
-              if (terrain[pr][pc] !== TERRAIN_TYPES.FLAT) count++;
-            if (count >= max) return;
-
-            if (bgioClient) {
-              bgioClient.moves.placeTerrain(
-                r,
-                c,
-                placementTerrain,
-                perspectiveTurn,
-              );
-
-              // Let boardgame.io handle inventory decrement. The client resets state via subscription.
-              // We just handle local UI state like clearing selected if empty.
-              const inventoryCount =
-                boardState.terrainInventory?.[perspectiveTurn]?.filter(
-                  (t) => t === placementTerrain,
-                ).length || 0;
-              if (inventoryCount <= 1) {
-                setPlacementTerrain(null);
-              }
+        if (configState.setupMode === "terrain") {
+          const currentTerrain = terrain[row][col];
+          if (currentTerrain !== TERRAIN_TYPES.FLAT) {
+            bgioClient.moves.placeTerrain(row, col, TERRAIN_TYPES.FLAT, localPlayerName);
+          } else if (placementTerrain && !board[row][col]) {
+            const maxQuota = bgioState?.G.activePlayers.length === 2
+              ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+              : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+            
+            let placedCount = 0;
+            for (const [r, c] of myCells) {
+              if (terrain[r][c] !== TERRAIN_TYPES.FLAT) placedCount++;
+            }
+            
+            if (placedCount < maxQuota) {
+              bgioClient.moves.placeTerrain(row, col, placementTerrain, localPlayerName);
+              
+              const remainingInInventory = bgioState?.G.terrainInventory[localPlayerName]?.filter(t => t === placementTerrain).length || 0;
+              if (remainingInInventory <= 1) setPlacementTerrain(null);
             }
           }
           return;
         }
 
         if (placementPiece) {
-          if (!board[r][c] && canPlaceUnit(placementPiece, terrain[r][c])) {
-            if (bgioClient) {
-              bgioClient.moves.placePiece(
-                r,
-                c,
-                placementPiece,
-                perspectiveTurn,
-              );
-              // Clear selected if it was the last one
-              const inventoryCount =
-                boardState.inventory?.[perspectiveTurn]?.filter(
-                  (p) => p === placementPiece,
-                ).length || 0;
-              if (inventoryCount <= 1) {
-                setPlacementPiece(null);
-              }
-            }
+          if (!board[row][col] && canPlaceUnit(placementPiece, terrain[row][col])) {
+            bgioClient.moves.placePiece(row, col, placementPiece, localPlayerName);
+            
+            const remainingInInventory = bgioState?.G.inventory[localPlayerName]?.filter(p => p === placementPiece).length || 0;
+            if (remainingInInventory <= 1) setPlacementPiece(null);
           }
-        } else if (board[r][c] && board[r][c]!.player === perspectiveTurn) {
-          if (bgioClient)
-            bgioClient.moves.placePiece(r, c, null, perspectiveTurn);
+        } else if (board[row][col] && board[row][col]?.player === localPlayerName) {
+          bgioClient.moves.placePiece(row, col, null, localPlayerName);
         }
         return;
       }
 
+      // Handle Play Phase Movement
       if (selectedCell) {
-        const [sr, sc] = selectedCell;
-        if (validMoves.some(([vr, vc]) => vr === r && vc === c)) {
-          executeMove(sr, sc, r, c);
+        const [srcRow, srcCol] = selectedCell;
+        const isTargetValid = validMoves.some(([vr, vc]) => vr === row && vc === col);
+        
+        if (isTargetValid) {
+          executeMove(srcRow, srcCol, row, col);
+          setSelectedCell(null);
+          setValidMoves([]);
         } else {
           setSelectedCell(null);
           setValidMoves([]);
         }
       } else {
-        const piece = board[r][c];
-        if (piece && piece.player === turn) {
-          setSelectedCell([r, c]);
-          setValidMoves(getValidMovesForPiece(r, c, piece, turn));
+        const piece = board[row][col];
+        if (piece && piece.player === currentPlayerName) {
+          setSelectedCell([row, col]);
+          setValidMoves(getValidMovesForPiece(row, col, piece, currentPlayerName));
         }
       }
     },
     [
-      activePlayers.length,
       bgioClientRef,
+      bgioState?.G.activePlayers.length,
+      bgioState?.G.terrainInventory,
+      bgioState?.G.inventory,
       board,
-      boardState.terrainInventory,
-      boardState.inventory,
       executeMove,
       getValidMovesForPiece,
-      gameState,
+      isSetupPhase,
       localPlayerName,
+      currentPlayerName,
       mode,
-      multiplayer,
       placementPiece,
       placementTerrain,
       selectedCell,
@@ -256,9 +203,8 @@ export function useBoardInteraction(
       setPlacementPiece,
       setSelectedCell,
       setValidMoves,
-      setupMode,
+      configState.setupMode,
       terrain,
-      turn,
       validMoves,
     ],
   );

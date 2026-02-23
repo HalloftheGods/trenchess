@@ -18,7 +18,7 @@ import {
   PawnIcon,
   DesertIcon,
 } from "@/client/game/components/atoms/UnitIcons";
-import { PIECES } from "@/core/primitives/pieces";
+import { PIECES, INITIAL_ARMY as CORE_INITIAL_ARMY, ALL_UNITS } from "@/core/primitives/pieces";
 import {
   TERRAIN_TYPES,
   TERRAIN_INTEL as CORE_TERRAIN_INTEL,
@@ -33,10 +33,7 @@ import type {
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 
-const getPieceId = (piece: (typeof PIECES)[keyof typeof PIECES]) => piece.id;
-export const ALL_UNITS = Object.values(PIECES).map(getPieceId);
-
-export { PIECES };
+export { PIECES, ALL_UNITS };
 
 // --- Piece Style Options ---
 export const PIECE_STYLES = [
@@ -81,7 +78,7 @@ export const PLAYER_CONFIGS: Record<string, PlayerConfig> = {
 };
 
 export const UNIT_COLORS: Record<string, UnitColors> = {
-  [KING.id]: {
+  [KING]: {
     text: "text-brand-red",
     bg: "bg-brand-red/10",
     border: "border-brand-red/40",
@@ -89,7 +86,7 @@ export const UNIT_COLORS: Record<string, UnitColors> = {
     ribbonBg: "bg-brand-red",
     ring: "ring-brand-red/50",
   },
-  [QUEEN.id]: {
+  [QUEEN]: {
     text: "text-purple-500",
     bg: "bg-purple-500/10",
     border: "border-purple-500/40",
@@ -97,7 +94,7 @@ export const UNIT_COLORS: Record<string, UnitColors> = {
     ribbonBg: "bg-purple-500",
     ring: "ring-purple-500/50",
   },
-  [ROOK.id]: {
+  [ROOK]: {
     text: "text-yellow-500",
     bg: "bg-yellow-500/10",
     border: "border-yellow-500/40",
@@ -105,7 +102,7 @@ export const UNIT_COLORS: Record<string, UnitColors> = {
     ribbonBg: "bg-yellow-500",
     ring: "ring-yellow-500/50",
   },
-  [BISHOP.id]: {
+  [BISHOP]: {
     text: "text-emerald-500",
     bg: "bg-emerald-500/10",
     border: "border-emerald-500/40",
@@ -113,7 +110,7 @@ export const UNIT_COLORS: Record<string, UnitColors> = {
     ribbonBg: "bg-emerald-500",
     ring: "ring-emerald-500/50",
   },
-  [KNIGHT.id]: {
+  [KNIGHT]: {
     text: "text-slate-400",
     bg: "bg-slate-400/10",
     border: "border-slate-400/40",
@@ -121,7 +118,7 @@ export const UNIT_COLORS: Record<string, UnitColors> = {
     ribbonBg: "bg-slate-400",
     ring: "ring-slate-400/50",
   },
-  [PAWN.id]: {
+  [PAWN]: {
     text: "text-brand-blue",
     bg: "bg-brand-blue/10",
     border: "border-brand-blue/40",
@@ -134,42 +131,42 @@ export const UNIT_COLORS: Record<string, UnitColors> = {
 export const unitColorMap = UNIT_COLORS;
 
 export const UNIT_THEME_DATA = {
-  [KING.id]: {
+  [KING]: {
     emoji: "👑",
     bold: "♚︎",
     outlined: "♔︎",
     custom: KingIcon,
     lucide: ChessKing,
   },
-  [QUEEN.id]: {
+  [QUEEN]: {
     emoji: "👸",
     bold: "♛︎",
     outlined: "♕︎",
     custom: QueenIcon,
     lucide: ChessQueen,
   },
-  [ROOK.id]: {
+  [ROOK]: {
     emoji: "🛡️",
     bold: "♜︎",
     outlined: "♖︎",
     custom: RookIcon,
     lucide: ChessRook,
   },
-  [BISHOP.id]: {
+  [BISHOP]: {
     emoji: "🎯",
     bold: "♝︎",
     outlined: "♗︎",
     custom: BishopIcon,
     lucide: ChessBishop,
   },
-  [KNIGHT.id]: {
+  [KNIGHT]: {
     emoji: "🏇",
     bold: "♞︎",
     outlined: "♘︎",
     custom: KnightIcon,
     lucide: ChessKnight,
   },
-  [PAWN.id]: {
+  [PAWN]: {
     emoji: "🤖",
     bold: "♟︎",
     outlined: "♙︎",
@@ -242,7 +239,7 @@ export const TERRAIN_THEME_DATA = {
 };
 
 export const UNIT_INTEL: Record<string, any> = {
-  [KING.id]: {
+  [KING]: {
     title: "King",
     subtitle: "The Sovereign",
     role: "Leader",
@@ -259,7 +256,7 @@ export const UNIT_INTEL: Record<string, any> = {
       ],
     },
   },
-  [QUEEN.id]: {
+  [QUEEN]: {
     title: "Queen",
     subtitle: "The Matriarch",
     role: "Elite",
@@ -276,7 +273,7 @@ export const UNIT_INTEL: Record<string, any> = {
       ],
     },
   },
-  [ROOK.id]: {
+  [ROOK]: {
     title: "Rook",
     subtitle: "The Bastion",
     role: "Heavy Armor",
@@ -289,7 +286,7 @@ export const UNIT_INTEL: Record<string, any> = {
       sanctuaryTerrain: [TERRAIN_TYPES.SWAMPS],
     },
   },
-  [BISHOP.id]: {
+  [BISHOP]: {
     title: "Bishop",
     subtitle: "The Seer",
     role: "Ranged",
@@ -302,7 +299,7 @@ export const UNIT_INTEL: Record<string, any> = {
       sanctuaryTerrain: [TERRAIN_TYPES.FORESTS],
     },
   },
-  [KNIGHT.id]: {
+  [KNIGHT]: {
     title: "Knight",
     subtitle: "The Vanguard",
     role: "Cavalry",
@@ -315,7 +312,7 @@ export const UNIT_INTEL: Record<string, any> = {
       sanctuaryTerrain: [TERRAIN_TYPES.MOUNTAINS],
     },
   },
-  [PAWN.id]: {
+  [PAWN]: {
     title: "Pawn",
     subtitle: "The Automaton",
     role: "Infantry",
@@ -351,15 +348,12 @@ export const UNIT_DETAILS: Record<string, UnitDetails> = Object.keys(
   {} as Record<string, UnitDetails>,
 );
 
-const buildArmyUnit = (
-  piece: (typeof PIECES)[keyof typeof PIECES],
-): ArmyUnit => ({
-  type: piece.id,
-  count: piece.initialCount,
-  ...UNIT_THEME_DATA[piece.id],
-});
-export const INITIAL_ARMY: ArmyUnit[] =
-  Object.values(PIECES).map(buildArmyUnit);
+export const INITIAL_ARMY: ArmyUnit[] = CORE_INITIAL_ARMY.map((u) => ({
+  ...u,
+  ...UNIT_THEME_DATA[u.type as keyof typeof UNIT_THEME_DATA],
+  // Ensure we satisfy the ArmyUnit interface which might expect strings for icons in some contexts
+  // or components. Theme data has components.
+})) as unknown as ArmyUnit[];
 
 export const TERRAIN_INTEL: Record<string, any> = Object.keys(
   CORE_TERRAIN_INTEL,
@@ -367,7 +361,7 @@ export const TERRAIN_INTEL: Record<string, any> = Object.keys(
   (acc, key) => {
     acc[key] = {
       ...CORE_TERRAIN_INTEL[key],
-      ...TERRAIN_THEME_DATA[key],
+      ...TERRAIN_THEME_DATA[key as keyof typeof TERRAIN_THEME_DATA],
     };
     return acc;
   },
@@ -382,19 +376,19 @@ export const TERRAIN_DETAILS = Object.keys(TERRAIN_INTEL).map((key) => ({
 export const TERRAIN_LIST = TERRAIN_DETAILS;
 
 export const UNIT_NAMES: Record<string, string> = {
-  [KING.id]: "King",
-  [QUEEN.id]: "Queen",
-  [ROOK.id]: "Rooks",
-  [BISHOP.id]: "Bishops",
-  [KNIGHT.id]: "Knights",
-  [PAWN.id]: "Pawns",
+  [KING]: "King",
+  [QUEEN]: "Queen",
+  [ROOK]: "Rooks",
+  [BISHOP]: "Bishops",
+  [KNIGHT]: "Knights",
+  [PAWN]: "Pawns",
 };
 
 export const CHESS_NAME: Record<string, { chess: string; role: string }> = {
-  [ROOK.id]: { chess: "Rook", role: "Heavy Armor" },
-  [BISHOP.id]: { chess: "Bishop", role: "Ranged" },
-  [KNIGHT.id]: { chess: "Knight", role: "Cavalry" },
-  [QUEEN.id]: { chess: "Queen", role: "Elite" },
-  [KING.id]: { chess: "King", role: "Leader" },
-  [PAWN.id]: { chess: "Pawn", role: "Infantry" },
+  [ROOK]: { chess: "Rook", role: "Heavy Armor" },
+  [BISHOP]: { chess: "Bishop", role: "Ranged" },
+  [KNIGHT]: { chess: "Knight", role: "Cavalry" },
+  [QUEEN]: { chess: "Queen", role: "Elite" },
+  [KING]: { chess: "King", role: "Leader" },
+  [PAWN]: { chess: "Pawn", role: "Infantry" },
 };

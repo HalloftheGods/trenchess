@@ -4,387 +4,318 @@ import { TERRAIN_TYPES } from "@/core/primitives/terrain";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 import { isPlayerInCheck } from "@/core/mechanics/gameState";
 
+const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
+
+/**
+ * getValidMoves — The definitive tactical calculation for unit movement.
+ * Refactored for Immortal Narrative standards.
+ */
 export const getValidMoves = (
-  r: number,
-  c: number,
+  row: number,
+  col: number,
   piece: BoardPiece,
   player: string,
   board: (BoardPiece | null)[][],
   terrain: TerrainType[][],
   mode: GameMode,
-  depth = 0,
+  recursionDepth = 0,
 ): number[][] => {
-  const moves: number[][] = [];
-  const checkCell = (nr: number, nc: number) => {
-    if (nr < 0 || nr >= BOARD_SIZE || nc < 0 || nc >= BOARD_SIZE) return false;
-    const targetPiece = board[nr][nc];
-    const targetTerrain = terrain[nr]?.[nc];
+  const validMoves: number[][] = [];
+
+  const checkCellCompatibility = (targetRow: number, targetCol: number) => {
+    const isWithinBoardBoundaries = targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE;
+    if (!isWithinBoardBoundaries) return false;
+
+    const targetPiece = board[targetRow][targetCol];
+    const targetTerrain = terrain[targetRow]?.[targetCol];
     if (!targetTerrain) return false;
 
+    // Tactical Rule: Desert is a dead-end
     if (targetTerrain === TERRAIN_TYPES.DESERT) {
-      if (!targetPiece || targetPiece.player !== player) {
-        moves.push([nr, nc]);
+      const isEnemyOrEmpty = !targetPiece || targetPiece.player !== player;
+      if (isEnemyOrEmpty) {
+        validMoves.push([targetRow, targetCol]);
       }
       return false;
     }
 
-    if (piece.type === PIECES.KNIGHT && targetTerrain === TERRAIN_TYPES.PONDS)
-      return false;
-    if (piece.type === PIECES.BISHOP && targetTerrain === TERRAIN_TYPES.PONDS)
-      return false;
+    // Tactical Rule: Sanctuary Blocks
+    const isKnightBlockedBySwamp = piece.type === KNIGHT && targetTerrain === TERRAIN_TYPES.SWAMPS;
+    const isBishopBlockedBySwamp = piece.type === BISHOP && targetTerrain === TERRAIN_TYPES.SWAMPS;
+    const isRookBlockedByForest = piece.type === ROOK && targetTerrain === TERRAIN_TYPES.FORESTS;
+    const isKnightBlockedByForest = piece.type === KNIGHT && targetTerrain === TERRAIN_TYPES.FORESTS;
+    const isRookBlockedByMountain = piece.type === ROOK && targetTerrain === TERRAIN_TYPES.MOUNTAINS;
+    const isBishopBlockedByMountain = piece.type === BISHOP && targetTerrain === TERRAIN_TYPES.MOUNTAINS;
 
-    if (piece.type === PIECES.ROOK && targetTerrain === TERRAIN_TYPES.TREES)
-      return false;
-    if (piece.type === PIECES.KNIGHT && targetTerrain === TERRAIN_TYPES.TREES)
-      return false;
+    const isSanctuaryBlocked = isKnightBlockedBySwamp || isBishopBlockedBySwamp || 
+                               isRookBlockedByForest || isKnightBlockedByForest || 
+                               isRookBlockedByMountain || isBishopBlockedByMountain;
 
-    if (piece.type === PIECES.ROOK && targetTerrain === TERRAIN_TYPES.RUBBLE)
-      return false;
-    if (piece.type === PIECES.BISHOP && targetTerrain === TERRAIN_TYPES.RUBBLE)
-      return false;
+    if (isSanctuaryBlocked) return false;
 
     if (!targetPiece) {
-      moves.push([nr, nc]);
-      return true;
-    } else if (targetPiece.player !== player) {
-      moves.push([nr, nc]);
-      return false;
+      validMoves.push([targetRow, targetCol]);
+      return true; // Path continues
+    } else {
+      const isEnemyPiece = targetPiece.player !== player;
+      if (isEnemyPiece) {
+        validMoves.push([targetRow, targetCol]);
+      }
+      return false; // Path blocked by inhabitant
     }
-    return false;
   };
 
-  if (piece.type === PIECES.PAWN) {
-    if (mode === "2p-ew") {
-      const dir = player === "green" ? 1 : -1;
-      const nf = c + dir;
-      if (nf >= 0 && nf < BOARD_SIZE && !board[r][nf]) moves.push([r, nf]);
-      [1, -1].forEach((dr) => {
-        const nr = r + dr,
-          nc = c + dir;
-        if (
-          nr >= 0 &&
-          nr < BOARD_SIZE &&
-          nc >= 0 &&
-          nc < BOARD_SIZE &&
-          board[nr][nc] &&
-          board[nr][nc]?.player !== player
-        ) {
-          moves.push([nr, nc]);
+  // --- Unit Specific Logic ---
+
+  if (piece.type === PAWN) {
+    const isEastWestMode = mode === "2p-ew";
+    const isFourPlayerMode = mode === "4p";
+
+    if (isEastWestMode) {
+      const direction = player === "green" ? 1 : -1;
+      const frontCol = col + direction;
+      
+      const isPathClear = frontCol >= 0 && frontCol < BOARD_SIZE && !board[row][frontCol];
+      if (isPathClear) validMoves.push([row, frontCol]);
+
+      // Diagonal Captures
+      [1, -1].forEach((rowOffset) => {
+        const targetRow = row + rowOffset;
+        const targetCol = col + direction;
+        const isEnemyTarget = targetRow >= 0 && targetRow < BOARD_SIZE && 
+                              targetCol >= 0 && targetCol < BOARD_SIZE && 
+                              board[targetRow][targetCol] && 
+                              board[targetRow][targetCol]?.player !== player;
+        
+        if (isEnemyTarget) validMoves.push([targetRow, targetCol]);
+      });
+
+      // Backflip Maneuver
+      const backflipCol = col - 2 * direction;
+      const isBackflipClear = backflipCol >= 0 && backflipCol < BOARD_SIZE && !board[row][backflipCol];
+      if (isBackflipClear) validMoves.push([row, backflipCol]);
+
+      [1, -1].forEach((rowOffset) => {
+        const targetRow = row + rowOffset;
+        const targetCol = col - 2 * direction;
+        const isEnemyTarget = targetRow >= 0 && targetRow < BOARD_SIZE && 
+                              targetCol >= 0 && targetCol < BOARD_SIZE && 
+                              board[targetRow][targetCol] && 
+                              board[targetRow][targetCol]?.player !== player;
+        
+        if (isEnemyTarget) validMoves.push([targetRow, targetCol]);
+      });
+    } else if (isFourPlayerMode) {
+      let rowDir = 0, colDir = 0;
+      if (player === "red") { rowDir = 1; colDir = 1; } 
+      else if (player === "yellow") { rowDir = 1; colDir = -1; } 
+      else if (player === "green") { rowDir = -1; colDir = 1; } 
+      else if (player === "blue") { rowDir = -1; colDir = -1; }
+
+      [[rowDir, 0], [0, colDir]].forEach(([dr, dc]) => {
+        const targetRow = row + dr;
+        const targetCol = col + dc;
+        if (targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE && !board[targetRow][targetCol]) {
+          validMoves.push([targetRow, targetCol]);
         }
       });
-      const bc = c - 2 * dir;
-      if (bc >= 0 && bc < BOARD_SIZE && !board[r][bc]) {
-        moves.push([r, bc]);
+
+      const captureRow = row + rowDir;
+      const captureCol = col + colDir;
+      if (captureRow >= 0 && captureRow < BOARD_SIZE && captureCol >= 0 && captureCol < BOARD_SIZE && board[captureRow][captureCol] && board[captureRow][captureCol]!.player !== player) {
+        validMoves.push([captureRow, captureCol]);
       }
-      [1, -1].forEach((dr) => {
-        const nr = r + dr,
-          nc = c - 2 * dir;
-        if (
-          nr >= 0 &&
-          nr < BOARD_SIZE &&
-          nc >= 0 &&
-          nc < BOARD_SIZE &&
-          board[nr][nc] &&
-          board[nr][nc]?.player !== player
-        ) {
-          moves.push([nr, nc]);
-        }
-      });
-    } else if (mode === "4p") {
-      let dr = 0,
-        dc = 0;
-      if (player === "red") {
-        dr = 1;
-        dc = 1;
-      } else if (player === "yellow") {
-        dr = 1;
-        dc = -1;
-      } else if (player === "green") {
-        dr = -1;
-        dc = 1;
-      } else if (player === "blue") {
-        dr = -1;
-        dc = -1;
-      }
-      [
-        [dr, 0],
-        [0, dc],
-      ].forEach(([ddr, ddc]) => {
-        const nr = r + ddr,
-          nc = c + ddc;
-        if (
-          nr >= 0 &&
-          nr < BOARD_SIZE &&
-          nc >= 0 &&
-          nc < BOARD_SIZE &&
-          !board[nr][nc]
-        ) {
-          moves.push([nr, nc]);
-        }
-      });
-      const cnr = r + dr,
-        cnc = c + dc;
-      if (
-        cnr >= 0 &&
-        cnr < BOARD_SIZE &&
-        cnc >= 0 &&
-        cnc < BOARD_SIZE &&
-        board[cnr][cnc] &&
-        board[cnr][cnc]!.player !== player
-      ) {
-        moves.push([cnr, cnc]);
-      }
-      [
-        [-2 * dr, 0],
-        [0, -2 * dc],
-      ].forEach(([ddr, ddc]) => {
-        const nr = r + ddr,
-          nc = c + ddc;
-        if (
-          nr >= 0 &&
-          nr < BOARD_SIZE &&
-          nc >= 0 &&
-          nc < BOARD_SIZE &&
-          !board[nr][nc]
-        ) {
-          moves.push([nr, nc]);
-        }
-      });
-      [[-2 * dr, -2 * dc]].forEach(([ddr, ddc]) => {
-        const snr = r + ddr,
-          snc = c + ddc;
-        if (
-          snr >= 0 &&
-          snr < BOARD_SIZE &&
-          snc >= 0 &&
-          snc < BOARD_SIZE &&
-          board[snr][snc] &&
-          board[snr][snc]!.player !== player
-        ) {
-          moves.push([snr, snc]);
+
+      // Backflip
+      [[-2 * rowDir, 0], [0, -2 * colDir]].forEach(([dr, dc]) => {
+        const targetRow = row + dr;
+        const targetCol = col + dc;
+        if (targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE && !board[targetRow][targetCol]) {
+          validMoves.push([targetRow, targetCol]);
         }
       });
     } else {
-      const dir = player === "red" || player === "yellow" ? 1 : -1;
-      const nf = r + dir;
-      if (nf >= 0 && nf < BOARD_SIZE && !board[nf][c]) moves.push([nf, c]);
-      [1, -1].forEach((dc) => {
-        const nr = r + dir,
-          nc = c + dc;
-        if (
-          nr >= 0 &&
-          nr < BOARD_SIZE &&
-          nc >= 0 &&
-          nc < BOARD_SIZE &&
-          board[nr][nc] &&
-          board[nr][nc]?.player !== player
-        ) {
-          moves.push([nr, nc]);
-        }
+      // Standard North-South
+      const direction = player === "red" || player === "yellow" ? 1 : -1;
+      const frontRow = row + direction;
+      
+      const isPathClear = frontRow >= 0 && frontRow < BOARD_SIZE && !board[frontRow][col];
+      if (isPathClear) validMoves.push([frontRow, col]);
+
+      [1, -1].forEach((colOffset) => {
+        const targetRow = row + direction;
+        const targetCol = col + colOffset;
+        const isEnemyTarget = targetRow >= 0 && targetRow < BOARD_SIZE && 
+                              targetCol >= 0 && targetCol < BOARD_SIZE && 
+                              board[targetRow][targetCol] && 
+                              board[targetRow][targetCol]?.player !== player;
+        
+        if (isEnemyTarget) validMoves.push([targetRow, targetCol]);
       });
-      const br = r - 2 * dir;
-      if (br >= 0 && br < BOARD_SIZE && !board[br][c]) {
-        moves.push([br, c]);
-      }
-      [1, -1].forEach((dc) => {
-        const nc = c + dc,
-          nr = r - 2 * dir;
-        if (
-          nr >= 0 &&
-          nr < BOARD_SIZE &&
-          nc >= 0 &&
-          nc < BOARD_SIZE &&
-          board[nr][nc] &&
-          board[nr][nc]?.player !== player
-        ) {
-          moves.push([nr, nc]);
-        }
+
+      // Backflip
+      const backflipRow = row - 2 * direction;
+      const isBackflipClear = backflipRow >= 0 && backflipRow < BOARD_SIZE && !board[backflipRow][col];
+      if (isBackflipClear) validMoves.push([backflipRow, col]);
+
+      [1, -1].forEach((colOffset) => {
+        const targetRow = row - 2 * direction;
+        const targetCol = col + colOffset;
+        const isEnemyTarget = targetRow >= 0 && targetRow < BOARD_SIZE && 
+                              targetCol >= 0 && targetCol < BOARD_SIZE && 
+                              board[targetRow][targetCol] && 
+                              board[targetRow][targetCol]?.player !== player;
+        
+        if (isEnemyTarget) validMoves.push([targetRow, targetCol]);
       });
     }
   }
 
-  if (piece.type === PIECES.KNIGHT || piece.type === PIECES.QUEEN) {
-    [
-      [-2, -1],
-      [-2, 1],
-      [-1, -2],
-      [-1, 2],
-      [1, -2],
-      [1, 2],
-      [2, -1],
-      [2, 1],
-    ].forEach(([dr, dc]) => {
-      const nr = r + dr,
-        nc = c + dc;
-      if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
-        const targetPiece = board[nr][nc];
-        const targetTerrain = terrain[nr][nc];
-        if (piece.type === PIECES.KNIGHT) {
-          if (
-            targetTerrain === TERRAIN_TYPES.PONDS ||
-            targetTerrain === TERRAIN_TYPES.TREES
-          )
-            return;
-        }
-        if (!targetPiece || targetPiece.player !== player) moves.push([nr, nc]);
+  if (piece.type === KNIGHT || piece.type === QUEEN) {
+    const knightLeaps = [
+      [-2, -1], [-2, 1], [-1, -2], [-1, 2],
+      [1, -2], [1, 2], [2, -1], [2, 1],
+    ];
+
+    knightLeaps.forEach(([dr, dc]) => {
+      const targetRow = row + dr;
+      const targetCol = col + dc;
+      if (targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE) {
+        const targetPiece = board[targetRow][targetCol];
+        const targetTerrain = terrain[targetRow][targetCol];
+        
+        const isTerrainBlocked = piece.type === KNIGHT && (targetTerrain === TERRAIN_TYPES.SWAMPS || targetTerrain === TERRAIN_TYPES.FORESTS);
+        if (isTerrainBlocked) return;
+
+        if (!targetPiece || targetPiece.player !== player) validMoves.push([targetRow, targetCol]);
       }
     });
-    [
-      [3, 0],
-      [-3, 0],
-      [0, 3],
-      [0, -3],
-    ].forEach(([dr, dc]) => {
-      const nr = r + dr,
-        nc = c + dc;
-      if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
-        const targetPiece = board[nr][nc];
-        const targetTerrain = terrain[nr][nc];
-        if (
-          targetTerrain === TERRAIN_TYPES.PONDS ||
-          targetTerrain === TERRAIN_TYPES.TREES
-        )
-          return;
-        if (!targetPiece || targetPiece.player !== player) moves.push([nr, nc]);
+
+    // Elite Jump (Triple Leap)
+    const eliteJumps = [[3, 0], [-3, 0], [0, 3], [0, -3]];
+    eliteJumps.forEach(([dr, dc]) => {
+      const targetRow = row + dr;
+      const targetCol = col + dc;
+      if (targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE) {
+        const targetPiece = board[targetRow][targetCol];
+        const targetTerrain = terrain[targetRow][targetCol];
+        const isTerrainBlocked = targetTerrain === TERRAIN_TYPES.SWAMPS || targetTerrain === TERRAIN_TYPES.FORESTS;
+        if (isTerrainBlocked) return;
+
+        if (!targetPiece || targetPiece.player !== player) validMoves.push([targetRow, targetCol]);
       }
     });
   }
 
-  if (piece.type === PIECES.BISHOP || piece.type === PIECES.QUEEN) {
-    [
-      [1, 1],
-      [1, -1],
-      [-1, 1],
-      [-1, -1],
-    ].forEach(([dr, dc]) => {
-      let nr = r + dr,
-        nc = c + dc;
-      while (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
-        const res = checkCell(nr, nc);
-        if (!res || board[nr][nc]) break;
-        nr += dr;
-        nc += dc;
+  if (piece.type === BISHOP || piece.type === QUEEN) {
+    const diagonals = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
+    diagonals.forEach(([dr, dc]) => {
+      let targetRow = row + dr;
+      let targetCol = col + dc;
+      while (targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE) {
+        const canContinue = checkCellCompatibility(targetRow, targetCol);
+        if (!canContinue || board[targetRow][targetCol]) break;
+        targetRow += dr;
+        targetCol += dc;
       }
     });
-    [
-      [2, 0],
-      [-2, 0],
-      [0, 2],
-      [0, -2],
-    ].forEach(([dr, dc]) => {
-      const nr = r + dr,
-        nc = c + dc;
-      if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
-        if (
-          terrain[nr][nc] === TERRAIN_TYPES.PONDS ||
-          terrain[nr][nc] === TERRAIN_TYPES.RUBBLE
-        )
-          return;
-        const targetPiece = board[nr][nc];
-        if (!targetPiece || targetPiece.player !== player) moves.push([nr, nc]);
+
+    // Seer Leap
+    const seerLeaps = [[2, 0], [-2, 0], [0, 2], [0, -2]];
+    seerLeaps.forEach(([dr, dc]) => {
+      const targetRow = row + dr;
+      const targetCol = col + dc;
+      if (targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE) {
+        const targetTerrain = terrain[targetRow][targetCol];
+        const isTerrainBlocked = targetTerrain === TERRAIN_TYPES.SWAMPS || targetTerrain === TERRAIN_TYPES.MOUNTAINS;
+        if (isTerrainBlocked) return;
+
+        const targetPiece = board[targetRow][targetCol];
+        if (!targetPiece || targetPiece.player !== player) validMoves.push([targetRow, targetCol]);
       }
     });
   }
 
-  if (piece.type === PIECES.ROOK || piece.type === PIECES.QUEEN) {
-    [
-      [0, 1],
-      [0, -1],
-      [1, 0],
-      [-1, 0],
-    ].forEach(([dr, dc]) => {
-      let nr = r + dr,
-        nc = c + dc;
-      while (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
-        const res = checkCell(nr, nc);
-        if (!res || board[nr][nc]) break;
-        nr += dr;
-        nc += dc;
+  if (piece.type === ROOK || piece.type === QUEEN) {
+    const orthogonals = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+    orthogonals.forEach(([dr, dc]) => {
+      let targetRow = row + dr;
+      let targetCol = col + dc;
+      while (targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE) {
+        const canContinue = checkCellCompatibility(targetRow, targetCol);
+        if (!canContinue || board[targetRow][targetCol]) break;
+        targetRow += dr;
+        targetCol += dc;
       }
     });
-    [
-      [1, 1],
-      [1, -1],
-      [-1, 1],
-      [-1, -1],
-    ].forEach(([dr, dc]) => {
-      const nr = r + dr,
-        nc = c + dc;
-      if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
-        if (
-          terrain[nr][nc] === TERRAIN_TYPES.TREES ||
-          terrain[nr][nc] === TERRAIN_TYPES.RUBBLE
-        )
-          return;
-        const targetPiece = board[nr][nc];
-        if (!targetPiece || targetPiece.player !== player) moves.push([nr, nc]);
+
+    // Bastion Leap
+    const bastionLeaps = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
+    bastionLeaps.forEach(([dr, dc]) => {
+      const targetRow = row + dr;
+      const targetCol = col + dc;
+      if (targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE) {
+        const targetTerrain = terrain[targetRow][targetCol];
+        const isTerrainBlocked = targetTerrain === TERRAIN_TYPES.FORESTS || targetTerrain === TERRAIN_TYPES.MOUNTAINS;
+        if (isTerrainBlocked) return;
+
+        const targetPiece = board[targetRow][targetCol];
+        if (!targetPiece || targetPiece.player !== player) validMoves.push([targetRow, targetCol]);
       }
     });
   }
 
-  if (piece.type === PIECES.KING) {
-    [
-      [-1, -1],
-      [-1, 1],
-      [1, -1],
-      [1, 1],
-    ].forEach(([dr, dc]) => {
-      const nr = r + dr,
-        nc = c + dc;
-      if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
-        if (!board[nr][nc]) moves.push([nr, nc]);
+  if (piece.type === KING) {
+    const kingDiagonalSteps = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+    kingDiagonalSteps.forEach(([dr, dc]) => {
+      const targetRow = row + dr;
+      const targetCol = col + dc;
+      if (targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE) {
+        if (!board[targetRow][targetCol]) validMoves.push([targetRow, targetCol]);
       }
     });
-    [
-      [0, 1],
-      [0, -1],
-      [1, 0],
-      [-1, 0],
-    ].forEach(([dr, dc]) => {
-      checkCell(r + dr, c + dc);
-      const midR = r + dr;
-      const midC = c + dc;
-      if (midR >= 0 && midR < BOARD_SIZE && midC >= 0 && midC < BOARD_SIZE) {
-        const midPiece = board[midR][midC];
-        if (!midPiece || midPiece.player !== player) {
-          if (depth > 0) {
-            checkCell(r + dr * 2, c + dc * 2);
-          } else {
-            const isGuarded = board.some((row, br) =>
-              row.some((cell, bc) => {
-                if (!cell || cell.player === player) return false;
-                const enemyMoves = getValidMoves(
-                  br,
-                  bc,
-                  cell,
-                  cell.player,
-                  board,
-                  terrain,
-                  mode,
-                  depth + 1,
-                );
-                return enemyMoves.some(
-                  ([mr, mc]) => mr === midR && mc === midC,
-                );
-              }),
-            );
-            if (!isGuarded) {
-              checkCell(r + dr * 2, c + dc * 2);
-            }
+
+    const kingOrthogonalJumps = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+    kingOrthogonalJumps.forEach(([dr, dc]) => {
+      const midRow = row + dr;
+      const midCol = col + dc;
+      
+      const isWithinBounds = midRow >= 0 && midRow < BOARD_SIZE && midCol >= 0 && midCol < BOARD_SIZE;
+      if (!isWithinBounds) return;
+
+      const midPiece = board[midRow][midCol];
+      const isSafeToPass = !midPiece || midPiece.player !== player;
+
+      if (isSafeToPass) {
+        if (recursionDepth > 0) {
+          checkCellCompatibility(row + dr * 2, col + dc * 2);
+        } else {
+          // Tactical Rule: King cannot pass through a guarded square
+          const isMidPointGuarded = board.some((r, br) =>
+            r.some((cell, bc) => {
+              if (!cell || cell.player === player) return false;
+              const enemyMoves = getValidMoves(br, bc, cell, cell.player, board, terrain, mode, recursionDepth + 1);
+              return enemyMoves.some(([mr, mc]) => mr === midRow && mc === midCol);
+            }),
+          );
+
+          if (!isMidPointGuarded) {
+            checkCellCompatibility(row + dr * 2, col + dc * 2);
           }
         }
       }
     });
   }
 
-  if (depth === 0) {
-    return moves.filter(([mr, mc]) => {
-      const nextBoard = board.map((row) => [...row]);
-      nextBoard[mr][mc] = { ...piece };
-      nextBoard[r][c] = null;
-      return !isPlayerInCheck(player, nextBoard, terrain, mode);
+  // --- Final Safety Check: Checkmate Prevention ---
+  if (recursionDepth === 0) {
+    return validMoves.filter(([moveRow, moveCol]) => {
+      const simulatedBoard = board.map((r) => [...r]);
+      simulatedBoard[moveRow][moveCol] = { ...piece };
+      simulatedBoard[row][col] = null;
+      return !isPlayerInCheck(player, simulatedBoard, terrain, mode);
     });
   }
 
-  return moves;
+  return validMoves;
 };

@@ -1,7 +1,7 @@
 import { INVALID_MOVE } from "boardgame.io/core";
 import { BOARD_SIZE } from "@/core/primitives/game";
 import { PIECES } from "@/core/primitives/pieces";
-import type { PieceType, TrenchessState } from "@/shared/types/game";
+import type { TrenchessState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
 import { applyDesertRule } from "@/core/events";
 
@@ -32,7 +32,7 @@ export const movePiece = (
   G.board[fromR][fromC] = null;
 
   // Pawn Promotion Logic
-  if (piece.type === PAWN.id) {
+  if (piece.type === PAWN) {
     let promoted = false;
     if (G.mode === "2p-ns") {
       if (pid === "red" && toR === BOARD_SIZE - 1) promoted = true;
@@ -52,7 +52,7 @@ export const movePiece = (
     }
 
     if (promoted) {
-      G.board[toR][toC] = { ...piece, type: QUEEN.id };
+      G.board[toR][toC] = { ...piece, type: QUEEN };
     }
   }
 
@@ -60,7 +60,7 @@ export const movePiece = (
 
   // King Joust Capture (Checkers-style leap)
   if (
-    piece.type === KING.id &&
+    piece.type === KING &&
     ((Math.abs(fromR - toR) === 2 && fromC === toC) ||
       (Math.abs(fromC - toC) === 2 && fromR === toR))
   ) {
@@ -79,7 +79,7 @@ export const movePiece = (
     G.capturedBy[pid].push(capturedPiece);
 
     // End Game Condition (King Captured)
-    if (capturedPiece.type === KING.id) {
+    if (capturedPiece.type === KING) {
       const victim = capturedPiece.player;
       G.activePlayers = G.activePlayers.filter((p: string) => p !== victim);
 

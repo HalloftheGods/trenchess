@@ -7,12 +7,12 @@ const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 
 // --- Heuristic Weights ---
 export const SCORES: Record<string, number> = {
-  [KING.id]: 100000,
-  [QUEEN.id]: 900,
-  [ROOK.id]: 500,
-  [BISHOP.id]: 400,
-  [KNIGHT.id]: 300,
-  [PAWN.id]: 100,
+  [KING]: 100000,
+  [QUEEN]: 900,
+  [ROOK]: 500,
+  [BISHOP]: 400,
+  [KNIGHT]: 300,
+  [PAWN]: 100,
 };
 
 const CENTER_WEIGHT = 10;
@@ -36,7 +36,7 @@ export const hasCommander = (
   for (let r = 0; r < BOARD_SIZE; r++) {
     for (let c = 0; c < BOARD_SIZE; c++) {
       const p = board[r][c];
-      if (p && p.player === player && p.type === KING.id) {
+      if (p && p.player === player && p.type === KING) {
         return { r, c };
       }
     }
@@ -82,7 +82,7 @@ export const evaluateBoard = (
         score += (BOARD_SIZE - distToCenter) * CENTER_WEIGHT;
       } else {
         enemyMaterial += value;
-        if (piece.type === KING.id) {
+        if (piece.type === KING) {
           enemyKingPos = { r, c };
         }
       }
