@@ -3,8 +3,7 @@ import { MmoLayout } from "./components/templates/MmoLayout";
 import GameBoard from "./components/organisms/GameBoard";
 import MmoActionBar from "./components/organisms/MmoActionBar";
 import GameStateDebug from "./components/molecules/GameStateDebug";
-import { ReadyUpPanel } from "./components/molecules/ReadyUpPanel";
-import { GameStartOverlay } from "./components/atoms/GameStartOverlay";
+
 import { useRouteContext } from "@/route.context";
 import { useDeployment } from "@hooks/useDeployment";
 import { INITIAL_ARMY } from "@/core/data/unitDetails";
@@ -12,14 +11,8 @@ import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/core/data/terrainDetails";
 import { getPlayerCells } from "@/core/setup/setupLogic";
 import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
 import { getServerUrl } from "@hooks/useMultiplayer";
-import type {
-  GameStateHook,
-  GameMode,
-  BgioMatch,
-  BgioMatchPlayer,
-  TerrainType,
-  PieceType,
-} from "@/types";
+import type { GameStateHook, GameMode, TerrainType, PieceType } from "@/types";
+import { GameStartOverlay, ReadyUpPanel } from "./components";
 
 interface MmoViewProps {
   game: GameStateHook;
