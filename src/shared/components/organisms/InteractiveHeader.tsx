@@ -69,7 +69,7 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
               // Check if unit is protected or blocked by CURRENT terrain
               const uProtected =
                 terrain &&
-                isUnitProtected(uType, terrain.terrainTypeKey as any);
+                isUnitProtected(uType, terrain.terrainTypeKey as TerrainType);
               const uBlocked =
                 terrain &&
                 !canUnitTraverseTerrain(
@@ -111,7 +111,7 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
               const isActive = selectedTerrainIdx === idx;
               const tProtected =
                 selectedUnit &&
-                isUnitProtected(selectedUnit, t.terrainTypeKey as any);
+                isUnitProtected(selectedUnit, t.terrainTypeKey as TerrainType);
               const tBlocked =
                 selectedUnit &&
                 !canUnitTraverseTerrain(
@@ -130,9 +130,12 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
                   } ${tProtected ? "border-dotted border-4" : ""} ${tBlocked ? "border-double border-4" : ""}`}
                   title={t.name}
                 >
-                  {React.cloneElement(t.icon as React.ReactElement<any>, {
-                    size: 20,
-                  })}
+                  {React.cloneElement(
+                    t.icon as React.ReactElement<{ size?: number }>,
+                    {
+                      size: 20,
+                    },
+                  )}
                   {/* Tooltip */}
                   <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
                     {t.name}

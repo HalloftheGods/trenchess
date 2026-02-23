@@ -15,12 +15,13 @@ services:
 
   server:
     build:
-      context: ./server
+      context: .
       target: dev
+    command: ["pnpm", "--filter", "battle-chess-server", "run", "dev"]
     ports:
       - "3001:3001"
     volumes:
-      - ./server:/app
+      - .:/app
       - /app/node_modules
     networks:
       - trenchess-net

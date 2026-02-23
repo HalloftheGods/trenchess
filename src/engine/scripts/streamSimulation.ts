@@ -2,6 +2,7 @@ import { io } from "socket.io-client";
 import { createInitialState, applyClassicalFormation } from "@setup/setupLogic";
 import { getBestMove } from "@ai/aiLogic";
 import { getValidMoves, isPlayerInCheck } from "@logic/gameLogic";
+import type { BoardPiece, TerrainType, GameMode } from "@engineTypes/game";
 
 // Configuration
 const SERVER_URL = "http://localhost:3001";
@@ -26,10 +27,12 @@ socket.on("connect", () => {
 
 socket.on("disconnect", () => {
   console.log("❌ Disconnected from server");
-  (globalThis as any).process?.exit?.(0);
+  (
+    globalThis as { process?: { exit?: (code: number) => void } }
+  ).process?.exit?.(0);
 });
 
-const isKingAlive = (board: any[][], player: string) => {
+const isKingAlive = (board: (BoardPiece | null)[][], player: string) => {
   for (let r = 0; r < 12; r++) {
     for (let c = 0; c < 12; c++) {
       const p = board[r][c];
@@ -39,7 +42,11 @@ const isKingAlive = (board: any[][], player: string) => {
   return false;
 };
 
-const hasAnyValidMoves = (player: string, board: any[][], terrain: any[][]) => {
+const hasAnyValidMoves = (
+  player: string,
+  board: (BoardPiece | null)[][],
+  terrain: TerrainType[][],
+) => {
   for (let r = 0; r < 12; r++) {
     for (let c = 0; c < 12; c++) {
       const p = board[r][c];
@@ -62,18 +69,18 @@ const hasAnyValidMoves = (player: string, board: any[][], terrain: any[][]) => {
 };
 
 async function startSimulation() {
-  const players = ["player1", "player2"];
+  const players = ["red", "yellow"];
   const mode = "2p-ns";
 
-  let { board, terrain, inventory, terrainInventory } = createInitialState(
-    mode,
-    players,
-  );
+  const initialFullState = createInitialState(mode, players);
+  let board = initialFullState.board;
+  let terrain = initialFullState.terrain;
+
   const setupResult = applyClassicalFormation(
     board,
     terrain,
-    inventory,
-    terrainInventory,
+    initialFullState.inventory,
+    initialFullState.terrainInventory,
     players,
     mode,
   );
@@ -82,11 +89,10 @@ async function startSimulation() {
 
   let currentTurn = 0;
   let currentPlayerIdx = 0;
-  let gameOver = false;
 
   console.log(`🎮 Game Started in Room: ${ROOM_ID}`);
 
-  while (!gameOver && currentTurn < MAX_TURNS) {
+  while (currentTurn < MAX_TURNS) {
     const player = players[currentPlayerIdx];
 
     // Broadcast state
@@ -98,7 +104,7 @@ async function startSimulation() {
         board,
         terrain,
         turn: player,
-        capturedBy: { player1: [], player2: [], player3: [], player4: [] },
+        capturedBy: { red: [], yellow: [], green: [], blue: [] },
         activePlayers: players,
       },
     });
@@ -108,15 +114,14 @@ async function startSimulation() {
       !isKingAlive(board, player) ||
       !hasAnyValidMoves(player, board, terrain)
     ) {
-      gameOver = true;
       console.log(
-        `🏁 Game Over! Result for ${player}: ${isPlayerInCheck(player, board, terrain, mode as any) ? "CHECKMATE" : "STALEMATE/CAPTURED"}`,
+        `🏁 Game Over! Result for ${player}: ${isPlayerInCheck(player, board, terrain, mode as GameMode) ? "CHECKMATE" : "STALEMATE/CAPTURED"}`,
       );
       break;
     }
 
     console.log(`🤖 AI Thinking for ${player}... (Turn ${currentTurn})`);
-    const bestMove = getBestMove(board, terrain, player, mode as any);
+    const bestMove = getBestMove(board, terrain, player, mode as GameMode);
 
     if (!bestMove) {
       console.log(`⚠️ AI failed to find move for ${player}`);

@@ -4,6 +4,7 @@ import InteractiveGuide, {
   type Slide,
 } from "@/app/routes/shared/components/templates/InteractiveGuide";
 import { TERRAIN_DETAILS } from "@engineConfigs/terrainDetails";
+import type { PieceType } from "@engineTypes/game";
 
 // Shared Route Components
 import { UnitChip } from "@/app/routes/shared/components/molecules/UnitChip";
@@ -19,92 +20,99 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
   initialTerrain,
 }) => {
   const slides: Slide[] = useMemo(() => {
-    const terrainSlides = TERRAIN_DETAILS.map((terrain: any) => {
-      const IconComp = terrain.icon;
-      const colorMatch = terrain.color.text.match(/text-(?:brand-)?([a-z]+)/);
-      const colorName = colorMatch ? colorMatch[1] : "amber";
-      const validColors = [
-        "red",
-        "blue",
-        "emerald",
-        "amber",
-        "slate",
-        "indigo",
-      ];
-      const finalColor = validColors.includes(colorName) ? colorName : "amber";
+    const terrainSlides = TERRAIN_DETAILS.map(
+      (terrain: (typeof TERRAIN_DETAILS)[number]) => {
+        const IconComp = terrain.icon;
+        const colorMatch = terrain.color.text.match(/text-(?:brand-)?([a-z]+)/);
+        const colorName = colorMatch ? colorMatch[1] : "amber";
+        const validColors = [
+          "red",
+          "blue",
+          "emerald",
+          "amber",
+          "slate",
+          "indigo",
+        ];
+        const finalColor = validColors.includes(colorName)
+          ? colorName
+          : "amber";
 
-      return {
-        id: terrain.key,
-        title: terrain.label,
-        subtitle: terrain.subtitle,
-        color: finalColor as any,
-        topLabel: terrain.tagline,
-        icon: IconComp,
-        previewConfig: {
-          mode: "2p-ns",
-          protocol: "terrainiffic",
-          showIcons: true,
-          hideUnits: false,
-          forcedTerrain: terrain.key,
-          useDefaultFormation: true,
-        },
-        description: (
-          <div className="space-y-6">
-            <ul className="space-y-3">
-              {terrain.flavorStats.map((stat: any, i: any) => (
-                <GuideListItem key={i} color="amber">
-                  {stat}
-                </GuideListItem>
-              ))}
-            </ul>
-
-            <div>
-              <div className="section-divider-container mb-4">
-                <div className="section-divider-line bg-slate-200 dark:bg-white/10" />
-                <span className="section-divider-label text-slate-500">
-                  Unit Interactions
-                </span>
-                <div className="section-divider-line bg-slate-200 dark:bg-white/10" />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                {terrain.sanctuaryUnits.map((pk: any) => (
-                  <UnitChip
-                    key={`${terrain.key}-sanc-${pk}`}
-                    pieceKey={pk}
-                    status="sanctuary"
-                  />
+        return {
+          id: terrain.key,
+          title: terrain.label,
+          subtitle: terrain.subtitle,
+          color: finalColor as Slide["color"],
+          topLabel: terrain.tagline,
+          icon: IconComp,
+          previewConfig: {
+            mode: "2p-ns",
+            protocol: "terrainiffic",
+            showIcons: true,
+            hideUnits: false,
+            forcedTerrain: terrain.key,
+            useDefaultFormation: true,
+          },
+          description: (
+            <div className="space-y-6">
+              <ul className="space-y-3">
+                {terrain.flavorStats.map((stat: string, i: number) => (
+                  <GuideListItem key={i} color="amber">
+                    {stat}
+                  </GuideListItem>
                 ))}
-                {terrain.allowedUnits
-                  .filter((pk: any) => !terrain.sanctuaryUnits.includes(pk))
-                  .map((pk: any) => (
+              </ul>
+
+              <div>
+                <div className="section-divider-container mb-4">
+                  <div className="section-divider-line bg-slate-200 dark:bg-white/10" />
+                  <span className="section-divider-label text-slate-500">
+                    Unit Interactions
+                  </span>
+                  <div className="section-divider-line bg-slate-200 dark:bg-white/10" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                  {terrain.sanctuaryUnits.map((pk: PieceType | string) => (
                     <UnitChip
-                      key={`${terrain.key}-allow-${pk}`}
-                      pieceKey={pk}
-                      status="allow"
+                      key={`${terrain.key}-sanc-${pk}`}
+                      pieceKey={pk as PieceType}
+                      status="sanctuary"
                     />
                   ))}
-                {terrain.blockedUnits.map((pk: any) => (
-                  <UnitChip
-                    key={`${terrain.key}-block-${pk}`}
-                    pieceKey={pk}
-                    status="block"
-                  />
-                ))}
+                  {terrain.allowedUnits
+                    .filter(
+                      (pk: PieceType | string) =>
+                        !terrain.sanctuaryUnits.includes(pk as PieceType),
+                    )
+                    .map((pk: PieceType | string) => (
+                      <UnitChip
+                        key={`${terrain.key}-allow-${pk}`}
+                        pieceKey={pk as PieceType}
+                        status="allow"
+                      />
+                    ))}
+                  {terrain.blockedUnits.map((pk: PieceType | string) => (
+                    <UnitChip
+                      key={`${terrain.key}-block-${pk}`}
+                      pieceKey={pk as PieceType}
+                      status="block"
+                    />
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        ),
-        leftContent:
-          terrain.sanctuaryUnits.length > 0 ? (
-            <div className="flex items-center gap-6">
-              <span className="text-badge-label text-slate-500 whitespace-nowrap">
-                Welcomes
-              </span>
-              <SanctuaryBadgeList terrain={terrain as any} />
-            </div>
-          ) : null,
-      };
-    });
+          ),
+          leftContent:
+            terrain.sanctuaryUnits.length > 0 ? (
+              <div className="flex items-center gap-6">
+                <span className="text-badge-label text-slate-500 whitespace-nowrap">
+                  Welcomes
+                </span>
+                <SanctuaryBadgeList terrain={terrain} />
+              </div>
+            ) : null,
+        };
+      },
+    );
 
     const rulesSlide: Slide = {
       id: "sanctuary-rules",

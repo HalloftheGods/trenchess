@@ -13,6 +13,7 @@ import {
   HeartCrack,
   Swords,
   Tornado,
+  Rabbit,
 } from "lucide-react";
 
 import { useRouteContext } from "@/app/context/RouteContext";
@@ -166,7 +167,7 @@ export const LearnChessMainView: React.FC = () => {
 
             if (type === PIECES.PAWN) {
               cardColor = "blue";
-              HoverIconComponent = RotateCcw;
+              HoverIconComponent = Rabbit;
             } else if (type === PIECES.KNIGHT) {
               cardColor = "slate";
               HoverIconComponent = Mountain;

@@ -15,6 +15,6 @@ const server = Server({
   uuid: generateRoomCode,
 });
 
-server.run(PORT, () => {
-  console.log(`SERVER RUNNING ON PORT ${PORT}`);
+server.run({ port: PORT, host: "0.0.0.0" }, () => {
+  console.log(`SERVER RUNNING ON PORT ${PORT} (0.0.0.0)`);
 });

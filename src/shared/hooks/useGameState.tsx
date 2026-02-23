@@ -1,181 +1,100 @@
 import { useRef, useEffect, useCallback, useState } from "react";
-import { useGameTheme } from "@hooks/useGameTheme";
-import { useGameCore } from "@hooks/useGameCore";
-import { useGameInteraction } from "@hooks/useGameInteraction";
-import { useGameSetup } from "@hooks/useGameSetup";
+import { useGameTheme, type GameTheme } from "@hooks/useGameTheme";
+import {
+  useMultiplayer,
+  getServerUrl,
+  type MultiplayerState,
+} from "@hooks/useMultiplayer";
 import { useComputerOpponent } from "@hooks/useComputerOpponent";
-import { useMultiplayer, getServerUrl } from "@hooks/useMultiplayer";
+
+// Core State Atoms
+import { useBoardState, type BoardState } from "./core/useBoardState";
+import { useTurnState, type TurnState } from "./core/useTurnState";
+import { useGameConfig, type GameConfigState } from "./core/useGameConfig";
+
+// Logic Directors
+import {
+  useGameLifecycle,
+  type GameCore,
+  type BgioClient,
+} from "./core/useGameLifecycle";
+import {
+  usePlacementManager,
+  type PlacementManager,
+} from "./core/usePlacementManager";
+import { useMoveExecution, type MoveExecution } from "./core/useMoveExecution";
+import {
+  useBoardInteraction,
+  type BoardInteraction,
+} from "./core/useBoardInteraction";
+import { useSetupActions, type SetupActions } from "./core/useSetupActions";
+import { useBgioSync } from "./core/useBgioSync";
 
 import { Client } from "boardgame.io/client";
 import { SocketIO } from "boardgame.io/multiplayer";
-import { TrenchGame } from "@game/Game";
+import { TrenchGame, type TrenchGameState } from "@game/Game";
+import type { Ctx } from "boardgame.io";
 
-export function useGameState() {
+export interface GameStateHook
+  extends
+    GameTheme,
+    BoardState,
+    TurnState,
+    GameConfigState,
+    GameCore,
+    PlacementManager,
+    MoveExecution,
+    BoardInteraction,
+    SetupActions {
+  bgioState: { G: TrenchGameState; ctx: Ctx } | null;
+  ready: () => void;
+  startGame: () => void;
+  multiplayer: MultiplayerState;
+}
+
+export function useGameState(): GameStateHook {
   const theme = useGameTheme();
-  const core = useGameCore();
   const multiplayer = useMultiplayer();
 
-  const [bgioState, setBgioState] = useState<{ G: any; ctx: any } | null>(null);
+  // 1. Core State
+  const boardState = useBoardState();
+  const turnState = useTurnState();
+  const configState = useGameConfig();
 
-  const clientRef = useRef<any>(null);
-  const unsubscribeRef = useRef<(() => void) | null>(null);
+  // 2. Lifecycle Orchestrator
+  const core = useGameLifecycle(boardState, turnState, configState);
+
+  // 3. Client initialization
+  const [bgioState, _setBgioState] = useState<{
+    G: TrenchGameState;
+    ctx: Ctx;
+  } | null>(null);
+  const clientRef = useRef<BgioClient | undefined>(undefined);
   const lastClientParamsRef = useRef<{
     playerID?: string;
-    numPlayers?: number;
-    gameState?: string;
     roomId?: string;
     debug?: boolean;
+    gameState?: string;
   }>({});
 
-  const gameStateRef = useRef(core.gameState);
-  const roomIdRef = useRef(multiplayer.roomId);
-  const isConnectedRef = useRef(multiplayer.isConnected);
-  const latestSetupDataRef = useRef({
-    board: core.board,
-    terrain: core.terrain,
-    inventory: core.inventory,
-    terrainInventory: core.terrainInventory,
-  });
-
-  useEffect(() => {
-    gameStateRef.current = core.gameState;
-    roomIdRef.current = multiplayer.roomId;
-    isConnectedRef.current = multiplayer.isConnected;
-
-    latestSetupDataRef.current = {
-      board: core.board,
-      terrain: core.terrain,
-      inventory: core.inventory,
-      terrainInventory: core.terrainInventory,
-    };
-
-    // Reset local identity if we are not in a room
-    if (!multiplayer.roomId && core.localPlayerName) {
-      core.setLocalPlayerName("");
-    }
-  }, [
-    core.gameState,
-    multiplayer.roomId,
-    multiplayer.isConnected,
-    core.localPlayerName,
-    core.board,
-    core.terrain,
-    core.inventory,
-    core.terrainInventory,
-  ]);
-
-  const syncWithClient = useCallback(
-    (client: any) => {
-      if (unsubscribeRef.current) unsubscribeRef.current();
-
-      const {
-        setBoard,
-        setTerrain,
-        setInventory,
-        setTerrainInventory,
-        setCapturedBy,
-        setMode,
-        setActivePlayers,
-        setTurn,
-        setReadyPlayers,
-      } = core;
-
-      unsubscribeRef.current = client.subscribe((state: any) => {
-        if (!state) return;
-        const { G, ctx } = state;
-
-        setBgioState({ G, ctx });
-
-        // Only update if state actually changed to prevent infinite render loops
-        setBoard((prev: any) =>
-          JSON.stringify(prev) === JSON.stringify(G.board) ? prev : G.board,
-        );
-        setTerrain((prev: any) =>
-          JSON.stringify(prev) === JSON.stringify(G.terrain) ? prev : G.terrain,
-        );
-        setInventory((prev: any) =>
-          JSON.stringify(prev) === JSON.stringify(G.inventory)
-            ? prev
-            : G.inventory,
-        );
-        setTerrainInventory((prev: any) =>
-          JSON.stringify(prev) === JSON.stringify(G.terrainInventory)
-            ? prev
-            : G.terrainInventory,
-        );
-        setCapturedBy((prev: any) =>
-          JSON.stringify(prev) === JSON.stringify(G.capturedBy)
-            ? prev
-            : G.capturedBy,
-        );
-        setMode((prev: any) => (prev === G.mode ? prev : G.mode));
-        setActivePlayers((prev: any) =>
-          JSON.stringify(prev) === JSON.stringify(G.activePlayers)
-            ? prev
-            : G.activePlayers,
-        );
-        setReadyPlayers((prev: any) =>
-          JSON.stringify(prev) === JSON.stringify(G.readyPlayers || {})
-            ? prev
-            : G.readyPlayers || {},
-        );
-
-        if (gameStateRef.current !== "setup") {
-          if (G.playerMap && G.playerMap[ctx.currentPlayer]) {
-            setTurn(G.playerMap[ctx.currentPlayer]);
-          } else {
-            setTurn("player1");
-          }
-        }
-
-        if (ctx.phase && core.gameState !== ctx.phase) {
-          core.setGameState(ctx.phase);
-        }
-
-        // Sync local player identity
-        const myPid = client.playerID; // "0", "1", etc.
-        if (myPid && G.playerMap && G.playerMap[myPid]) {
-          core.setLocalPlayerName(G.playerMap[myPid]);
-        }
-      });
-    },
-    // Stabilize by only depending on setters which are guaranteed stable by React/hooks
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      core.setBoard,
-      core.setTerrain,
-      core.setInventory,
-      core.setTerrainInventory,
-      core.setCapturedBy,
-      core.setMode,
-      core.setActivePlayers,
-      core.setTurn,
-      core.setReadyPlayers,
-      core.setGameState,
-      core.gameState,
-    ],
-  );
-
   const initClient = useCallback(() => {
-    console.log("useGameState: Initializing client");
-    const numPlayers = core.mode === "4p" ? 4 : 2;
+    const numPlayers = core.configState.mode === "4p" ? 4 : 2;
     const playerID =
       multiplayer.playerIndex !== null ? String(multiplayer.playerIndex) : "0";
 
-    // Grab the current state JUST for initial setup. We don't want to re-init
-    // the client every time these states change during gameplay.
-    const setupData = {
-      mode: core.mode,
-      ...latestSetupDataRef.current,
-    };
-
-    const clientConfig: any = {
+    const clientConfig = {
       game: TrenchGame,
       numPlayers,
-      debug: core.showBgDebug,
+      debug: core.configState.showBgDebug,
       playerID,
-      setupData,
-    };
+      setupData: {
+        mode: core.configState.mode,
+        board: core.boardState.board,
+        terrain: core.boardState.terrain,
+        inventory: core.boardState.inventory,
+        terrainInventory: core.boardState.terrainInventory,
+      },
+    } as Parameters<typeof Client>[0];
 
     if (multiplayer.roomId && multiplayer.playerCredentials) {
       clientConfig.multiplayer = SocketIO({ server: getServerUrl() });
@@ -185,95 +104,109 @@ export function useGameState() {
 
     if (clientRef.current) {
       clientRef.current.stop();
-      if (unsubscribeRef.current) unsubscribeRef.current();
     }
 
-    clientRef.current = Client(clientConfig);
-    clientRef.current.start();
+    clientRef.current = Client(
+      clientConfig,
+    ) as unknown as typeof clientRef.current;
+    clientRef.current?.start();
 
     lastClientParamsRef.current = {
       playerID,
-      numPlayers,
-      gameState: core.gameState,
       roomId: multiplayer.roomId || undefined,
+      debug: core.configState.showBgDebug,
+      gameState: core.configState.gameState,
     };
-
-    syncWithClient(clientRef.current);
   }, [
-    core.mode,
-    core.gameState,
+    core.configState.mode,
+    core.configState.showBgDebug,
+    core.configState.gameState,
+    core.boardState.board,
+    core.boardState.terrain,
+    core.boardState.inventory,
+    core.boardState.terrainInventory,
     multiplayer.playerIndex,
     multiplayer.roomId,
     multiplayer.playerCredentials,
-    syncWithClient,
-    core.showBgDebug,
-    // We EXCLUDE board, terrain, inventory, terrainInventory here because
-    // the client handles its own internal state after initialization.
-    // Including them causes an infinite re-render loop when syncWithClient sets them.
   ]);
 
-  // Initial setup OR when core connectivity params change OR transitions from setup->play
   useEffect(() => {
     const playerID =
       multiplayer.playerIndex !== null ? String(multiplayer.playerIndex) : "0";
+    const local = lastClientParamsRef.current;
 
-    const localParams = lastClientParamsRef.current;
     if (
-      localParams.playerID !== playerID ||
-      localParams.roomId !== multiplayer.roomId ||
-      localParams.debug !== core.showBgDebug
+      local.playerID !== playerID ||
+      local.roomId !== multiplayer.roomId ||
+      local.debug !== core.configState.showBgDebug
     ) {
       initClient();
-      localParams.playerID = playerID;
-      localParams.roomId = multiplayer.roomId || undefined;
-      localParams.debug = core.showBgDebug;
-      localParams.gameState = core.gameState;
     }
   }, [
     multiplayer.playerIndex,
     multiplayer.roomId,
-    core.showBgDebug,
-    core.gameState,
+    core.configState.showBgDebug,
     initClient,
   ]);
 
-  const interaction = useGameInteraction(
+  // 4. Sync State
+  useBgioSync(core, clientRef);
+
+  // 5. Action Managers
+  const placementManager = usePlacementManager(core);
+  const moveExecution = useMoveExecution(core, clientRef);
+  const boardInteraction = useBoardInteraction(
     core,
+    placementManager,
+    moveExecution.executeMove,
     multiplayer,
-    (move) => {
-      // Execute the move directly through the boardgame.io client, which handles syncing
-      clientRef.current?.moves.movePiece(move.from, move.to);
-    },
-    clientRef.current,
+    clientRef,
   );
 
-  const setup = useGameSetup(core, interaction, clientRef.current);
+  const setupActions = useSetupActions(
+    core,
+    placementManager.setPlacementPiece,
+    placementManager.setPlacementTerrain,
+    placementManager.setPreviewMoves,
+  );
 
+  // 6. Computer Opponent
   useComputerOpponent({
-    gameState: core.gameState,
-    turn: core.turn,
-    board: core.board,
-    terrain: core.terrain,
-    mode: core.mode,
-    playerTypes: core.playerTypes,
-    executeMove: interaction.executeMove,
-    winner: core.winner,
-    setIsThinking: core.setIsThinking,
+    gameState: core.configState.gameState,
+    turn: core.turnState.turn,
+    board: core.boardState.board,
+    terrain: core.boardState.terrain,
+    mode: core.configState.mode,
+    playerTypes: core.turnState.playerTypes,
+    executeMove: moveExecution.executeMove,
+    winner: core.turnState.winner,
+    setIsThinking: core.turnState.setIsThinking,
   });
 
   return {
     ...theme,
+    ...boardState,
+    ...turnState,
+    ...configState,
     ...core,
-    ...interaction,
-    ...setup,
+    ...placementManager,
+    ...moveExecution,
+    ...boardInteraction,
+    ...setupActions,
     bgioState,
+    ready: () => {
+      if (multiplayer.roomId) {
+        if (clientRef.current) clientRef.current.moves.ready();
+      } else {
+        configState.setGameState("play");
+      }
+    },
+    startGame: () => configState.setGameState("play"),
     multiplayer: {
       ...multiplayer,
       toggleReady: (_isReady: boolean) => {
-        if (clientRef.current) {
-          clientRef.current.moves.ready();
-        }
+        if (clientRef.current) clientRef.current.moves.ready();
       },
     },
-  } as any;
+  };
 }

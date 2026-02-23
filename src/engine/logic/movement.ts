@@ -61,7 +61,7 @@ export const getValidMoves = (
 
   if (piece.type === PIECES.PAWN) {
     if (mode === "2p-ew") {
-      const dir = player === "player3" ? 1 : -1;
+      const dir = player === "green" ? 1 : -1;
 
       // Classic Pawn: Move 1 forward, Capture 1 diagonal
       const nf = c + dir;
@@ -104,16 +104,16 @@ export const getValidMoves = (
     } else if (mode === "4p") {
       let dr = 0,
         dc = 0;
-      if (player === "player1") {
+      if (player === "red") {
         dr = 1;
         dc = 1;
-      } else if (player === "player2") {
+      } else if (player === "yellow") {
         dr = 1;
         dc = -1;
-      } else if (player === "player3") {
+      } else if (player === "green") {
         dr = -1;
         dc = 1;
-      } else if (player === "player4") {
+      } else if (player === "blue") {
         dr = -1;
         dc = -1;
       }
@@ -183,7 +183,7 @@ export const getValidMoves = (
       });
     } else {
       // Default NS direction (2p-ns)
-      const dir = player === "player1" || player === "player2" ? 1 : -1;
+      const dir = player === "red" || player === "yellow" ? 1 : -1;
 
       // Classic Pawn: Move 1 forward, Capture 1 diagonal
       const nf = r + dir;

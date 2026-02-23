@@ -41,14 +41,14 @@ export const TerrainPreviewGrid: React.FC<TerrainPreviewGridProps> = ({
 
   simBoard[simCenter][simCenter] = {
     type: pType as PieceType,
-    player: "player1",
+    player: "red",
   };
 
   const moves = getValidMoves(
     simCenter,
     simCenter,
     simBoard[simCenter][simCenter]!,
-    "player1",
+    "red",
     simBoard,
     simTerrain,
     "2p-ns",

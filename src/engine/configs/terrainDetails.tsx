@@ -21,7 +21,7 @@ export const TERRAIN_TYPES: Record<string, TerrainType> = {
 
 export interface TerrainDetail {
   key: TerrainType;
-  icon: any;
+  icon: React.ElementType;
   label: string;
   subtitle: string;
   tagline: string;

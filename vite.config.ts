@@ -32,7 +32,7 @@ export default defineConfig({
       ),
       "@hooks": path.resolve(__dirname, "./src/shared/hooks"),
       "@utils": path.resolve(__dirname, "./src/shared/utils"),
-      "@assets": path.resolve(__dirname, "./src/app/assets"),
+      "@assets": path.resolve(__dirname, "./src/assets"),
 
       // Routes
       "@routes": path.resolve(__dirname, "./src/app/routes"),

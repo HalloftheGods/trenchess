@@ -57,6 +57,7 @@ export function useDeployment({
         if (stored) {
           const data = JSON.parse(stored);
           if (Array.isArray(data)) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setLibrarySeeds(
               data.sort(
                 (a, b) =>

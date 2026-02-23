@@ -10,6 +10,9 @@ interface GameLogoProps {
   logoText?: string;
   topText?: string;
   showTerrain?: boolean;
+  onResumeClick?: () => void;
+  resumeBoardIcon?: React.ReactNode;
+  resumePresetIcon?: React.ReactNode;
 }
 
 const GameLogo: React.FC<GameLogoProps> = ({
@@ -19,6 +22,9 @@ const GameLogo: React.FC<GameLogoProps> = ({
   logoText,
   topText,
   showTerrain = true,
+  onResumeClick,
+  resumeBoardIcon,
+  resumePresetIcon,
 }) => {
   const isLarge = size === "large";
   const isMedium = size === "medium";
@@ -127,7 +133,7 @@ const GameLogo: React.FC<GameLogoProps> = ({
             {/* Bottom: The Result */}
             <Heading
               level={1}
-              className={`leading-none whitespace-nowrap ${
+              className={`leading-none whitespace-nowrap relative ${
                 logoText
                   ? "text-4xl md:text-5xl lg:text-6xl"
                   : isMedium
@@ -142,6 +148,24 @@ const GameLogo: React.FC<GameLogoProps> = ({
                   <Text className="brand-title-red">TREN</Text>
                   <Text className="brand-title-blue">CHESS</Text>
                 </>
+              )}
+
+              {onResumeClick && (
+                <Box
+                  className="absolute -top-4 -right-8 md:-top-6 md:-right-12 animate-bounce cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onResumeClick();
+                  }}
+                >
+                  <Box className="bg-emerald-500 text-white px-3 py-1 md:px-4 md:py-2 rounded-full shadow-lg border-2 border-white dark:border-slate-900 flex items-center gap-2 transform rotate-12 hover:rotate-0 transition-transform">
+                    <Text className="text-xs md:text-sm font-bold tracking-normal">
+                      RESUME
+                    </Text>
+                    {resumeBoardIcon}
+                    {resumePresetIcon}
+                  </Box>
+                </Box>
               )}
             </Heading>
           </Flex>

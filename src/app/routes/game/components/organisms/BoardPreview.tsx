@@ -248,18 +248,18 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
       {selectedMode && playerConfig && onTogglePlayerType && (
         <div className="pointer-events-auto">
           {(selectedMode === "2p-ns"
-            ? ["player1", "player4"]
+            ? ["red", "blue"]
             : selectedMode === "2p-ew"
-              ? ["player3", "player2"]
-              : ["player1", "player2", "player3", "player4"]
+              ? ["green", "yellow"]
+              : ["red", "yellow", "green", "blue"]
           ).map((pid) => {
             const isComputer = playerConfig[pid] === "computer";
             const config =
-              pid === "player1"
+              pid === "red"
                 ? { name: "N", color: "brand-red", pos: "top-6 left-6" }
-                : pid === "player2"
+                : pid === "yellow"
                   ? { name: "E", color: "yellow", pos: "top-6 right-6" }
-                  : pid === "player3"
+                  : pid === "green"
                     ? { name: "W", color: "green", pos: "bottom-6 left-6" }
                     : {
                         name: "S",

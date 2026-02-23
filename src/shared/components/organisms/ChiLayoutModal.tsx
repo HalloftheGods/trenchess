@@ -5,12 +5,12 @@
 import React from "react";
 import { X, Map as MapIcon, ChevronRight } from "lucide-react";
 import { MiniBoard } from "@/app/routes/game/components/organisms/SeedLibrary";
-import type { GameMode } from "@engineTypes/game";
+import type { GameMode, SeedItem } from "@engineTypes/game";
 
 interface ChiLayoutModalProps {
   isOpen: boolean;
   onClose: () => void;
-  seeds: any[];
+  seeds: SeedItem[];
   onSelect: (index: number) => void;
   selectedIndex: number;
   activeMode?: GameMode | null;

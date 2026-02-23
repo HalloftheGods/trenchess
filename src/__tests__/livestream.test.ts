@@ -26,7 +26,7 @@ describe("Live Simulation Stream", () => {
       });
     });
 
-    const players = ["player1", "player2"];
+    const players = ["red", "yellow"];
     const mode = "2p-ns";
 
     let { board, terrain, inventory, terrainInventory } = createInitialState(
@@ -71,7 +71,7 @@ describe("Live Simulation Stream", () => {
           board,
           terrain,
           turn: player,
-          capturedBy: { player1: [], player2: [], player3: [], player4: [] },
+          capturedBy: { red: [], yellow: [], green: [], blue: [] },
           activePlayers: players,
         },
       });

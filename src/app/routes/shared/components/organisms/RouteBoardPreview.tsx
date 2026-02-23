@@ -49,14 +49,14 @@ export const RouteBoardPreview: React.FC<MenuBoardPreviewProps> = ({
   return (
     <div className={className || defaultClassName}>
       <BoardPreview
-        selectedMode={previewConfig.mode}
-        selectedProtocol={previewConfig.protocol}
+        selectedMode={previewConfig.mode || null}
+        selectedProtocol={previewConfig.protocol || null}
         darkMode={darkMode}
         pieceStyle={pieceStyle}
-        showTerrainIcons={previewConfig.showIcons}
-        hideUnits={previewConfig.hideUnits}
+        showTerrainIcons={previewConfig.showIcons || undefined}
+        hideUnits={previewConfig.hideUnits || undefined}
         labelOverride={previewConfig.label}
-        forcedTerrain={previewConfig.forcedTerrain}
+        forcedTerrain={previewConfig.forcedTerrain || null}
         customSeed={activeCustomSeed}
         terrainSeed={terrainSeed}
       />

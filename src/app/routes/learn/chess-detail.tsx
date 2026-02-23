@@ -5,6 +5,7 @@ import InteractiveGuide, {
 } from "@/app/routes/shared/components/templates/InteractiveGuide";
 import { PIECES, INITIAL_ARMY } from "@engineConfigs/unitDetails";
 import { UNIT_DETAILS, unitColorMap } from "@engineConfigs/unitDetails";
+import type { PieceType, TerrainType, ArmyUnit } from "@engineTypes/game";
 // Shared Route Components
 import { TerrainIconBadge } from "@/app/routes/shared/components/atoms/TerrainIconBadge";
 import { UnitMovePreview } from "@/app/routes/shared/components/molecules/UnitMovePreview";
@@ -32,7 +33,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
           PIECES.ROOK,
           PIECES.QUEEN,
           PIECES.KING,
-        ].filter((u: any) => u !== initialUnit),
+        ].filter((u: PieceType | string) => u !== initialUnit),
       ]
     : [
         PIECES.PAWN,
@@ -44,8 +45,8 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
       ];
 
   const slides: Slide[] = useMemo(() => {
-    return UNIT_ORDER.map((type: any) => {
-      const unit = INITIAL_ARMY.find((u: any) => u.type === type);
+    return UNIT_ORDER.map((type: PieceType | string) => {
+      const unit = INITIAL_ARMY.find((u: ArmyUnit) => u.type === type);
       const details = UNIT_DETAILS[type];
 
       if (!unit || !details) return null;
@@ -70,17 +71,17 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
       const getClassicMoveName = (type: string) => {
         switch (type) {
           case PIECES.KING:
-            return "1-Step";
+            return "The 1 OrthogDiagonal Step";
           case PIECES.QUEEN:
-            return "Orthogonal & Diagonal";
+            return "The ∞ Orthogonal & Diagonal";
           case PIECES.ROOK:
-            return "Orthogonal";
+            return "The ∞ Orthogonal";
           case PIECES.BISHOP:
-            return "Diagonal";
+            return "The ∞ Diagonal";
           case PIECES.KNIGHT:
-            return "L-Shape";
+            return "The L-Shape Trot";
           case PIECES.PAWN:
-            return "Forward Step";
+            return "The Forward March";
           default:
             return "Standard Move";
         }
@@ -89,17 +90,17 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
       const getThemedMoveName = (type: string) => {
         switch (type) {
           case PIECES.KING:
-            return "Charge";
+            return "Checkered Leap - King Me";
           case PIECES.QUEEN:
-            return "Sacred Gallop";
+            return "8 Legged Gallop";
           case PIECES.ROOK:
-            return "4-Corners (Moat)";
+            return '"Four-Corners" Fortnight';
           case PIECES.BISHOP:
-            return "Staff Vault";
+            return "Leap of Faith";
           case PIECES.KNIGHT:
-            return "Triple Bar Jump";
+            return '"Triple-Bar" Jump';
           case PIECES.PAWN:
-            return "Backflip";
+            return '"Double-back" Flip';
           default:
             return details.title;
         }
@@ -109,7 +110,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
         id: unit.type,
         title: details.title,
         subtitle: details.subtitle,
-        color: finalColor as any,
+        color: finalColor as Slide["color"],
         topLabel: details.role,
         icon: IconComp,
         previewConfig: {
@@ -121,16 +122,20 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
         leftContent: details.levelUp?.sanctuaryTerrain ? (
           <div className="flex items-center gap-6">
             <div className="flex gap-2">
-              {details.levelUp.sanctuaryTerrain.map((key: any, idx: any) => (
-                <TerrainIconBadge
-                  key={idx}
-                  terrainKey={key}
-                  active={selectedTerrain === key}
-                  onClick={() =>
-                    setSelectedTerrain((prev) => (prev === key ? null : key))
-                  }
-                />
-              ))}
+              {details.levelUp.sanctuaryTerrain.map(
+                (key: TerrainType | string, idx: number) => (
+                  <TerrainIconBadge
+                    key={idx}
+                    terrainKey={key as TerrainType}
+                    active={selectedTerrain === key}
+                    onClick={() =>
+                      setSelectedTerrain((prev) =>
+                        prev === key ? null : (key as string),
+                      )
+                    }
+                  />
+                ),
+              )}
             </div>
           </div>
         ) : null,
@@ -215,7 +220,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
               )}
 
               {/* Special Abilities from stats */}
-              {details.levelUp?.stats.map((stat: any, sIdx: any) => {
+              {details.levelUp?.stats.map((stat: string, sIdx: number) => {
                 const colonIndex = stat.indexOf(":");
                 if (colonIndex === -1) {
                   if (stat.toLowerCase().includes("sanctuary")) return null;

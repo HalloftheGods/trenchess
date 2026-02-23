@@ -9,7 +9,7 @@ export interface Slide {
   icon: React.ElementType;
   sideContent?: React.ReactNode;
   infoContent?: React.ReactNode;
-  previewConfig: any;
+  previewConfig: unknown;
   color: "red" | "blue" | "emerald" | "amber" | "slate" | "indigo";
   topLabel?: string;
 }

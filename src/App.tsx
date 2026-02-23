@@ -14,21 +14,27 @@ import type { TerrainType } from "@engineTypes/game";
 import { LoadingFallback } from "@/shared/components/molecules/LoadingFallback";
 import { RouteProvider } from "@/app/context/RouteContext";
 import { DEFAULT_SEEDS } from "@engineConfigs/defaultSeeds";
+import type { GameMode, SeedItem } from "@engineTypes/game";
 
-const TrenchGuideWrapper = (props: any) => {
+const TrenchGuideWrapper = (props: { onBack?: () => void }) => {
   const { terrain } = useParams();
   return (
     <RoutesConfig.LazyLearnTrenchDetailView
       {...props}
       initialTerrain={terrain as TerrainType}
+      onBack={props.onBack || (() => {})}
     />
   );
 };
 
-const ChessGuideWrapper = (props: any) => {
+const ChessGuideWrapper = (props: { onBack?: () => void }) => {
   const { unitType } = useParams();
   return (
-    <RoutesConfig.LazyLearnChessDetailView {...props} initialUnit={unitType} />
+    <RoutesConfig.LazyLearnChessDetailView
+      {...props}
+      initialUnit={unitType}
+      onBack={props.onBack || (() => {})}
+    />
   );
 };
 
@@ -47,63 +53,86 @@ const DebugErrorThrower = () => {
 
 const App = () => {
   const game = useGameState();
+  const {
+    gameState,
+    multiplayer,
+    initFromSeed,
+    initGameWithPreset,
+    setGameState,
+    mode,
+    setMode,
+    selectedPreset,
+    setSelectedPreset,
+    playerTypes,
+    activePlayers,
+    darkMode,
+    pieceStyle,
+    toggleTheme,
+    togglePieceStyle,
+  } = game;
+
   const navigate = useNavigate();
   const location = useLocation();
   const match = matchPath(ROUTES.GAME_DETAIL, location.pathname);
   const routeRoomId = match?.params.roomId;
 
   useEffect(() => {
-    if (routeRoomId && game.multiplayer.roomId !== routeRoomId) {
+    // Exclude 'mmo' from auto-joining as it represents a special view mode
+    if (
+      routeRoomId &&
+      routeRoomId !== "mmo" &&
+      multiplayer.roomId !== routeRoomId
+    ) {
       console.log("App: Room ID detected in URL, joining:", routeRoomId);
-      game.multiplayer.joinGame(routeRoomId);
+      multiplayer.joinGame(routeRoomId);
     }
-  }, [routeRoomId, game.multiplayer.roomId, game.multiplayer.joinGame]);
+  }, [routeRoomId, multiplayer]);
 
   useEffect(() => {
     const isGameRoute = location.pathname.startsWith(ROUTES.GAME);
     if (!isGameRoute) return;
 
     if (location.pathname === ROUTES.GAME_MMO) {
-      if (game.gameState === "menu") {
+      if (gameState === "menu") {
         const urlParams = new URLSearchParams(window.location.search);
         const seed = urlParams.get("seed");
         if (seed) {
-          game.initFromSeed(seed);
+          initFromSeed(seed);
         } else {
-          game.initGameWithPreset("2p-ns", "2p-ns");
+          initGameWithPreset("2p-ns", null);
         }
       }
       return;
     }
     if (location.pathname === ROUTES.ZEN) {
-      game.initGameWithPreset("2p-ns", "zen-garden");
+      initGameWithPreset("2p-ns", "zen-garden");
       return;
     }
-  }, [game.gameState, location.pathname]);
+  }, [gameState, location.pathname, initFromSeed, initGameWithPreset]);
 
   useEffect(() => {
     if (
       location.pathname === ROUTES.GAME &&
       !location.pathname.startsWith(ROUTES.GAME_MMO) &&
-      game.gameState === "menu"
+      gameState === "menu"
     ) {
       navigate(ROUTES.HOME);
     }
-  }, [location.pathname, game.gameState, navigate]);
+  }, [location.pathname, gameState, navigate]);
 
   const handleBackToMenu = () => {
-    game.setGameState("menu");
+    setGameState("menu");
     navigate(ROUTES.HOME);
   };
 
   // State lifted for global RouteContext
-  const [seeds, setSeeds] = useState<any[]>([]);
+  const [seeds, setSeeds] = useState<SeedItem[]>([]);
   const [previewSeedIndex, setPreviewSeedIndex] = useState(0);
 
   // Load seeds on mount
   useEffect(() => {
     const stored = localStorage.getItem("trenchess_seeds");
-    let loadedSeeds: any[] = [];
+    let loadedSeeds: SeedItem[] = [];
     if (stored) {
       try {
         loadedSeeds = JSON.parse(stored);
@@ -111,11 +140,12 @@ const App = () => {
         console.error(e);
       }
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSeeds([...loadedSeeds.reverse(), ...DEFAULT_SEEDS]);
   }, []);
 
   const routeContextValue = useMemo(() => {
-    const isOnline = !!game.multiplayer?.roomId;
+    const isOnline = !!multiplayer?.roomId;
     const playMode = isOnline
       ? "online"
       : location.pathname.includes("/play/local")
@@ -123,24 +153,34 @@ const App = () => {
         : "practice";
 
     return {
-      darkMode: game.darkMode,
-      multiplayer: game.multiplayer,
-      pieceStyle: game.pieceStyle,
-      toggleTheme: game.toggleTheme,
-      togglePieceStyle: game.togglePieceStyle,
+      darkMode,
+      multiplayer,
+      pieceStyle,
+      toggleTheme,
+      togglePieceStyle,
       onTutorial: () => {
-        game.setGameState("tutorial");
+        setGameState("tutorial");
         navigate(ROUTES.TUTORIAL);
       },
       onLogoClick: () => {
-        game.setGameState("menu");
+        setGameState("menu");
         navigate(ROUTES.HOME);
       },
       onZenGarden: () => navigate(ROUTES.ZEN),
-      onStartGame: (mode: any, preset: any, playerTypes: any, seed: any) => {
-        game.initGameWithPreset(mode, preset, playerTypes, seed);
-        const target = game.multiplayer?.roomId
-          ? `${ROUTES.GAME}/${game.multiplayer.roomId}`
+      onStartGame: (
+        startGameMode: GameMode,
+        preset: string | null,
+        playerTypesConfig: Record<string, "human" | "computer">,
+        seed?: string,
+      ) => {
+        initGameWithPreset(
+          startGameMode,
+          preset,
+          playerTypesConfig,
+          seed || "",
+        );
+        const target = multiplayer?.roomId
+          ? `${ROUTES.GAME}/${multiplayer.roomId}`
           : ROUTES.GAME_MMO;
         navigate(target);
       },
@@ -149,20 +189,46 @@ const App = () => {
       onTrenchGuide: (t?: string) =>
         navigate(t ? `${ROUTES.LEARN_TRENCH}/${t}` : ROUTES.LEARN_TRENCH),
       onOpenLibrary: () => navigate(ROUTES.LIBRARY),
-      selectedBoard: game.mode,
-      setSelectedBoard: (m: any) => m && game.setMode(m),
-      selectedPreset: game.selectedPreset,
-      setSelectedPreset: game.setSelectedPreset,
-      playerConfig: game.playerTypes,
-      activePlayers: game.activePlayers,
+      selectedBoard: mode,
+      setSelectedBoard: (m: GameMode | null) => m && setMode(m),
+      selectedPreset,
+      setSelectedPreset: (
+        p:
+          | "classic"
+          | "quick"
+          | "terrainiffic"
+          | "custom"
+          | "zen-garden"
+          | null,
+      ) => setSelectedPreset(p),
+      playerConfig: playerTypes,
+      activePlayers,
       playMode,
-      playerCount: game.activePlayers.length,
-      previewConfig: { mode: game.mode },
+      playerCount: activePlayers.length,
+      previewConfig: { mode },
       seeds,
       previewSeedIndex,
       setPreviewSeedIndex,
     };
-  }, [game, location.pathname, navigate, seeds, previewSeedIndex]);
+  }, [
+    multiplayer,
+    location.pathname,
+    darkMode,
+    pieceStyle,
+    toggleTheme,
+    togglePieceStyle,
+    setGameState,
+    navigate,
+    initGameWithPreset,
+    mode,
+    setMode,
+    selectedPreset,
+    setSelectedPreset,
+    playerTypes,
+    activePlayers,
+    seeds,
+    previewSeedIndex,
+  ]);
 
   // Shared game screen props
   const gameScreenProps = {
@@ -231,8 +297,8 @@ const App = () => {
       path: "scoreboard",
       element: (
         <RoutesConfig.LazyScoreboardView
-          darkMode={game.darkMode}
-          pieceStyle={game.pieceStyle}
+          darkMode={darkMode}
+          pieceStyle={pieceStyle}
         />
       ),
     },
@@ -241,7 +307,7 @@ const App = () => {
       element: (
         <RoutesConfig.LazyRulesView
           onBack={() => navigate(-1)}
-          darkMode={game.darkMode}
+          darkMode={darkMode}
         />
       ),
     },
@@ -268,7 +334,7 @@ const App = () => {
       element: (
         <RoutesConfig.LazyTutorialView
           onBack={handleBackToMenu}
-          darkMode={game.darkMode}
+          darkMode={darkMode}
         />
       ),
     },
@@ -277,8 +343,8 @@ const App = () => {
       element: (
         <RoutesConfig.LazyLearnManualView
           onBack={handleBackToMenu}
-          darkMode={game.darkMode}
-          pieceStyle={game.pieceStyle}
+          darkMode={darkMode}
+          pieceStyle={pieceStyle}
         />
       ),
     },
@@ -287,9 +353,9 @@ const App = () => {
       element: (
         <RoutesConfig.LazySeedLibrary
           onBack={handleBackToMenu}
-          onLoadSeed={(seed) => game.initFromSeed(seed)}
-          onEditInZen={(seed) => game.initFromSeed(seed, "zen-garden")}
-          activeMode={game.mode}
+          onLoadSeed={(seed) => initFromSeed(seed)}
+          onEditInZen={(seed) => initFromSeed(seed, "zen-garden")}
+          activeMode={mode}
         />
       ),
     },
@@ -309,25 +375,33 @@ const App = () => {
             path={ROUTES.HOME}
             element={
               <RoutesConfig.LazyRouteLayout
-                darkMode={game.darkMode}
-                pieceStyle={game.pieceStyle}
-                toggleTheme={game.toggleTheme}
-                togglePieceStyle={game.togglePieceStyle}
+                darkMode={darkMode}
+                pieceStyle={pieceStyle}
+                toggleTheme={toggleTheme}
+                togglePieceStyle={togglePieceStyle}
                 onTutorial={routeContextValue.onTutorial}
                 onLogoClick={routeContextValue.onLogoClick}
                 onZenGarden={routeContextValue.onZenGarden}
-                multiplayer={game.multiplayer}
+                multiplayer={multiplayer}
                 onStartGame={routeContextValue.onStartGame}
                 onCtwGuide={routeContextValue.onCtwGuide}
                 onChessGuide={routeContextValue.onChessGuide}
                 onTrenchGuide={routeContextValue.onTrenchGuide}
                 onOpenLibrary={routeContextValue.onOpenLibrary}
-                selectedBoard={game.mode}
+                selectedBoard={mode}
                 setSelectedBoard={routeContextValue.setSelectedBoard}
-                selectedPreset={game.selectedPreset}
-                setSelectedPreset={game.setSelectedPreset}
-                playerTypes={game.playerTypes}
-                activePlayers={game.activePlayers}
+                selectedPreset={selectedPreset}
+                setSelectedPreset={(
+                  p:
+                    | "classic"
+                    | "quick"
+                    | "terrainiffic"
+                    | "custom"
+                    | "zen-garden"
+                    | null,
+                ) => setSelectedPreset(p)}
+                playerTypes={playerTypes}
+                activePlayers={activePlayers}
               />
             }
           >

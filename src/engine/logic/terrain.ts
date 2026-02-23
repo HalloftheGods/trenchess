@@ -41,13 +41,13 @@ export function canUnitTraverseTerrain(
     }
   }
   simTerrain[center][center] = TERRAIN_TYPES.FLAT as TerrainType;
-  simBoard[center][center] = { type: unitType, player: "player1" };
+  simBoard[center][center] = { type: unitType, player: "red" };
 
   const moves = getValidMoves(
     center,
     center,
     simBoard[center][center]!,
-    "player1",
+    "red",
     simBoard,
     simTerrain,
     "2p-ns",

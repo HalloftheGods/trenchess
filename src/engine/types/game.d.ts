@@ -48,3 +48,30 @@ export interface ArmyUnit {
   custom: React.FC<{ className?: string; size?: number | string }>;
   lucide: React.FC<{ className?: string; size?: number | string }>;
 }
+
+export interface PreviewConfig {
+  mode?: GameMode | null;
+  protocol?:
+    | "custom"
+    | "zen-garden"
+    | "classic"
+    | "quick"
+    | "terrainiffic"
+    | null;
+  label?: string;
+  hideUnits?: boolean;
+  highlightCells?: [number, number][];
+  showIcons?: boolean;
+  forcedTerrain?: TerrainType | null;
+  useDefaultFormation?: boolean;
+  highlightOuterSquares?: boolean;
+  [key: string]: unknown;
+}
+
+export interface SeedItem {
+  id: string;
+  name: string;
+  seed: string;
+  mode: string;
+  createdAt: string;
+}

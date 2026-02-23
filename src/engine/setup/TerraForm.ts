@@ -35,7 +35,7 @@ export class TerraForm {
         ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
         : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
 
-    // 3. Generate for Primary Zone (Player 1)
+    // 3. Generate for Primary Zone (Red)
     // We generate a "Master Pattern" for the first zone, then stick to it or mirror it.
     const masterZone = zones[0];
     const masterPattern = this.generateZonePattern(
@@ -86,22 +86,22 @@ export class TerraForm {
 
     if (mode === "2p-ns") {
       return [
-        toObj(getPlayerCells("player1", mode)), // North
-        toObj(getPlayerCells("player4", mode)), // South
+        toObj(getPlayerCells("red", mode)), // North
+        toObj(getPlayerCells("blue", mode)), // South
       ];
     }
     if (mode === "2p-ew") {
       return [
-        toObj(getPlayerCells("player3", mode)), // West
-        toObj(getPlayerCells("player2", mode)), // East
+        toObj(getPlayerCells("green", mode)), // West
+        toObj(getPlayerCells("yellow", mode)), // East
       ];
     }
     // 4p / 2v2
     return [
-      toObj(getPlayerCells("player1", mode)), // NW
-      toObj(getPlayerCells("player2", mode)), // NE
-      toObj(getPlayerCells("player3", mode)), // SW
-      toObj(getPlayerCells("player4", mode)), // SE
+      toObj(getPlayerCells("red", mode)), // NW
+      toObj(getPlayerCells("yellow", mode)), // NE
+      toObj(getPlayerCells("green", mode)), // SW
+      toObj(getPlayerCells("blue", mode)), // SE
     ];
   }
 

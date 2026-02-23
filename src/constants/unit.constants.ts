@@ -13,28 +13,28 @@ export type PieceStyle = (typeof PIECE_STYLES)[number];
 
 // --- Player Configs ---
 export const PLAYER_CONFIGS: Record<string, PlayerConfig> = {
-  player1: {
+  red: {
     name: "Red",
     color: "brand-red",
     text: "text-brand-red",
     bg: "bg-brand-red",
     shadow: "shadow-brand-red/40",
   },
-  player2: {
+  yellow: {
     name: "Yellow",
     color: "yellow-500",
     text: "text-yellow-500",
     bg: "bg-yellow-500",
     shadow: "shadow-yellow-900/40",
   },
-  player3: {
+  green: {
     name: "Green",
     color: "green-600",
     text: "text-green-500",
     bg: "bg-green-600",
     shadow: "shadow-green-900/40",
   },
-  player4: {
+  blue: {
     name: "Blue",
     color: "brand-blue",
     text: "text-brand-blue",

@@ -123,6 +123,7 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
   return (
     <MmoLayout
       darkMode={darkMode}
+      onLogoClick={ctx.onLogoClick}
       debugPanel={
         <GameStateDebug
           gameState={game.gameState}
@@ -212,7 +213,7 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
       }
       leftPanel={
         <div className="flex flex-col justify-between h-full">
-          {["player1", "player3"].map((expectedPid: string) => {
+          {["red", "green"].map((expectedPid: string) => {
             const pid = game.activePlayers.includes(expectedPid)
               ? expectedPid
               : undefined;
@@ -261,7 +262,7 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
       }
       rightPanel={
         <div className="flex flex-col justify-between h-full">
-          {["player2", "player4"].map((expectedPid: string) => {
+          {["yellow", "blue"].map((expectedPid: string) => {
             const pid = game.activePlayers.includes(expectedPid)
               ? expectedPid
               : undefined;

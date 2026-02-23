@@ -17,10 +17,10 @@ export const getBestMove = (
   mode: GameMode,
 ): Move | null => {
   // Determine opponent player ID (assuming 2p for now)
-  let opponent = "player2";
-  if (player === "player2") opponent = "player1";
-  if (player === "player3") opponent = "player4";
-  if (player === "player4") opponent = "player3";
+  let opponent = "yellow";
+  if (player === "yellow") opponent = "red";
+  if (player === "green") opponent = "blue";
+  if (player === "blue") opponent = "green";
 
   // Depth settings (2 plies to ensure tests complete reasonably fast)
   const SEARCH_DEPTH = 2;

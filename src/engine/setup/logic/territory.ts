@@ -10,15 +10,15 @@ export const getPlayerCells = (
     for (let c = 0; c < BOARD_SIZE; c++) {
       let isMyArea = false;
       if (mode === "2p-ns") {
-        isMyArea = player === "player1" ? r < 6 : r >= 6;
+        isMyArea = player === "red" ? r < 6 : r >= 6;
       } else if (mode === "2p-ew") {
-        if (player === "player3") isMyArea = c < 6;
-        if (player === "player2") isMyArea = c >= 6;
+        if (player === "green") isMyArea = c < 6;
+        if (player === "yellow") isMyArea = c >= 6;
       } else {
-        if (player === "player1") isMyArea = r < 6 && c < 6;
-        if (player === "player2") isMyArea = r < 6 && c >= 6;
-        if (player === "player3") isMyArea = r >= 6 && c < 6;
-        if (player === "player4") isMyArea = r >= 6 && c >= 6;
+        if (player === "red") isMyArea = r < 6 && c < 6;
+        if (player === "yellow") isMyArea = r < 6 && c >= 6;
+        if (player === "green") isMyArea = r >= 6 && c < 6;
+        if (player === "blue") isMyArea = r >= 6 && c >= 6;
       }
       if (isMyArea) cells.push([r, c]);
     }

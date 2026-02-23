@@ -171,11 +171,11 @@ export const adaptSeedToMode = (
       if (piece) {
         let newPlayer = piece.player;
         if (isSeedNS && isTargetEW) {
-          if (piece.player === "player1") newPlayer = "player3"; // P1 (N) -> P3 (W)
-          if (piece.player === "player4") newPlayer = "player2"; // P4 (S) -> P2 (E)
+          if (piece.player === "red") newPlayer = "green"; // P1 (N) -> P3 (W)
+          if (piece.player === "blue") newPlayer = "yellow"; // P4 (S) -> P2 (E)
         } else if (isSeedEW && isTargetNS) {
-          if (piece.player === "player3") newPlayer = "player1"; // P3 (W) -> P1 (N)
-          if (piece.player === "player2") newPlayer = "player4"; // P2 (E) -> P4 (S)
+          if (piece.player === "green") newPlayer = "red"; // P3 (W) -> P1 (N)
+          if (piece.player === "yellow") newPlayer = "blue"; // P2 (E) -> P4 (S)
         }
         newBoard[tr][tc] = { ...piece, player: newPlayer };
       }

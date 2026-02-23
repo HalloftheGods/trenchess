@@ -119,8 +119,8 @@ describe("Piece Statistics Generator", () => {
             () => Array(BOARD_SIZE).fill(null),
           );
 
-          const p1: BoardPiece = { type: attacker, player: "player1" };
-          const p2: BoardPiece = { type: defender, player: "player2" };
+          const p1: BoardPiece = { type: attacker, player: "red" };
+          const p2: BoardPiece = { type: defender, player: "yellow" };
           boardState[rA][cA] = p1;
           boardState[rB][cB] = p2;
 
@@ -131,7 +131,7 @@ describe("Piece Statistics Generator", () => {
 
           while (!gameOver && turn < MAX_TURNS) {
             const isAttackerTurn = turn % 2 === 0;
-            const actingPlayer = isAttackerTurn ? "player1" : "player2";
+            const actingPlayer = isAttackerTurn ? "red" : "yellow";
             const pos = isAttackerTurn ? pA : pB;
             const piece = isAttackerTurn ? p1 : p2;
             const targetPos = isAttackerTurn ? pB : pA;

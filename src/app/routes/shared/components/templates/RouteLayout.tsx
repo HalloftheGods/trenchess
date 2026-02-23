@@ -5,27 +5,42 @@ import { IconButton } from "@/shared/components/atoms/IconButton";
 import { FileText, Trophy, AudioWaveform } from "lucide-react";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
 import BackButton from "@/shared/components/molecules/BackButton";
+import type { GameMode } from "@engineTypes/game";
+import type { MultiplayerState } from "@hooks/useMultiplayer";
 
 interface MenuLayoutProps {
   darkMode: boolean;
-  pieceStyle: string;
+  pieceStyle: "bold" | "emoji" | "outlined" | "custom" | "lucide";
   toggleTheme: () => void;
   togglePieceStyle: () => void;
   onTutorial: () => void;
   onLogoClick: () => void;
   onZenGarden: () => void;
-  multiplayer: any;
-  onStartGame: (mode: any, preset: any, playerTypes: any, seed?: any) => void;
-  selectedBoard: any;
-  setSelectedBoard: (m: any) => void;
-  selectedPreset: any;
-  setSelectedPreset: (p: any) => void;
+  multiplayer: MultiplayerState;
+  onStartGame: (
+    mode: GameMode,
+    preset: string | null,
+    playerTypes: Record<string, "human" | "computer">,
+    seed?: string,
+  ) => void;
+  selectedBoard: GameMode | null;
+  setSelectedBoard: (m: GameMode | null) => void;
+  selectedPreset:
+    | "classic"
+    | "quick"
+    | "terrainiffic"
+    | "custom"
+    | "zen-garden"
+    | null;
+  setSelectedPreset: (
+    p: "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden" | null,
+  ) => void;
   onCtwGuide: () => void;
   onChessGuide: () => void;
   onTrenchGuide: (t?: string) => void;
   onOpenLibrary: () => void;
-  playerTypes: any;
-  activePlayers: any[];
+  playerTypes: Record<string, "human" | "computer">;
+  activePlayers: string[];
 }
 
 const RouteLayout: React.FC<MenuLayoutProps> = (props) => {
@@ -66,7 +81,7 @@ const RouteLayout: React.FC<MenuLayoutProps> = (props) => {
         topRight={
           <ThemeControls
             darkMode={props.darkMode}
-            pieceStyle={props.pieceStyle as any}
+            pieceStyle={props.pieceStyle}
             toggleTheme={props.toggleTheme}
             togglePieceStyle={props.togglePieceStyle}
           />

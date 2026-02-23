@@ -1,14 +1,14 @@
 interface Option {
   label: React.ReactNode;
-  value: any;
+  value: unknown;
   activeColor: string; // e.g. "bg-red-600"
   inactiveColor?: string;
 }
 
 interface SegmentedControlProps {
   options: Option[];
-  value: any;
-  onChange: (value: any) => void;
+  value: unknown;
+  onChange: (value: unknown) => void;
   className?: string;
 }
 

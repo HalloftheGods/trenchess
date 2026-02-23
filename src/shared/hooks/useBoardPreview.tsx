@@ -160,15 +160,15 @@ export function useBoardPreview({
     const mode = selectedMode || "2p-ns";
 
     if (mode === "2p-ns") {
-      return row < 6 ? "player1" : "player4";
+      return row < 6 ? "red" : "blue";
     }
     if (mode === "2p-ew") {
-      return col < 6 ? "player3" : "player2";
+      return col < 6 ? "green" : "yellow";
     }
-    if (row < 6 && col < 6) return "player1";
-    if (row < 6 && col >= 6) return "player2";
-    if (row >= 6 && col < 6) return "player3";
-    return "player4";
+    if (row < 6 && col < 6) return "red";
+    if (row < 6 && col >= 6) return "yellow";
+    if (row >= 6 && col < 6) return "green";
+    return "blue";
   };
 
   const getPieceAt = (
@@ -232,16 +232,16 @@ export function useBoardPreview({
         const cIndex = col - 2;
         if (row === 2) {
           pieceType = backRow[cIndex];
-          player = "player1";
+          player = "red";
         } else if (row === 3) {
           pieceType = PIECES.PAWN;
-          player = "player1";
+          player = "red";
         } else if (row === 9) {
           pieceType = backRow[cIndex];
-          player = "player4";
+          player = "blue";
         } else if (row === 8) {
           pieceType = PIECES.PAWN;
-          player = "player4";
+          player = "blue";
         }
       }
     } else if (effectiveMode === "2p-ew") {
@@ -249,16 +249,16 @@ export function useBoardPreview({
         const rIndex = row - 2;
         if (col === 2) {
           pieceType = backRow[rIndex];
-          player = "player3";
+          player = "green";
         } else if (col === 3) {
           pieceType = PIECES.PAWN;
-          player = "player3";
+          player = "green";
         } else if (col === 9) {
           pieceType = backRow[rIndex];
-          player = "player2";
+          player = "yellow";
         } else if (col === 8) {
           pieceType = PIECES.PAWN;
-          player = "player2";
+          player = "yellow";
         }
       }
     } else if (effectiveMode === "2v2") {
@@ -284,10 +284,10 @@ export function useBoardPreview({
         }
       };
 
-      getQuadPiece(0, 0, 1, 1, "player1");
-      getQuadPiece(0, 11, 1, -1, "player2");
-      getQuadPiece(11, 0, -1, 1, "player3");
-      getQuadPiece(11, 11, -1, -1, "player4");
+      getQuadPiece(0, 0, 1, 1, "red");
+      getQuadPiece(0, 11, 1, -1, "yellow");
+      getQuadPiece(11, 0, -1, 1, "green");
+      getQuadPiece(11, 11, -1, -1, "blue");
     } else if (effectiveMode === "4p") {
       const formation = [
         [PIECES.ROOK, PIECES.QUEEN, PIECES.KING, PIECES.ROOK],
@@ -310,10 +310,10 @@ export function useBoardPreview({
         }
       };
 
-      getQuadPiece(1, 1, 1, "player1");
-      getQuadPiece(1, 7, 1, "player2");
-      getQuadPiece(10, 1, -1, "player3");
-      getQuadPiece(10, 7, -1, "player4");
+      getQuadPiece(1, 1, 1, "red");
+      getQuadPiece(1, 7, 1, "yellow");
+      getQuadPiece(10, 1, -1, "green");
+      getQuadPiece(10, 7, -1, "blue");
     }
 
     if (!pieceType) return null;

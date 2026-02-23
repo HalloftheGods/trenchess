@@ -1,4 +1,4 @@
 declare module "fairy-stockfish-nnue.wasm/stockfish.js" {
-  const Stockfish: () => Promise<any>;
+  const Stockfish: () => Promise<unknown>;
   export default Stockfish;
 }

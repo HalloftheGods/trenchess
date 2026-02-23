@@ -50,7 +50,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
   terrain,
   pieceStyle: _pieceStyle,
   getIcon,
-  activePlayers = ["player1", "player2"],
+  activePlayers = ["red", "yellow"],
   capturedBy = {},
 }) => {
   let activeData: UnitIntelPanelEntry | TerrainIntelPanelEntry | null = null;

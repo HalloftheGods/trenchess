@@ -139,8 +139,8 @@ const MmoActionBar: React.FC<MmoActionBarProps> = ({
       icon: getIcon(
         unit,
         ["custom", "lucide"].includes(pieceStyle)
-          ? `w-6 h-6 ${PLAYER_CONFIGS[turn]?.text || PLAYER_CONFIGS.player1.text} drop-shadow-md`
-          : `text-xl ${PLAYER_CONFIGS[turn]?.text || PLAYER_CONFIGS.player1.text} drop-shadow-md`,
+          ? `w-6 h-6 ${PLAYER_CONFIGS[turn]?.text || PLAYER_CONFIGS.red.text} drop-shadow-md`
+          : `text-xl ${PLAYER_CONFIGS[turn]?.text || PLAYER_CONFIGS.red.text} drop-shadow-md`,
       ),
     };
   });

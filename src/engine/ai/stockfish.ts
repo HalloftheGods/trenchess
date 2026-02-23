@@ -13,63 +13,57 @@ class StockfishEngine {
   }
 
   private async init() {
-    return new Promise<void>(async (resolve) => {
-      try {
-        // @ts-ignore
-        this.engine = await Stockfish({
-          mainScriptUrlOrBlob:
-            (typeof window !== "undefined" ? window.location.origin : "") +
-            "/stockfish.js",
-          locateFile: (path: string) => {
-            const origin =
-              typeof window !== "undefined" ? window.location.origin : "";
-            if (path.endsWith(".wasm")) return origin + "/stockfish.wasm";
-            if (path.endsWith(".worker.js"))
-              return origin + "/stockfish.worker.js";
-            if (path.endsWith(".js")) return origin + "/stockfish.js";
-            return path;
-          },
-        });
+    try {
+      // @ts-expect-error
+      this.engine = await Stockfish({
+        mainScriptUrlOrBlob:
+          (typeof window !== "undefined" ? window.location.origin : "") +
+          "/stockfish.js",
+        locateFile: (path: string) => {
+          const origin =
+            typeof window !== "undefined" ? window.location.origin : "";
+          if (path.endsWith(".wasm")) return origin + "/stockfish.wasm";
+          if (path.endsWith(".worker.js"))
+            return origin + "/stockfish.worker.js";
+          if (path.endsWith(".js")) return origin + "/stockfish.js";
+          return path;
+        },
+      });
 
-        // Setup listener
-        this.engine.addMessageListener((line: string) => {
-          console.log("SF:", line);
-          if (line.startsWith("bestmove")) {
-            const moveStr = line.split(" ")[1];
-            if (this.onResolveBestMove) {
-              this.onResolveBestMove(moveStr);
-              this.onResolveBestMove = null;
-            }
+      // Setup listener
+      this.engine.addMessageListener((line: string) => {
+        console.log("SF:", line);
+        if (line.startsWith("bestmove")) {
+          const moveStr = line.split(" ")[1];
+          if (this.onResolveBestMove) {
+            this.onResolveBestMove(moveStr);
+            this.onResolveBestMove = null;
           }
-        });
-
-        // Feed variants.ini
-        try {
-          const response = await fetch("/variants.ini");
-          if (!response.ok) throw new Error("variants.ini not found");
-          const text = await response.text();
-          // Write to virtual filesystem
-          this.engine.FS.writeFile("/variants.ini", text);
-
-          // Initialize UCI
-          this.engine.postMessage("uci");
-          this.engine.postMessage(
-            "setoption name VariantsFile value /variants.ini",
-          );
-          this.engine.postMessage(
-            "setoption name MultiVariant value trenchess",
-          );
-          this.engine.postMessage("isready");
-        } catch (err) {
-          console.error("Failed to load variants.ini", err);
         }
-      } catch (err) {
-        console.error("Stockfish initialization failed:", err);
-        this.engine = null;
-      }
+      });
 
-      resolve();
-    });
+      // Feed variants.ini
+      try {
+        const response = await fetch("/variants.ini");
+        if (!response.ok) throw new Error("variants.ini not found");
+        const text = await response.text();
+        // Write to virtual filesystem
+        this.engine.FS.writeFile("/variants.ini", text);
+
+        // Initialize UCI
+        this.engine.postMessage("uci");
+        this.engine.postMessage(
+          "setoption name VariantsFile value /variants.ini",
+        );
+        this.engine.postMessage("setoption name MultiVariant value trenchess");
+        this.engine.postMessage("isready");
+      } catch (err) {
+        console.error("Failed to load variants.ini", err);
+      }
+    } catch (err) {
+      console.error("Stockfish initialization failed:", err);
+      this.engine = null;
+    }
   }
 
   public async getBestMove(
@@ -144,7 +138,7 @@ class StockfishEngine {
               break;
           }
 
-          if (p.player === "player1" || p.player === "player3") {
+          if (p.player === "red" || p.player === "green") {
             fen += char.toUpperCase();
           } else {
             fen += char.toLowerCase();
@@ -155,7 +149,7 @@ class StockfishEngine {
       if (r < BOARD_SIZE - 1) fen += "/";
     }
 
-    const side = turn === "player1" || turn === "player3" ? "w" : "b";
+    const side = turn === "red" || turn === "green" ? "w" : "b";
     fen += ` ${side} - - 0 1`;
 
     return fen;

@@ -3,7 +3,7 @@ import React from "react";
 interface TextProps extends React.HTMLAttributes<HTMLSpanElement> {
   children?: React.ReactNode;
   className?: string;
-  variant?: "body" | "caption" | "small" | "large";
+  _variant?: "body" | "caption" | "small" | "large";
   weight?: "normal" | "medium" | "semibold" | "bold" | "black";
   as?: React.ElementType;
 }
@@ -11,7 +11,7 @@ interface TextProps extends React.HTMLAttributes<HTMLSpanElement> {
 export const Text: React.FC<TextProps> = ({
   children,
   className = "",
-  variant = "body",
+  _variant = "body",
   weight = "normal",
   as: Component = "span",
   ...props

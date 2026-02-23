@@ -72,7 +72,7 @@
         "src/shared/types/*"
       ],
       "@assets/*": [
-        "src/app/assets/*"
+        "src/assets/*"
       ],
       "@game/*": [
         "src/app/routes/game/*"

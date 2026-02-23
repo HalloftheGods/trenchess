@@ -46,22 +46,22 @@ export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
 
     // Initialize playerMap based on mode
     const playerMap: Record<string, string> = {
-      "0": "player1",
-      "1": "player2",
-      "2": "player3",
-      "3": "player4",
+      "0": "red",
+      "1": "yellow",
+      "2": "green",
+      "3": "blue",
     };
 
     if (mode === "2p-ns") {
-      players = ["player1", "player4"];
-      playerMap["0"] = "player1";
-      playerMap["1"] = "player4";
+      players = ["red", "blue"];
+      playerMap["0"] = "red";
+      playerMap["1"] = "blue";
     } else if (mode === "2p-ew") {
-      players = ["player3", "player2"];
-      playerMap["0"] = "player3";
-      playerMap["1"] = "player2";
+      players = ["green", "yellow"];
+      playerMap["0"] = "green";
+      playerMap["1"] = "yellow";
     } else {
-      players = ["player1", "player2", "player3", "player4"];
+      players = ["red", "yellow", "green", "blue"];
     }
 
     // Default to classic initial state if no board/terrain provided in setupData
@@ -83,10 +83,10 @@ export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
       inventory,
       terrainInventory,
       capturedBy: {
-        player1: [],
-        player2: [],
-        player3: [],
-        player4: [],
+        red: [],
+        yellow: [],
+        green: [],
+        blue: [],
       },
       mode,
       activePlayers: players,
@@ -245,22 +245,22 @@ export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
           if (piece.type === PIECES.PAWN) {
             let promoted = false;
             if (G.mode === "2p-ns") {
-              if (pid === "player1" && toR === BOARD_SIZE - 1) promoted = true;
-              if (pid === "player4" && toR === 0) promoted = true;
+              if (pid === "red" && toR === BOARD_SIZE - 1) promoted = true;
+              if (pid === "blue" && toR === 0) promoted = true;
             } else if (G.mode === "2p-ew") {
-              if (pid === "player3" && toC === BOARD_SIZE - 1) promoted = true;
-              if (pid === "player2" && toC === 0) promoted = true;
+              if (pid === "green" && toC === BOARD_SIZE - 1) promoted = true;
+              if (pid === "yellow" && toC === 0) promoted = true;
             } else {
               if (
-                pid === "player1" &&
+                pid === "red" &&
                 (toR === BOARD_SIZE - 1 || toC === BOARD_SIZE - 1)
               )
                 promoted = true;
-              if (pid === "player2" && (toR === BOARD_SIZE - 1 || toC === 0))
+              if (pid === "yellow" && (toR === BOARD_SIZE - 1 || toC === 0))
                 promoted = true;
-              if (pid === "player3" && (toR === 0 || toC === BOARD_SIZE - 1))
+              if (pid === "green" && (toR === 0 || toC === BOARD_SIZE - 1))
                 promoted = true;
-              if (pid === "player4" && (toR === 0 || toC === 0))
+              if (pid === "blue" && (toR === 0 || toC === 0))
                 promoted = true;
             }
 

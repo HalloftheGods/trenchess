@@ -54,7 +54,7 @@ describe("CPU vs CPU Game Simulation", () => {
     let gamesFinished = 0;
 
     for (let g = 0; g < NUM_GAMES; g++) {
-      const players = ["player1", "player2"];
+      const players = ["red", "yellow"];
       const mode: GameMode = "2p-ns";
 
       // Setup initial state
@@ -98,7 +98,7 @@ describe("CPU vs CPU Game Simulation", () => {
           // This player lost
           gameOver = true;
           const winner = players[(currentPlayerIdx + 1) % 2];
-          if (winner === "player1") p1Wins++;
+          if (winner === "red") p1Wins++;
           else p2Wins++;
           gamesFinished++;
           totalMovesToWin += currentTurn;
@@ -112,7 +112,7 @@ describe("CPU vs CPU Game Simulation", () => {
           if (isPlayerInCheck(player, board, terrain, mode)) {
             // Checkmate! The other player won.
             const winner = players[(currentPlayerIdx + 1) % 2];
-            if (winner === "player1") p1Wins++;
+            if (winner === "red") p1Wins++;
             else p2Wins++;
             gamesFinished++;
             totalMovesToWin += currentTurn;
@@ -145,7 +145,7 @@ describe("CPU vs CPU Game Simulation", () => {
           let score = 0;
           board.forEach((row) =>
             row.forEach((p) => {
-              if (p) score += p.player === "player1" ? 1 : -1;
+              if (p) score += p.player === "red" ? 1 : -1;
             }),
           );
           // console.log(`Turn ${currentTurn}: Material Balance ${score}`);

@@ -264,9 +264,9 @@ export const ScoreboardView = ({ darkMode, pieceStyle }: ScoreboardProps) => {
                     <Trophy
                       size={18}
                       className={
-                        match.winner === "player1"
+                        match.winner === "red"
                           ? "text-brand-red"
-                          : match.winner === "player4"
+                          : match.winner === "blue"
                             ? "text-brand-blue"
                             : ""
                       }

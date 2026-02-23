@@ -1,10 +1,12 @@
 import React from "react";
 import type { ReactNode } from "react";
+import TrenchessText from "@atoms/TrenchessText";
 
 interface MmoLayoutProps {
   darkMode?: boolean;
   gameBoard: ReactNode;
   actionBar: ReactNode;
+  onLogoClick?: () => void;
   debugPanel?: ReactNode;
   leftPanel?: ReactNode;
   rightPanel?: ReactNode;
@@ -18,6 +20,7 @@ export const MmoLayout: React.FC<MmoLayoutProps> = ({
   darkMode = true,
   gameBoard,
   actionBar,
+  onLogoClick,
   debugPanel,
   leftPanel,
   rightPanel,
@@ -27,6 +30,14 @@ export const MmoLayout: React.FC<MmoLayoutProps> = ({
     <div
       className={`min-h-screen bg-[#050b15] text-slate-100 flex flex-col items-center justify-center overflow-hidden relative ${darkMode ? "dark" : ""}`}
     >
+      {/* Brand Logo */}
+      <div
+        onClick={onLogoClick}
+        className="absolute top-6 left-8 z-[120] cursor-pointer group select-none active:scale-95 transition-transform"
+      >
+        <TrenchessText className="text-2xl drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] opacity-80 group-hover:opacity-100 transition-opacity" />
+      </div>
+
       {children}
       {/* Sticky top bar */}
       {actionBar}

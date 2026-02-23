@@ -2,7 +2,15 @@ import { useState, useEffect } from "react";
 import { PIECE_STYLES, type PieceStyle } from "@constants/unit.constants";
 import type { ArmyUnit } from "@engineTypes/game";
 
-export function useGameTheme() {
+export interface GameTheme {
+  darkMode: boolean;
+  pieceStyle: PieceStyle;
+  toggleTheme: () => void;
+  togglePieceStyle: () => void;
+  getIcon: (unit: ArmyUnit, className?: string) => React.ReactNode;
+}
+
+export function useGameTheme(): GameTheme {
   const [darkMode, setDarkMode] = useState(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("battle-chess-theme");

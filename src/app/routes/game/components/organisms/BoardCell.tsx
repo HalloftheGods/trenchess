@@ -76,25 +76,25 @@ const BoardCell: React.FC<BoardCellProps> = ({
   let highlightArea = "";
   if (isSetupPhase) {
     if (mode === "2p-ns") {
-      if (turn === "player1" && r < 6)
+      if (turn === "red" && r < 6)
         highlightArea = "ring-1 ring-orange-500/20 ring-inset bg-orange-500/5";
-      if (turn === "player4" && r >= 6)
+      if (turn === "blue" && r >= 6)
         highlightArea = "ring-1 ring-blue-500/20 ring-inset bg-blue-500/5";
     } else if (mode === "2p-ew") {
-      if (turn === "player3" && c < 6)
+      if (turn === "green" && c < 6)
         highlightArea =
           "ring-1 ring-emerald-500/20 ring-inset bg-emerald-500/5";
-      if (turn === "player2" && c >= 6)
+      if (turn === "yellow" && c >= 6)
         highlightArea = "ring-1 ring-yellow-500/20 ring-inset bg-yellow-500/5";
     } else {
-      if (turn === "player1" && r < 6 && c < 6)
+      if (turn === "red" && r < 6 && c < 6)
         highlightArea = "ring-1 ring-orange-500/20 ring-inset bg-orange-500/5";
-      if (turn === "player2" && r < 6 && c >= 6)
+      if (turn === "yellow" && r < 6 && c >= 6)
         highlightArea = "ring-1 ring-yellow-500/20 ring-inset bg-yellow-500/5";
-      if (turn === "player3" && r >= 6 && c < 6)
+      if (turn === "green" && r >= 6 && c < 6)
         highlightArea =
           "ring-1 ring-emerald-500/20 ring-inset bg-emerald-500/5";
-      if (turn === "player4" && r >= 6 && c >= 6)
+      if (turn === "blue" && r >= 6 && c >= 6)
         highlightArea = "ring-1 ring-blue-500/20 ring-inset bg-blue-500/5";
     }
   }

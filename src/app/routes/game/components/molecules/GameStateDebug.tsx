@@ -230,9 +230,17 @@ const GameStateDebug: React.FC<GameStateDebugProps> = ({
                 </button>
               </DebugRow>
               <DebugRow label="Your Slot">
-                {onlineInfo.playerIndex !== null
-                  ? `Player ${onlineInfo.playerIndex}`
-                  : "—"}
+                {(() => {
+                  if (onlineInfo.playerIndex === null) return "—";
+                  const mappedId =
+                    bgioState?.G?.playerMap?.[
+                      onlineInfo.playerIndex.toString()
+                    ];
+                  const dName = mappedId ? getPlayerDisplayName(mappedId) : "";
+                  return dName
+                    ? `Slot ${onlineInfo.playerIndex} (${dName})`
+                    : `Slot ${onlineInfo.playerIndex}`;
+                })()}
               </DebugRow>
               <DebugRow label="Role">
                 <span

@@ -27,11 +27,11 @@ export const ZenPlayerTabs: React.FC<ZenPlayerTabsProps> = ({
               : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
           }`}
         >
-          {pid === "player1"
+          {pid === "red"
             ? "Red"
-            : pid === "player2"
+            : pid === "yellow"
               ? "Yellow"
-              : pid === "player3"
+              : pid === "green"
                 ? "Green"
                 : "Blue"}
         </button>

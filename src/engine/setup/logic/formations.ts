@@ -27,7 +27,7 @@ export const getClassicalFormationTargets = (
       PIECES.ROOK,
     ];
     const pawnRank = Array(8).fill(PIECES.PAWN);
-    if (p === "player1") {
+    if (p === "red") {
       backRank.forEach((type, i) => targets.push({ r: 2, c: 2 + i, type }));
       pawnRank.forEach((type, i) => targets.push({ r: 3, c: 2 + i, type }));
     } else {
@@ -46,7 +46,7 @@ export const getClassicalFormationTargets = (
       PIECES.ROOK,
     ];
     const pawnRank = Array(8).fill(PIECES.PAWN);
-    if (p === "player3") {
+    if (p === "green") {
       backRank.forEach((type, i) => targets.push({ r: 2 + i, c: 2, type }));
       pawnRank.forEach((type, i) => targets.push({ r: 2 + i, c: 3, type }));
     } else {
@@ -60,16 +60,16 @@ export const getClassicalFormationTargets = (
       [PIECES.PAWN, PIECES.PAWN, PIECES.PAWN, PIECES.PAWN],
       [PIECES.PAWN, PIECES.PAWN, PIECES.PAWN, PIECES.PAWN],
     ];
-    let rOrigins = 0,
-      cOrigins = 0,
+    let rOrigins: number,
+      cOrigins: number,
       rStep = 1;
-    if (p === "player1") {
+    if (p === "red") {
       rOrigins = 1;
       cOrigins = 1;
-    } else if (p === "player2") {
+    } else if (p === "yellow") {
       rOrigins = 1;
       cOrigins = 7;
-    } else if (p === "player3") {
+    } else if (p === "green") {
       rOrigins = 10;
       cOrigins = 1;
       rStep = -1;

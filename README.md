@@ -1,73 +1,42 @@
-# React + TypeScript + Vite
+# Trenchess (Battle Chess)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Trenchess is an advanced, strategic variant of chess played on an interactive board with variable terrain and customizable setups. Built with React, TypeScript, and powered by [boardgame.io](https://boardgame.io/), Trenchess supports real-time multiplayer skirmishes with an immersive ruleset.
 
-Currently, two official plugins are available:
+## Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Custom Game Modes**: Play standard games or variable setups like Omega and Pi.
+- **Setup Phase**: Strategically place your pieces and terrain before the battle begins.
+- **Dynamic Terrain**: Fight across Mountains, Forests, Swamps, and Deserts. Each terrain type provides a unique "Trench Advantage," altering unit capture rates.
+- **Combat Stats**: Track your performance across different terrains and understand the mathematical advantages of your positioning.
+- **Interactive Guide**: A built-in, detailed chess guide and move preview system complete with mathematical operators and selected terrain breakdowns.
+- **Online Multiplayer**: Real-time synchronized gameplay using a custom boardgame.io server with shareable, short 4-character room codes.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React, TypeScript, Vite, Tailwind CSS
+- **Game Engine / Multiplayer Sync**: [boardgame.io](https://boardgame.io/)
+- **Package Manager**: pnpm
 
-## Expanding the ESLint configuration
+## Development Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+We use Node.js and `pnpm`. If you don't have the correct Node version, please use NVM.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+```bash
+# Ensure you are on Node 20 (or the latest version)
+nvm use 20
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Install dependencies
+pnpm install
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Start the frontend app and the boardgame.io server
+pnpm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Documentation
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **`/docs` Library**: You can find detailed development documentation, FAQs, and API usage inside our `docs/` folder. Please refer to it before making major architectural decisions.
+- **Commentless Code**: We strive for clean code with commentless coding standards. Documentation lives in the `docs/*` library rather than in inline comments. Be sure to check there!
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+
+*Keep the code lean, clean, and a well-oiled machine.*

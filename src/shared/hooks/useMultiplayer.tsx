@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { LobbyClient } from "boardgame.io/client";
 
-// Helper to determine prod URL vs local
 export const getServerUrl = () => {
   if (typeof window === "undefined") return "http://localhost:3001";
   if (window.location.hostname.includes("loca.lt")) {
@@ -10,6 +9,29 @@ export const getServerUrl = () => {
   return window.location.protocol + "//" + window.location.hostname + ":3001";
 };
 
+export interface RoomInfo {
+  id: string;
+  players: number;
+  maxPlayers: number;
+  status: string;
+  mode: string;
+  isPrivate: boolean;
+  raw: Record<string, unknown>;
+}
+
+export interface BgioMatchPlayer {
+  id: number;
+  name?: string;
+}
+
+export interface BgioMatch {
+  matchID: string;
+  players: BgioMatchPlayer[];
+  gameover?: unknown;
+  setupData?: { mode?: string };
+  [key: string]: unknown;
+}
+
 export interface MultiplayerState {
   isConnected: boolean;
   roomId: string | null;
@@ -17,18 +39,18 @@ export interface MultiplayerState {
   readyPlayers: Record<string, boolean>;
   socketId: string | null;
   isHost: boolean;
-  availableRooms: any[];
+  availableRooms: RoomInfo[];
   onlineCount: number;
   playerIndex: number | null;
   playerCredentials: string | null;
-  chatMessages: any[];
+  chatMessages: Record<string, unknown>[];
   sendMessage: (text: string) => void;
   joinGame: (roomId: string) => Promise<void>;
   hostGame: () => Promise<string>;
   leaveGame: () => Promise<void>;
   toggleReady: (isReady: boolean) => void;
-  sendGameState: (state: any) => void;
-  sendMove: (move: any) => void;
+  sendGameState: (state: Record<string, unknown>) => void;
+  sendMove: (move: Record<string, unknown>) => void;
   refreshRooms: () => Promise<void>;
 }
 
@@ -63,12 +85,12 @@ export function useMultiplayer(): MultiplayerState {
     }
     return false;
   });
-  const [availableRooms, setAvailableRooms] = useState<any[]>([]);
+  const [availableRooms, setAvailableRooms] = useState<RoomInfo[]>([]);
 
   const socketId = playerIndex !== null ? String(playerIndex) : null;
   const readyPlayers = {}; // Tracked in boardgame.io G state
   const onlineCount = availableRooms.length * 2; // Approximated for global lobby
-  const chatMessages: any[] = [];
+  const chatMessages: Record<string, unknown>[] = [];
 
   const refreshRooms = useCallback(async () => {
     try {
@@ -78,9 +100,9 @@ export function useMultiplayer(): MultiplayerState {
       });
 
       setAvailableRooms(
-        matches.map((m: any) => ({
+        matches.map((m: BgioMatch) => ({
           id: m.matchID,
-          players: m.players.filter((p: any) => p.name).length,
+          players: m.players.filter((p: BgioMatchPlayer) => p.name).length,
           maxPlayers: m.players.length,
           status: m.gameover ? "Finished" : "Waiting",
           mode: m.setupData?.mode || "Unknown",
@@ -103,10 +125,10 @@ export function useMultiplayer(): MultiplayerState {
         try {
           const match = await lobbyClient.getMatch("battle-chess", roomId);
           const activePlayers = match.players
-            .filter((p: any) => p.name)
-            .map((p: any) => String(p.id));
+            .filter((p: BgioMatchPlayer) => p.name)
+            .map((p: BgioMatchPlayer) => String(p.id));
           setPlayers(activePlayers);
-        } catch (e) {
+        } catch {
           // Ignore polling errors
         }
       };
@@ -117,6 +139,7 @@ export function useMultiplayer(): MultiplayerState {
   }, [roomId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshRooms();
   }, [refreshRooms]);
 
@@ -125,7 +148,7 @@ export function useMultiplayer(): MultiplayerState {
       try {
         const lobbyClient = new LobbyClient({ server: getServerUrl() });
         const match = await lobbyClient.getMatch("battle-chess", id);
-        const emptySlot = match.players.find((p: any) => !p.name);
+        const emptySlot = match.players.find((p: BgioMatchPlayer) => !p.name);
 
         if (!emptySlot) {
           console.error("Lobby is full");
@@ -207,8 +230,11 @@ export function useMultiplayer(): MultiplayerState {
 
   // Sync actions handled by boardgame.io React client now
   const toggleReady = useCallback((_isReady: boolean) => {}, []);
-  const sendGameState = useCallback((_state: any) => {}, []);
-  const sendMove = useCallback((_move: any) => {}, []);
+  const sendGameState = useCallback(
+    (_state: Record<string, unknown>) => {},
+    [],
+  );
+  const sendMove = useCallback((_move: Record<string, unknown>) => {}, []);
   const sendMessage = useCallback((_text: string) => {}, []);
 
   return {

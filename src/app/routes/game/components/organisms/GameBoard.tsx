@@ -74,7 +74,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
   if (gameState === "setup") {
     if (mode === "2p-ns") {
       // Fog the half that ISN'T the current player's
-      if (perspectiveTurn === "player1") {
+      if (perspectiveTurn === "red") {
         fogRegions.push({
           top: "50%",
           left: "0",
@@ -92,7 +92,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
         });
       }
     } else if (mode === "2p-ew") {
-      if (perspectiveTurn === "player3") {
+      if (perspectiveTurn === "green") {
         fogRegions.push({
           top: "0",
           left: "50%",
@@ -112,10 +112,10 @@ const GameBoard: React.FC<GameBoardProps> = ({
     } else {
       // 4-player: fog all 3 opponent quadrants
       const quadrants = [
-        { player: "player1", top: "0", left: "0" },
-        { player: "player2", top: "0", left: "50%" },
-        { player: "player3", top: "50%", left: "0" },
-        { player: "player4", top: "50%", left: "50%" },
+        { player: "red", top: "0", left: "0" },
+        { player: "yellow", top: "0", left: "50%" },
+        { player: "green", top: "50%", left: "0" },
+        { player: "blue", top: "50%", left: "50%" },
       ];
       quadrants.forEach((q) => {
         if (q.player !== perspectiveTurn) {
@@ -141,16 +141,16 @@ const GameBoard: React.FC<GameBoardProps> = ({
   const isCellFogged = (r: number, c: number): boolean => {
     if (gameState !== "setup") return false;
     if (mode === "2p-ns") {
-      return perspectiveTurn === "player1" ? r >= 6 : r < 6;
+      return perspectiveTurn === "red" ? r >= 6 : r < 6;
     } else if (mode === "2p-ew") {
-      if (perspectiveTurn === "player3") return c >= 6;
-      if (perspectiveTurn === "player2") return c < 6;
+      if (perspectiveTurn === "green") return c >= 6;
+      if (perspectiveTurn === "yellow") return c < 6;
     } else {
       let isMyArea = false;
-      if (perspectiveTurn === "player1") isMyArea = r < 6 && c < 6;
-      if (perspectiveTurn === "player2") isMyArea = r < 6 && c >= 6;
-      if (perspectiveTurn === "player3") isMyArea = r >= 6 && c < 6;
-      if (perspectiveTurn === "player4") isMyArea = r >= 6 && c >= 6;
+      if (perspectiveTurn === "red") isMyArea = r < 6 && c < 6;
+      if (perspectiveTurn === "yellow") isMyArea = r < 6 && c >= 6;
+      if (perspectiveTurn === "green") isMyArea = r >= 6 && c < 6;
+      if (perspectiveTurn === "blue") isMyArea = r >= 6 && c >= 6;
       return !isMyArea;
     }
     return false;

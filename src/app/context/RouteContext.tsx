@@ -1,36 +1,52 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState } from "react";
+import type { GameMode, PreviewConfig, SeedItem } from "@engineTypes/game";
+import type { MultiplayerState } from "@hooks/useMultiplayer";
 
 interface RouteContextType {
   hoveredMenu: string | null;
   setHoveredMenu: (menu: string | null) => void;
   darkMode: boolean;
-  multiplayer?: any;
-  pieceStyle: any;
+  multiplayer?: MultiplayerState;
+  pieceStyle: "bold" | "emoji" | "outlined" | "custom" | "lucide";
   toggleTheme?: () => void;
   togglePieceStyle?: () => void;
   onTutorial?: () => void;
   onLogoClick?: () => void;
   onZenGarden?: () => void;
-  onStartGame: (mode: any, preset: any, playerConfig: any, seed?: any) => void;
-  selectedBoard: any;
-  setSelectedBoard: (m: any) => void;
-  selectedPreset: any;
-  setSelectedPreset: (p: any) => void;
+  onStartGame: (
+    mode: GameMode,
+    preset: string | null,
+    playerConfig: Record<string, "human" | "computer">,
+    seed?: string,
+  ) => void;
+  selectedBoard: GameMode | null;
+  setSelectedBoard: (m: GameMode | null) => void;
+  selectedPreset:
+    | "classic"
+    | "quick"
+    | "terrainiffic"
+    | "custom"
+    | "zen-garden"
+    | null;
+  setSelectedPreset: (
+    p: "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden" | null,
+  ) => void;
   onCtwGuide?: () => void;
   onChessGuide?: () => void;
   onTrenchGuide?: (t?: string) => void;
   onOpenLibrary?: () => void;
-  playerConfig: any;
-  previewConfig: any;
-  setPreviewConfig: (config: any) => void;
+  playerConfig: Record<string, "human" | "computer">;
+  previewConfig: PreviewConfig;
+  setPreviewConfig: (config: PreviewConfig) => void;
   playerCount: number;
   playMode: string;
   setHoveredTerrain: (terrain: string | null) => void;
-  seeds: any[];
+  seeds: SeedItem[];
   previewSeedIndex: number;
   setPreviewSeedIndex: (i: number) => void;
   terrainSeed: number | undefined;
-  setTerrainSeed: (seed: number | null) => void;
+  setTerrainSeed: (seed: number | undefined) => void;
   backAction: { label?: string; onClick: () => void } | null;
   setBackAction: (
     action: { label?: string; onClick: () => void } | null,
@@ -41,7 +57,7 @@ const RouteContext = createContext<RouteContextType | undefined>(undefined);
 
 export const RouteProvider: React.FC<{
   children: React.ReactNode;
-  value: any;
+  value: Partial<RouteContextType>;
 }> = ({ children, value }) => {
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
   const [_hoveredTerrain, setHoveredTerrain] = useState<string | null>(null);
@@ -51,7 +67,7 @@ export const RouteProvider: React.FC<{
   const [previewSeedIndex, setPreviewSeedIndex] = useState<number>(
     value?.previewSeedIndex || 0,
   );
-  const [previewConfig, setPreviewConfig] = useState<any>(
+  const [previewConfig, setPreviewConfig] = useState<PreviewConfig>(
     value?.previewConfig || {},
   );
   const [backAction, setBackAction] = useState<{
@@ -62,15 +78,15 @@ export const RouteProvider: React.FC<{
   return (
     <RouteContext.Provider
       value={{
-        ...value,
+        ...(value as RouteContextType),
         hoveredMenu,
         setHoveredMenu,
         setHoveredTerrain,
         terrainSeed: terrainSeed ?? value?.terrainSeed,
         setTerrainSeed,
-        previewSeedIndex: previewSeedIndex ?? value?.previewSeedIndex,
+        previewSeedIndex: previewSeedIndex ?? value?.previewSeedIndex ?? 0,
         setPreviewSeedIndex,
-        previewConfig: previewConfig || value?.previewConfig,
+        previewConfig: previewConfig || value?.previewConfig || {},
         setPreviewConfig,
         backAction,
         setBackAction,

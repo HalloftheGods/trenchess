@@ -75,6 +75,7 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
   }, [allSeeds, activeTerrainTypeKey]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveLayoutIdx(-1);
   }, [selectedTerrainIdx]);
 
