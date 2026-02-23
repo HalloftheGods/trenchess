@@ -126,7 +126,7 @@ describe("Piece Statistics Generator", () => {
 
           let pA: number[] = [rA, cA];
           let pB: number[] = [rB, cB];
-          let gameOver = false;
+          const gameOver = false;
           let turn = 0;
 
           while (!gameOver && turn < MAX_TURNS) {
@@ -158,7 +158,6 @@ describe("Piece Statistics Generator", () => {
                 captures++;
                 terrainStats[startTerrain].captures++;
               }
-              gameOver = true;
               break;
             }
 

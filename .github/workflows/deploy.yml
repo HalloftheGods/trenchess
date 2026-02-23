@@ -31,18 +31,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Enable Corepack
-        run: corepack enable
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-        
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Test
+        run: pnpm run test --run
+
       - name: Build
         run: pnpm run build
         
@@ -55,7 +63,6 @@ jobs:
           # Upload dist folder
           path: './dist'
 
-          
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

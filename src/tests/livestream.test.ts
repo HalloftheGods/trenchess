@@ -5,6 +5,7 @@ import {
   applyClassicalFormation,
   generateElementalTerrain,
 } from "@/core/setup/setupLogic";
+import type { GameMode } from "@/types/game";
 import { getBestMove } from "@/core/ai/aiLogic";
 
 const SERVER_URL = "http://localhost:3001";
@@ -29,10 +30,15 @@ describe("Live Simulation Stream", () => {
     const players = ["red", "yellow"];
     const mode = "2p-ns";
 
-    let { board, terrain, inventory, terrainInventory } = createInitialState(
-      mode,
-      players,
-    );
+    const {
+      board: initialBoard,
+      terrain: initialTerrain,
+      inventory,
+      terrainInventory: initialTerrainInventory,
+    } = createInitialState(mode, players);
+    let board = initialBoard;
+    let terrain = initialTerrain;
+    let terrainInventory = initialTerrainInventory;
 
     const terrainSetupResult = generateElementalTerrain(
       terrain,
@@ -78,7 +84,7 @@ describe("Live Simulation Stream", () => {
 
       // Search for move
       console.log(`🤖 [${currentTurn}] AI Thinking for ${player}...`);
-      const bestMove = getBestMove(board, terrain, player, mode as any);
+      const bestMove = getBestMove(board, terrain, player, mode as GameMode);
 
       if (!bestMove) {
         console.log(`⚠️ No move found for ${player}`);

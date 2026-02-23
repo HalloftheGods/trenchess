@@ -113,10 +113,6 @@ export function useGameState(): GameStateHook {
   }, [
     core.configState.mode,
     core.configState.showBgDebug,
-    core.boardState.board,
-    core.boardState.terrain,
-    core.boardState.inventory,
-    core.boardState.terrainInventory,
     multiplayer.playerIndex,
     multiplayer.roomId,
     multiplayer.playerCredentials,
@@ -156,6 +152,13 @@ export function useGameState(): GameStateHook {
   // 5. Action Managers
   const placementManager = usePlacementManager(bgioState, core);
   const moveExecution = useMoveExecution(core, clientRef);
+  const isOnline = !!multiplayer.roomId;
+  const playerID = isOnline
+    ? multiplayer.playerIndex !== null
+      ? String(multiplayer.playerIndex)
+      : "0"
+    : undefined;
+
   const boardInteraction = useBoardInteraction(
     bgioState,
     core,
@@ -163,6 +166,7 @@ export function useGameState(): GameStateHook {
     moveExecution.executeMove,
     multiplayer,
     clientRef,
+    playerID,
   );
   const zenGardenInteraction = useZenGardenInteraction(
     bgioState,

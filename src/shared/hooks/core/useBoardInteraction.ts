@@ -25,6 +25,7 @@ export function useBoardInteraction(
   ) => void,
   multiplayer?: MultiplayerState,
   bgioClientRef?: React.MutableRefObject<BgioClient | undefined>,
+  playerID?: string,
 ): BoardInteraction {
   const { boardState, turnState, configState } = core;
 
@@ -37,8 +38,8 @@ export function useBoardInteraction(
       : turnState.turn;
   const activePlayers = bgioState?.G?.activePlayers ?? turnState.activePlayers;
   const localPlayerName =
-    bgioState?.G?.playerMap && bgioClientRef?.current?.playerID
-      ? bgioState.G.playerMap[bgioClientRef.current.playerID]
+    bgioState?.G?.playerMap && playerID
+      ? bgioState.G.playerMap[playerID]
       : turnState.localPlayerName;
 
   const gameState =

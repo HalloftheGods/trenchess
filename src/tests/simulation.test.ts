@@ -6,12 +6,12 @@ import {
 } from "@/core/setup/setupLogic";
 import { getBestMove } from "@/core/ai/aiLogic";
 import { getValidMoves, isPlayerInCheck } from "@/core/rules/gameLogic";
-import type { GameMode } from "@/shared/types/game";
+import type { BoardPiece, TerrainType, GameMode } from "@/types/game";
 import { BOARD_SIZE } from "@/shared/constants/core.constants";
 import { PIECES } from "@/core/data/unitDetails";
 
 // Helper to find the king and check if captured
-const isKingAlive = (board: any[][], player: string) => {
+const isKingAlive = (board: (BoardPiece | null)[][], player: string) => {
   for (let r = 0; r < BOARD_SIZE; r++) {
     for (let c = 0; c < BOARD_SIZE; c++) {
       const p = board[r][c];
@@ -26,8 +26,8 @@ const isKingAlive = (board: any[][], player: string) => {
 // Returns if there are arbitrary valid moves
 const hasAnyValidMoves = (
   player: string,
-  board: any[][],
-  terrain: any[][],
+  board: (BoardPiece | null)[][],
+  terrain: TerrainType[][],
   mode: GameMode,
 ) => {
   for (let r = 0; r < BOARD_SIZE; r++) {
@@ -58,10 +58,16 @@ describe("CPU vs CPU Game Simulation", () => {
       const mode: GameMode = "2p-ns";
 
       // Setup initial state
-      let { board, terrain, inventory, terrainInventory } = createInitialState(
-        mode,
-        players,
-      );
+      const {
+        board: initialBoard,
+        terrain: initialTerrain,
+        inventory,
+        terrainInventory: initialTerrainInventory,
+      } = createInitialState(mode, players);
+
+      let board = initialBoard;
+      let terrain = initialTerrain;
+      let terrainInventory = initialTerrainInventory;
 
       // Add Terrain (32 pieces)
       const terrainSetupResult = generateElementalTerrain(
@@ -148,7 +154,7 @@ describe("CPU vs CPU Game Simulation", () => {
               if (p) score += p.player === "red" ? 1 : -1;
             }),
           );
-          // console.log(`Turn ${currentTurn}: Material Balance ${score}`);
+          console.log(`Turn ${currentTurn}: Material Balance ${score}`);
         }
 
         // Next turn
