@@ -2,8 +2,10 @@ import React from "react";
 import { Users, Copy, Wifi, LogOut, GlobeLock, Globe } from "lucide-react";
 import RouteCard from "@/shared/components/molecules/RouteCard";
 
+import type { MultiplayerState, MultiplayerPlayer } from "@/types/multiplayer";
+
 interface HeaderLobbyProps {
-  multiplayer: any;
+  multiplayer: MultiplayerState;
   onClick?: () => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
@@ -86,7 +88,7 @@ const HeaderLobby: React.FC<HeaderLobbyProps> = ({
 
         <div className="flex flex-col items-center gap-4 w-full relative z-10">
           <div className="flex -space-x-3">
-            {players.map((p: any, i: number) => (
+            {players.map((p: MultiplayerPlayer, i: number) => (
               <div
                 key={i}
                 className="w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-100 border-2 border-white dark:border-slate-900 flex items-center justify-center text-white dark:text-slate-900 text-sm font-black shadow-xl z-20 relative"

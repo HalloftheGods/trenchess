@@ -1,8 +1,10 @@
 import React from "react";
 import { Sword } from "lucide-react";
 
+import type { MultiplayerState } from "../../../../types/multiplayer";
+
 interface MultiplayerLobbyStatusProps {
-  multiplayer: any;
+  multiplayer: MultiplayerState;
 }
 
 export const MultiplayerLobbyStatus: React.FC<MultiplayerLobbyStatusProps> = ({

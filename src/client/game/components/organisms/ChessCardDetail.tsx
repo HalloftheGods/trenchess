@@ -40,7 +40,7 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
     return (
       <div className="flex gap-4 justify-center">
         {TERRAIN_DETAILS.map((t, idx) => {
-          const isProtected = isUnitProtected(unitType, t.key as any);
+          const isProtected = isUnitProtected(unitType, t.key as TerrainType);
           const canTraverse = canUnitTraverseTerrain(
             unitType as PieceType,
             t.key as TerrainType,

@@ -5,6 +5,7 @@ import type {
   BgioMatchPlayer,
   BgioMatch,
   MultiplayerState,
+  MultiplayerPlayer,
   ChatMessage,
 } from "@/types";
 
@@ -41,7 +42,7 @@ export function useMultiplayer(): MultiplayerState {
     },
   );
 
-  const [players, setPlayers] = useState<string[]>([]);
+  const [players, setPlayers] = useState<MultiplayerPlayer[]>([]);
   const [isHost, setIsHost] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("battle-chess-is-host") === "true";
@@ -89,7 +90,10 @@ export function useMultiplayer(): MultiplayerState {
           const match = await lobbyClient.getMatch("battle-chess", roomId);
           const activePlayers = match.players
             .filter((p: BgioMatchPlayer) => p.name)
-            .map((p: BgioMatchPlayer) => String(p.id));
+            .map((p: BgioMatchPlayer) => ({
+              id: String(p.id),
+              name: p.name,
+            }));
           setPlayers(activePlayers);
         } catch {
           // Ignore polling errors

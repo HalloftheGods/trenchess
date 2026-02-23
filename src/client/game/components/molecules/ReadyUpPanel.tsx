@@ -87,7 +87,11 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
           <PlayerTypeToggle
             turn={playerID}
             playerTypes={{ [playerID]: playerType }}
-            setPlayerTypes={(updater: any) => {
+            setPlayerTypes={(
+              updater: React.SetStateAction<
+                Record<string, "human" | "computer">
+              >,
+            ) => {
               const newState =
                 typeof updater === "function"
                   ? updater({ [playerID]: playerType })

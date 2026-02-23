@@ -1,12 +1,14 @@
 import React from "react";
 import { MultiplayerLobbyStatus } from "../atoms/MultiplayerLobbyStatus";
 
+import type { MultiplayerState } from "@/types/multiplayer";
+
 interface MultiplayerFooterControlsProps {
   isZen: boolean;
-  multiplayer?: any;
+  multiplayer?: MultiplayerState;
   startGame?: () => void;
   setSelectedCell: (cell: null) => void;
-  setValidMoves: (moves: any[]) => void;
+  setValidMoves: (moves: number[][]) => void;
   ready?: () => void;
   isCurrentPlayerReady?: boolean;
   isAllPlaced: boolean;

@@ -3,10 +3,12 @@ import { Sparkles, Sword } from "lucide-react";
 import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
 import { PlayerTypeToggle } from "../atoms/PlayerTypeToggle";
 
+import type { MultiplayerState } from "@/types/multiplayer";
+
 interface DeploymentHeaderProps {
   isZen: boolean;
   gameState: string;
-  multiplayer?: any;
+  multiplayer?: MultiplayerState;
   turn: string;
   localPlayerName?: string;
   playerTypes: Record<string, "human" | "computer">;

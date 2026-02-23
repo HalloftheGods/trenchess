@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { serializeGame } from "@utils/gameUrl";
 import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
@@ -41,21 +41,17 @@ export function useDeployment({
   setInventory,
 }: UseDeploymentProps) {
   const [copied, setCopied] = useState(false);
-  const [librarySeeds, setLibrarySeeds] = useState<SeedItem[]>([]);
-
-  useEffect(() => {
-    if (gameState === "zen-garden") {
+  const [librarySeeds, setLibrarySeeds] = useState<SeedItem[]>(() => {
+    if (typeof window !== "undefined" && gameState === "zen-garden") {
       try {
         const stored = localStorage.getItem("trenchess_seeds");
         if (stored) {
           const data = JSON.parse(stored);
           if (Array.isArray(data)) {
-            setLibrarySeeds(
-              data.sort(
-                (a: SeedItem, b: SeedItem) =>
-                  new Date(b.createdAt).getTime() -
-                  new Date(a.createdAt).getTime(),
-              ),
+            return data.sort(
+              (a: SeedItem, b: SeedItem) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime(),
             );
           }
         }
@@ -63,7 +59,8 @@ export function useDeployment({
         console.error("Failed to load seeds from localStorage", e);
       }
     }
-  }, [gameState]);
+    return [];
+  });
 
   const maxPlacement =
     activePlayers.length === 2

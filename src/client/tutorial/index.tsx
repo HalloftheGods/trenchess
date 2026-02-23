@@ -5,7 +5,7 @@
  * Interactive Tutorial Page
  * Using new 5-column layout.
  */
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import { isUnitProtected } from "@/core/rules/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
@@ -41,25 +41,34 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
 }) => {
   const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
   const [selectedTerrainIdx, setSelectedTerrainIdx] = useState<number>(-1);
-  const [allSeeds, setAllSeeds] = useState<SeedItem[]>([]);
-  const [activeLayoutIdx, setActiveLayoutIdx] = useState<number>(-1);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("trenchess_seeds");
-    if (stored) {
-      try {
-        const data = JSON.parse(stored);
-        if (Array.isArray(data)) setAllSeeds(data);
-      } catch (e) {
-        console.error("Failed to parse seeds", e);
+  const [allSeeds] = useState<SeedItem[]>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("trenchess_seeds");
+      if (stored) {
+        try {
+          const data = JSON.parse(stored);
+          if (Array.isArray(data)) return data;
+        } catch (e) {
+          console.error("Failed to parse seeds", e);
+        }
       }
     }
-  }, []);
+    return [];
+  });
+  const [activeLayoutIdx, setActiveLayoutIdx] = useState<number>(-1);
+
+  const handleSetSelectedTerrainIdx = (
+    idx: number | ((prev: number) => number),
+  ) => {
+    setSelectedTerrainIdx(idx);
+    setActiveLayoutIdx(-1);
+  };
 
   const activeTerrainTypeKey =
     selectedTerrainIdx >= 0
       ? TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey
       : null;
+
   const filteredSeeds = useMemo(() => {
     return allSeeds.filter((item) => {
       const data = deserializeGame(item.seed);
@@ -73,11 +82,6 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
       return false;
     });
   }, [allSeeds, activeTerrainTypeKey]);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setActiveLayoutIdx(-1);
-  }, [selectedTerrainIdx]);
 
   const handlePrevLayout = () => {
     if (filteredSeeds.length === 0) return;
@@ -140,13 +144,13 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
   };
 
   const handlePrevTerrain = () => {
-    setSelectedTerrainIdx(
+    handleSetSelectedTerrainIdx(
       (prev) => (prev - 1 + TERRAIN_LIST.length) % TERRAIN_LIST.length,
     );
   };
 
   const handleNextTerrain = () => {
-    setSelectedTerrainIdx((prev) => (prev + 1) % TERRAIN_LIST.length);
+    handleSetSelectedTerrainIdx((prev) => (prev + 1) % TERRAIN_LIST.length);
   };
 
   const getPortfolioProps = () => {
@@ -216,7 +220,7 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
       handleNextUnit,
       terrainItems,
       selectedTerrainIdx,
-      onTerrainSelect: setSelectedTerrainIdx,
+      onTerrainSelect: handleSetSelectedTerrainIdx,
       textColor,
       subtextColor,
       cardBg,
@@ -345,7 +349,7 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
           selectedUnit={selectedUnit || ""}
           onUnitSelect={setSelectedUnit}
           selectedTerrainIdx={selectedTerrainIdx}
-          onTerrainSelect={setSelectedTerrainIdx}
+          onTerrainSelect={handleSetSelectedTerrainIdx}
           onBack={onBack}
         />
       }

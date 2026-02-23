@@ -10,13 +10,14 @@ import type {
   TerrainType,
   TrenchGameState,
 } from "@/types/game";
+import type { MultiplayerPlayer } from "@/types/multiplayer";
 
 interface OnlineInfo {
   roomId: string | null;
   playerIndex: number | null;
   isHost: boolean;
   isConnected: boolean;
-  players: string[];
+  players: MultiplayerPlayer[];
   serverUrl: string;
 }
 
@@ -465,7 +466,11 @@ const GameStateDebug: React.FC<GameStateDebugProps> = ({
           onToggle={() => toggleSection("bgio-g")}
         >
           <div className="py-1">
-            <JsonTreeViewer data={(bgioState?.G as any) ?? null} />
+            <JsonTreeViewer
+              data={
+                (bgioState?.G as unknown as Record<string, unknown>) ?? null
+              }
+            />
           </div>
         </AccordionSection>
 
@@ -475,7 +480,11 @@ const GameStateDebug: React.FC<GameStateDebugProps> = ({
           onToggle={() => toggleSection("bgio-ctx")}
         >
           <div className="py-1">
-            <JsonTreeViewer data={(bgioState?.ctx as any) ?? null} />
+            <JsonTreeViewer
+              data={
+                (bgioState?.ctx as unknown as Record<string, unknown>) ?? null
+              }
+            />
           </div>
         </AccordionSection>
       </div>

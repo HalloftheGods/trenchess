@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import { Earth, Crown, Replace, Swords } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import InteractiveGuide, {
@@ -22,14 +22,14 @@ interface CaptureTheWorldGuideProps {
 export const LearnEndgameCtwView: React.FC<CaptureTheWorldGuideProps> = ({
   onBack,
 }) => {
-  const [randomSeed, setRandomSeed] = useState<string | undefined>();
-  useEffect(() => {
+  const [randomSeed] = useState<string | undefined>(() => {
     const seeds = DEFAULT_SEEDS;
     if (seeds.length > 0) {
       const idx = Math.floor(Math.random() * seeds.length);
-      setRandomSeed(seeds[idx]?.seed);
+      return seeds[idx]?.seed;
     }
-  }, []);
+    return undefined;
+  });
 
   const customPreviewConfig: PreviewConfig = useMemo(() => {
     return {

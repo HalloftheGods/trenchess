@@ -73,7 +73,7 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
 
   // Dynamic border style based on unit affinity
   const unitProtected = selectedUnit
-    ? isUnitProtected(selectedUnit, terrainTypeKey as any)
+    ? isUnitProtected(selectedUnit, terrainTypeKey as TerrainType)
     : false;
   const unitCanTraverse = selectedUnit
     ? canUnitTraverseTerrain(
@@ -94,7 +94,10 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
           const colors = unitColorMap[unit.type];
           if (!colors) return null;
 
-          const isProtected = isUnitProtected(unit.type, terrainTypeKey as any);
+          const isProtected = isUnitProtected(
+            unit.type,
+            terrainTypeKey as TerrainType,
+          );
           const canTraverse = canUnitTraverseTerrain(
             unit.type,
             terrainTypeKey as TerrainType,

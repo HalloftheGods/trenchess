@@ -1,11 +1,13 @@
 import React from "react";
 import { Copy, Save } from "lucide-react";
 
+import type { GameState } from "@/types/game";
+
 interface ZenActionsProps {
   mirrorBoard?: () => void;
   handleSave: () => void;
   copied: boolean;
-  setGameState: (state: any) => void;
+  setGameState: (state: GameState) => void;
   handleClearBoard: () => void;
 }
 

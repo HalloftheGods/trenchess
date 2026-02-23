@@ -29,10 +29,15 @@ export interface BgioMatch {
   [key: string]: unknown;
 }
 
+export interface MultiplayerPlayer {
+  id: string;
+  name?: string;
+}
+
 export interface MultiplayerState {
   isConnected: boolean;
   roomId: string | null;
-  players: string[];
+  players: MultiplayerPlayer[];
   readyPlayers: Record<string, boolean>;
   socketId: string | null;
   isHost: boolean;
