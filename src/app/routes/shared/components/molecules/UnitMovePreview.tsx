@@ -1,6 +1,6 @@
 import React from "react";
-import { UNIT_DETAILS } from "@engineConfigs/unitDetails";
-import { PIECES } from "@engineConfigs/unitDetails";
+import { UNIT_DETAILS, PIECES, INITIAL_ARMY } from "@engineConfigs/unitDetails";
+import { TERRAIN_DETAILS } from "@engineConfigs/terrainDetails";
 
 interface UnitMovePreviewProps {
   unitType: string;
@@ -8,17 +8,26 @@ interface UnitMovePreviewProps {
   centerRow?: number;
   centerCol?: number;
   className?: string;
+  containerClassName?: string;
+  mode?: "classic" | "new" | "both";
+  selectedTerrain?: string | null;
 }
 
 export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
   unitType,
-  previewGridSize = 9,
-  centerRow = 4,
-  centerCol = 4,
-  className = "w-40 h-40 sm:w-48 sm:h-48",
+  previewGridSize = 11,
+  centerRow = 5,
+  centerCol = 5,
+  className = "",
+  containerClassName = "",
+  mode = "both",
+  selectedTerrain,
 }) => {
   const details = UNIT_DETAILS[unitType];
   if (!details) return null;
+
+  const unit = INITIAL_ARMY.find((u) => u.type === unitType);
+  const PieceIcon = unit?.lucide;
 
   const movePattern = details.movePattern;
   const moves = movePattern(centerRow, centerCol);
@@ -29,8 +38,15 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
     ? details.attackPattern(centerRow, centerCol)
     : [];
 
+  const terrainInfo = selectedTerrain
+    ? TERRAIN_DETAILS.find((t) => t.key === selectedTerrain)
+    : null;
+  const TerrainIcon = terrainInfo?.icon;
+
   return (
-    <div className="bg-slate-100 dark:bg-white/5 rounded-2xl p-3 border border-slate-200 dark:border-white/5 w-fit shadow-inner mx-auto lg:mx-0">
+    <div
+      className={`bg-slate-100 dark:bg-white/5 rounded-2xl p-3 border border-slate-200 dark:border-white/5 shadow-inner transition-all duration-300 w-fit ${containerClassName}`}
+    >
       <div
         className={`grid gap-[1px] ${className}`}
         style={{ gridTemplateColumns: `repeat(${previewGridSize}, 1fr)` }}
@@ -40,8 +56,29 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
             const r = Math.floor(i / previewGridSize);
             const c = i % previewGridSize;
             const isCenter = r === centerRow && c === centerCol;
-            const isMove = moves.some(([mr, mc]) => mr === r && mc === c);
-            const isAttack = attacks.some(([ar, ac]) => ar === r && ac === c);
+
+            // Terrain rows: 1 in front, 1 in back
+            const isFrontRow = r === centerRow - 1;
+            const isBackRow = r === centerRow + 1;
+            const isTerrainCell = selectedTerrain && (isFrontRow || isBackRow);
+
+            const isMoveFound = moves.some(([mr, mc]) => mr === r && mc === c);
+            const isNewMoveFound = newMoves.some(
+              ([nr, nc]) => nr === r && nc === c,
+            );
+            const isAttackFound = attacks.some(
+              ([ar, ac]) => ar === r && ac === c,
+            );
+
+            const isMove = mode !== "new" && isMoveFound;
+            const isNewMove = mode !== "classic" && isNewMoveFound;
+            const isAttack =
+              mode === "both"
+                ? isAttackFound
+                : mode === "classic"
+                  ? isAttackFound && !isNewMoveFound
+                  : isAttackFound && isNewMoveFound;
+
             const isPromotionRow = unitType === PIECES.PAWN && r === 0;
 
             const isEven = (r + c) % 2 === 0;
@@ -49,21 +86,25 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
               ? "bg-slate-100/60 dark:bg-white/10"
               : "bg-slate-200/60 dark:bg-white/[0.04]";
 
+            const terrainBg = terrainInfo?.color.bg || "";
+
             return (
               <div
                 key={i}
-                className={`aspect-square rounded-[1px] relative flex items-center justify-center transition-all duration-300 ${
+                className={`w-3 h-3 sm:w-4 sm:h-4 rounded-[1px] relative flex items-center justify-center transition-all duration-300 ${
                   isCenter
                     ? "bg-slate-800 dark:bg-white z-20 shadow-lg scale-110"
                     : isAttack
                       ? "bg-brand-red shadow-[0_0_15px_rgba(239,68,68,0.4)] z-10"
-                      : newMoves.some(([nr, nc]) => nr === r && nc === c)
+                      : isNewMove
                         ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)] z-10 animate-pulse"
                         : isMove
                           ? "bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] z-10"
                           : isPromotionRow
                             ? "bg-amber-500/20"
-                            : baseColor
+                            : isTerrainCell
+                              ? `${terrainBg} z-0`
+                              : baseColor
                 }`}
               >
                 {isPromotionRow && (
@@ -71,9 +112,16 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500/40" />
                   </div>
                 )}
-                {isCenter && (
-                  <div
-                    className={`w-1.5 h-1.5 rounded-full ${isCenter && "dark:bg-black bg-white"}`}
+                {isCenter && PieceIcon && (
+                  <PieceIcon
+                    size={16}
+                    className="dark:text-slate-900 text-white"
+                  />
+                )}
+                {isTerrainCell && TerrainIcon && terrainInfo && (
+                  <TerrainIcon
+                    size={12}
+                    className={`${terrainInfo.color.text} opacity-60`}
                   />
                 )}
               </div>

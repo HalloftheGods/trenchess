@@ -3,7 +3,13 @@
   --font-serif: Cinzel, serif;
 
   --color-brand-red: #ef4444; /* red-500 */
+  --brand-red-rgb: 239, 68, 68;
   --color-brand-blue: #3b82f6; /* blue-500 */
+  --brand-blue-rgb: 59, 130, 246;
+  --color-yellow-500: #eab308;
+  --yellow-rgb: 234, 179, 8;
+  --color-green-600: #16a34a;
+  --green-rgb: 22, 163, 74;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

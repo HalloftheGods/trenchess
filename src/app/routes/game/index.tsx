@@ -1,8 +1,7 @@
 import React from "react";
 import type { useGameState } from "@hooks/useGameState";
-import LocalGameView from "./components/views/LocalGameView";
-import OnlineGameView from "./components/views/OnlineGameView";
-import ZenGardenView from "./components/views/ZenGardenView";
+import MmoView from "./mmo";
+import ZenGardenView from "./zen";
 
 interface GameScreenProps {
   game: ReturnType<typeof useGameState>;
@@ -16,8 +15,7 @@ interface GameScreenProps {
  *
  * Picks the correct view based on game state and multiplayer status:
  * - Zen Garden → ZenGardenView
- * - Online multiplayer → OnlineGameView
- * - Local play → LocalGameView
+ * - Default: (Local & Online) → MmoView
  */
 const GameScreen: React.FC<GameScreenProps> = ({
   game,
@@ -32,13 +30,8 @@ const GameScreen: React.FC<GameScreenProps> = ({
     return <ZenGardenView {...viewProps} />;
   }
 
-  // Online multiplayer gets Shoutbox and lobby awareness
-  if (game.multiplayer) {
-    return <OnlineGameView {...viewProps} />;
-  }
-
-  // Default: local play
-  return <LocalGameView {...viewProps} />;
+  // MMO view handles both local and online modes natively
+  return <MmoView game={game} />;
 };
 
 export default GameScreen;

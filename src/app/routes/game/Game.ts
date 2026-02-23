@@ -203,8 +203,8 @@ export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
           G.terrainInventory[pid].splice(idx, 1);
         },
 
-        ready: ({ G, playerID }) => {
-          const pid = G.playerMap[playerID];
+        ready: ({ G, playerID }, explicitPid?: string) => {
+          const pid = explicitPid || G.playerMap[playerID];
           if (pid) G.readyPlayers[pid] = true;
         },
       },

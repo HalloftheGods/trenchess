@@ -111,7 +111,7 @@ export const UNIT_DETAILS: Record<
     role: '"The King bull-dozes 2 steps forward."',
     desc: [],
     levelUp: {
-      title: "Sovereign Lancer",
+      title: "Equinox King",
       stats: [
         "Joust 2 squares in a straight line.",
         "Captures any enemies in the way.",
@@ -147,7 +147,7 @@ export const UNIT_DETAILS: Record<
     role: '"The Queen rides the sacred steed."',
     desc: [],
     levelUp: {
-      title: "Royal Battle Knight",
+      title: "Sacred Queen",
       stats: ["Leap over units L-shape."],
       sanctuaryTerrain: ["rubble", "trees", "ponds"],
     },
@@ -182,7 +182,7 @@ export const UNIT_DETAILS: Record<
     role: '"Rooks fortify the Swamps, Dusk-to-Dusk."',
     desc: [],
     levelUp: {
-      title: "Twilight Fortress!",
+      title: "Twilight Fortress",
       stats: [
         "Single-step-diagonal: Advance1 square diagonally.",
         "Swamp Sanctuary: Safe from Bishops & Knights.",
@@ -211,7 +211,7 @@ export const UNIT_DETAILS: Record<
     role: '"The Bishop hunts the Forest with Light."',
     desc: [],
     levelUp: {
-      title: "Light Seer!",
+      title: "Light Seer",
       stats: [
         "Double-step Retreat: Horizonal or Vertical 2 squares.",
         "Forest Sanctuary: Safe from Rooks and Knights.",
@@ -263,7 +263,6 @@ export const UNIT_DETAILS: Record<
     },
     movePattern: (r, c) => [
       [r - 2, c - 1],
-      [r - 3, c - 0],
       [r - 2, c + 1],
       [r - 1, c - 2],
       [r - 1, c + 2],

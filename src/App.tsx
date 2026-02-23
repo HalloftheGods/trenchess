@@ -5,6 +5,7 @@ import {
   useNavigate,
   useLocation,
   useParams,
+  matchPath,
 } from "react-router-dom";
 import { useGameState } from "@hooks/useGameState";
 import * as RoutesConfig from "@/app/routes/lazy.routes";
@@ -39,12 +40,17 @@ const ScrollToTop = () => {
   return null;
 };
 
+const DebugErrorThrower = () => {
+  throw new Error("Intentional 500 error triggered for debugging purposes.");
+  return null;
+};
+
 const App = () => {
   const game = useGameState();
   const navigate = useNavigate();
   const location = useLocation();
-
-  const { roomId: routeRoomId } = useParams();
+  const match = matchPath(ROUTES.GAME_DETAIL, location.pathname);
+  const routeRoomId = match?.params.roomId;
 
   useEffect(() => {
     if (routeRoomId && game.multiplayer.roomId !== routeRoomId) {
@@ -54,9 +60,18 @@ const App = () => {
   }, [routeRoomId, game.multiplayer.roomId, game.multiplayer.joinGame]);
 
   useEffect(() => {
+    const isGameRoute = location.pathname.startsWith(ROUTES.GAME);
+    if (!isGameRoute) return;
+
     if (location.pathname === ROUTES.GAME_MMO) {
       if (game.gameState === "menu") {
-        game.initGameWithPreset("2p-ns", "2p-ns");
+        const urlParams = new URLSearchParams(window.location.search);
+        const seed = urlParams.get("seed");
+        if (seed) {
+          game.initFromSeed(seed);
+        } else {
+          game.initGameWithPreset("2p-ns", "2p-ns");
+        }
       }
       return;
     }
@@ -64,18 +79,7 @@ const App = () => {
       game.initGameWithPreset("2p-ns", "zen-garden");
       return;
     }
-    const isGameRoute = location.pathname.startsWith(ROUTES.GAME);
-    const isGameActive =
-      game.gameState === "play" ||
-      game.gameState === "setup" ||
-      game.gameState === "zen-garden";
-    if (isGameActive && !isGameRoute) {
-      const target = game.multiplayer.roomId
-        ? `${ROUTES.GAME}/${game.multiplayer.roomId}`
-        : ROUTES.GAME;
-      navigate(target);
-    }
-  }, [game.gameState, navigate, location.pathname, game.multiplayer.roomId]);
+  }, [game.gameState, location.pathname]);
 
   useEffect(() => {
     if (
@@ -133,8 +137,13 @@ const App = () => {
         navigate(ROUTES.HOME);
       },
       onZenGarden: () => navigate(ROUTES.ZEN),
-      onStartGame: (mode: any, preset: any, playerTypes: any, seed: any) =>
-        game.initGameWithPreset(mode, preset, playerTypes, seed),
+      onStartGame: (mode: any, preset: any, playerTypes: any, seed: any) => {
+        game.initGameWithPreset(mode, preset, playerTypes, seed);
+        const target = game.multiplayer?.roomId
+          ? `${ROUTES.GAME}/${game.multiplayer.roomId}`
+          : ROUTES.GAME_MMO;
+        navigate(target);
+      },
       onCtwGuide: () => navigate(ROUTES.LEARN_ENDGAME_CTW),
       onChessGuide: () => navigate(ROUTES.LEARN_CHESS),
       onTrenchGuide: (t?: string) =>
@@ -217,6 +226,7 @@ const App = () => {
         <ChessGuideWrapper onBack={() => navigate(ROUTES.LEARN_CHESS)} />
       ),
     },
+    { path: "learn/math", element: <RoutesConfig.LazyLearnMathMainView /> },
     {
       path: "scoreboard",
       element: (
@@ -235,6 +245,7 @@ const App = () => {
         />
       ),
     },
+    { path: "stats", element: <RoutesConfig.LazyStatsView /> },
     { path: "zen", element: <div /> }, // Effect in App handles the loading state / transition
   ];
 
@@ -282,13 +293,16 @@ const App = () => {
         />
       ),
     },
-    { path: ROUTES.LOADING, element: <LoadingFallback /> },
+    { path: ROUTES.DEBUG_LOADING, element: <LoadingFallback /> },
+    { path: ROUTES.DEBUG_404, element: <RoutesConfig.LazyNotFoundView /> },
+    { path: ROUTES.DEBUG_500, element: <DebugErrorThrower /> },
+    { path: "*", element: <RoutesConfig.LazyNotFoundView /> },
   ];
 
   return (
     <RouteProvider value={routeContextValue}>
       <ScrollToTop />
-      <Suspense fallback={<LoadingFallback />}>
+      <Suspense fallback={<LoadingFallback fullScreen={true} />}>
         <Routes>
           {/* Menu layout with nested sub-routes */}
           <Route

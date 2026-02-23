@@ -32,7 +32,7 @@ export const generateElementalTerrain = (
     symmetry: "rotational",
   });
 
-  const nextTInv: Record<string, TerrainType[]> = {} ;
+  const nextTInv: Record<string, TerrainType[]> = {};
   players.forEach((p) => {
     nextTInv[p] = [];
   });
@@ -69,7 +69,18 @@ export const randomizeTerrain = (
 
   players.forEach((p) => {
     const myCells = getPlayerCells(p, mode);
-    const playerTerrain = [...(nextTInv[p] || [])];
+    let playerTerrain = [...(nextTInv[p] || [])];
+
+    // BUG FIX: If inventory is empty, generate a balanced pool of 16 (4 of each)
+    if (playerTerrain.length === 0) {
+      const types = [
+        TERRAIN_TYPES.TREES,
+        TERRAIN_TYPES.PONDS,
+        TERRAIN_TYPES.RUBBLE,
+        TERRAIN_TYPES.DESERT,
+      ];
+      playerTerrain = types.flatMap((t) => Array(4).fill(t));
+    }
 
     for (const [r, c] of myCells) {
       if (nextTerrain[r][c] !== TERRAIN_TYPES.FLAT) {

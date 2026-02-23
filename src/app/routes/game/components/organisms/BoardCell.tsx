@@ -170,7 +170,7 @@ const BoardCell: React.FC<BoardCellProps> = ({
           <Flex
             align="center"
             justify="center"
-            className={`absolute inset-0 opacity-50 ${PLAYER_CONFIGS[turn].text} z-20`}
+            className={`absolute inset-0 opacity-50 ${PLAYER_CONFIGS[turn]?.text || ""} z-20`}
             style={rotationStyle}
           >
             {getIcon(
@@ -201,7 +201,7 @@ const BoardCell: React.FC<BoardCellProps> = ({
                 justify="center"
                 className={`w-full h-full select-none drop-shadow-lg p-1.5
                   ${piece.player === turn ? "animate-float" : ""} 
-                  ${pieceStyle !== "emoji" ? `text-4xl ${PLAYER_CONFIGS[piece.player].text}` : "text-5xl"}
+                  ${pieceStyle !== "emoji" ? `text-4xl ${PLAYER_CONFIGS[piece.player]?.text || ""}` : "text-5xl"}
                   ${isProtected ? "border-double border-[6px] rounded-2xl border-white/40 dark:border-white/20" : ""}
                 `}
               >

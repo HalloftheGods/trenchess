@@ -1,46 +1,25 @@
-import { useState, useEffect } from "react";
 import { Mountain, Trees, Waves } from "lucide-react";
 import { DesertIcon } from "@/app/routes/game/components/atoms/UnitIcons";
 import TrenchessText from "@/shared/components/atoms/TrenchessText";
+
+const LOADING_MESSAGES = [
+  "Opening Trench.",
+  "Pouring the Chessmen.",
+  "Cracking the Endgame.",
+];
 
 export const LoadingFallback = ({
   fullScreen = false,
 }: {
   fullScreen?: boolean;
 }) => {
-  const [activeWave, setActiveWave] = useState(0);
-  const [messageIndex, setMessageIndex] = useState(0);
-  const [fade, setFade] = useState(true);
-
-  const messages = [
-    "Opening Trench.",
-    "Pouring the Chessmen.",
-    "Cracking the Endgame.",
-  ];
-
-  useEffect(() => {
-    const waveInterval = setInterval(() => {
-      setActiveWave((prev) => (prev === 0 ? 3 : prev - 1));
-    }, 200);
-    return () => clearInterval(waveInterval);
-  }, []);
-
-  useEffect(() => {
-    if (messageIndex < messages.length - 1) {
-      const timeout = setTimeout(() => {
-        setFade(false);
-        setTimeout(() => {
-          setMessageIndex((prev) => prev + 1);
-          setFade(true);
-        }, 300);
-      }, 2000);
-      return () => clearTimeout(timeout);
-    }
-  }, [messageIndex, messages.length]);
-
   return (
     <div
-      className={`flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 ${fullScreen ? "w-full h-screen" : "w-full h-full min-h-[400px] p-4 shadow-inner rounded-3xl"}`}
+      className={`min-h-[100vh] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 ${
+        fullScreen
+          ? "w-full h-full"
+          : "w-full h-full p-4 shadow-inner rounded-3xl"
+      }`}
     >
       <DesertIcon className="w-12 h-12" />
       <div className="mt-4 text-center font-black uppercase tracking-widest text-slate-400">
@@ -50,27 +29,29 @@ export const LoadingFallback = ({
         </div>
 
         <div className="flex flex-row justify-center mt-2">
-          {[0, 1, 2, 3].map((index) => (
+          {[0, 1, 2, 3, 4].map((index) => (
             <Waves
               key={index}
-              className={`w-12 h-12 transition-all duration-300 ${
-                activeWave === index
-                  ? "text-brand-blue opacity-100 scale-110"
-                  : "text-brand-blue opacity-30 scale-100"
-              }`}
+              className="w-12 h-12 text-brand-blue animate-wave-pulse"
+              style={{ animationDelay: `${index * 200}ms` }}
             />
           ))}
         </div>
+
         <div>
           Loading <TrenchessText />
         </div>
 
-        <div
-          className={`mt-4 min-h-[1.5em] transition-opacity duration-500 ${
-            fade ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          {messages[messageIndex]}
+        <div className="mt-4 relative h-[1.5em] flex justify-center">
+          {LOADING_MESSAGES.map((message, index) => (
+            <div
+              key={index}
+              className="absolute animate-message-sequence opacity-0"
+              style={{ animationDelay: `${index * 2.3}s` }}
+            >
+              {message}
+            </div>
+          ))}
         </div>
       </div>
     </div>

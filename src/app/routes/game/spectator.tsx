@@ -1,5 +1,5 @@
 import React from "react";
-import { SpectatorLayout } from "../templates/SpectatorLayout";
+import { SpectatorLayout } from "./components/templates/SpectatorLayout";
 import Header from "@/shared/components/organisms/Header";
 import GameBoard from "@/app/routes/game/components/organisms/GameBoard";
 import Shoutbox from "@/app/routes/game/components/organisms/Shoutbox";

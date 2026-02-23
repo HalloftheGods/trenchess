@@ -32,6 +32,9 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
   darkMode,
 }) => {
   const { setTerrainSeed, setPreviewConfig } = useRouteContext();
+  const [selectedTerrain, setSelectedTerrain] = React.useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     // Set fixed preview for this page
@@ -119,7 +122,16 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
                           <div className="flex gap-2">
                             {details.levelUp.sanctuaryTerrain.map(
                               (key: any, idx: any) => (
-                                <TerrainIconBadge key={idx} terrainKey={key} />
+                                <TerrainIconBadge
+                                  key={idx}
+                                  terrainKey={key}
+                                  active={selectedTerrain === key}
+                                  onClick={() =>
+                                    setSelectedTerrain((prev) =>
+                                      prev === key ? null : key,
+                                    )
+                                  }
+                                />
                               ),
                             )}
                           </div>
@@ -208,7 +220,10 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
                         <div className="w-2 h-2 rounded-full bg-emerald-500" />
                         Move Set
                       </span>
-                      <UnitMovePreview unitType={unit.type} />
+                      <UnitMovePreview
+                        unitType={unit.type}
+                        selectedTerrain={selectedTerrain}
+                      />
                     </div>
                   </div>
                 </div>
@@ -249,7 +264,16 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
                           <div className="flex gap-2">
                             {details.levelUp.sanctuaryTerrain.map(
                               (key: any, idx: any) => (
-                                <TerrainIconBadge key={idx} terrainKey={key} />
+                                <TerrainIconBadge
+                                  key={idx}
+                                  terrainKey={key}
+                                  active={selectedTerrain === key}
+                                  onClick={() =>
+                                    setSelectedTerrain((prev) =>
+                                      prev === key ? null : key,
+                                    )
+                                  }
+                                />
                               ),
                             )}
                           </div>
@@ -338,7 +362,10 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
                         <div className="w-2 h-2 rounded-full bg-emerald-500" />
                         Basic Move Set
                       </span>
-                      <UnitMovePreview unitType={unit.type} />
+                      <UnitMovePreview
+                        unitType={unit.type}
+                        selectedTerrain={selectedTerrain}
+                      />
                     </div>
                   </div>
                 </div>

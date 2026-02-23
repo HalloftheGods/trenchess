@@ -203,6 +203,10 @@ export const RouteBreadcrumbs: React.FC = () => {
     // Only trigger game start if clicking the swords/equal section OR the container background
     // if it's the container, let's just make sure it's complete.
     // If they click an icon, it should navigate instead.
+    if (multiplayer?.roomId) {
+      navigate(`/game/${multiplayer.roomId}`);
+      return;
+    }
     if (isComplete && selectedBoard && selectedPreset) {
       onStartGame(selectedBoard, selectedPreset, playerConfig);
     }
@@ -215,6 +219,8 @@ export const RouteBreadcrumbs: React.FC = () => {
       </div>
     );
 
+  const canStart = isComplete || !!multiplayer?.roomId;
+
   return (
     <div className="flex items-center gap-2 mt-4 animate-in fade-in slide-in-from-top-2 duration-500">
       <div
@@ -224,7 +230,13 @@ export const RouteBreadcrumbs: React.FC = () => {
           border border-slate-200/50 dark:border-white/5 shadow-inner
           transition-all
         `}
-        title={isComplete ? "COMMENCE BATTLE" : "Your current configuration"}
+        title={
+          canStart
+            ? multiplayer?.roomId
+              ? "RESUME BATTLE"
+              : "COMMENCE BATTLE"
+            : "Your current configuration"
+        }
       >
         {items.map((item, idx) => (
           <React.Fragment key={idx}>
@@ -259,7 +271,7 @@ export const RouteBreadcrumbs: React.FC = () => {
           </React.Fragment>
         ))}
 
-        {isComplete && (
+        {canStart && (
           <>
             <div className="text-slate-400 dark:text-slate-600 font-black text-xs mx-1">
               =
@@ -267,7 +279,7 @@ export const RouteBreadcrumbs: React.FC = () => {
             <div
               className="flex items-center justify-center p-1.5 rounded-xl bg-slate-500/10 text-slate-500 border border-slate-500/20 shadow-sm cursor-pointer hover:scale-110 hover:bg-brand-blue/20 transition-all group/swords"
               onClick={handleStart}
-              title="COMMENCE BATTLE"
+              title={multiplayer?.roomId ? "RESUME BATTLE" : "COMMENCE BATTLE"}
             >
               <DualToneSwords
                 size={18}

@@ -64,6 +64,7 @@ export function useGameCore() {
     player3: "human",
     player4: "human",
   });
+  const [readyPlayers, setReadyPlayers] = useState<Record<string, boolean>>({});
   const [selectedPreset, setSelectedPreset] = useState<
     "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden" | null
   >(() => {
@@ -75,6 +76,7 @@ export function useGameCore() {
   });
   const [isThinking, setIsThinking] = useState(false);
   const [localPlayerName, setLocalPlayerName] = useState("");
+  const [showBgDebug, setShowBgDebug] = useState(false);
 
   const getPlayerDisplayName = useCallback(
     (pid: string) => {
@@ -152,6 +154,11 @@ export function useGameCore() {
     const hasMoves = hasAnyValidMoves(turn, board, terrain, mode);
 
     if (!hasMoves) {
+      const anyPlayerHasMoves = activePlayers.some((p) =>
+        hasAnyValidMoves(p, board, terrain, mode),
+      );
+      if (!anyPlayerHasMoves) return; // Prevent infinite turn-skipping loop
+
       // FROZEN: Skip Turn
       const nextIdx = (activePlayers.indexOf(turn) + 1) % activePlayers.length;
       const timer = setTimeout(() => {
@@ -275,6 +282,7 @@ export function useGameCore() {
 
         setInventory(newInventory);
         setTerrainInventory(newTerrainInventory);
+        setReadyPlayers({});
         setCapturedBy({
           player1: [],
           player2: [],
@@ -396,5 +404,9 @@ export function useGameCore() {
     setIsThinking,
     localPlayerName,
     setLocalPlayerName,
+    readyPlayers,
+    setReadyPlayers,
+    showBgDebug,
+    setShowBgDebug,
   };
 }

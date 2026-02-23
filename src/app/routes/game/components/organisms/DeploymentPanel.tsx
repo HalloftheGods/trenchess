@@ -68,6 +68,7 @@ interface DeploymentPanelProps {
     React.SetStateAction<Record<string, "human" | "computer">>
   >;
   ready?: () => void;
+  startGame?: () => void;
   localPlayerName?: string;
 }
 
@@ -111,6 +112,7 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
   playerTypes,
   setPlayerTypes,
   ready,
+  startGame,
   localPlayerName,
 }) => {
   const {
@@ -251,15 +253,15 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
               setPlacementTerrain={setPlacementTerrain}
               isAllPlaced={isAllPlaced}
               isCurrentPlayerReady={isCurrentPlayerReady}
-              setGameState={setGameState}
               setSelectedCell={setSelectedCell}
               setValidMoves={setValidMoves}
+              startGame={startGame}
             />
 
             <MultiplayerFooterControls
               isZen={isZen}
               multiplayer={multiplayer}
-              setGameState={setGameState}
+              startGame={startGame}
               setSelectedCell={setSelectedCell}
               setValidMoves={setValidMoves}
               ready={ready}

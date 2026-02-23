@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useRouteContext } from "@/app/context/RouteContext";
 import SectionDivider from "@molecules/SectionDivider";
 import RoutePageHeader from "@/app/routes/shared/components/organisms/RoutePageHeader";
@@ -30,6 +30,7 @@ interface InteractiveGuideProps {
     onClick: () => void;
     icon: React.ElementType;
   };
+  onSlideChange?: (id: string) => void;
 }
 
 const colorMaps = {
@@ -89,15 +90,24 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
   onBack,
   labelColor = "red",
   footerForward,
+  onSlideChange,
 }) => {
   const { setPreviewConfig, darkMode } = useRouteContext();
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   const currentSlide = slides[currentSlideIndex];
 
+  const onSlideChangeRef = useRef(onSlideChange);
+  useEffect(() => {
+    onSlideChangeRef.current = onSlideChange;
+  }, [onSlideChange]);
+
   useEffect(() => {
     if (currentSlide) {
       setPreviewConfig(currentSlide.previewConfig);
+      if (onSlideChangeRef.current) {
+        onSlideChangeRef.current(currentSlide.id);
+      }
     }
     // Cleanup if unmounted to a default state?
     // MenuLayout usually defaults it when not hovered, but here we enforce it persistently.
@@ -166,16 +176,22 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
               </div>
 
               {/* Row 2: Visuals & Description */}
-              <div className="flex flex-col lg:flex-row items-center lg:items-stretch justify-start gap-12">
+              <div className="flex flex-col lg:flex-row items-center lg:items-center justify-around gap-12 w-full">
                 {currentSlide.sideContent && (
-                  <div className="flex-0 flex flex-col items-center justify-center min-w-[320px]">
+                  <div
+                    className={`flex flex-col items-center justify-center ${currentSlide.description ? "flex-1" : "w-full"}`}
+                  >
                     {currentSlide.sideContent}
                   </div>
                 )}
                 {/* Description (Simple List) */}
-                <div className="w-full h-full flex flex-col justify-center text-left">
-                  {currentSlide.description}
-                </div>
+                {currentSlide.description && (
+                  <div
+                    className={`flex flex-col justify-center text-left ${currentSlide.sideContent ? "flex-1" : "w-full"}`}
+                  >
+                    {currentSlide.description}
+                  </div>
+                )}
               </div>
 
               {/* Row 4: Info/Legend (Bottom Row) */}

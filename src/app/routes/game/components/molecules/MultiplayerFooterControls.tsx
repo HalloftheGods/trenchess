@@ -4,7 +4,7 @@ import { MultiplayerLobbyStatus } from "../atoms/MultiplayerLobbyStatus";
 interface MultiplayerFooterControlsProps {
   isZen: boolean;
   multiplayer?: any;
-  setGameState: (state: any) => void;
+  startGame?: () => void;
   setSelectedCell: (cell: null) => void;
   setValidMoves: (moves: any[]) => void;
   ready?: () => void;
@@ -17,7 +17,7 @@ export const MultiplayerFooterControls: React.FC<
 > = ({
   isZen,
   multiplayer,
-  setGameState,
+  startGame,
   setSelectedCell,
   setValidMoves,
   ready,
@@ -34,7 +34,7 @@ export const MultiplayerFooterControls: React.FC<
       multiplayer.players.every((p: string) => multiplayer.readyPlayers[p]) ? (
         <button
           onClick={() => {
-            setGameState("play");
+            if (startGame) startGame();
             setSelectedCell(null);
             setValidMoves([]);
           }}

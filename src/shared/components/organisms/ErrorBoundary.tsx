@@ -1,8 +1,10 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
-import { GlassPanel } from "@/shared/components/atoms/GlassPanel";
+import { AlertOctagon } from "lucide-react";
+import { DesertIcon } from "@/app/routes/game/components/atoms/UnitIcons";
 
 interface Props {
   children?: ReactNode;
+  fullScreen?: boolean;
 }
 
 interface State {
@@ -26,25 +28,42 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
+      const fullScreen = this.props.fullScreen ?? true;
       return (
-        <div className="min-h-screen flex items-center justify-center bg-stone-100 dark:bg-[#050b15] text-slate-800 dark:text-slate-100 p-4">
-          <GlassPanel className="p-8 max-w-lg w-full text-center">
-            <h1 className="text-2xl font-black mb-4 text-red-600">
-              CRITICAL FAILURE
-            </h1>
-            <p className="mb-6 text-slate-600 dark:text-slate-300">
-              The game engine has encountered an unexpected error.
-            </p>
-            <div className="bg-slate-100 dark:bg-black/30 p-4 rounded-xl mb-6 text-left overflow-auto max-h-32 text-xs font-mono">
-              {this.state.error?.message}
+        <div
+          className={`min-h-[100vh] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 ${
+            fullScreen
+              ? "w-full h-full"
+              : "w-full h-full p-4 shadow-inner rounded-3xl"
+          }`}
+        >
+          <DesertIcon className="w-12 h-12 text-slate-400 opacity-50" />
+          <div className="mt-8 text-center font-black uppercase tracking-widest text-slate-400">
+            <div className="flex justify-center items-center mb-6">
+              <AlertOctagon className="w-16 h-16 text-brand-red opacity-80" />
             </div>
+
+            <div className="text-2xl mb-2 text-slate-600 dark:text-slate-300">
+              System Failure
+            </div>
+
+            <div className="text-sm opacity-60 mb-6 max-w-md mx-auto normal-case tracking-normal px-4">
+              The game engine has encountered an unexpected error.
+            </div>
+
+            {this.state.error?.message && (
+              <div className="bg-slate-200 dark:bg-black/30 p-4 rounded-xl mb-8 text-left overflow-auto max-h-32 text-xs font-mono normal-case tracking-normal max-w-lg mx-auto text-slate-600 dark:text-slate-400">
+                {this.state.error.message}
+              </div>
+            )}
+
             <button
               onClick={() => window.location.reload()}
-              className="px-6 py-3 bg-red-600 text-white rounded-xl font-bold uppercase tracking-wider hover:bg-red-700 transition-colors"
+              className="px-6 py-3 bg-brand-red text-white rounded-xl font-bold uppercase tracking-wider hover:bg-red-700 transition-colors"
             >
               Reboot System
             </button>
-          </GlassPanel>
+          </div>
         </div>
       );
     }

@@ -59,18 +59,8 @@ export const TERRAIN_DETAILS: TerrainDetail[] = [
       iconBg: "bg-emerald-500/20",
       border: "border-emerald-500/40",
     },
-    sanctuaryUnits: [
-      PIECES.BISHOP,
-      PIECES.QUEEN,
-      PIECES.PAWN,
-      PIECES.KING,
-    ],
-    allowedUnits: [
-      PIECES.BISHOP,
-      PIECES.QUEEN,
-      PIECES.PAWN,
-      PIECES.KING,
-    ],
+    sanctuaryUnits: [PIECES.BISHOP, PIECES.QUEEN, PIECES.PAWN, PIECES.KING],
+    allowedUnits: [PIECES.BISHOP, PIECES.QUEEN, PIECES.PAWN, PIECES.KING],
     blockedUnits: [PIECES.ROOK, PIECES.KNIGHT],
   },
   {
@@ -92,18 +82,8 @@ export const TERRAIN_DETAILS: TerrainDetail[] = [
       iconBg: "bg-brand-blue/20",
       border: "border-brand-blue/40",
     },
-    sanctuaryUnits: [
-      PIECES.ROOK,
-      PIECES.QUEEN,
-      PIECES.PAWN,
-      PIECES.KING,
-    ],
-    allowedUnits: [
-      PIECES.ROOK,
-      PIECES.QUEEN,
-      PIECES.PAWN,
-      PIECES.KING,
-    ],
+    sanctuaryUnits: [PIECES.ROOK, PIECES.QUEEN, PIECES.PAWN, PIECES.KING],
+    allowedUnits: [PIECES.ROOK, PIECES.QUEEN, PIECES.PAWN, PIECES.KING],
     blockedUnits: [PIECES.BISHOP, PIECES.KNIGHT],
   },
   {
@@ -125,18 +105,8 @@ export const TERRAIN_DETAILS: TerrainDetail[] = [
       iconBg: "bg-brand-red/20",
       border: "border-brand-red/40",
     },
-    sanctuaryUnits: [
-      PIECES.KNIGHT,
-      PIECES.QUEEN,
-      PIECES.PAWN,
-      PIECES.KING,
-    ],
-    allowedUnits: [
-      PIECES.KNIGHT,
-      PIECES.QUEEN,
-      PIECES.PAWN,
-      PIECES.KING,
-    ],
+    sanctuaryUnits: [PIECES.KNIGHT, PIECES.QUEEN, PIECES.PAWN, PIECES.KING],
+    allowedUnits: [PIECES.KNIGHT, PIECES.QUEEN, PIECES.PAWN, PIECES.KING],
     blockedUnits: [PIECES.ROOK, PIECES.BISHOP],
   },
   {
@@ -191,7 +161,7 @@ export const TERRAIN_INTEL: Record<string, TerrainIntelEntry> = {
     desc: "Sanctuary for Knights. Grants protection from Rooks and Bishops. High peaks that block direct movement.",
   },
   [TERRAIN_TYPES.DESERT]: {
-    label: "Desert",
+    label: "Deserts",
     icon: DesertIcon,
     color: "text-amber-500",
     desc: "Exclusive zone for Rooks. Immune to non-Rook attacks. Deserts end movement; must exit next turn.",

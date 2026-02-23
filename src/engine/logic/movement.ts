@@ -252,6 +252,26 @@ export const getValidMoves = (
         if (!targetPiece || targetPiece.player !== player) moves.push([nr, nc]);
       }
     });
+    // Knight New Moveset: Triple-Jump (Orthogonal 3 squares)
+    [
+      [3, 0],
+      [-3, 0],
+      [0, 3],
+      [0, -3],
+    ].forEach(([dr, dc]) => {
+      const nr = r + dr,
+        nc = c + dc;
+      if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
+        const targetPiece = board[nr][nc];
+        const targetTerrain = terrain[nr][nc];
+        if (
+          targetTerrain === TERRAIN_TYPES.PONDS ||
+          targetTerrain === TERRAIN_TYPES.TREES
+        )
+          return;
+        if (!targetPiece || targetPiece.player !== player) moves.push([nr, nc]);
+      }
+    });
   }
 
   if (piece.type === PIECES.BISHOP || piece.type === PIECES.QUEEN) {
@@ -268,6 +288,25 @@ export const getValidMoves = (
         if (!res || board[nr][nc]) break;
         nr += dr;
         nc += dc;
+      }
+    });
+    // Bishop New Moveset: Double-step Retreat/Advance (Orthogonal 2 squares)
+    [
+      [2, 0],
+      [-2, 0],
+      [0, 2],
+      [0, -2],
+    ].forEach(([dr, dc]) => {
+      const nr = r + dr,
+        nc = c + dc;
+      if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
+        if (
+          terrain[nr][nc] === TERRAIN_TYPES.PONDS ||
+          terrain[nr][nc] === TERRAIN_TYPES.RUBBLE
+        )
+          return;
+        const targetPiece = board[nr][nc];
+        if (!targetPiece || targetPiece.player !== player) moves.push([nr, nc]);
       }
     });
   }
@@ -288,6 +327,25 @@ export const getValidMoves = (
         nc += dc;
       }
     });
+    // Rook New Moveset: Single-step Diagonal
+    [
+      [1, 1],
+      [1, -1],
+      [-1, 1],
+      [-1, -1],
+    ].forEach(([dr, dc]) => {
+      const nr = r + dr,
+        nc = c + dc;
+      if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
+        if (
+          terrain[nr][nc] === TERRAIN_TYPES.TREES ||
+          terrain[nr][nc] === TERRAIN_TYPES.RUBBLE
+        )
+          return;
+        const targetPiece = board[nr][nc];
+        if (!targetPiece || targetPiece.player !== player) moves.push([nr, nc]);
+      }
+    });
   }
 
   if (piece.type === PIECES.KING) {
@@ -296,46 +354,53 @@ export const getValidMoves = (
       [-1, 1],
       [1, -1],
       [1, 1],
-    ].forEach(([dr, dc]) => checkCell(r + dr, c + dc));
+    ].forEach(([dr, dc]) => {
+      // King Diagonal: Move ONLY (Non-capture)
+      const nr = r + dr,
+        nc = c + dc;
+      if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
+        if (!board[nr][nc]) moves.push([nr, nc]);
+      }
+    });
     [
       [0, 1],
       [0, -1],
       [1, 0],
       [-1, 0],
     ].forEach(([dr, dc]) => {
+      // King Orthogonal: Move or Capture
       checkCell(r + dr, c + dc);
       const midR = r + dr;
       const midC = c + dc;
-      if (
-        midR >= 0 &&
-        midR < BOARD_SIZE &&
-        midC >= 0 &&
-        midC < BOARD_SIZE &&
-        !board[midR]?.[midC]
-      ) {
-        if (depth > 0) {
-          checkCell(r + dr * 2, c + dc * 2);
-        } else {
-          // Recursive check for guards
-          const isGuarded = board.some((row, br) =>
-            row.some((cell, bc) => {
-              if (!cell || cell.player === player) return false;
-              // Recursive call with higher depth to avoid check filtering
-              const enemyMoves = getValidMoves(
-                br,
-                bc,
-                cell,
-                cell.player,
-                board,
-                terrain,
-                mode,
-                depth + 1,
-              );
-              return enemyMoves.some(([mr, mc]) => mr === midR && mc === midC);
-            }),
-          );
-          if (!isGuarded) {
+      if (midR >= 0 && midR < BOARD_SIZE && midC >= 0 && midC < BOARD_SIZE) {
+        const midPiece = board[midR][midC];
+        // Joust allows jumping over EMPTY squares OR ENEMY squares
+        if (!midPiece || midPiece.player !== player) {
+          if (depth > 0) {
             checkCell(r + dr * 2, c + dc * 2);
+          } else {
+            // Recalculate guarding check for the jump square
+            const isGuarded = board.some((row, br) =>
+              row.some((cell, bc) => {
+                if (!cell || cell.player === player) return false;
+                const enemyMoves = getValidMoves(
+                  br,
+                  bc,
+                  cell,
+                  cell.player,
+                  board,
+                  terrain,
+                  mode,
+                  depth + 1,
+                );
+                return enemyMoves.some(
+                  ([mr, mc]) => mr === midR && mc === midC,
+                );
+              }),
+            );
+            if (!isGuarded) {
+              checkCell(r + dr * 2, c + dc * 2);
+            }
           }
         }
       }

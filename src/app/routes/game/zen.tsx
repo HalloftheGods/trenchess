@@ -1,5 +1,5 @@
 import React from "react";
-import { ZenGardenLayout } from "../templates/ZenGardenLayout";
+import { ZenGardenLayout } from "./components/templates/ZenGardenLayout";
 import Header from "@/shared/components/organisms/Header";
 import DeploymentPanel from "@/app/routes/game/components/organisms/DeploymentPanel";
 import GameBoard from "@/app/routes/game/components/organisms/GameBoard";

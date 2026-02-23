@@ -17,6 +17,14 @@ interface RoutePageHeaderProps {
   backLabel?: string;
 }
 
+import { useNavigate, useLocation } from "react-router-dom";
+import { Pizza, Dices, Shell, Eye } from "lucide-react";
+import {
+  DualToneNS,
+  DualToneEW,
+  QuadTone,
+  AllianceTone,
+} from "@/app/routes/shared/components/atoms/RouteIcons";
 import { RouteBoardPreview } from "./RouteBoardPreview";
 import BackButton from "@/shared/components/molecules/BackButton";
 import RouteBreadcrumbs from "./RouteBreadcrumbs";
@@ -28,7 +36,38 @@ const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
   onBackClick,
   backLabel,
 }) => {
-  const { onLogoClick } = useRouteContext();
+  const { onLogoClick, multiplayer, selectedBoard, selectedPreset } =
+    useRouteContext();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isHome = location.pathname === "/";
+  const roomId = multiplayer?.roomId;
+  const isResuming = isHome && !!roomId;
+
+  const BoardIcon =
+    selectedBoard === "2p-ns"
+      ? DualToneNS
+      : selectedBoard === "2p-ew"
+        ? DualToneEW
+        : selectedBoard === "4p"
+          ? QuadTone
+          : AllianceTone;
+
+  const PresetIcon =
+    selectedPreset === "classic"
+      ? Pizza
+      : selectedPreset === "quick"
+        ? Dices
+        : selectedPreset === "terrainiffic"
+          ? Shell
+          : Eye;
+
+  const handleResume = () => {
+    if (roomId) {
+      navigate(`/game/${roomId}`);
+    }
+  };
 
   return (
     <div className={`w-full flex flex-col items-center pt-3 mb-4 ${className}`}>
@@ -41,7 +80,12 @@ const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
               className="cursor-pointer transition-transform hover:scale-105"
               onClick={onLogoClick || (() => {})}
             >
-              <GameLogo size="medium" />
+              <GameLogo
+                size="medium"
+                onResumeClick={isResuming ? handleResume : undefined}
+                resumeBoardIcon={isResuming ? <BoardIcon size={32} /> : null}
+                resumePresetIcon={isResuming ? <PresetIcon size={32} /> : null}
+              />
             </div>
             <RouteBreadcrumbs />
           </div>

@@ -61,7 +61,7 @@ export const LearnView: React.FC = () => {
           }}
           isSelected={false}
           darkMode={darkMode}
-          title="Claim the Chess"
+          title="Face the Chess"
           description='"...the Chessmen all race for claims..."'
           Icon={Waves}
           HoverIcon={ChessPawn}
@@ -71,7 +71,7 @@ export const LearnView: React.FC = () => {
 
         {/* Do the math */}
         <RouteCard
-          onClick={() => navigate("/tutorial")}
+          onClick={() => navigate("/learn/math")}
           onMouseEnter={() => setHoveredMenu("chess")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{

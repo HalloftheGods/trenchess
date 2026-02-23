@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   ChessPawn,
   Trophy,
+  Calculator,
   BicepsFlexed,
   Trees,
   Waves,
@@ -211,9 +212,9 @@ export const LearnChessMainView: React.FC = () => {
 
       {view === "selection" && !unitType && (
         <RoutePageFooter
-          onForwardClick={() => navigate("/learn/endgame")}
-          forwardLabel="The Endgame"
-          forwardIcon={HeartCrack}
+          onForwardClick={() => navigate("/learn/math")}
+          forwardLabel="Be Mathematical"
+          forwardIcon={Calculator}
           backIcon={Tornado}
           backLabel="Open the Trench"
           onBackClick={() => navigate("/learn/trench")}

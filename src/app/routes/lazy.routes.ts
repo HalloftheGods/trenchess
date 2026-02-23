@@ -23,15 +23,18 @@ export const ROUTES = {
   LEARN_TRENCH_DETAIL: "/learn/trench/:terrain",
   LEARN_CHESS: "/learn/chess",
   LEARN_CHESS_DETAIL: "/learn/chess/:unitType",
+  LEARN_MATH: "/learn/math",
 
-  // Help
   SCOREBOARD: "/scoreboard",
   RULES: "/rules",
+  STATS: "/stats",
   ZEN: "/zen",
   TUTORIAL: "/tutorial",
   LIBRARY: "/library",
 
-  LOADING: "/loading",
+  DEBUG_LOADING: "/debug/loading",
+  DEBUG_404: "/debug/404",
+  DEBUG_500: "/debug/500",
 } as const;
 
 /** Shorthand for lazy-loading a route component. */
@@ -49,3 +52,4 @@ export * from "@/app/routes/learn/_lazy.routes";
 export * from "@/app/routes/scoreboard/lazy.routes";
 export * from "@/app/routes/rules/lazy.routes";
 export * from "@/app/routes/tutorial/_lazy.routes";
+export * from "@/app/routes/stats/lazy.routes";

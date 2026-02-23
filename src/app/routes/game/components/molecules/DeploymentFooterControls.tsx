@@ -1,7 +1,7 @@
 import React from "react";
 import { RotateCcw } from "lucide-react";
 import { PLAYER_CONFIGS } from "@constants/unit.constants";
-import type { GameState, PieceType, TerrainType } from "@engineTypes/game";
+import type { PieceType, TerrainType } from "@engineTypes/game";
 
 interface DeploymentFooterControlsProps {
   isZen: boolean;
@@ -13,10 +13,10 @@ interface DeploymentFooterControlsProps {
   setPlacementTerrain: (terrain: TerrainType | null) => void;
   isAllPlaced: boolean;
   isCurrentPlayerReady?: boolean;
-  setGameState: (state: GameState) => void;
   setSelectedCell: (cell: null) => void;
   setValidMoves: (moves: number[][]) => void;
   ready?: () => void;
+  startGame?: () => void;
 }
 
 export const DeploymentFooterControls: React.FC<
@@ -31,9 +31,9 @@ export const DeploymentFooterControls: React.FC<
   setPlacementTerrain,
   isAllPlaced,
   isCurrentPlayerReady,
-  setGameState,
   setSelectedCell,
   setValidMoves,
+  startGame,
 }) => {
   if (isZen || multiplayer?.roomId) return null;
 
@@ -56,7 +56,7 @@ export const DeploymentFooterControls: React.FC<
         disabled={!isAllPlaced && !isCurrentPlayerReady}
         onClick={() => {
           if (isAllPlaced) {
-            setGameState("play");
+            if (startGame) startGame();
             setSelectedCell(null);
             setValidMoves([]);
           } else {

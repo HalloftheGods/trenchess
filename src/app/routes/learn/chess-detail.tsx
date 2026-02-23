@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+
 import InteractiveGuide, {
   type Slide,
 } from "@/app/routes/shared/components/templates/InteractiveGuide";
@@ -8,6 +9,7 @@ import { UNIT_DETAILS, unitColorMap } from "@engineConfigs/unitDetails";
 import { TerrainIconBadge } from "@/app/routes/shared/components/atoms/TerrainIconBadge";
 import { UnitMovePreview } from "@/app/routes/shared/components/molecules/UnitMovePreview";
 import { GuideBullet } from "@/app/routes/shared/components/atoms/GuideBullet";
+import { MathOperator } from "@/app/routes/shared/components/atoms/MathOperator";
 
 interface ChessGuideProps {
   onBack: () => void;
@@ -18,6 +20,8 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
   onBack,
   initialUnit,
 }) => {
+  const [selectedTerrain, setSelectedTerrain] = useState<string | null>(null);
+
   const UNIT_ORDER = initialUnit
     ? [
         initialUnit,
@@ -63,6 +67,44 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
       ];
       const finalColor = validColors.includes(colorName) ? colorName : "slate";
 
+      const getClassicMoveName = (type: string) => {
+        switch (type) {
+          case PIECES.KING:
+            return "1-Step";
+          case PIECES.QUEEN:
+            return "Orthogonal & Diagonal";
+          case PIECES.ROOK:
+            return "Orthogonal";
+          case PIECES.BISHOP:
+            return "Diagonal";
+          case PIECES.KNIGHT:
+            return "L-Shape";
+          case PIECES.PAWN:
+            return "Forward Step";
+          default:
+            return "Standard Move";
+        }
+      };
+
+      const getThemedMoveName = (type: string) => {
+        switch (type) {
+          case PIECES.KING:
+            return "Charge";
+          case PIECES.QUEEN:
+            return "Sacred Gallop";
+          case PIECES.ROOK:
+            return "4-Corners (Moat)";
+          case PIECES.BISHOP:
+            return "Staff Vault";
+          case PIECES.KNIGHT:
+            return "Triple Bar Jump";
+          case PIECES.PAWN:
+            return "Backflip";
+          default:
+            return details.title;
+        }
+      };
+
       return {
         id: unit.type,
         title: details.title,
@@ -80,31 +122,64 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
           <div className="flex items-center gap-6">
             <div className="flex gap-2">
               {details.levelUp.sanctuaryTerrain.map((key: any, idx: any) => (
-                <TerrainIconBadge key={idx} terrainKey={key} />
+                <TerrainIconBadge
+                  key={idx}
+                  terrainKey={key}
+                  active={selectedTerrain === key}
+                  onClick={() =>
+                    setSelectedTerrain((prev) => (prev === key ? null : key))
+                  }
+                />
               ))}
             </div>
           </div>
         ) : null,
-        description: (
-          <div className="flex flex-row items-center gap-6 justify-center flex-wrap">
-            {details.levelUp?.stats.map((stat: any, sIdx: any) => {
-              const colonIndex = stat.indexOf(":");
-              const name =
-                colonIndex !== -1 ? stat.substring(0, colonIndex) : stat;
-              return (
-                <div key={sIdx} className="flex items-center gap-2">
-                  <GuideBullet color="amber" />
-                  <span className="text-sm font-bold text-slate-500 dark:text-slate-400 tracking-widest">
-                    {name}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        ),
+        description: null,
         sideContent: (
-          <div className="flex flex-col items-center gap-4">
-            <UnitMovePreview unitType={unit.type} />
+          <div className="flex flex-row items-center justify-center gap-2 w-full overflow-x-auto pb-4 scrollbar-hide">
+            {/* Classic Move */}
+            <div className="flex flex-col items-center gap-4 shrink-0">
+              <UnitMovePreview
+                unitType={unit.type}
+                mode="classic"
+                selectedTerrain={selectedTerrain}
+                className=""
+              />
+              <div className="text-emerald-600 dark:text-emerald-500 text-center font-bold text-[9px] tracking-widest uppercase w-full">
+                {getClassicMoveName(unit.type)}
+              </div>
+            </div>
+
+            <MathOperator operator="+" />
+
+            {/* Themed Move */}
+            <div className="flex flex-col items-center gap-4 shrink-0">
+              <UnitMovePreview
+                unitType={unit.type}
+                mode="new"
+                selectedTerrain={selectedTerrain}
+                className=""
+              />
+              <div className="text-center font-bold text-[9px] tracking-widest text-amber-600 dark:text-amber-500 uppercase w-full">
+                {getThemedMoveName(unit.type)}
+              </div>
+            </div>
+
+            <MathOperator operator="=" />
+
+            {/* Both Moves */}
+            <div className="flex flex-col items-center gap-4 shrink-0">
+              <UnitMovePreview
+                unitType={unit.type}
+                mode="both"
+                selectedTerrain={selectedTerrain}
+                className=""
+                containerClassName="border-2 border-indigo-500/40 shadow-lg shadow-indigo-500/10"
+              />
+              <div className="text-center font-bold text-[9px] tracking-widest text-indigo-600 dark:text-indigo-400 uppercase w-full">
+                {details.levelUp?.title || details.title}
+              </div>
+            </div>
           </div>
         ),
         infoContent: (
@@ -185,7 +260,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
         ),
       };
     }).filter(Boolean) as Slide[];
-  }, [UNIT_ORDER]);
+  }, [UNIT_ORDER, selectedTerrain]);
 
   return (
     <InteractiveGuide
@@ -193,6 +268,10 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
       slides={slides}
       onBack={onBack}
       labelColor="blue"
+      onSlideChange={(id) => {
+        window.history.replaceState(null, "", `/learn/chess/${id}`);
+        setSelectedTerrain(null); // Reset terrain preview on slide change
+      }}
     />
   );
 };

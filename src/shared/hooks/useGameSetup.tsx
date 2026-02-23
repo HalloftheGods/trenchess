@@ -474,8 +474,35 @@ export function useGameSetup(
     // boardgame.io helpers
     ready: useCallback(() => {
       if (bgioClient) {
-        bgioClient.moves.ready();
+        bgioClient.moves.ready(core.turn);
+
+        // If local play, we might want to automatically switch to the next unready player
+        // wait for state to update
+        setTimeout(() => {
+          const updatedReady = core.readyPlayers; // This might be stale if we don't use functional update or ref, but let's see
+          // Actually, we should check activePlayers vs readyPlayers
+          const unready = core.activePlayers.filter((p) => !updatedReady[p]);
+          if (unready.length > 0 && core.gameState === "setup") {
+            // Find next unready player
+            const currentIdx = core.activePlayers.indexOf(core.turn);
+            for (let i = 1; i <= core.activePlayers.length; i++) {
+              const nextIdx = (currentIdx + i) % core.activePlayers.length;
+              const nextP = core.activePlayers[nextIdx];
+              if (!updatedReady[nextP]) {
+                core.setTurn(nextP);
+                break;
+              }
+            }
+          }
+        }, 100);
       }
-    }, [bgioClient]),
+    }, [bgioClient, core]),
+    startGame: useCallback(() => {
+      if (bgioClient) {
+        core.activePlayers.forEach((p) => {
+          bgioClient.moves.ready(p);
+        });
+      }
+    }, [bgioClient, core]),
   };
 }

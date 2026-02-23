@@ -9,3 +9,4 @@ export const LazyLearnTrenchMainView = lazy(() => import("./trench-main"));
 export const LazyLearnTrenchDetailView = lazy(() => import("./trench-detail"));
 export const LazyLearnChessMainView = lazy(() => import("./chess-main"));
 export const LazyLearnChessDetailView = lazy(() => import("./chess-detail"));
+export const LazyLearnMathMainView = lazy(() => import("./math-main"));

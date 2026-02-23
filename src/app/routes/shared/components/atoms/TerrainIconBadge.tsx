@@ -9,11 +9,15 @@ import { Box } from "@atoms";
 interface TerrainIconBadgeProps {
   terrainKey: TerrainType;
   className?: string;
+  onClick?: () => void;
+  active?: boolean;
 }
 
 export const TerrainIconBadge: React.FC<TerrainIconBadgeProps> = ({
   terrainKey,
   className = "",
+  onClick,
+  active = false,
 }) => {
   const terrainInfo = TERRAIN_DETAILS.find((t) => t.key === terrainKey);
 
@@ -25,7 +29,11 @@ export const TerrainIconBadge: React.FC<TerrainIconBadgeProps> = ({
     if (terrainKey === TERRAIN_TYPES.DESERT) badgeType = "terrain-badge-amber";
 
     return (
-      <Box className={`terrain-badge ${badgeType} ${className}`}>
+      <Box
+        as="button"
+        className={`terrain-badge clickable-unit ${badgeType} ${active ? "ring-4 ring-white shadow-2xl scale-110 z-10" : "opacity-60 hover:opacity-100"} ${className}`}
+        onClick={onClick}
+      >
         <Icon size={28} className="fill-current" />
       </Box>
     );
@@ -47,7 +55,11 @@ export const TerrainIconBadge: React.FC<TerrainIconBadgeProps> = ({
   }
 
   return (
-    <Box className={`terrain-badge ${badgeType} ${className}`}>
+    <Box
+      as="button"
+      className={`terrain-badge clickable-unit ${badgeType} ${active ? "ring-4 ring-white shadow-2xl scale-110 z-10" : "opacity-60 hover:opacity-100"} ${className}`}
+      onClick={onClick}
+    >
       <IconComp size={28} className="fill-current" />
     </Box>
   );

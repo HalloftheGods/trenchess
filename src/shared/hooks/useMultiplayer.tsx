@@ -1,14 +1,12 @@
-import { useEffect, useState, useCallback, useRef } from "react";
-import { io, Socket } from "socket.io-client";
+import { useState, useCallback, useEffect } from "react";
+import { LobbyClient } from "boardgame.io/client";
 
 // Helper to determine prod URL vs local
-const getServerUrl = () => {
+export const getServerUrl = () => {
   if (typeof window === "undefined") return "http://localhost:3001";
   if (window.location.hostname.includes("loca.lt")) {
-    // If using localtunnel or similar
     return "https://battle-chess-server.loca.lt";
   }
-  // Default to localhost for dev
   return window.location.protocol + "//" + window.location.hostname + ":3001";
 };
 
@@ -22,22 +20,19 @@ export interface MultiplayerState {
   availableRooms: any[];
   onlineCount: number;
   playerIndex: number | null;
+  playerCredentials: string | null;
   chatMessages: any[];
   sendMessage: (text: string) => void;
-  joinGame: (roomId: string) => void;
-  hostGame: () => string; // returns new room ID
-  leaveGame: () => void;
+  joinGame: (roomId: string) => Promise<void>;
+  hostGame: () => Promise<string>;
+  leaveGame: () => Promise<void>;
   toggleReady: (isReady: boolean) => void;
   sendGameState: (state: any) => void;
   sendMove: (move: any) => void;
-  refreshRooms: () => void;
+  refreshRooms: () => Promise<void>;
 }
 
-export function useMultiplayer(
-  onGameStateReceived: (state: any) => void,
-  onMoveReceived: (move: any) => void,
-): MultiplayerState {
-  // 1. All useState hooks grouped at the top
+export function useMultiplayer(): MultiplayerState {
   const [isConnected, setIsConnected] = useState(false);
   const [roomId, setRoomId] = useState<string | null>(() => {
     if (typeof window !== "undefined") {
@@ -45,167 +40,176 @@ export function useMultiplayer(
     }
     return null;
   });
-  const [players, setPlayers] = useState<string[]>([]);
-  const [isHost, setIsHost] = useState(false);
-  const [socketId, setSocketId] = useState<string | null>(null);
-  const [readyPlayers, setReadyPlayers] = useState<Record<string, boolean>>({});
-  const [availableRooms, setAvailableRooms] = useState<any[]>([]);
-  const [onlineCount, setOnlineCount] = useState(0);
-  const [playerIndex, setPlayerIndex] = useState<number | null>(null);
-  const [chatMessages, setChatMessages] = useState<any[]>([]);
-
-  // 2. All useRef hooks
-  const socketRef = useRef<Socket | null>(null);
-  const onGameStateReceivedRef = useRef(onGameStateReceived);
-  const onMoveReceivedRef = useRef(onMoveReceived);
-  const hasAttemptedRejoin = useRef(false);
-
-  // 3. Effects
-  useEffect(() => {
-    onGameStateReceivedRef.current = onGameStateReceived;
-    onMoveReceivedRef.current = onMoveReceived;
-  }, [onGameStateReceived, onMoveReceived]);
-
-  // Initialize socket
-  useEffect(() => {
-    const url = getServerUrl();
-    socketRef.current = io(url);
-
-    socketRef.current.on("connect", () => {
-      console.log("Connected to Space Station (Server)");
-      setIsConnected(true);
-      if (socketRef.current) setSocketId(socketRef.current.id || null);
-
-      // Request initial data
-      socketRef.current?.emit("request_room_list");
-
-      // Auto-rejoin if we have a room ID
-      if (roomId && !hasAttemptedRejoin.current) {
-        console.log("Attempting to auto-rejoin room:", roomId);
-        socketRef.current?.emit("join_room", roomId);
-        hasAttemptedRejoin.current = true;
+  const [playerIndex, setPlayerIndex] = useState<number | null>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("battle-chess-player-index");
+      return stored !== null ? Number(stored) : null;
+    }
+    return null;
+  });
+  const [playerCredentials, setPlayerCredentials] = useState<string | null>(
+    () => {
+      if (typeof window !== "undefined") {
+        return localStorage.getItem("battle-chess-credentials");
       }
-    });
+      return null;
+    },
+  );
 
-    socketRef.current.on("disconnect", () => {
-      console.log("Disconnected from Space Station");
+  const [players, setPlayers] = useState<string[]>([]);
+  const [isHost, setIsHost] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("battle-chess-is-host") === "true";
+    }
+    return false;
+  });
+  const [availableRooms, setAvailableRooms] = useState<any[]>([]);
+
+  const socketId = playerIndex !== null ? String(playerIndex) : null;
+  const readyPlayers = {}; // Tracked in boardgame.io G state
+  const onlineCount = availableRooms.length * 2; // Approximated for global lobby
+  const chatMessages: any[] = [];
+
+  const refreshRooms = useCallback(async () => {
+    try {
+      const lobbyClient = new LobbyClient({ server: getServerUrl() });
+      const { matches } = await lobbyClient.listMatches("battle-chess", {
+        isGameover: false,
+      });
+
+      setAvailableRooms(
+        matches.map((m: any) => ({
+          id: m.matchID,
+          players: m.players.filter((p: any) => p.name).length,
+          maxPlayers: m.players.length,
+          status: m.gameover ? "Finished" : "Waiting",
+          mode: m.setupData?.mode || "Unknown",
+          isPrivate: false,
+          raw: m,
+        })),
+      );
+      setIsConnected(true);
+    } catch (e) {
+      console.error("Failed to connect to lobby server", e);
       setIsConnected(false);
-      setSocketId(null);
-    });
-
-    socketRef.current.on("room_users", (users: string[]) => {
-      setPlayers(users);
-    });
-
-    socketRef.current.on(
-      "room_ready_status",
-      (status: Record<string, boolean>) => {
-        setReadyPlayers(status);
-      },
-    );
-
-    socketRef.current.on("game_state_sync", (state: any) => {
-      // Avoid loops: verify if state is actually new/different?
-      // For now, trust the caller to handle diffs
-      // console.log("Received Sync:", state);
-      onGameStateReceivedRef.current(state);
-    });
-
-    socketRef.current.on("receive_move", (move: any) => {
-      console.log("Received Move:", move);
-      onMoveReceivedRef.current(move);
-    });
-
-    // New listeners for Global Lobby
-    socketRef.current.on("room_list_update", (rooms: any[]) => {
-      setAvailableRooms(rooms);
-    });
-
-    socketRef.current.on("online_count_update", (count: number) => {
-      setOnlineCount(count);
-    });
-
-    socketRef.current.on("join_success", (data: { playerIndex: number }) => {
-      console.log("Joined Room Index:", data.playerIndex);
-      setPlayerIndex(data.playerIndex);
-    });
-
-    socketRef.current.on("receive_chat_message", (message: any) => {
-      setChatMessages((prev) => [...prev, message]);
-    });
-
-    return () => {
-      socketRef.current?.disconnect();
-    };
-  }, []); // Run once
-
-  const joinGame = useCallback((id: string) => {
-    if (!socketRef.current) return;
-    socketRef.current.emit("join_room", id);
-    setRoomId(id);
-    localStorage.setItem("battle-chess-room-id", id);
-    setIsHost(false);
+    }
   }, []);
 
-  const hostGame = useCallback(() => {
-    if (!socketRef.current) return "";
-    // Generate random 4-char code
-    const code = Math.random().toString(36).substring(2, 6).toUpperCase();
-    socketRef.current.emit("join_room", code);
-    setRoomId(code);
-    localStorage.setItem("battle-chess-room-id", code);
-    setIsHost(true);
-    return code;
-  }, []);
-
-  const leaveGame = useCallback(() => {
-    if (!socketRef.current || !roomId) return;
-    socketRef.current.emit("leave_room", roomId);
-    setRoomId(null);
-    localStorage.removeItem("battle-chess-room-id");
-    setPlayers([]);
-    setReadyPlayers({});
-    setIsHost(false);
-    // Refresh rooms when leaving
-    socketRef.current.emit("request_room_list");
+  // Poll for room updates
+  useEffect(() => {
+    if (roomId) {
+      const lobbyClient = new LobbyClient({ server: getServerUrl() });
+      const fetchMatch = async () => {
+        try {
+          const match = await lobbyClient.getMatch("battle-chess", roomId);
+          const activePlayers = match.players
+            .filter((p: any) => p.name)
+            .map((p: any) => String(p.id));
+          setPlayers(activePlayers);
+        } catch (e) {
+          // Ignore polling errors
+        }
+      };
+      fetchMatch();
+      const interval = setInterval(fetchMatch, 5000);
+      return () => clearInterval(interval);
+    }
   }, [roomId]);
 
-  const toggleReady = useCallback(
-    (isReady: boolean) => {
-      if (!socketRef.current || !roomId) return;
-      socketRef.current.emit("player_ready", { roomId, isReady });
+  useEffect(() => {
+    refreshRooms();
+  }, [refreshRooms]);
+
+  const joinGame = useCallback(
+    async (id: string) => {
+      try {
+        const lobbyClient = new LobbyClient({ server: getServerUrl() });
+        const match = await lobbyClient.getMatch("battle-chess", id);
+        const emptySlot = match.players.find((p: any) => !p.name);
+
+        if (!emptySlot) {
+          console.error("Lobby is full");
+          return;
+        }
+
+        const res = await lobbyClient.joinMatch("battle-chess", id, {
+          playerID: String(emptySlot.id),
+          playerName: "Player " + emptySlot.id,
+        });
+
+        setRoomId(id);
+        setPlayerIndex(emptySlot.id);
+        setPlayerCredentials(res.playerCredentials);
+        localStorage.setItem("battle-chess-room-id", id);
+        localStorage.setItem("battle-chess-player-index", String(emptySlot.id));
+        localStorage.setItem("battle-chess-credentials", res.playerCredentials);
+        localStorage.setItem("battle-chess-is-host", "false");
+        setIsHost(false);
+        refreshRooms();
+      } catch (e) {
+        console.error("Failed to join lobby", e);
+      }
     },
-    [roomId],
+    [refreshRooms],
   );
 
-  const sendGameState = useCallback(
-    (state: any) => {
-      if (!socketRef.current || !roomId) return;
-      socketRef.current.emit("update_game_state", { roomId, newState: state });
-    },
-    [roomId],
-  );
+  const hostGame = useCallback(async () => {
+    try {
+      const lobbyClient = new LobbyClient({ server: getServerUrl() });
+      const { matchID } = await lobbyClient.createMatch("battle-chess", {
+        numPlayers: 2, // Hardcoded for 2P initially, updated when transitioning to play
+      });
 
-  const sendMove = useCallback(
-    (move: any) => {
-      if (!socketRef.current || !roomId) return;
-      socketRef.current.emit("send_move", { roomId, move });
-    },
-    [roomId],
-  );
+      const res = await lobbyClient.joinMatch("battle-chess", matchID, {
+        playerID: "0",
+        playerName: "Operator",
+      });
 
-  const refreshRooms = useCallback(() => {
-    if (!socketRef.current) return;
-    socketRef.current.emit("request_room_list");
-  }, []);
+      setRoomId(matchID);
+      setPlayerIndex(0);
+      setPlayerCredentials(res.playerCredentials);
+      localStorage.setItem("battle-chess-room-id", matchID);
+      localStorage.setItem("battle-chess-player-index", "0");
+      localStorage.setItem("battle-chess-credentials", res.playerCredentials);
+      localStorage.setItem("battle-chess-is-host", "true");
+      setIsHost(true);
+      refreshRooms();
+      return matchID;
+    } catch (e) {
+      console.error("Failed to create match", e);
+      return "";
+    }
+  }, [refreshRooms]);
 
-  const sendMessage = useCallback(
-    (text: string) => {
-      if (!socketRef.current || !roomId) return;
-      socketRef.current.emit("send_chat_message", { roomId, text });
-    },
-    [roomId],
-  );
+  const leaveGame = useCallback(async () => {
+    if (roomId && playerIndex !== null && playerCredentials) {
+      try {
+        const lobbyClient = new LobbyClient({ server: getServerUrl() });
+        await lobbyClient.leaveMatch("battle-chess", roomId, {
+          playerID: String(playerIndex),
+          credentials: playerCredentials,
+        });
+      } catch (e) {
+        console.error("Error leaving match context", e);
+      }
+    }
+    setRoomId(null);
+    setPlayerIndex(null);
+    setPlayerCredentials(null);
+    setPlayers([]);
+    setIsHost(false);
+    localStorage.removeItem("battle-chess-room-id");
+    localStorage.removeItem("battle-chess-player-index");
+    localStorage.removeItem("battle-chess-credentials");
+    localStorage.removeItem("battle-chess-is-host");
+    refreshRooms();
+  }, [roomId, playerIndex, playerCredentials, refreshRooms]);
+
+  // Sync actions handled by boardgame.io React client now
+  const toggleReady = useCallback((_isReady: boolean) => {}, []);
+  const sendGameState = useCallback((_state: any) => {}, []);
+  const sendMove = useCallback((_move: any) => {}, []);
+  const sendMessage = useCallback((_text: string) => {}, []);
 
   return {
     isConnected,
@@ -217,6 +221,7 @@ export function useMultiplayer(
     availableRooms,
     onlineCount,
     playerIndex,
+    playerCredentials,
     chatMessages,
     sendMessage,
     joinGame,
