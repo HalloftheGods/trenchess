@@ -4,7 +4,7 @@ import {
   applyClassicalFormation,
 } from "@/core/setup/setupLogic";
 import { getBestMove } from "@/core/ai/aiLogic";
-import { getValidMoves, isPlayerInCheck } from "@/core/rules/gameLogic";
+import { getValidMoves, isPlayerInCheck } from "@/core/mechanics/gameLogic";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 
 // Configuration

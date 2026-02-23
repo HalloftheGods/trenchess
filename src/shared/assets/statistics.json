@@ -1,1164 +1,1164 @@
 {
-  "pawn": {
-    "pawn": {
+  "king": {
+    "king": {
       "total": 500000,
-      "captures": 26149,
-      "rate": 5.2298,
+      "captures": 239382,
+      "rate": 47.876400000000004,
       "terrainStats": {
         "flat": {
-          "total": 389083,
-          "captures": 20358,
-          "rate": 5.232302619235484
+          "total": 389222,
+          "captures": 186550,
+          "rate": 47.92894543473905
         },
-        "trees": {
-          "total": 27659,
-          "captures": 1485,
-          "rate": 5.368957662966846
+        "forests": {
+          "total": 27710,
+          "captures": 13214,
+          "rate": 47.68675568386864
         },
-        "ponds": {
-          "total": 27758,
-          "captures": 1416,
-          "rate": 5.101232077238994
+        "swamps": {
+          "total": 27833,
+          "captures": 13282,
+          "rate": 47.72033198002371
         },
-        "rubble": {
-          "total": 27726,
-          "captures": 1469,
-          "rate": 5.298275986438722
-        },
-        "desert": {
-          "total": 27774,
-          "captures": 1421,
-          "rate": 5.116295816231007
-        }
-      }
-    },
-    "knight": {
-      "total": 500000,
-      "captures": 35864,
-      "rate": 7.1728,
-      "terrainStats": {
-        "flat": {
-          "total": 388202,
-          "captures": 26638,
-          "rate": 6.8618914894822804
-        },
-        "trees": {
-          "total": 27942,
-          "captures": 2708,
-          "rate": 9.691503829360819
-        },
-        "ponds": {
-          "total": 27820,
-          "captures": 2660,
-          "rate": 9.561466570812366
-        },
-        "rubble": {
-          "total": 28057,
-          "captures": 1909,
-          "rate": 6.804006130377446
+        "mountains": {
+          "total": 27498,
+          "captures": 13161,
+          "rate": 47.861662666375736
         },
         "desert": {
-          "total": 27979,
-          "captures": 1949,
-          "rate": 6.965938739769112
-        }
-      }
-    },
-    "bishop": {
-      "total": 500000,
-      "captures": 30589,
-      "rate": 6.1178,
-      "terrainStats": {
-        "flat": {
-          "total": 389157,
-          "captures": 23492,
-          "rate": 6.036638169170797
-        },
-        "trees": {
-          "total": 27522,
-          "captures": 1526,
-          "rate": 5.544655184942955
-        },
-        "ponds": {
-          "total": 27923,
-          "captures": 1957,
-          "rate": 7.008559252229345
-        },
-        "rubble": {
-          "total": 27456,
-          "captures": 1976,
-          "rate": 7.196969696969697
-        },
-        "desert": {
-          "total": 27942,
-          "captures": 1638,
-          "rate": 5.8621430105217955
-        }
-      }
-    },
-    "rook": {
-      "total": 500000,
-      "captures": 42057,
-      "rate": 8.411399999999999,
-      "terrainStats": {
-        "flat": {
-          "total": 388775,
-          "captures": 32363,
-          "rate": 8.324352131695711
-        },
-        "trees": {
-          "total": 27792,
-          "captures": 2634,
-          "rate": 9.477547495682211
-        },
-        "ponds": {
-          "total": 27711,
-          "captures": 2253,
-          "rate": 8.130345350221933
-        },
-        "rubble": {
-          "total": 27983,
-          "captures": 2604,
-          "rate": 9.305649858842868
-        },
-        "desert": {
-          "total": 27739,
-          "captures": 2203,
-          "rate": 7.941886874076211
+          "total": 27737,
+          "captures": 13175,
+          "rate": 47.49972960305729
         }
       }
     },
     "queen": {
       "total": 500000,
-      "captures": 15211,
-      "rate": 3.0422000000000002,
+      "captures": 191512,
+      "rate": 38.3024,
       "terrainStats": {
         "flat": {
-          "total": 389235,
-          "captures": 11852,
-          "rate": 3.0449471399026296
+          "total": 388823,
+          "captures": 148940,
+          "rate": 38.30534716310506
         },
-        "trees": {
-          "total": 27706,
-          "captures": 827,
-          "rate": 2.984913015231358
+        "forests": {
+          "total": 27748,
+          "captures": 10683,
+          "rate": 38.50007207726683
         },
-        "ponds": {
-          "total": 27652,
-          "captures": 823,
-          "rate": 2.9762765803558513
+        "swamps": {
+          "total": 27971,
+          "captures": 10735,
+          "rate": 38.37903542955204
         },
-        "rubble": {
-          "total": 27730,
-          "captures": 840,
-          "rate": 3.0292102416155786
+        "mountains": {
+          "total": 27761,
+          "captures": 10622,
+          "rate": 38.262310435503046
         },
         "desert": {
-          "total": 27677,
-          "captures": 869,
-          "rate": 3.1397911623369588
+          "total": 27697,
+          "captures": 10532,
+          "rate": 38.02577896523089
         }
       }
     },
+    "rook": {
+      "total": 500000,
+      "captures": 219504,
+      "rate": 43.900800000000004,
+      "terrainStats": {
+        "flat": {
+          "total": 388042,
+          "captures": 170646,
+          "rate": 43.97616752825725
+        },
+        "forests": {
+          "total": 27875,
+          "captures": 12159,
+          "rate": 43.619730941704034
+        },
+        "swamps": {
+          "total": 27939,
+          "captures": 12127,
+          "rate": 43.4052757793765
+        },
+        "mountains": {
+          "total": 27959,
+          "captures": 12223,
+          "rate": 43.71758646589649
+        },
+        "desert": {
+          "total": 28185,
+          "captures": 12349,
+          "rate": 43.814085506475074
+        }
+      }
+    },
+    "bishop": {
+      "total": 500000,
+      "captures": 382795,
+      "rate": 76.559,
+      "terrainStats": {
+        "flat": {
+          "total": 389013,
+          "captures": 297764,
+          "rate": 76.54345741659019
+        },
+        "forests": {
+          "total": 27930,
+          "captures": 21426,
+          "rate": 76.71321160042964
+        },
+        "swamps": {
+          "total": 27346,
+          "captures": 20990,
+          "rate": 76.75711255759526
+        },
+        "mountains": {
+          "total": 27759,
+          "captures": 21166,
+          "rate": 76.24914442162903
+        },
+        "desert": {
+          "total": 27952,
+          "captures": 21449,
+          "rate": 76.73511734401832
+        }
+      }
+    },
+    "knight": {
+      "total": 500000,
+      "captures": 407775,
+      "rate": 81.555,
+      "terrainStats": {
+        "flat": {
+          "total": 388364,
+          "captures": 316834,
+          "rate": 81.58171200214231
+        },
+        "forests": {
+          "total": 28008,
+          "captures": 22724,
+          "rate": 81.13396172522137
+        },
+        "swamps": {
+          "total": 27860,
+          "captures": 22740,
+          "rate": 81.6223977027997
+        },
+        "mountains": {
+          "total": 27781,
+          "captures": 22707,
+          "rate": 81.73571865663583
+        },
+        "desert": {
+          "total": 27987,
+          "captures": 22770,
+          "rate": 81.3592024868689
+        }
+      }
+    },
+    "pawn": {
+      "total": 500000,
+      "captures": 239959,
+      "rate": 47.9918,
+      "terrainStats": {
+        "flat": {
+          "total": 388420,
+          "captures": 186491,
+          "rate": 48.01271819164822
+        },
+        "forests": {
+          "total": 27999,
+          "captures": 13425,
+          "rate": 47.94814100503589
+        },
+        "swamps": {
+          "total": 27894,
+          "captures": 13205,
+          "rate": 47.339929733992975
+        },
+        "mountains": {
+          "total": 27902,
+          "captures": 13482,
+          "rate": 48.319116909182135
+        },
+        "desert": {
+          "total": 27785,
+          "captures": 13356,
+          "rate": 48.069102033471296
+        }
+      }
+    }
+  },
+  "queen": {
+    "king": {
+      "total": 500000,
+      "captures": 261130,
+      "rate": 52.22599999999999,
+      "terrainStats": {
+        "flat": {
+          "total": 389004,
+          "captures": 203670,
+          "rate": 52.356788105006636
+        },
+        "forests": {
+          "total": 27599,
+          "captures": 14256,
+          "rate": 51.65404543642885
+        },
+        "swamps": {
+          "total": 28142,
+          "captures": 14596,
+          "rate": 51.865539051950826
+        },
+        "mountains": {
+          "total": 27733,
+          "captures": 14384,
+          "rate": 51.866008004903904
+        },
+        "desert": {
+          "total": 27522,
+          "captures": 14224,
+          "rate": 51.68229053121139
+        }
+      }
+    },
+    "queen": {
+      "total": 500000,
+      "captures": 151115,
+      "rate": 30.223,
+      "terrainStats": {
+        "flat": {
+          "total": 389407,
+          "captures": 117992,
+          "rate": 30.300431168417617
+        },
+        "forests": {
+          "total": 27678,
+          "captures": 8249,
+          "rate": 29.803454006792396
+        },
+        "swamps": {
+          "total": 27672,
+          "captures": 8240,
+          "rate": 29.777392309916163
+        },
+        "mountains": {
+          "total": 27558,
+          "captures": 8329,
+          "rate": 30.2235285579505
+        },
+        "desert": {
+          "total": 27685,
+          "captures": 8305,
+          "rate": 29.998193967852625
+        }
+      }
+    },
+    "rook": {
+      "total": 500000,
+      "captures": 237562,
+      "rate": 47.5124,
+      "terrainStats": {
+        "flat": {
+          "total": 389433,
+          "captures": 185449,
+          "rate": 47.620258170211564
+        },
+        "forests": {
+          "total": 27634,
+          "captures": 13090,
+          "rate": 47.369182890641966
+        },
+        "swamps": {
+          "total": 27535,
+          "captures": 13065,
+          "rate": 47.44870165244235
+        },
+        "mountains": {
+          "total": 27712,
+          "captures": 12971,
+          "rate": 46.806437644341806
+        },
+        "desert": {
+          "total": 27686,
+          "captures": 12987,
+          "rate": 46.90818464205736
+        }
+      }
+    },
+    "bishop": {
+      "total": 500000,
+      "captures": 408025,
+      "rate": 81.605,
+      "terrainStats": {
+        "flat": {
+          "total": 389045,
+          "captures": 317515,
+          "rate": 81.61395211350873
+        },
+        "forests": {
+          "total": 27667,
+          "captures": 22595,
+          "rate": 81.66769075071385
+        },
+        "swamps": {
+          "total": 27574,
+          "captures": 22527,
+          "rate": 81.69652571262785
+        },
+        "mountains": {
+          "total": 27882,
+          "captures": 22669,
+          "rate": 81.30334983143247
+        },
+        "desert": {
+          "total": 27832,
+          "captures": 22719,
+          "rate": 81.62906007473411
+        }
+      }
+    },
+    "knight": {
+      "total": 500000,
+      "captures": 445551,
+      "rate": 89.11019999999999,
+      "terrainStats": {
+        "flat": {
+          "total": 389499,
+          "captures": 347174,
+          "rate": 89.13347659429164
+        },
+        "forests": {
+          "total": 27414,
+          "captures": 24399,
+          "rate": 89.00196979645436
+        },
+        "swamps": {
+          "total": 27654,
+          "captures": 24642,
+          "rate": 89.10826643523541
+        },
+        "mountains": {
+          "total": 27701,
+          "captures": 24690,
+          "rate": 89.13035630482653
+        },
+        "desert": {
+          "total": 27732,
+          "captures": 24646,
+          "rate": 88.87206115678639
+        }
+      }
+    },
+    "pawn": {
+      "total": 500000,
+      "captures": 482999,
+      "rate": 96.5998,
+      "terrainStats": {
+        "flat": {
+          "total": 388758,
+          "captures": 375500,
+          "rate": 96.5896521743604
+        },
+        "forests": {
+          "total": 27821,
+          "captures": 26888,
+          "rate": 96.64641817332232
+        },
+        "swamps": {
+          "total": 27856,
+          "captures": 26909,
+          "rate": 96.60037334865021
+        },
+        "mountains": {
+          "total": 27754,
+          "captures": 26865,
+          "rate": 96.79685811054263
+        },
+        "desert": {
+          "total": 27811,
+          "captures": 26837,
+          "rate": 96.49778864478084
+        }
+      }
+    }
+  },
+  "rook": {
+    "king": {
+      "total": 500000,
+      "captures": 256032,
+      "rate": 51.206399999999995,
+      "terrainStats": {
+        "flat": {
+          "total": 388961,
+          "captures": 199014,
+          "rate": 51.16554101825118
+        },
+        "forests": {
+          "total": 27624,
+          "captures": 14105,
+          "rate": 51.06067187952505
+        },
+        "swamps": {
+          "total": 27996,
+          "captures": 14285,
+          "rate": 51.02514644949279
+        },
+        "mountains": {
+          "total": 27762,
+          "captures": 14316,
+          "rate": 51.56688999351632
+        },
+        "desert": {
+          "total": 27657,
+          "captures": 14312,
+          "rate": 51.7482011787251
+        }
+      }
+    },
+    "queen": {
+      "total": 500000,
+      "captures": 130050,
+      "rate": 26.009999999999998,
+      "terrainStats": {
+        "flat": {
+          "total": 389097,
+          "captures": 101426,
+          "rate": 26.06702184802247
+        },
+        "forests": {
+          "total": 27765,
+          "captures": 7141,
+          "rate": 25.719430938231586
+        },
+        "swamps": {
+          "total": 27789,
+          "captures": 7171,
+          "rate": 25.805174709417393
+        },
+        "mountains": {
+          "total": 27890,
+          "captures": 7282,
+          "rate": 26.109716744352813
+        },
+        "desert": {
+          "total": 27459,
+          "captures": 7030,
+          "rate": 25.601806329436616
+        }
+      }
+    },
+    "rook": {
+      "total": 500000,
+      "captures": 205617,
+      "rate": 41.1234,
+      "terrainStats": {
+        "flat": {
+          "total": 389023,
+          "captures": 160455,
+          "rate": 41.24563329160487
+        },
+        "forests": {
+          "total": 27738,
+          "captures": 11285,
+          "rate": 40.684259860119695
+        },
+        "swamps": {
+          "total": 27589,
+          "captures": 11239,
+          "rate": 40.73725035340171
+        },
+        "mountains": {
+          "total": 27803,
+          "captures": 11318,
+          "rate": 40.70783728374636
+        },
+        "desert": {
+          "total": 27847,
+          "captures": 11320,
+          "rate": 40.65069845943908
+        }
+      }
+    },
+    "bishop": {
+      "total": 500000,
+      "captures": 379282,
+      "rate": 75.85640000000001,
+      "terrainStats": {
+        "flat": {
+          "total": 388697,
+          "captures": 294576,
+          "rate": 75.78550902116558
+        },
+        "forests": {
+          "total": 27715,
+          "captures": 21166,
+          "rate": 76.37019664441638
+        },
+        "swamps": {
+          "total": 27833,
+          "captures": 21155,
+          "rate": 76.00689828620702
+        },
+        "mountains": {
+          "total": 27765,
+          "captures": 21032,
+          "rate": 75.75004502070952
+        },
+        "desert": {
+          "total": 27990,
+          "captures": 21353,
+          "rate": 76.2879599857092
+        }
+      }
+    },
+    "knight": {
+      "total": 500000,
+      "captures": 412401,
+      "rate": 82.4802,
+      "terrainStats": {
+        "flat": {
+          "total": 388785,
+          "captures": 320585,
+          "rate": 82.45817096853017
+        },
+        "forests": {
+          "total": 27657,
+          "captures": 22735,
+          "rate": 82.20342047221318
+        },
+        "swamps": {
+          "total": 28060,
+          "captures": 23250,
+          "rate": 82.85816108339273
+        },
+        "mountains": {
+          "total": 27756,
+          "captures": 22912,
+          "rate": 82.54791756737282
+        },
+        "desert": {
+          "total": 27742,
+          "captures": 22919,
+          "rate": 82.61480787253983
+        }
+      }
+    },
+    "pawn": {
+      "total": 500000,
+      "captures": 430180,
+      "rate": 86.036,
+      "terrainStats": {
+        "flat": {
+          "total": 389003,
+          "captures": 334172,
+          "rate": 85.90473595319317
+        },
+        "forests": {
+          "total": 27769,
+          "captures": 24000,
+          "rate": 86.42731103028557
+        },
+        "swamps": {
+          "total": 27801,
+          "captures": 23962,
+          "rate": 86.19114420344593
+        },
+        "mountains": {
+          "total": 27890,
+          "captures": 24150,
+          "rate": 86.59017569021155
+        },
+        "desert": {
+          "total": 27537,
+          "captures": 23896,
+          "rate": 86.77778988270327
+        }
+      }
+    }
+  },
+  "bishop": {
+    "king": {
+      "total": 500000,
+      "captures": 121864,
+      "rate": 24.3728,
+      "terrainStats": {
+        "flat": {
+          "total": 388688,
+          "captures": 94567,
+          "rate": 24.329796649240524
+        },
+        "forests": {
+          "total": 28312,
+          "captures": 6977,
+          "rate": 24.643260808137892
+        },
+        "swamps": {
+          "total": 27847,
+          "captures": 6862,
+          "rate": 24.641792652709448
+        },
+        "mountains": {
+          "total": 27525,
+          "captures": 6721,
+          "rate": 24.41780199818347
+        },
+        "desert": {
+          "total": 27628,
+          "captures": 6737,
+          "rate": 24.384682206457217
+        }
+      }
+    },
+    "queen": {
+      "total": 500000,
+      "captures": 75751,
+      "rate": 15.1502,
+      "terrainStats": {
+        "flat": {
+          "total": 389386,
+          "captures": 58914,
+          "rate": 15.12997385627629
+        },
+        "forests": {
+          "total": 27558,
+          "captures": 4068,
+          "rate": 14.761593729588505
+        },
+        "swamps": {
+          "total": 27697,
+          "captures": 4291,
+          "rate": 15.492652633859263
+        },
+        "mountains": {
+          "total": 27688,
+          "captures": 4289,
+          "rate": 15.490465183472985
+        },
+        "desert": {
+          "total": 27671,
+          "captures": 4189,
+          "rate": 15.13859275053305
+        }
+      }
+    },
+    "rook": {
+      "total": 500000,
+      "captures": 114757,
+      "rate": 22.9514,
+      "terrainStats": {
+        "flat": {
+          "total": 388502,
+          "captures": 89317,
+          "rate": 22.990100437063386
+        },
+        "forests": {
+          "total": 27678,
+          "captures": 6335,
+          "rate": 22.888214466363177
+        },
+        "swamps": {
+          "total": 28014,
+          "captures": 6437,
+          "rate": 22.977796815877777
+        },
+        "mountains": {
+          "total": 27892,
+          "captures": 6304,
+          "rate": 22.601462785027966
+        },
+        "desert": {
+          "total": 27914,
+          "captures": 6364,
+          "rate": 22.79859568675217
+        }
+      }
+    },
+    "bishop": {
+      "total": 500000,
+      "captures": 128510,
+      "rate": 25.702,
+      "terrainStats": {
+        "flat": {
+          "total": 388528,
+          "captures": 100050,
+          "rate": 25.751039822097766
+        },
+        "forests": {
+          "total": 27531,
+          "captures": 7204,
+          "rate": 26.166866441465984
+        },
+        "swamps": {
+          "total": 27859,
+          "captures": 7153,
+          "rate": 25.6757241824904
+        },
+        "mountains": {
+          "total": 28126,
+          "captures": 6978,
+          "rate": 24.809784540994098
+        },
+        "desert": {
+          "total": 27956,
+          "captures": 7125,
+          "rate": 25.48647875232508
+        }
+      }
+    },
+    "knight": {
+      "total": 500000,
+      "captures": 400446,
+      "rate": 80.0892,
+      "terrainStats": {
+        "flat": {
+          "total": 388561,
+          "captures": 311467,
+          "rate": 80.15909985819472
+        },
+        "forests": {
+          "total": 27928,
+          "captures": 22412,
+          "rate": 80.2492122600974
+        },
+        "swamps": {
+          "total": 27915,
+          "captures": 22269,
+          "rate": 79.77431488447071
+        },
+        "mountains": {
+          "total": 27736,
+          "captures": 21883,
+          "rate": 78.89746178252092
+        },
+        "desert": {
+          "total": 27860,
+          "captures": 22415,
+          "rate": 80.45585068198133
+        }
+      }
+    },
+    "pawn": {
+      "total": 500000,
+      "captures": 331296,
+      "rate": 66.25919999999999,
+      "terrainStats": {
+        "flat": {
+          "total": 388384,
+          "captures": 257027,
+          "rate": 66.1785758424652
+        },
+        "forests": {
+          "total": 28025,
+          "captures": 18679,
+          "rate": 66.65120428189117
+        },
+        "swamps": {
+          "total": 27797,
+          "captures": 18333,
+          "rate": 65.95316041299421
+        },
+        "mountains": {
+          "total": 27771,
+          "captures": 18537,
+          "rate": 66.74948687479744
+        },
+        "desert": {
+          "total": 28023,
+          "captures": 18720,
+          "rate": 66.80226956428648
+        }
+      }
+    }
+  },
+  "knight": {
+    "king": {
+      "total": 500000,
+      "captures": 95116,
+      "rate": 19.023200000000003,
+      "terrainStats": {
+        "flat": {
+          "total": 388682,
+          "captures": 73876,
+          "rate": 19.00679733046552
+        },
+        "forests": {
+          "total": 27778,
+          "captures": 5278,
+          "rate": 19.000647994816042
+        },
+        "swamps": {
+          "total": 27806,
+          "captures": 5287,
+          "rate": 19.01388189599367
+        },
+        "mountains": {
+          "total": 27671,
+          "captures": 5367,
+          "rate": 19.395757291026708
+        },
+        "desert": {
+          "total": 28063,
+          "captures": 5308,
+          "rate": 18.914585040801054
+        }
+      }
+    },
+    "queen": {
+      "total": 500000,
+      "captures": 59962,
+      "rate": 11.9924,
+      "terrainStats": {
+        "flat": {
+          "total": 389067,
+          "captures": 46704,
+          "rate": 12.004102121228478
+        },
+        "forests": {
+          "total": 27783,
+          "captures": 3311,
+          "rate": 11.917359536407156
+        },
+        "swamps": {
+          "total": 27604,
+          "captures": 3378,
+          "rate": 12.237356904796407
+        },
+        "mountains": {
+          "total": 27627,
+          "captures": 3339,
+          "rate": 12.086002823325009
+        },
+        "desert": {
+          "total": 27919,
+          "captures": 3230,
+          "rate": 11.569182277302195
+        }
+      }
+    },
+    "rook": {
+      "total": 500000,
+      "captures": 90954,
+      "rate": 18.1908,
+      "terrainStats": {
+        "flat": {
+          "total": 388627,
+          "captures": 70865,
+          "rate": 18.234708345019776
+        },
+        "forests": {
+          "total": 27877,
+          "captures": 5027,
+          "rate": 18.0327868852459
+        },
+        "swamps": {
+          "total": 27752,
+          "captures": 4998,
+          "rate": 18.009512827904295
+        },
+        "mountains": {
+          "total": 27995,
+          "captures": 5039,
+          "rate": 17.999642793355957
+        },
+        "desert": {
+          "total": 27749,
+          "captures": 5025,
+          "rate": 18.1087606760604
+        }
+      }
+    },
+    "bishop": {
+      "total": 500000,
+      "captures": 97819,
+      "rate": 19.5638,
+      "terrainStats": {
+        "flat": {
+          "total": 388321,
+          "captures": 76103,
+          "rate": 19.597961480321693
+        },
+        "forests": {
+          "total": 27731,
+          "captures": 5384,
+          "rate": 19.415095020013702
+        },
+        "swamps": {
+          "total": 28124,
+          "captures": 5461,
+          "rate": 19.41757929170815
+        },
+        "mountains": {
+          "total": 27998,
+          "captures": 5505,
+          "rate": 19.66211872276591
+        },
+        "desert": {
+          "total": 27826,
+          "captures": 5366,
+          "rate": 19.284122762883634
+        }
+      }
+    },
+    "knight": {
+      "total": 500000,
+      "captures": 101247,
+      "rate": 20.2494,
+      "terrainStats": {
+        "flat": {
+          "total": 388984,
+          "captures": 78871,
+          "rate": 20.276155317442363
+        },
+        "forests": {
+          "total": 27823,
+          "captures": 5617,
+          "rate": 20.188333393235812
+        },
+        "swamps": {
+          "total": 27598,
+          "captures": 5570,
+          "rate": 20.1826219291253
+        },
+        "mountains": {
+          "total": 28016,
+          "captures": 5742,
+          "rate": 20.495431182181612
+        },
+        "desert": {
+          "total": 27579,
+          "captures": 5447,
+          "rate": 19.75053482722361
+        }
+      }
+    },
+    "pawn": {
+      "total": 500000,
+      "captures": 276361,
+      "rate": 55.272200000000005,
+      "terrainStats": {
+        "flat": {
+          "total": 388737,
+          "captures": 214464,
+          "rate": 55.16943331867047
+        },
+        "forests": {
+          "total": 27993,
+          "captures": 15631,
+          "rate": 55.83895973993498
+        },
+        "swamps": {
+          "total": 27640,
+          "captures": 15459,
+          "rate": 55.92981186685962
+        },
+        "mountains": {
+          "total": 27672,
+          "captures": 15363,
+          "rate": 55.51821335646141
+        },
+        "desert": {
+          "total": 27958,
+          "captures": 15444,
+          "rate": 55.24000286143501
+        }
+      }
+    }
+  },
+  "pawn": {
     "king": {
       "total": 500000,
       "captures": 33077,
       "rate": 6.6154,
       "terrainStats": {
         "flat": {
-          "total": 388624,
-          "captures": 25621,
-          "rate": 6.592747745893203
+          "total": 388518,
+          "captures": 25745,
+          "rate": 6.626462609197
         },
-        "trees": {
-          "total": 27879,
-          "captures": 1841,
-          "rate": 6.603536712220667
+        "forests": {
+          "total": 28035,
+          "captures": 1865,
+          "rate": 6.652398787230247
         },
-        "ponds": {
-          "total": 27771,
-          "captures": 1858,
-          "rate": 6.690432465521587
+        "swamps": {
+          "total": 28039,
+          "captures": 1839,
+          "rate": 6.558721780377332
         },
-        "rubble": {
-          "total": 27751,
-          "captures": 1862,
-          "rate": 6.709668120067745
-        },
-        "desert": {
-          "total": 27975,
-          "captures": 1895,
-          "rate": 6.7739052725647895
-        }
-      }
-    }
-  },
-  "knight": {
-    "pawn": {
-      "total": 500000,
-      "captures": 277265,
-      "rate": 55.452999999999996,
-      "terrainStats": {
-        "flat": {
-          "total": 387973,
-          "captures": 214994,
-          "rate": 55.414680918517526
-        },
-        "trees": {
-          "total": 27968,
-          "captures": 15521,
-          "rate": 55.49556636155606
-        },
-        "ponds": {
-          "total": 28009,
-          "captures": 15528,
-          "rate": 55.439323074725976
-        },
-        "rubble": {
-          "total": 27961,
-          "captures": 15665,
-          "rate": 56.02446264439755
+        "mountains": {
+          "total": 27765,
+          "captures": 1829,
+          "rate": 6.587430217900233
         },
         "desert": {
-          "total": 28089,
-          "captures": 15557,
-          "rate": 55.38467015557692
-        }
-      }
-    },
-    "knight": {
-      "total": 500000,
-      "captures": 101175,
-      "rate": 20.235,
-      "terrainStats": {
-        "flat": {
-          "total": 388637,
-          "captures": 78784,
-          "rate": 20.271873239037973
-        },
-        "trees": {
-          "total": 28053,
-          "captures": 5598,
-          "rate": 19.95508501764517
-        },
-        "ponds": {
-          "total": 27770,
-          "captures": 5691,
-          "rate": 20.49333813467771
-        },
-        "rubble": {
-          "total": 28048,
-          "captures": 5546,
-          "rate": 19.773245864232745
-        },
-        "desert": {
-          "total": 27492,
-          "captures": 5556,
-          "rate": 20.20951549541685
-        }
-      }
-    },
-    "bishop": {
-      "total": 500000,
-      "captures": 98035,
-      "rate": 19.607,
-      "terrainStats": {
-        "flat": {
-          "total": 388804,
-          "captures": 76270,
-          "rate": 19.616567730784663
-        },
-        "trees": {
-          "total": 27746,
-          "captures": 5451,
-          "rate": 19.646075109925757
-        },
-        "ponds": {
-          "total": 27882,
-          "captures": 5505,
-          "rate": 19.743920809124166
-        },
-        "rubble": {
-          "total": 27980,
-          "captures": 5480,
-          "rate": 19.58541815582559
-        },
-        "desert": {
-          "total": 27588,
-          "captures": 5329,
-          "rate": 19.316369435986662
-        }
-      }
-    },
-    "rook": {
-      "total": 500000,
-      "captures": 90848,
-      "rate": 18.1696,
-      "terrainStats": {
-        "flat": {
-          "total": 388860,
-          "captures": 70650,
-          "rate": 18.168492516586944
-        },
-        "trees": {
-          "total": 28003,
-          "captures": 5075,
-          "rate": 18.123058243759598
-        },
-        "ponds": {
-          "total": 27808,
-          "captures": 5076,
-          "rate": 18.25373993095512
-        },
-        "rubble": {
-          "total": 27715,
-          "captures": 5036,
-          "rate": 18.170665704492155
-        },
-        "desert": {
-          "total": 27614,
-          "captures": 5011,
-          "rate": 18.14659230824944
+          "total": 27643,
+          "captures": 1799,
+          "rate": 6.507976702962775
         }
       }
     },
     "queen": {
       "total": 500000,
-      "captures": 59940,
-      "rate": 11.988,
+      "captures": 15364,
+      "rate": 3.0728,
       "terrainStats": {
         "flat": {
-          "total": 389046,
-          "captures": 46564,
-          "rate": 11.968764619093886
+          "total": 389348,
+          "captures": 11916,
+          "rate": 3.0605011455047926
         },
-        "trees": {
-          "total": 27569,
-          "captures": 3409,
-          "rate": 12.36533787950234
+        "forests": {
+          "total": 27870,
+          "captures": 866,
+          "rate": 3.1072838177251523
         },
-        "ponds": {
-          "total": 27667,
-          "captures": 3263,
-          "rate": 11.793833809231215
+        "swamps": {
+          "total": 27689,
+          "captures": 901,
+          "rate": 3.2539997833074508
         },
-        "rubble": {
-          "total": 28086,
-          "captures": 3371,
-          "rate": 12.002421135085095
-        },
-        "desert": {
-          "total": 27632,
-          "captures": 3333,
-          "rate": 12.062101910828025
-        }
-      }
-    },
-    "king": {
-      "total": 500000,
-      "captures": 95169,
-      "rate": 19.0338,
-      "terrainStats": {
-        "flat": {
-          "total": 388946,
-          "captures": 73972,
-          "rate": 19.01857841448427
-        },
-        "trees": {
-          "total": 27495,
-          "captures": 5283,
-          "rate": 19.21440261865794
-        },
-        "ponds": {
-          "total": 27936,
-          "captures": 5387,
-          "rate": 19.28336197021764
-        },
-        "rubble": {
-          "total": 27794,
-          "captures": 5282,
-          "rate": 19.004101604662875
+        "mountains": {
+          "total": 27671,
+          "captures": 837,
+          "rate": 3.024827436666546
         },
         "desert": {
-          "total": 27829,
-          "captures": 5245,
-          "rate": 18.847245678967983
-        }
-      }
-    }
-  },
-  "bishop": {
-    "pawn": {
-      "total": 500000,
-      "captures": 331473,
-      "rate": 66.2946,
-      "terrainStats": {
-        "flat": {
-          "total": 388887,
-          "captures": 257613,
-          "rate": 66.24366461208527
-        },
-        "trees": {
-          "total": 27676,
-          "captures": 18371,
-          "rate": 66.37881196704726
-        },
-        "ponds": {
-          "total": 27902,
-          "captures": 18501,
-          "rate": 66.30707476166583
-        },
-        "rubble": {
-          "total": 27630,
-          "captures": 18244,
-          "rate": 66.02967788635542
-        },
-        "desert": {
-          "total": 27905,
-          "captures": 18744,
-          "rate": 67.17075792868663
-        }
-      }
-    },
-    "knight": {
-      "total": 500000,
-      "captures": 400829,
-      "rate": 80.1658,
-      "terrainStats": {
-        "flat": {
-          "total": 388522,
-          "captures": 311640,
-          "rate": 80.21167398499956
-        },
-        "trees": {
-          "total": 27942,
-          "captures": 22453,
-          "rate": 80.35573688354448
-        },
-        "ponds": {
-          "total": 27954,
-          "captures": 22384,
-          "rate": 80.0744079559276
-        },
-        "rubble": {
-          "total": 27628,
-          "captures": 21819,
-          "rate": 78.97422904299985
-        },
-        "desert": {
-          "total": 27954,
-          "captures": 22533,
-          "rate": 80.60742648637047
-        }
-      }
-    },
-    "bishop": {
-      "total": 500000,
-      "captures": 129050,
-      "rate": 25.81,
-      "terrainStats": {
-        "flat": {
-          "total": 389206,
-          "captures": 100530,
-          "rate": 25.829509308695137
-        },
-        "trees": {
-          "total": 28135,
-          "captures": 7077,
-          "rate": 25.153723120668207
-        },
-        "ponds": {
-          "total": 27534,
-          "captures": 7175,
-          "rate": 26.058691072855378
-        },
-        "rubble": {
-          "total": 27569,
-          "captures": 7146,
-          "rate": 25.920417860640576
-        },
-        "desert": {
-          "total": 27556,
-          "captures": 7122,
-          "rate": 25.845550878211643
+          "total": 27422,
+          "captures": 844,
+          "rate": 3.077820727882722
         }
       }
     },
     "rook": {
       "total": 500000,
-      "captures": 114943,
-      "rate": 22.9886,
+      "captures": 41963,
+      "rate": 8.3926,
       "terrainStats": {
         "flat": {
-          "total": 388825,
-          "captures": 89643,
-          "rate": 23.054844724490454
+          "total": 388775,
+          "captures": 32264,
+          "rate": 8.298887531348466
         },
-        "trees": {
-          "total": 28027,
-          "captures": 6497,
-          "rate": 23.181218111107146
+        "forests": {
+          "total": 28023,
+          "captures": 2650,
+          "rate": 9.456517860329015
         },
-        "ponds": {
-          "total": 27737,
-          "captures": 6322,
-          "rate": 22.792659624328515
+        "swamps": {
+          "total": 27658,
+          "captures": 2237,
+          "rate": 8.088075782775327
         },
-        "rubble": {
-          "total": 27776,
-          "captures": 6189,
-          "rate": 22.28182603686636
-        },
-        "desert": {
-          "total": 27635,
-          "captures": 6292,
-          "rate": 22.768228695494845
-        }
-      }
-    },
-    "queen": {
-      "total": 500000,
-      "captures": 75699,
-      "rate": 15.139800000000001,
-      "terrainStats": {
-        "flat": {
-          "total": 388836,
-          "captures": 58774,
-          "rate": 15.115369976031026
-        },
-        "trees": {
-          "total": 27807,
-          "captures": 4170,
-          "rate": 14.996223972381056
-        },
-        "ponds": {
-          "total": 27881,
-          "captures": 4230,
-          "rate": 15.171622251712636
-        },
-        "rubble": {
-          "total": 27852,
-          "captures": 4244,
-          "rate": 15.237684905931351
-        },
-        "desert": {
-          "total": 27624,
-          "captures": 4281,
-          "rate": 15.497393570807994
-        }
-      }
-    },
-    "king": {
-      "total": 500000,
-      "captures": 121860,
-      "rate": 24.372,
-      "terrainStats": {
-        "flat": {
-          "total": 388903,
-          "captures": 94742,
-          "rate": 24.361344602638706
-        },
-        "trees": {
-          "total": 27584,
-          "captures": 6731,
-          "rate": 24.40182714617169
-        },
-        "ponds": {
-          "total": 27942,
-          "captures": 6748,
-          "rate": 24.150025051893206
-        },
-        "rubble": {
-          "total": 27856,
-          "captures": 6892,
-          "rate": 24.74152785755313
-        },
-        "desert": {
-          "total": 27715,
-          "captures": 6747,
-          "rate": 24.344217932527513
-        }
-      }
-    }
-  },
-  "rook": {
-    "pawn": {
-      "total": 500000,
-      "captures": 430209,
-      "rate": 86.0418,
-      "terrainStats": {
-        "flat": {
-          "total": 388748,
-          "captures": 334011,
-          "rate": 85.91967032627821
-        },
-        "trees": {
-          "total": 27797,
-          "captures": 24045,
-          "rate": 86.50214051876102
-        },
-        "ponds": {
-          "total": 27816,
-          "captures": 24075,
-          "rate": 86.5509059534081
-        },
-        "rubble": {
-          "total": 27454,
-          "captures": 23701,
-          "rate": 86.32986085816275
-        },
-        "desert": {
-          "total": 28185,
-          "captures": 24377,
-          "rate": 86.48926734078411
-        }
-      }
-    },
-    "knight": {
-      "total": 500000,
-      "captures": 412076,
-      "rate": 82.4152,
-      "terrainStats": {
-        "flat": {
-          "total": 388651,
-          "captures": 320167,
-          "rate": 82.37904958433144
-        },
-        "trees": {
-          "total": 27732,
-          "captures": 22913,
-          "rate": 82.62296264243473
-        },
-        "ponds": {
-          "total": 27840,
-          "captures": 23044,
-          "rate": 82.77298850574712
-        },
-        "rubble": {
-          "total": 27940,
-          "captures": 22964,
-          "rate": 82.19040801717968
-        },
-        "desert": {
-          "total": 27837,
-          "captures": 22988,
-          "rate": 82.58073786686784
-        }
-      }
-    },
-    "bishop": {
-      "total": 500000,
-      "captures": 379548,
-      "rate": 75.9096,
-      "terrainStats": {
-        "flat": {
-          "total": 388951,
-          "captures": 294699,
-          "rate": 75.7676416823713
-        },
-        "trees": {
-          "total": 28030,
-          "captures": 21435,
-          "rate": 76.47163753121656
-        },
-        "ponds": {
-          "total": 27457,
-          "captures": 20975,
-          "rate": 76.39217685836034
-        },
-        "rubble": {
-          "total": 27793,
-          "captures": 21277,
-          "rate": 76.55524772424711
-        },
-        "desert": {
-          "total": 27769,
-          "captures": 21162,
-          "rate": 76.20728150095431
-        }
-      }
-    },
-    "rook": {
-      "total": 500000,
-      "captures": 205698,
-      "rate": 41.1396,
-      "terrainStats": {
-        "flat": {
-          "total": 388701,
-          "captures": 160100,
-          "rate": 41.18847134429806
-        },
-        "trees": {
-          "total": 27896,
-          "captures": 11446,
-          "rate": 41.03097218239174
-        },
-        "ponds": {
-          "total": 27849,
-          "captures": 11442,
-          "rate": 41.0858558655607
-        },
-        "rubble": {
-          "total": 27639,
-          "captures": 11313,
-          "rate": 40.93129273852165
-        },
-        "desert": {
-          "total": 27915,
-          "captures": 11397,
-          "rate": 40.82751209027405
-        }
-      }
-    },
-    "queen": {
-      "total": 500000,
-      "captures": 129058,
-      "rate": 25.811600000000002,
-      "terrainStats": {
-        "flat": {
-          "total": 388668,
-          "captures": 100568,
-          "rate": 25.87503987979458
-        },
-        "trees": {
-          "total": 27666,
-          "captures": 7105,
-          "rate": 25.681341719077565
-        },
-        "ponds": {
-          "total": 28272,
-          "captures": 7188,
-          "rate": 25.424448217317487
-        },
-        "rubble": {
-          "total": 27685,
-          "captures": 7091,
-          "rate": 25.61314791403287
-        },
-        "desert": {
-          "total": 27709,
-          "captures": 7106,
-          "rate": 25.645097260817785
-        }
-      }
-    },
-    "king": {
-      "total": 500000,
-      "captures": 256407,
-      "rate": 51.2814,
-      "terrainStats": {
-        "flat": {
-          "total": 388897,
-          "captures": 199264,
-          "rate": 51.23824560230601
-        },
-        "trees": {
-          "total": 27879,
-          "captures": 14360,
-          "rate": 51.50830374116718
-        },
-        "ponds": {
-          "total": 27548,
-          "captures": 14131,
-          "rate": 51.295919848990856
-        },
-        "rubble": {
-          "total": 28015,
-          "captures": 14434,
-          "rate": 51.522398714974116
-        },
-        "desert": {
-          "total": 27661,
-          "captures": 14218,
-          "rate": 51.40088933878023
-        }
-      }
-    }
-  },
-  "queen": {
-    "pawn": {
-      "total": 500000,
-      "captures": 483240,
-      "rate": 96.648,
-      "terrainStats": {
-        "flat": {
-          "total": 388294,
-          "captures": 375268,
-          "rate": 96.64532544927297
-        },
-        "trees": {
-          "total": 27801,
-          "captures": 26828,
-          "rate": 96.50012589475199
-        },
-        "ponds": {
-          "total": 27921,
-          "captures": 27008,
-          "rate": 96.73005981161134
-        },
-        "rubble": {
-          "total": 27953,
-          "captures": 27024,
-          "rate": 96.67656423281937
-        },
-        "desert": {
-          "total": 28031,
-          "captures": 27112,
-          "rate": 96.72148692518996
-        }
-      }
-    },
-    "knight": {
-      "total": 500000,
-      "captures": 445939,
-      "rate": 89.1878,
-      "terrainStats": {
-        "flat": {
-          "total": 388968,
-          "captures": 346938,
-          "rate": 89.19448386499661
-        },
-        "trees": {
-          "total": 27644,
-          "captures": 24688,
-          "rate": 89.30690204022572
-        },
-        "ponds": {
-          "total": 27813,
-          "captures": 24781,
-          "rate": 89.09862294610434
-        },
-        "rubble": {
-          "total": 27875,
-          "captures": 24851,
-          "rate": 89.15156950672646
-        },
-        "desert": {
-          "total": 27700,
-          "captures": 24681,
-          "rate": 89.10108303249098
-        }
-      }
-    },
-    "bishop": {
-      "total": 500000,
-      "captures": 407901,
-      "rate": 81.5802,
-      "terrainStats": {
-        "flat": {
-          "total": 389378,
-          "captures": 317798,
-          "rate": 81.6168350548824
-        },
-        "trees": {
-          "total": 27664,
-          "captures": 22567,
-          "rate": 81.57533256217467
-        },
-        "ponds": {
-          "total": 27859,
-          "captures": 22645,
-          "rate": 81.28432463476794
-        },
-        "rubble": {
-          "total": 27442,
-          "captures": 22431,
-          "rate": 81.73966912032651
+        "mountains": {
+          "total": 27887,
+          "captures": 2611,
+          "rate": 9.362785527306631
         },
         "desert": {
           "total": 27657,
-          "captures": 22460,
-          "rate": 81.20909715442744
-        }
-      }
-    },
-    "rook": {
-      "total": 500000,
-      "captures": 238266,
-      "rate": 47.6532,
-      "terrainStats": {
-        "flat": {
-          "total": 389423,
-          "captures": 186042,
-          "rate": 47.773757584939766
-        },
-        "trees": {
-          "total": 27557,
-          "captures": 13074,
-          "rate": 47.443480785281416
-        },
-        "ponds": {
-          "total": 27525,
-          "captures": 13170,
-          "rate": 47.84741144414169
-        },
-        "rubble": {
-          "total": 27672,
-          "captures": 13018,
-          "rate": 47.043943336224345
-        },
-        "desert": {
-          "total": 27823,
-          "captures": 12962,
-          "rate": 46.587355784782375
-        }
-      }
-    },
-    "queen": {
-      "total": 500000,
-      "captures": 150133,
-      "rate": 30.0266,
-      "terrainStats": {
-        "flat": {
-          "total": 388890,
-          "captures": 116771,
-          "rate": 30.02674278073491
-        },
-        "trees": {
-          "total": 27602,
-          "captures": 8274,
-          "rate": 29.976088689225417
-        },
-        "ponds": {
-          "total": 28028,
-          "captures": 8394,
-          "rate": 29.948622805765662
-        },
-        "rubble": {
-          "total": 27911,
-          "captures": 8349,
-          "rate": 29.912937551502992
-        },
-        "desert": {
-          "total": 27569,
-          "captures": 8345,
-          "rate": 30.26950560412057
-        }
-      }
-    },
-    "king": {
-      "total": 500000,
-      "captures": 260614,
-      "rate": 52.122800000000005,
-      "terrainStats": {
-        "flat": {
-          "total": 388632,
-          "captures": 202891,
-          "rate": 52.20645752279792
-        },
-        "trees": {
-          "total": 28129,
-          "captures": 14476,
-          "rate": 51.4629030537879
-        },
-        "ponds": {
-          "total": 27805,
-          "captures": 14443,
-          "rate": 51.94389498291674
-        },
-        "rubble": {
-          "total": 27816,
-          "captures": 14487,
-          "rate": 52.08153580672994
-        },
-        "desert": {
-          "total": 27618,
-          "captures": 14317,
-          "rate": 51.839380114418134
-        }
-      }
-    }
-  },
-  "king": {
-    "pawn": {
-      "total": 500000,
-      "captures": 240063,
-      "rate": 48.0126,
-      "terrainStats": {
-        "flat": {
-          "total": 388793,
-          "captures": 186658,
-          "rate": 48.009609226503564
-        },
-        "trees": {
-          "total": 27661,
-          "captures": 13242,
-          "rate": 47.87245580420086
-        },
-        "ponds": {
-          "total": 27742,
-          "captures": 13337,
-          "rate": 48.07512075553312
-        },
-        "rubble": {
-          "total": 28022,
-          "captures": 13434,
-          "rate": 47.9409035757619
-        },
-        "desert": {
-          "total": 27782,
-          "captures": 13392,
-          "rate": 48.203873011302285
-        }
-      }
-    },
-    "knight": {
-      "total": 500000,
-      "captures": 407715,
-      "rate": 81.54299999999999,
-      "terrainStats": {
-        "flat": {
-          "total": 389053,
-          "captures": 317351,
-          "rate": 81.57012026639045
-        },
-        "trees": {
-          "total": 27655,
-          "captures": 22510,
-          "rate": 81.39576930030736
-        },
-        "ponds": {
-          "total": 27811,
-          "captures": 22643,
-          "rate": 81.41742475998706
-        },
-        "rubble": {
-          "total": 27893,
-          "captures": 22680,
-          "rate": 81.31072312049619
-        },
-        "desert": {
-          "total": 27588,
-          "captures": 22531,
-          "rate": 81.66956647817892
+          "captures": 2201,
+          "rate": 7.958202263441444
         }
       }
     },
     "bishop": {
       "total": 500000,
-      "captures": 383873,
-      "rate": 76.7746,
+      "captures": 30739,
+      "rate": 6.1478,
       "terrainStats": {
         "flat": {
-          "total": 389009,
-          "captures": 298729,
-          "rate": 76.79231071774689
+          "total": 389048,
+          "captures": 23502,
+          "rate": 6.040899837552178
         },
-        "trees": {
-          "total": 27731,
-          "captures": 21283,
-          "rate": 76.74804370560024
+        "forests": {
+          "total": 27384,
+          "captures": 1597,
+          "rate": 5.831872626351154
         },
-        "ponds": {
-          "total": 27958,
-          "captures": 21425,
-          "rate": 76.63280635238571
+        "swamps": {
+          "total": 27886,
+          "captures": 1958,
+          "rate": 7.021444452413397
         },
-        "rubble": {
-          "total": 27674,
-          "captures": 21268,
-          "rate": 76.85191876851918
+        "mountains": {
+          "total": 27727,
+          "captures": 2011,
+          "rate": 7.252858224834998
         },
         "desert": {
-          "total": 27628,
-          "captures": 21168,
-          "rate": 76.61792384537426
+          "total": 27955,
+          "captures": 1671,
+          "rate": 5.977463781076731
         }
       }
     },
-    "rook": {
+    "knight": {
       "total": 500000,
-      "captures": 219423,
-      "rate": 43.8846,
+      "captures": 35796,
+      "rate": 7.1592,
       "terrainStats": {
         "flat": {
-          "total": 388763,
-          "captures": 170921,
-          "rate": 43.965346496451566
+          "total": 388683,
+          "captures": 26744,
+          "rate": 6.880671395455937
         },
-        "trees": {
-          "total": 27895,
-          "captures": 12156,
-          "rate": 43.57770209715003
+        "forests": {
+          "total": 27876,
+          "captures": 2731,
+          "rate": 9.796957956665233
         },
-        "ponds": {
-          "total": 27514,
-          "captures": 12167,
-          "rate": 44.22112379152431
+        "swamps": {
+          "total": 27966,
+          "captures": 2647,
+          "rate": 9.465064721447472
         },
-        "rubble": {
-          "total": 27793,
-          "captures": 12028,
-          "rate": 43.27708415788148
+        "mountains": {
+          "total": 27617,
+          "captures": 1864,
+          "rate": 6.749465908679436
         },
         "desert": {
-          "total": 28035,
-          "captures": 12151,
-          "rate": 43.34225075798109
+          "total": 27858,
+          "captures": 1810,
+          "rate": 6.497235982482591
         }
       }
     },
-    "queen": {
+    "pawn": {
       "total": 500000,
-      "captures": 191929,
-      "rate": 38.385799999999996,
+      "captures": 26288,
+      "rate": 5.2576,
       "terrainStats": {
         "flat": {
-          "total": 388942,
-          "captures": 149355,
-          "rate": 38.40032704104982
+          "total": 388940,
+          "captures": 20385,
+          "rate": 5.241168303594384
         },
-        "trees": {
-          "total": 27947,
-          "captures": 10620,
-          "rate": 38.00050094822342
+        "forests": {
+          "total": 27831,
+          "captures": 1438,
+          "rate": 5.166900219180051
         },
-        "ponds": {
-          "total": 27637,
-          "captures": 10723,
-          "rate": 38.79943553931324
+        "swamps": {
+          "total": 27632,
+          "captures": 1519,
+          "rate": 5.497249565720903
         },
-        "rubble": {
-          "total": 27560,
-          "captures": 10577,
-          "rate": 38.37808417997097
-        },
-        "desert": {
-          "total": 27914,
-          "captures": 10654,
-          "rate": 38.167227914308235
-        }
-      }
-    },
-    "king": {
-      "total": 500000,
-      "captures": 239939,
-      "rate": 47.9878,
-      "terrainStats": {
-        "flat": {
-          "total": 388772,
-          "captures": 186457,
-          "rate": 47.960501270667635
-        },
-        "trees": {
-          "total": 27666,
-          "captures": 13291,
-          "rate": 48.04091664859394
-        },
-        "ponds": {
-          "total": 28042,
-          "captures": 13417,
-          "rate": 47.84608801084088
-        },
-        "rubble": {
-          "total": 27949,
-          "captures": 13602,
-          "rate": 48.667215284983364
+        "mountains": {
+          "total": 27706,
+          "captures": 1462,
+          "rate": 5.276835342525085
         },
         "desert": {
-          "total": 27571,
-          "captures": 13172,
-          "rate": 47.7748358782779
+          "total": 27891,
+          "captures": 1484,
+          "rate": 5.320712774730199
         }
       }
     }

@@ -1,1 +1,1 @@
-export * from "@/core/rules/terrain";
+export * from "@/core/mechanics/terrain";

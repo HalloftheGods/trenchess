@@ -5,10 +5,10 @@ import {
   generateElementalTerrain,
 } from "@/core/setup/setupLogic";
 import { getBestMove } from "@/core/ai/aiLogic";
-import { getValidMoves, isPlayerInCheck } from "@/core/rules/gameLogic";
+import { getValidMoves, isPlayerInCheck } from "@/core/mechanics/gameLogic";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
-import { BOARD_SIZE } from "@/core/constants/core.constants";
-import { PIECES } from "@/core/data/unitDetails";
+import { BOARD_SIZE } from "@/core/primitives/game";
+import { PIECES } from "@/core/primitives/pieces";
 
 // Helper to find the king and check if captured
 const isKingAlive = (board: (BoardPiece | null)[][], player: string) => {

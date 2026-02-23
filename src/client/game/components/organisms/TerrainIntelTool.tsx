@@ -6,29 +6,26 @@
  * Select a unit on the left, a terrain on the right, and see the result.
  */
 import React from "react";
-import { ShieldPlus, X } from "lucide-react";
-import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
-import { TERRAIN_INTEL } from "@/core/data/terrainDetails";
-import { isUnitProtected } from "@/core/rules/gameLogic";
-import type { TerrainType } from "@/shared/types/game";
-
-// ── Types ────────────────────────────────────────────────────────────
-
-interface TerrainIntelToolProps {
-  darkMode: boolean;
-  selectedUnit?: string;
-  onUnitSelect?: (unit: string) => void;
-  className?: string; // Additional prop for styling
-}
-
 import {
-  TERRAIN_LIST,
+  PIECES,
+  INITIAL_ARMY,
   UNIT_COLORS,
   UNIT_NAMES,
-  MOVE_PATTERNS,
-  canTraverse,
   ALL_UNITS,
-} from "@/core/constants/intel.constants";
+  UNIT_DETAILS,
+  TERRAIN_LIST,
+  TERRAIN_INTEL,
+} from "@/client/game/theme";
+import { canUnitTraverseTerrain, isUnitProtected } from "@/core/mechanics/terrain";
+import { X, ShieldPlus } from "lucide-react";
+import type { TerrainType, PieceType } from "@/shared/types/game";
+
+export interface TerrainIntelToolProps {
+  darkMode?: boolean;
+  selectedUnit?: string;
+  onUnitSelect?: (unit: string) => void;
+  className?: string;
+}
 
 // ═════════════════════════════════════════════════════════════════════
 // Component
@@ -65,7 +62,10 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
   const UnitIcon = unitArmy?.lucide as React.ElementType;
 
   // ── Compatibility result ──────────────────────────────────────────
-  const isTraversable = canTraverse(terrain.name, selectedUnit);
+  const isTraversable = canUnitTraverseTerrain(
+    selectedUnit as PieceType,
+    terrain.terrainTypeKey as TerrainType,
+  );
   const isDesertTank =
     terrain.name === "Desert" && selectedUnit === PIECES.ROOK;
   const isCompatible = isTraversable || isDesertTank;
@@ -80,10 +80,12 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
   const centerCol = 6;
   const isTerrainCell = (r: number) => Math.abs(r - centerRow) === 1;
 
-  const pattern = MOVE_PATTERNS[selectedUnit];
+  const pattern = UNIT_DETAILS[selectedUnit];
   const allMoves = [
-    ...(pattern?.move(centerRow, centerCol) || []),
-    ...(pattern?.newMove ? pattern.newMove(centerRow, centerCol) : []),
+    ...(pattern?.movePattern ? pattern.movePattern(centerRow, centerCol) : []),
+    ...(pattern?.newMovePattern
+      ? pattern.newMovePattern(centerRow, centerCol)
+      : []),
   ];
 
   const validMoves: number[][] = [];

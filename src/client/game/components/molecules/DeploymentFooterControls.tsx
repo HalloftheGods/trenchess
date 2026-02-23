@@ -1,6 +1,6 @@
 import React from "react";
 import { RotateCcw } from "lucide-react";
-import { PLAYER_CONFIGS } from "@/core/constants/unit.constants";
+import { PLAYER_CONFIGS } from "@/client/game/theme";
 import type { MultiplayerState } from "@/shared/types/multiplayer";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 

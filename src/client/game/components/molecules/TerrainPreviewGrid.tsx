@@ -1,7 +1,7 @@
 import React from "react";
-import { PIECES } from "@/core/data/unitDetails";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
-import { getValidMoves } from "@/core/rules/gameLogic";
+import { PIECES } from "@/client/game/theme";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { getValidMoves } from "@/core/mechanics/gameLogic";
 import type { PieceType } from "@/shared/types/game";
 import type { TerrainIntelPanelEntry } from "@/shared/types/guide";
 
@@ -15,7 +15,7 @@ export const TerrainPreviewGrid: React.FC<TerrainPreviewGridProps> = ({
   terrainData,
 }) => {
   const pType =
-    PIECES[unitType.toUpperCase()] || (unitType === "Pawn" ? "pawn" : null);
+    PIECES[unitType.toUpperCase() as keyof typeof PIECES] || (unitType === "Pawn" ? "pawn" : null);
   if (!pType) return null;
 
   let tType = TERRAIN_TYPES.FLAT;

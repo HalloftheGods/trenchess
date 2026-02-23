@@ -1,5 +1,4 @@
-import { MAX_TERRAIN_PER_PLAYER } from "@/core/constants/terrain.constants";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { MAX_TERRAIN_PER_PLAYER, TERRAIN_TYPES } from "@/core/primitives/terrain";
 import type { GameMode, PieceType, TerrainType } from "@/shared/types";
 import { getPlayerCells } from "./territory";
 

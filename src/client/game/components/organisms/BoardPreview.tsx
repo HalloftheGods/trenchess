@@ -1,17 +1,16 @@
 import React from "react";
 import { useBoardPreview } from "@hooks/useBoardPreview";
-import { BOARD_SIZE } from "@/core/constants/core.constants";
+import { BOARD_SIZE } from "@/core/primitives/game";
 import {
   PLAYER_CONFIGS,
   type PieceStyle,
-} from "@/core/constants/unit.constants";
-import { INITIAL_ARMY } from "@/core/data/unitDetails";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+} from "@/client/game/theme";
+import { INITIAL_ARMY } from "@/client/game/theme";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
 import { getQuadrantBaseStyle } from "@/core/setup/boardLayouts";
 import type { GameMode, TerrainType } from "@/shared/types/game";
 import { Edit, Ban } from "lucide-react";
-import { TERRAIN_INTEL } from "@/core/data/terrainDetails";
-import { TERRAIN_DETAILS } from "@/core/data/terrainDetails";
+import { TERRAIN_INTEL, TERRAIN_DETAILS } from "@/client/game/theme";
 
 interface BoardPreviewProps {
   selectedMode: GameMode | null;

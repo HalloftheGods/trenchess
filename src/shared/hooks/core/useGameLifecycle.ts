@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from "react";
-import { isPlayerInCheck } from "@/core/rules/gameLogic";
+import { isPlayerInCheck } from "@/core/mechanics/gameLogic";
 import { serializeGame } from "@utils/gameUrl";
 import type {
   BoardPiece,
@@ -13,7 +13,7 @@ import {
   getPlayersForMode,
   getQuota,
   isPlayerReadyToPlay,
-} from "@/core/setup/generators/coreHelpers";
+} from "@/core/setup/coreHelpers";
 import { useUrlSync } from "./useUrlSync";
 
 export function useGameLifecycle(

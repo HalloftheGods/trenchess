@@ -1,6 +1,6 @@
 import React from "react";
-import { PLAYER_CONFIGS } from "@/core/constants/unit.constants";
-import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { PLAYER_CONFIGS } from "@/client/game/theme";
+import { INITIAL_ARMY } from "@/client/game/theme";
 import type { ArmyUnit, BoardPiece } from "@/shared/types/game";
 
 export interface UnitIntelCardProps {

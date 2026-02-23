@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import type { TrenchGameState } from "@/shared/types/game";
+import type { TrenchessState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
 import type { BgioSync, BgioClient } from "@/shared/types";
 
 export function useBgioSync(
   bgioClientRef: React.MutableRefObject<BgioClient | undefined>,
   setBgioState: React.Dispatch<
-    React.SetStateAction<{ G: TrenchGameState; ctx: Ctx } | null>
+    React.SetStateAction<{ G: TrenchessState; ctx: Ctx } | null>
   >,
 ): BgioSync {
   const [synced, setSynced] = useState(false);
@@ -17,7 +17,7 @@ export function useBgioSync(
     if (!bgioClient) return;
 
     unsubscribeRef.current = bgioClient.subscribe(
-      (state: { G: TrenchGameState; ctx: Ctx } | null) => {
+      (state: { G: TrenchessState; ctx: Ctx } | null) => {
         if (!state) return;
         setBgioState(state);
         setSynced(true);

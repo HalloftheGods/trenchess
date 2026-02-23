@@ -16,7 +16,15 @@ export type GameState =
 export type SetupMode = "terrain" | "pieces";
 export type GameOverReason = "checkmate" | "stalemate" | "forfeit" | null;
 
-export type TerrainType = "flat" | "trees" | "ponds" | "rubble" | "desert";
+export type TerrainType =
+  | "flat"
+  | "forests"
+  | "swamps"
+  | "mountains"
+  | "desert"
+  | "trees"
+  | "ponds"
+  | "rubble";
 
 export type PieceType =
   | "pawn"
@@ -31,7 +39,7 @@ export interface BoardPiece {
   player: string;
 }
 
-export interface TrenchGameState {
+export interface TrenchessState {
   board: (BoardPiece | null)[][];
   terrain: TerrainType[][];
   inventory: Record<string, PieceType[]>;
@@ -43,7 +51,7 @@ export interface TrenchGameState {
   playerMap: Record<string, string>;
 }
 
-export interface TrenchGameSetupData {
+export interface TrenchessSetupData {
   mode?: GameMode;
   board?: (BoardPiece | null)[][];
   terrain?: TerrainType[][];
@@ -120,4 +128,33 @@ export interface UnitColors {
   shadow: string;
   ribbonBg: string;
   ring: string;
+}
+
+export interface TerrainDetail {
+  key: string;
+  name: string;
+  terrainTypeKey: TerrainType;
+  label: string;
+  desc: string;
+  sanctuaryUnits: PieceType[];
+  allowedUnits: PieceType[];
+  blockedUnits: PieceType[];
+  subtitle?: string;
+  tagline?: string;
+  flavorTitle?: string;
+  flavorStats?: string[];
+  icon?: any;
+  bg?: string;
+  text?: string;
+  border?: string;
+  ring?: string;
+  headerBg?: string;
+  iconBg?: string;
+  color?: {
+    bg: string;
+    text: string;
+    border: string;
+    headerBg: string;
+    iconBg?: string;
+  };
 }

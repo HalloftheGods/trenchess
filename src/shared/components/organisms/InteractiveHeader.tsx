@@ -6,15 +6,15 @@
  */
 import React from "react";
 import { ArrowLeft } from "lucide-react";
-import { INITIAL_ARMY } from "@/core/data/unitDetails";
-import { isUnitProtected } from "@/core/rules/gameLogic";
+import { INITIAL_ARMY } from "@/client/game/theme";
+import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import {
   UNIT_COLORS,
   UNIT_NAMES,
   ALL_UNITS,
-} from "@/core/constants/unit.constants";
-import { TERRAIN_LIST } from "@/core/constants/terrain.constants";
+  TERRAIN_LIST,
+} from "@/client/game/theme";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 
 interface InteractiveHeaderProps {

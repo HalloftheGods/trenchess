@@ -1,6 +1,8 @@
-import { BOARD_SIZE } from "@/core/constants/core.constants";
-import { PIECES } from "@/core/data/unitDetails";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { BOARD_SIZE } from "@/core/primitives/game";
+import { PIECES } from "@/core/primitives/pieces";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+
+const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 import type {
   GameMode,
   BoardPiece,
@@ -17,16 +19,16 @@ export const getClassicalFormationTargets = (
   const targets: { r: number; c: number; type: PieceType }[] = [];
   if (mode === "2p-ns") {
     const backRank = [
-      PIECES.ROOK,
-      PIECES.KNIGHT,
-      PIECES.BISHOP,
-      PIECES.QUEEN,
-      PIECES.KING,
-      PIECES.BISHOP,
-      PIECES.KNIGHT,
-      PIECES.ROOK,
+      ROOK.id,
+      KNIGHT.id,
+      BISHOP.id,
+      QUEEN.id,
+      KING.id,
+      BISHOP.id,
+      KNIGHT.id,
+      ROOK.id,
     ];
-    const pawnRank = Array(8).fill(PIECES.PAWN);
+    const pawnRank = Array(8).fill(PAWN.id);
     if (p === "red") {
       backRank.forEach((type, i) => targets.push({ r: 2, c: 2 + i, type }));
       pawnRank.forEach((type, i) => targets.push({ r: 3, c: 2 + i, type }));
@@ -36,16 +38,16 @@ export const getClassicalFormationTargets = (
     }
   } else if (mode === "2p-ew") {
     const backRank = [
-      PIECES.ROOK,
-      PIECES.KNIGHT,
-      PIECES.BISHOP,
-      PIECES.QUEEN,
-      PIECES.KING,
-      PIECES.BISHOP,
-      PIECES.KNIGHT,
-      PIECES.ROOK,
+      ROOK.id,
+      KNIGHT.id,
+      BISHOP.id,
+      QUEEN.id,
+      KING.id,
+      BISHOP.id,
+      KNIGHT.id,
+      ROOK.id,
     ];
-    const pawnRank = Array(8).fill(PIECES.PAWN);
+    const pawnRank = Array(8).fill(PAWN.id);
     if (p === "green") {
       backRank.forEach((type, i) => targets.push({ r: 2 + i, c: 2, type }));
       pawnRank.forEach((type, i) => targets.push({ r: 2 + i, c: 3, type }));
@@ -55,10 +57,10 @@ export const getClassicalFormationTargets = (
     }
   } else {
     const formation = [
-      [PIECES.ROOK, PIECES.QUEEN, PIECES.KING, PIECES.ROOK],
-      [PIECES.KNIGHT, PIECES.BISHOP, PIECES.BISHOP, PIECES.KNIGHT],
-      [PIECES.PAWN, PIECES.PAWN, PIECES.PAWN, PIECES.PAWN],
-      [PIECES.PAWN, PIECES.PAWN, PIECES.PAWN, PIECES.PAWN],
+      [ROOK.id, QUEEN.id, KING.id, ROOK.id],
+      [KNIGHT.id, BISHOP.id, BISHOP.id, KNIGHT.id],
+      [PAWN.id, PAWN.id, PAWN.id, PAWN.id],
+      [PAWN.id, PAWN.id, PAWN.id, PAWN.id],
     ];
     let rOrigins: number,
       cOrigins: number,

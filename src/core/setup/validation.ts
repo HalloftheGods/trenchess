@@ -1,5 +1,5 @@
-import { PIECES } from "@/core/data/unitDetails";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { PIECES } from "@/core/primitives/pieces";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 
 export const canPlaceUnit = (

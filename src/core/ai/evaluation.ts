@@ -1,18 +1,22 @@
-import { BOARD_SIZE } from "@/core/constants/core.constants";
-import { CENTER_WEIGHT, KING_HUNT_WEIGHT } from "@/core/constants/ai.constants";
-import { PIECES } from "@/core/data/unitDetails";
+import { BOARD_SIZE } from "@/core/primitives/game";
+import { PIECES } from "@/core/primitives/pieces";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
-import { isPlayerInCheck } from "../rules/gameState";
+import { isPlayerInCheck } from "@/core/mechanics/gameState";
+
+const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 
 // --- Heuristic Weights ---
 export const SCORES: Record<string, number> = {
-  [PIECES.KING]: 100000,
-  [PIECES.QUEEN]: 900,
-  [PIECES.ROOK]: 500,
-  [PIECES.BISHOP]: 400,
-  [PIECES.KNIGHT]: 300,
-  [PIECES.PAWN]: 100,
+  [KING.id]: 100000,
+  [QUEEN.id]: 900,
+  [ROOK.id]: 500,
+  [BISHOP.id]: 400,
+  [KNIGHT.id]: 300,
+  [PAWN.id]: 100,
 };
+
+const CENTER_WEIGHT = 10;
+const KING_HUNT_WEIGHT = 20;
 
 // Helper: Calculate Manhattan Distance
 export const manhattanDistance = (
@@ -32,7 +36,7 @@ export const hasCommander = (
   for (let r = 0; r < BOARD_SIZE; r++) {
     for (let c = 0; c < BOARD_SIZE; c++) {
       const p = board[r][c];
-      if (p && p.player === player && p.type === PIECES.KING) {
+      if (p && p.player === player && p.type === KING.id) {
         return { r, c };
       }
     }
@@ -78,7 +82,7 @@ export const evaluateBoard = (
         score += (BOARD_SIZE - distToCenter) * CENTER_WEIGHT;
       } else {
         enemyMaterial += value;
-        if (piece.type === PIECES.KING) {
+        if (piece.type === KING.id) {
           enemyKingPos = { r, c };
         }
       }

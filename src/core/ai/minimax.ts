@@ -1,6 +1,7 @@
-import { BOARD_SIZE } from "@/core/constants/core.constants";
+import { BOARD_SIZE } from "@/core/primitives/game";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
-import { getValidMoves, isPlayerInCheck } from "@/core/rules/gameLogic";
+import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
+import { isPlayerInCheck } from "@/core/mechanics/gameState";
 import { SCORES, hasCommander, evaluateBoard } from "@/core/ai/evaluation";
 
 // Generate all possible moves for a player, sorted by likelihood of being good (captures first)

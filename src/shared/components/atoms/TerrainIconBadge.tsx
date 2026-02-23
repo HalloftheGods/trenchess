@@ -1,9 +1,9 @@
 import React from "react";
 import type { TerrainType } from "@/shared/types/game";
-import { TERRAIN_DETAILS } from "@/core/data/terrainDetails";
+import { TERRAIN_DETAILS } from "@/client/game/theme";
 import { Mountain, Trees, Waves } from "lucide-react";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
 import { Box } from "@atoms";
 
 interface TerrainIconBadgeProps {

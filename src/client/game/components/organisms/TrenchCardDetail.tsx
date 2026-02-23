@@ -1,13 +1,12 @@
 import React from "react";
 import { ShieldPlus, Ban, Zap, Sparkles } from "lucide-react";
-import { INITIAL_ARMY, PIECES } from "@/core/data/unitDetails";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
-import { isUnitProtected } from "@/core/rules/gameLogic";
+import { INITIAL_ARMY, PIECES } from "@/client/game/theme";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import { UNIT_DETAILS, unitColorMap } from "@/core/data/unitDetails";
-import { TERRAIN_DETAILS } from "@/core/data/terrainDetails";
+import { UNIT_DETAILS, unitColorMap, TERRAIN_DETAILS } from "@/client/game/theme";
 import type { TerrainType, PieceType } from "@/shared/types/game";
-import type { PieceStyle } from "@/core/constants/unit.constants";
+import type { PieceStyle } from "@/client/game/theme";
 
 interface TrenchCardDetailProps {
   terrainType: TerrainType;
@@ -17,7 +16,7 @@ interface TrenchCardDetailProps {
   onUnitSelect?: (unitType: string) => void;
 }
 
-import { CHESS_NAME } from "@/core/constants/intel.constants";
+import { CHESS_NAME } from "@/client/game/theme";
 
 const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
   terrainType,
@@ -357,7 +356,7 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
               <Zap size={14} className="fill-amber-500" />
               {terrain.flavorTitle}
             </div>
-            {terrain.flavorStats.map((stat, i) => (
+            {terrain.flavorStats?.map((stat: string, i: number) => (
               <div
                 key={i}
                 className="flex items-start gap-3 lg:gap-4 text-left group/item"
@@ -404,13 +403,13 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-3 w-full max-w-4xl">
           {/* Sanctuary units first */}
-          {terrain.sanctuaryUnits.map((pk) => renderUnitChip(pk, "sanctuary"))}
+          {terrain.sanctuaryUnits.map((pk: string) => renderUnitChip(pk, "sanctuary"))}
           {/* Allowed-but-not-sanctuary */}
           {terrain.allowedUnits
-            .filter((pk) => !terrain.sanctuaryUnits.includes(pk))
-            .map((pk) => renderUnitChip(pk, "allow"))}
+            .filter((pk: string) => !terrain.sanctuaryUnits.includes(pk as PieceType))
+            .map((pk: string) => renderUnitChip(pk, "allow"))}
           {/* Blocked */}
-          {terrain.blockedUnits.map((pk) => renderUnitChip(pk, "block"))}
+          {terrain.blockedUnits.map((pk: string) => renderUnitChip(pk, "block"))}
         </div>
       </div>
     </div>

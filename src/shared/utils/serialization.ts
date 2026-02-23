@@ -4,8 +4,8 @@ import type {
   TerrainType,
   PieceType,
 } from "@/shared/types/game";
-import { BOARD_SIZE } from "@/core/constants/core.constants";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { BOARD_SIZE } from "@/core/primitives/game";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
 
 interface GameSeed {
   m: GameMode; // mode

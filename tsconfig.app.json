@@ -12,7 +12,7 @@
         "src/shared/*"
       ],
       "@logic/*": [
-        "src/core/rules/*"
+        "src/core/mechanics/*"
       ],
       "@ai/*": [
         "src/core/ai/*"
@@ -20,8 +20,17 @@
       "@setup/*": [
         "src/core/setup/*"
       ],
-      "@engineConfigs/*": [
-        "src/core/configs/*"
+      "@mechanics/*": [
+        "src/core/mechanics/*"
+      ],
+      "@primitives/*": [
+        "src/core/primitives/*"
+      ],
+      "@blueprints/*": [
+        "src/core/blueprints/*"
+      ],
+      "@seeds/*": [
+        "src/core/setup/seeds/*"
       ],
       "@engineTypes/*": [
         "src/shared/types/*"

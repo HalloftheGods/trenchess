@@ -5,7 +5,7 @@ import type {
   BoardPiece,
   TerrainType,
   PieceType,
-  TrenchGameState,
+  TrenchessState,
 } from "./game";
 import type { Ctx } from "boardgame.io";
 import type { MultiplayerState } from "./multiplayer";
@@ -88,7 +88,7 @@ export interface BgioClient {
   stop: () => void;
   start: () => void;
   subscribe: (
-    cb: (state: { G: TrenchGameState; ctx: Ctx } | null) => void,
+    cb: (state: { G: TrenchessState; ctx: Ctx } | null) => void,
   ) => () => void;
   playerID: string | null;
   matchID: string | null;
@@ -180,7 +180,7 @@ export interface GameStateHook
     BoardInteraction,
     ZenGardenInteraction,
     SetupActions {
-  bgioState: { G: TrenchGameState; ctx: Ctx } | null;
+  bgioState: { G: TrenchessState; ctx: Ctx } | null;
   ready: () => void;
   startGame: () => void;
   multiplayer: MultiplayerState;

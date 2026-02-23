@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
 import type {
   BoardInteraction,
   MultiplayerState,
@@ -8,12 +8,12 @@ import type {
   BgioClient,
   PlacementManager,
 } from "@/shared/types";
-import type { TrenchGameState } from "@/shared/types/game";
+import type { TrenchessState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
-import { MAX_TERRAIN_PER_PLAYER } from "@/core/constants/terrain.constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@/core/primitives/terrain";
 
 export function useBoardInteraction(
-  bgioState: { G: TrenchGameState; ctx: Ctx } | null,
+  bgioState: { G: TrenchessState; ctx: Ctx } | null,
   core: GameCore,
   placementManager: PlacementManager,
   executeMove: (

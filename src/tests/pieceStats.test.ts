@@ -1,10 +1,10 @@
 import { describe, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
-import { PIECES } from "../core/data/unitDetails";
-import { getValidMoves } from "../core/rules/movement";
-import { TERRAIN_TYPES } from "../core/data/terrainDetails";
-import { BOARD_SIZE } from "../core/constants/core.constants";
+import { PIECES } from "@/core/primitives/pieces";
+import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { BOARD_SIZE } from "@/core/primitives/game";
 import type { BoardPiece, TerrainType, PieceType } from "@/shared/types";
 
 const ITERATIONS_PER_MATCHUP = 500_000;
@@ -150,7 +150,7 @@ describe("Piece Statistics Generator", () => {
             if (moves.length === 0) break;
 
             const captureMove = moves.find(
-              (m) => m[0] === targetPos[0] && m[1] === targetPos[1],
+              (m: number[]) => m[0] === targetPos[0] && m[1] === targetPos[1],
             );
 
             if (captureMove) {
@@ -161,7 +161,7 @@ describe("Piece Statistics Generator", () => {
               break;
             }
 
-            const bestMove = moves.reduce((best, curr) => {
+            const bestMove = moves.reduce((best: number[], curr: number[]) => {
               const bestDist =
                 Math.abs(best[0] - targetPos[0]) +
                 Math.abs(best[1] - targetPos[1]);

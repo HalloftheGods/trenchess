@@ -1,8 +1,8 @@
-import { BOARD_SIZE } from "@/core/constants/core.constants";
-import { PIECES } from "@/core/data/unitDetails";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { BOARD_SIZE } from "@/core/primitives/game";
+import { PIECES } from "@/core/primitives/pieces";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
-import { isPlayerInCheck } from "./gameState";
+import { isPlayerInCheck } from "@/core/mechanics/gameState";
 
 export const getValidMoves = (
   r: number,
@@ -19,31 +19,25 @@ export const getValidMoves = (
     if (nr < 0 || nr >= BOARD_SIZE || nc < 0 || nc >= BOARD_SIZE) return false;
     const targetPiece = board[nr][nc];
     const targetTerrain = terrain[nr]?.[nc];
-    if (!targetTerrain) return false; // Safety check
+    if (!targetTerrain) return false;
 
-    // Desert: Anyone can land on it. Blocks passing for everyone.
     if (targetTerrain === TERRAIN_TYPES.DESERT) {
-      if (!targetPiece) {
-        moves.push([nr, nc]);
-      } else if (targetPiece.player !== player) {
+      if (!targetPiece || targetPiece.player !== player) {
         moves.push([nr, nc]);
       }
-      return false; // Break sliders (like Tank/Rook/Sniper) and block passing
+      return false;
     }
 
-    // Swamp: Pro Tank. Blocks Horseman, Sniper
     if (piece.type === PIECES.KNIGHT && targetTerrain === TERRAIN_TYPES.PONDS)
       return false;
     if (piece.type === PIECES.BISHOP && targetTerrain === TERRAIN_TYPES.PONDS)
       return false;
 
-    // Forest: Pro Sniper. Blocks Tank, Horseman
     if (piece.type === PIECES.ROOK && targetTerrain === TERRAIN_TYPES.TREES)
       return false;
     if (piece.type === PIECES.KNIGHT && targetTerrain === TERRAIN_TYPES.TREES)
       return false;
 
-    // Mountains: Pro Horseman. Blocks Tank, Sniper
     if (piece.type === PIECES.ROOK && targetTerrain === TERRAIN_TYPES.RUBBLE)
       return false;
     if (piece.type === PIECES.BISHOP && targetTerrain === TERRAIN_TYPES.RUBBLE)
@@ -62,8 +56,6 @@ export const getValidMoves = (
   if (piece.type === PIECES.PAWN) {
     if (mode === "2p-ew") {
       const dir = player === "green" ? 1 : -1;
-
-      // Classic Pawn: Move 1 forward, Capture 1 diagonal
       const nf = c + dir;
       if (nf >= 0 && nf < BOARD_SIZE && !board[r][nf]) moves.push([r, nf]);
       [1, -1].forEach((dr) => {
@@ -80,16 +72,13 @@ export const getValidMoves = (
           moves.push([nr, nc]);
         }
       });
-
-      // En-Voltige: Backward 2-square Vault (Vacant Only)
       const bc = c - 2 * dir;
       if (bc >= 0 && bc < BOARD_SIZE && !board[r][bc]) {
         moves.push([r, bc]);
       }
-      // En-Voltige: Strike (Sides of the 2nd Row back)
       [1, -1].forEach((dr) => {
-        const nr = r + dr;
-        const nc = c - 2 * dir;
+        const nr = r + dr,
+          nc = c - 2 * dir;
         if (
           nr >= 0 &&
           nr < BOARD_SIZE &&
@@ -117,8 +106,6 @@ export const getValidMoves = (
         dr = -1;
         dc = -1;
       }
-
-      // Classic 4P Pawn: Move 1 towards center (two directions)
       [
         [dr, 0],
         [0, dc],
@@ -135,7 +122,6 @@ export const getValidMoves = (
           moves.push([nr, nc]);
         }
       });
-      // Classic 4P Capture: Diagonally towards center
       const cnr = r + dr,
         cnc = c + dc;
       if (
@@ -148,8 +134,6 @@ export const getValidMoves = (
       ) {
         moves.push([cnr, cnc]);
       }
-
-      // En-Voltige: Backward Vault (±2)
       [
         [-2 * dr, 0],
         [0, -2 * dc],
@@ -166,7 +150,6 @@ export const getValidMoves = (
           moves.push([nr, nc]);
         }
       });
-      // En-Voltige: Strike (Strict diagonal back 2)
       [[-2 * dr, -2 * dc]].forEach(([ddr, ddc]) => {
         const snr = r + ddr,
           snc = c + ddc;
@@ -182,10 +165,7 @@ export const getValidMoves = (
         }
       });
     } else {
-      // Default NS direction (2p-ns)
       const dir = player === "red" || player === "yellow" ? 1 : -1;
-
-      // Classic Pawn: Move 1 forward, Capture 1 diagonal
       const nf = r + dir;
       if (nf >= 0 && nf < BOARD_SIZE && !board[nf][c]) moves.push([nf, c]);
       [1, -1].forEach((dc) => {
@@ -202,16 +182,13 @@ export const getValidMoves = (
           moves.push([nr, nc]);
         }
       });
-
-      // En-Voltige: Backward 2-square Vault (Vacant Only)
       const br = r - 2 * dir;
       if (br >= 0 && br < BOARD_SIZE && !board[br][c]) {
         moves.push([br, c]);
       }
-      // En-Voltige: Strike (Sides of the 2nd Row back)
       [1, -1].forEach((dc) => {
-        const nc = c + dc;
-        const nr = r - 2 * dir;
+        const nc = c + dc,
+          nr = r - 2 * dir;
         if (
           nr >= 0 &&
           nr < BOARD_SIZE &&
@@ -252,7 +229,6 @@ export const getValidMoves = (
         if (!targetPiece || targetPiece.player !== player) moves.push([nr, nc]);
       }
     });
-    // Knight New Moveset: Triple-Jump (Orthogonal 3 squares)
     [
       [3, 0],
       [-3, 0],
@@ -290,7 +266,6 @@ export const getValidMoves = (
         nc += dc;
       }
     });
-    // Bishop New Moveset: Double-step Retreat/Advance (Orthogonal 2 squares)
     [
       [2, 0],
       [-2, 0],
@@ -327,7 +302,6 @@ export const getValidMoves = (
         nc += dc;
       }
     });
-    // Rook New Moveset: Single-step Diagonal
     [
       [1, 1],
       [1, -1],
@@ -355,7 +329,6 @@ export const getValidMoves = (
       [1, -1],
       [1, 1],
     ].forEach(([dr, dc]) => {
-      // King Diagonal: Move ONLY (Non-capture)
       const nr = r + dr,
         nc = c + dc;
       if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE) {
@@ -368,18 +341,15 @@ export const getValidMoves = (
       [1, 0],
       [-1, 0],
     ].forEach(([dr, dc]) => {
-      // King Orthogonal: Move or Capture
       checkCell(r + dr, c + dc);
       const midR = r + dr;
       const midC = c + dc;
       if (midR >= 0 && midR < BOARD_SIZE && midC >= 0 && midC < BOARD_SIZE) {
         const midPiece = board[midR][midC];
-        // Joust allows jumping over EMPTY squares OR ENEMY squares
         if (!midPiece || midPiece.player !== player) {
           if (depth > 0) {
             checkCell(r + dr * 2, c + dc * 2);
           } else {
-            // Recalculate guarding check for the jump square
             const isGuarded = board.some((row, br) =>
               row.some((cell, bc) => {
                 if (!cell || cell.player === player) return false;
@@ -407,15 +377,11 @@ export const getValidMoves = (
     });
   }
 
-  // Check Rule: Filter moves that leave the king in check (only at top level)
   if (depth === 0) {
     return moves.filter(([mr, mc]) => {
-      // Simulate move
       const nextBoard = board.map((row) => [...row]);
-      nextBoard[mr][mc] = { ...piece }; // Move piece
-      nextBoard[r][c] = null; // Clear source
-
-      // Check if we are in check after this move
+      nextBoard[mr][mc] = { ...piece };
+      nextBoard[r][c] = null;
       return !isPlayerInCheck(player, nextBoard, terrain, mode);
     });
   }

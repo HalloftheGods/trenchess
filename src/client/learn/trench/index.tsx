@@ -4,7 +4,7 @@ import { Trees, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
 import { useRouteContext } from "@/route.context";
 import type { TerrainType } from "@/shared/types/game";
-import { TERRAIN_DETAILS } from "@/core/data/terrainDetails";
+import { TERRAIN_DETAILS } from "@/client/game/theme";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";

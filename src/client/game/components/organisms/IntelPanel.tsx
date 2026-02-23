@@ -1,29 +1,132 @@
 // Intel panel component
-import { Info, Users, ThumbsUp, ThumbsDown, AlertTriangle } from "lucide-react";
-import { isUnitProtected } from "@/core/rules/gameLogic";
-import { getTraversableTerrains } from "@/core/setup/terrainCompat";
-import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
-import { TERRAIN_INTEL } from "@/core/data/terrainDetails";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
-import type {
-  GameState,
-  SetupMode,
-  PieceType,
-  TerrainType,
-  BoardPiece,
-  ArmyUnit,
-} from "@/shared/types/game";
-import type {
-  UnitIntelPanelEntry,
-  TerrainIntelPanelEntry,
-} from "@/shared/types/guide";
-
 import {
-  UNIT_INTEL_PANEL,
-  TERRAIN_INTEL_PANEL,
-} from "@/core/constants/intel.constants";
+  type ArmyUnit,
+  type BoardPiece,
+  type PieceType,
+  type SetupMode,
+  type TerrainIntelPanelEntry,
+  type TerrainType,
+  type GameState,
+  type UnitIntelPanelEntry,
+} from "@/shared/types";
 import { UnitIntelCard } from "../molecules/UnitIntelCard";
 import { TerrainPreviewGrid } from "../molecules/TerrainPreviewGrid";
+import {
+  Info,
+  Users,
+  ThumbsUp,
+  ThumbsDown,
+  AlertTriangle,
+  Waves,
+  Trees,
+  Mountain,
+} from "lucide-react";
+import {
+  INITIAL_ARMY,
+  PIECES,
+  UNIT_DETAILS,
+  UNIT_INTEL,
+  CHESS_NAME,
+  TERRAIN_INTEL,
+} from "@/client/game/theme";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import {
+  isUnitProtected,
+  getTraversableTerrains,
+} from "@/core/mechanics/terrain";
+import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
+
+const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
+
+const UNIT_INTEL_PANEL: Record<string, UnitIntelPanelEntry> = {
+  [KING.id]: {
+    title: UNIT_DETAILS[KING.id]?.title || "King",
+    role: CHESS_NAME[KING.id]?.role || "Leader",
+    points: "∞",
+    movePattern: UNIT_DETAILS[KING.id]?.movePattern,
+    desc: UNIT_INTEL[KING.id]?.desc || "",
+  },
+  [QUEEN.id]: {
+    title: UNIT_DETAILS[QUEEN.id]?.title || "Queen",
+    role: CHESS_NAME[QUEEN.id]?.role || "Elite",
+    points: 9,
+    movePattern: UNIT_DETAILS[QUEEN.id]?.movePattern,
+    desc: UNIT_INTEL[QUEEN.id]?.desc || "",
+  },
+  [ROOK.id]: {
+    title: UNIT_DETAILS[ROOK.id]?.title || "Rook",
+    role: CHESS_NAME[ROOK.id]?.role || "Heavy Armor",
+    points: 5,
+    movePattern: UNIT_DETAILS[ROOK.id]?.movePattern,
+    desc: UNIT_INTEL[ROOK.id]?.desc || "",
+  },
+  [BISHOP.id]: {
+    title: UNIT_DETAILS[BISHOP.id]?.title || "Bishop",
+    role: CHESS_NAME[BISHOP.id]?.role || "Ranged",
+    points: 3,
+    movePattern: UNIT_DETAILS[BISHOP.id]?.movePattern,
+    desc: UNIT_INTEL[BISHOP.id]?.desc || "",
+  },
+  [KNIGHT.id]: {
+    title: UNIT_DETAILS[KNIGHT.id]?.title || "Knight",
+    role: CHESS_NAME[KNIGHT.id]?.role || "Cavalry",
+    points: 3,
+    movePattern: UNIT_DETAILS[KNIGHT.id]?.movePattern,
+    desc: UNIT_INTEL[KNIGHT.id]?.desc || "",
+  },
+  [PAWN.id]: {
+    title: UNIT_DETAILS[PAWN.id]?.title || "Pawn",
+    role: CHESS_NAME[PAWN.id]?.role || "Infantry",
+    points: 1,
+    movePattern: UNIT_DETAILS[PAWN.id]?.movePattern,
+    desc: UNIT_INTEL[PAWN.id]?.desc || "",
+  },
+};
+
+const TERRAIN_INTEL_PANEL: Record<string, TerrainIntelPanelEntry> = {
+  [TERRAIN_TYPES.PONDS]: {
+    label: "Swamp",
+    icon: Waves,
+    color: "brand-blue",
+    interactions: [
+      { unit: "Tank", status: "allow", text: "Sanctuary" },
+      { unit: "Horseman", status: "block", text: "Impassable" },
+      { unit: "Sniper", status: "block", text: "Impassable" },
+      { unit: "Others", status: "special", text: "Slowed" },
+    ],
+  },
+  [TERRAIN_TYPES.TREES]: {
+    label: "Forest",
+    icon: Trees,
+    color: "emerald",
+    interactions: [
+      { unit: "Sniper", status: "allow", text: "Sanctuary" },
+      { unit: "Tank", status: "block", text: "Impassable" },
+      { unit: "Horseman", status: "block", text: "Impassable" },
+      { unit: "Others", status: "special", text: "Cover" },
+    ],
+  },
+  [TERRAIN_TYPES.RUBBLE]: {
+    label: "Mountains",
+    icon: Mountain,
+    color: "brand-red",
+    interactions: [
+      { unit: "Horseman", status: "allow", text: "Sanctuary" },
+      { unit: "Tank", status: "block", text: "Impassable" },
+      { unit: "Sniper", status: "block", text: "Impassable" },
+      { unit: "Others", status: "special", text: "Blocked" },
+    ],
+  },
+  [TERRAIN_TYPES.DESERT]: {
+    label: "Desert",
+    icon: DesertIcon,
+    color: "amber",
+    interactions: [
+      { unit: "Tank", status: "allow", text: "Immune" },
+      { unit: "Others", status: "special", text: "Ends Turn" },
+    ],
+  },
+};
 
 interface IntelPanelProps {
   gameState: GameState;
@@ -374,10 +477,11 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                 <div className="flex items-center gap-3">
                   {(() => {
                     const uType =
-                      PIECES[rule.unit.toUpperCase()] ||
-                      (rule.unit === "Tank" ? PIECES.ROOK : null) ||
-                      (rule.unit === "Sniper" ? PIECES.BISHOP : null) ||
-                      (rule.unit === "Horseman" ? PIECES.KNIGHT : null);
+                      PIECES[rule.unit.toUpperCase() as keyof typeof PIECES]
+                        ?.id ||
+                      (rule.unit === "Tank" ? ROOK.id : null) ||
+                      (rule.unit === "Sniper" ? BISHOP.id : null) ||
+                      (rule.unit === "Horseman" ? KNIGHT.id : null);
                     const u = INITIAL_ARMY.find((x) => x.type === uType);
 
                     // We need to know which terrain this is to check protection

@@ -19,8 +19,8 @@ import { useBgioSync } from "./core/useBgioSync";
 
 import { Client } from "boardgame.io/client";
 import { SocketIO } from "boardgame.io/multiplayer";
-import { TrenchGame } from "@/core/TrenchGame";
-import type { TrenchGameState } from "@/shared/types/game";
+import { Trenchess } from "@/core/Trenchess";
+import type { TrenchessState } from "@/shared/types/game";
 import { createInitialState, getPlayersForMode } from "@/core/setup/setupLogic";
 import type { Ctx } from "boardgame.io";
 import type { GameStateHook, BgioClient } from "@/shared/types";
@@ -36,7 +36,7 @@ export function useGameState(): GameStateHook {
 
   // 2. BGIO Sync State
   const [bgioState, setBgioState] = useState<{
-    G: TrenchGameState;
+    G: TrenchessState;
     ctx: Ctx;
   } | null>(null);
   const [isStarted, setIsStarted] = useState(false);
@@ -80,7 +80,7 @@ export function useGameState(): GameStateHook {
       : undefined;
 
     const clientConfig = {
-      game: TrenchGame,
+      game: Trenchess,
       numPlayers,
       debug: core.configState.showBgDebug,
       playerID,

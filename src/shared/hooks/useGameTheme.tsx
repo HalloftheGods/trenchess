@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { PIECE_STYLES } from "@/core/constants/unit.constants";
+import { PIECE_STYLES } from "@/client/game/theme";
 import type { GameTheme, PieceStyle, ArmyUnit } from "@/shared/types";
 
 export function useGameTheme(): GameTheme {

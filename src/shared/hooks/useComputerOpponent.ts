@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { getBestMove } from "@/core/ai/aiLogic";
-import { getValidMoves } from "@/core/rules/gameLogic";
+import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
 import { engineService } from "@/core/ai/stockfishLogic";
 import type { GameMode, BoardPiece, TerrainType } from "@/shared/types/game";
 
@@ -73,7 +73,7 @@ export function useComputerOpponent({
               mode,
             );
             isValid = validMoves.some(
-              (m) => m[0] === sfMove.to[0] && m[1] === sfMove.to[1],
+              (m: number[]) => m[0] === sfMove.to[0] && m[1] === sfMove.to[1],
             );
           }
 

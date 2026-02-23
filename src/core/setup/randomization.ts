@@ -1,13 +1,12 @@
-import { BOARD_SIZE } from "@/core/constants/core.constants";
-import { MAX_TERRAIN_PER_PLAYER } from "@/core/constants/terrain.constants";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { BOARD_SIZE } from "@/core/primitives/game";
+import { MAX_TERRAIN_PER_PLAYER, TERRAIN_TYPES } from "@/core/primitives/terrain";
 import type {
   GameMode,
   BoardPiece,
   TerrainType,
   PieceType,
 } from "@/shared/types";
-import { TerraForm } from "../generateTrench";
+import { TerraForm } from "./generateTrench";
 import { getPlayerCells } from "./territory";
 import { canPlaceUnit } from "./validation";
 

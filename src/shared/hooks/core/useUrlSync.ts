@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from "react";
 import { serializeGame, deserializeGame } from "@utils/gameUrl";
 import { getPlayerCells } from "@/core/setup/setupLogic";
-import { BOARD_SIZE } from "@/core/constants/core.constants";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
-import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { BOARD_SIZE } from "@/core/primitives/game";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { INITIAL_ARMY } from "@/client/game/theme";
 import type {
   GameMode,
   GameState as GameStateType,

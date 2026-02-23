@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Lock, LockOpen, Dices, Pizza, Shell } from "lucide-react";
 import { ActionBarPalette } from "../molecules/ActionBarPalette";
 import { ActionBarSlot } from "../atoms/ActionBarSlot";
-import { TERRAIN_INTEL, TERRAIN_TYPES } from "@/core/data/terrainDetails";
-import { INITIAL_ARMY, PIECES } from "@/core/data/unitDetails";
-import { PLAYER_CONFIGS } from "@/core/constants/unit.constants";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { INITIAL_ARMY, PIECES, PLAYER_CONFIGS, TERRAIN_INTEL } from "@/client/game/theme";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
 import type {
   ArmyUnit,
@@ -13,7 +12,7 @@ import type {
   TerrainType,
   GameState,
 } from "@/shared/types/game";
-import type { PieceStyle } from "@/core/constants/unit.constants";
+import type { PieceStyle } from "@/client/game/theme";
 
 interface MmoActionBarProps {
   gameState?: GameState;

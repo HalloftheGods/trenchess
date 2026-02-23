@@ -8,7 +8,7 @@ import type {
   SetupMode,
   PieceType,
   TerrainType,
-  TrenchGameState,
+  TrenchessState,
 } from "@/shared/types/game";
 import type { MultiplayerPlayer } from "@/shared/types/multiplayer";
 
@@ -66,7 +66,7 @@ interface GameStateDebugProps {
   setActivePlayers?: (val: string[]) => void;
   showBgDebug?: boolean;
   setShowBgDebug?: (val: boolean) => void;
-  bgioState?: { G: TrenchGameState; ctx: Ctx } | null;
+  bgioState?: { G: TrenchessState; ctx: Ctx } | null;
   onlineInfo?: OnlineInfo;
 }
 

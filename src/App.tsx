@@ -13,7 +13,7 @@ import { ROUTES, LazyRoutes } from "@/routes";
 import type { TerrainType, GameMode, SeedItem } from "@/shared/types";
 import { LoadingFallback } from "@/shared/components/molecules/LoadingFallback";
 import { RouteProvider } from "@/route.context";
-import { DEFAULT_SEEDS } from "@/core/data/defaultSeeds";
+import { DEFAULT_SEEDS } from "@/core/setup/seeds";
 
 const TrenchGuideWrapper = (props: { onBack?: () => void }) => {
   const { terrain } = useParams();

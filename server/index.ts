@@ -1,11 +1,11 @@
 import { Server, Origins } from "boardgame.io/server";
-import { TrenchGame } from "@/core/TrenchGame";
+import { Trenchess } from "@/core/Trenchess";
 import { generateRoomCode } from "@utils/room-code";
 
 const PORT = Number(process.env.PORT || 3001);
 
 const server = Server({
-  games: [TrenchGame],
+  games: [Trenchess],
   origins: [
     Origins.LOCALHOST,
     "http://localhost:5173",

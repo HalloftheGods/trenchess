@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from "@/core/constants/core.constants";
+import { BOARD_SIZE } from "@/core/primitives/game";
 import type { GameMode } from "@/shared/types/game";
 
 export const getPlayerCells = (

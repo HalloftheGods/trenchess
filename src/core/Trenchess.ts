@@ -2,18 +2,18 @@ import type { Game } from "boardgame.io";
 import { createInitialState } from "@/core/setup/setupLogic";
 import type {
   GameMode,
-  TrenchGameState,
-  TrenchGameSetupData,
+  TrenchessState,
+  TrenchessSetupData,
 } from "@/shared/types/game";
 import { setupPhase } from "@/core/phases/setupPhase";
 import { playPhase } from "@/core/phases/playPhase";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
-  name: "battle-chess",
+export const Trenchess: Game<TrenchessState, any, TrenchessSetupData> = {
+  name: "trenchess",
 
   setup: (_, setupData) => {
-    const data = setupData as TrenchGameSetupData;
+    const data = setupData as TrenchessSetupData;
     const mode: GameMode = data?.mode || "2p-ns";
     let players: string[];
 
@@ -24,16 +24,20 @@ export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
       "3": "blue",
     };
 
-    if (mode === "2p-ns") {
-      players = ["red", "blue"];
-      playerMap["0"] = "red";
-      playerMap["1"] = "blue";
-    } else if (mode === "2p-ew") {
-      players = ["green", "yellow"];
-      playerMap["0"] = "green";
-      playerMap["1"] = "yellow";
-    } else {
-      players = ["red", "yellow", "green", "blue"];
+    switch (mode) {
+      case "2p-ns":
+        players = ["red", "blue"];
+        playerMap["0"] = "red";
+        playerMap["1"] = "blue";
+        break;
+      case "2p-ew":
+        players = ["green", "yellow"];
+        playerMap["0"] = "green";
+        playerMap["1"] = "yellow";
+        break;
+      default:
+        players = ["red", "yellow", "green", "blue"];
+        break;
     }
 
     const {

@@ -1,2 +1,1 @@
-export * from "./generators/styling";
-export * from "./generators/formations";
+export { getQuadrantBaseStyle } from "@/client/game/theme/board";

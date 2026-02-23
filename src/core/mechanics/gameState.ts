@@ -1,7 +1,9 @@
-import { BOARD_SIZE } from "@/core/constants/core.constants";
-import { PIECES } from "@/core/data/unitDetails";
+import { BOARD_SIZE } from "@/core/primitives/game";
+import { PIECES } from "@/core/primitives/pieces";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
-import { getValidMoves } from "./movement";
+
+const { KING } = PIECES;
+import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
 
 export const isPlayerInCheck = (
   player: string,
@@ -14,7 +16,7 @@ export const isPlayerInCheck = (
   for (let r = 0; r < BOARD_SIZE; r++) {
     for (let c = 0; c < BOARD_SIZE; c++) {
       const p = board[r][c];
-      if (p && p.player === player && p.type === PIECES.KING) {
+      if (p && p.player === player && p.type === KING.id) {
         kingPos = [r, c];
         break;
       }

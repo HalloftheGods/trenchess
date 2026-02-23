@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { PIECES } from "@/core/data/unitDetails";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { PIECES } from "@/client/game/theme";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
 import { TerraForm } from "@/core/setup/generateTrench";
 import type {

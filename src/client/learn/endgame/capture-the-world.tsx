@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import InteractiveGuide, {
   type Slide,
 } from "@/shared/components/templates/InteractiveGuide";
-import { DEFAULT_SEEDS } from "@/core/data/defaultSeeds";
+import { DEFAULT_SEEDS } from "@/core/setup/seeds";
 import type { PreviewConfig } from "@/shared/types/game";
 
 import { GuideListItem } from "@/shared/components/molecules/GuideListItem";

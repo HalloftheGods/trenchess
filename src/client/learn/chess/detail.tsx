@@ -3,8 +3,8 @@ import React, { useMemo, useState } from "react";
 import InteractiveGuide, {
   type Slide,
 } from "@/shared/components/templates/InteractiveGuide";
-import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
-import { UNIT_DETAILS, unitColorMap } from "@/core/data/unitDetails";
+import { PIECES, INITIAL_ARMY } from "@/client/game/theme";
+import { UNIT_DETAILS, unitColorMap } from "@/client/game/theme";
 import type {
   PieceType,
   TerrainType,

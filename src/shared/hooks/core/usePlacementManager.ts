@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { getValidMoves } from "@/core/rules/gameLogic";
+import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
 import type {
   PlacementManager,
   GameCore,
@@ -7,11 +7,11 @@ import type {
   TerrainType,
   BoardPiece,
 } from "@/shared/types";
-import type { TrenchGameState } from "@/shared/types/game";
+import type { TrenchessState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
 
 export function usePlacementManager(
-  bgioState: { G: TrenchGameState; ctx: Ctx } | null,
+  bgioState: { G: TrenchessState; ctx: Ctx } | null,
   core: GameCore,
 ): PlacementManager {
   const { boardState, configState } = core;

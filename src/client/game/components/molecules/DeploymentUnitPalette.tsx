@@ -1,6 +1,5 @@
 import React from "react";
-import { INITIAL_ARMY } from "@/core/data/unitDetails";
-import { PLAYER_CONFIGS } from "@/core/constants/unit.constants";
+import { INITIAL_ARMY, PLAYER_CONFIGS } from "@/client/game/theme";
 import type { ArmyUnit, PieceType, SetupMode } from "@/shared/types/game";
 
 interface DeploymentUnitPaletteProps {

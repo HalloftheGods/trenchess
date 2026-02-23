@@ -12,12 +12,10 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import { INITIAL_ARMY } from "@/core/data/unitDetails";
-import { TERRAIN_INTEL } from "@/core/data/terrainDetails";
-import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
-import { isUnitProtected } from "@/core/rules/gameLogic";
+import { INITIAL_ARMY, TERRAIN_INTEL, unitColorMap } from "@/client/game/theme";
+import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import { unitColorMap } from "@/core/data/unitDetails";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 
 interface TerrainDetailsPanelProps {
@@ -237,7 +235,7 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
             <div
               className={`relative w-36 h-36 rounded-[2.5rem] ${colors.bg} ${colors.text} flex items-center justify-center shadow-inner border border-white/5 transition-transform hover:scale-105 group/icon overflow-visible`}
             >
-              <Icon className="w-20 h-20 transition-transform group-hover/icon:rotate-3" />
+              {Icon && <Icon className="w-20 h-20 transition-transform group-hover/icon:rotate-3" />}
 
               {/* Prev Terrain Button — bleeds left */}
               {onPrev && (
@@ -320,7 +318,7 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
                       >
                         {inTerrain && (
                           <div className="opacity-40 scale-[0.5] pointer-events-none">
-                            <Icon size={16} />
+                            {Icon && <Icon size={16} />}
                           </div>
                         )}
                       </div>
