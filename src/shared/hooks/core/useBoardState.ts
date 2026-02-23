@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { BoardPiece, TerrainType, PieceType } from "@engineTypes/game";
+import type { BoardPiece, TerrainType, PieceType } from "@/core/types/game";
 
 export interface BoardState {
   board: (BoardPiece | null)[][];
@@ -21,8 +21,16 @@ export interface BoardState {
 }
 
 export function useBoardState(): BoardState {
-  const [board, setBoard] = useState<(BoardPiece | null)[][]>([]);
-  const [terrain, setTerrain] = useState<TerrainType[][]>([]);
+  const [board, setBoard] = useState<(BoardPiece | null)[][]>(() =>
+    Array(12)
+      .fill(null)
+      .map(() => Array(12).fill(null)),
+  );
+  const [terrain, setTerrain] = useState<TerrainType[][]>(() =>
+    Array(12)
+      .fill(null)
+      .map(() => Array(12).fill("flat" as TerrainType)),
+  );
   const [inventory, setInventory] = useState<Record<string, PieceType[]>>({});
   const [terrainInventory, setTerrainInventory] = useState<
     Record<string, TerrainType[]>

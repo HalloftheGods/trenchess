@@ -8,18 +8,18 @@ import {
   matchPath,
 } from "react-router-dom";
 import { useGameState } from "@hooks/useGameState";
-import * as RoutesConfig from "@/app/routes/lazy.routes";
-import { ROUTES } from "@/app/routes/lazy.routes";
-import type { TerrainType } from "@engineTypes/game";
+import { ROUTES, LazyRoutes } from "@/routes";
+
+import type { TerrainType } from "@/core/types/game";
 import { LoadingFallback } from "@/shared/components/molecules/LoadingFallback";
-import { RouteProvider } from "@/app/context/RouteContext";
-import { DEFAULT_SEEDS } from "@engineConfigs/defaultSeeds";
-import type { GameMode, SeedItem } from "@engineTypes/game";
+import { RouteProvider } from "@/route.context";
+import { DEFAULT_SEEDS } from "@/core/configs/defaultSeeds";
+import type { GameMode, SeedItem } from "@/core/types/game";
 
 const TrenchGuideWrapper = (props: { onBack?: () => void }) => {
   const { terrain } = useParams();
   return (
-    <RoutesConfig.LazyLearnTrenchDetailView
+    <LazyRoutes.learn.trench.detail
       {...props}
       initialTerrain={terrain as TerrainType}
       onBack={props.onBack || (() => {})}
@@ -30,7 +30,7 @@ const TrenchGuideWrapper = (props: { onBack?: () => void }) => {
 const ChessGuideWrapper = (props: { onBack?: () => void }) => {
   const { unitType } = useParams();
   return (
-    <RoutesConfig.LazyLearnChessDetailView
+    <LazyRoutes.learn.chess.detail
       {...props}
       initialUnit={unitType}
       onBack={props.onBack || (() => {})}
@@ -184,7 +184,8 @@ const App = () => {
           : ROUTES.GAME_MMO;
         navigate(target);
       },
-      onCtwGuide: () => navigate(ROUTES.LEARN_ENDGAME_CTW),
+      onCtwGuide: () => navigate(ROUTES.LEARN_ENDGAME_WORLD),
+
       onChessGuide: () => navigate(ROUTES.LEARN_CHESS),
       onTrenchGuide: (t?: string) =>
         navigate(t ? `${ROUTES.LEARN_TRENCH}/${t}` : ROUTES.LEARN_TRENCH),
@@ -244,20 +245,20 @@ const App = () => {
     index?: true;
     element: React.ReactNode;
   }[] = [
-    { index: true, element: <RoutesConfig.LazyHomeView /> },
-    { path: "play", element: <RoutesConfig.LazyPlayView /> },
-    { path: "play/local", element: <RoutesConfig.LazyPlayLocalView /> },
-    { path: "play/lobby", element: <RoutesConfig.LazyPlayLobbyView /> },
-    { path: "play/setup", element: <RoutesConfig.LazyPlaySetupView /> },
-    { path: "learn", element: <RoutesConfig.LazyLearnView /> },
+    { index: true, element: <LazyRoutes.home.view /> },
+    { path: "play", element: <LazyRoutes.play.view /> },
+    { path: "play/local", element: <LazyRoutes.play.local /> },
+    { path: "play/lobby", element: <LazyRoutes.play.lobby /> },
+    { path: "play/setup", element: <LazyRoutes.play.setup /> },
+    { path: "learn", element: <LazyRoutes.learn.view /> },
     {
       path: "learn/endgame",
-      element: <RoutesConfig.LazyLearnEndgameMainView />,
+      element: <LazyRoutes.learn.endgame.main />,
     },
     {
       path: "learn/endgame/capture-the-world",
       element: (
-        <RoutesConfig.LazyLearnEndgameCtwView
+        <LazyRoutes.learn.endgame.world
           onBack={() => navigate(ROUTES.LEARN_ENDGAME)}
         />
       ),
@@ -265,7 +266,7 @@ const App = () => {
     {
       path: "learn/endgame/capture-the-king",
       element: (
-        <RoutesConfig.LazyLearnEndgameCtkView
+        <LazyRoutes.learn.endgame.king
           onBack={() => navigate(ROUTES.LEARN_ENDGAME)}
         />
       ),
@@ -273,30 +274,31 @@ const App = () => {
     {
       path: "learn/endgame/capture-the-army",
       element: (
-        <RoutesConfig.LazyLearnEndgameCtaView
+        <LazyRoutes.learn.endgame.army
           onBack={() => navigate(ROUTES.LEARN_ENDGAME)}
         />
       ),
     },
-    { path: "learn/trench", element: <RoutesConfig.LazyLearnTrenchMainView /> },
+
+    { path: "learn/trench", element: <LazyRoutes.learn.trench.main /> },
     {
       path: "learn/trench/:terrain",
       element: (
         <TrenchGuideWrapper onBack={() => navigate(ROUTES.LEARN_TRENCH)} />
       ),
     },
-    { path: "learn/chess", element: <RoutesConfig.LazyLearnChessMainView /> },
+    { path: "learn/chess", element: <LazyRoutes.learn.chess.main /> },
     {
       path: "learn/chess/:unitType",
       element: (
         <ChessGuideWrapper onBack={() => navigate(ROUTES.LEARN_CHESS)} />
       ),
     },
-    { path: "learn/math", element: <RoutesConfig.LazyLearnMathMainView /> },
+    { path: "learn/math", element: <LazyRoutes.learn.math.main /> },
     {
       path: "scoreboard",
       element: (
-        <RoutesConfig.LazyScoreboardView
+        <LazyRoutes.scoreboard.view
           darkMode={darkMode}
           pieceStyle={pieceStyle}
         />
@@ -305,13 +307,13 @@ const App = () => {
     {
       path: "rules",
       element: (
-        <RoutesConfig.LazyRulesView
+        <LazyRoutes.rules.view
           onBack={() => navigate(-1)}
           darkMode={darkMode}
         />
       ),
     },
-    { path: "stats", element: <RoutesConfig.LazyStatsView /> },
+    { path: "stats", element: <LazyRoutes.stats.view /> },
     { path: "zen", element: <div /> }, // Effect in App handles the loading state / transition
   ];
 
@@ -319,20 +321,20 @@ const App = () => {
   const topLevelRoutes: { path: string; element: React.ReactNode }[] = [
     {
       path: ROUTES.GAME_MMO,
-      element: <RoutesConfig.LazyMmoView game={game} />,
+      element: <LazyRoutes.game.mmo game={game} />,
     },
     {
       path: ROUTES.GAME,
-      element: <RoutesConfig.LazyGameScreen {...gameScreenProps} />,
+      element: <LazyRoutes.game.screen {...gameScreenProps} />,
     },
     {
       path: ROUTES.GAME_DETAIL,
-      element: <RoutesConfig.LazyGameScreen {...gameScreenProps} />,
+      element: <LazyRoutes.game.screen {...gameScreenProps} />,
     },
     {
       path: ROUTES.TUTORIAL,
       element: (
-        <RoutesConfig.LazyTutorialView
+        <LazyRoutes.tutorial.view
           onBack={handleBackToMenu}
           darkMode={darkMode}
         />
@@ -341,7 +343,7 @@ const App = () => {
     {
       path: ROUTES.LEARN_MANUAL,
       element: (
-        <RoutesConfig.LazyLearnManualView
+        <LazyRoutes.learn.manual
           onBack={handleBackToMenu}
           darkMode={darkMode}
           pieceStyle={pieceStyle}
@@ -351,7 +353,7 @@ const App = () => {
     {
       path: ROUTES.LIBRARY,
       element: (
-        <RoutesConfig.LazySeedLibrary
+        <LazyRoutes.game.library
           onBack={handleBackToMenu}
           onLoadSeed={(seed) => initFromSeed(seed)}
           onEditInZen={(seed) => initFromSeed(seed, "zen-garden")}
@@ -360,9 +362,9 @@ const App = () => {
       ),
     },
     { path: ROUTES.DEBUG_LOADING, element: <LoadingFallback /> },
-    { path: ROUTES.DEBUG_404, element: <RoutesConfig.LazyNotFoundView /> },
+    { path: ROUTES.DEBUG_404, element: <LazyRoutes.home.notFound /> },
     { path: ROUTES.DEBUG_500, element: <DebugErrorThrower /> },
-    { path: "*", element: <RoutesConfig.LazyNotFoundView /> },
+    { path: "*", element: <LazyRoutes.home.notFound /> },
   ];
 
   return (
@@ -374,7 +376,7 @@ const App = () => {
           <Route
             path={ROUTES.HOME}
             element={
-              <RoutesConfig.LazyRouteLayout
+              <LazyRoutes.shared.layout
                 darkMode={darkMode}
                 pieceStyle={pieceStyle}
                 toggleTheme={toggleTheme}

@@ -1,11 +1,11 @@
 import { describe, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
-import { PIECES } from "../engine/configs/unitDetails";
-import { getValidMoves } from "../engine/logic/movement";
-import { TERRAIN_TYPES } from "../engine/configs/terrainDetails";
-import { BOARD_SIZE } from "../constants/core.constants";
-import type { BoardPiece, TerrainType } from "../engine/types/game";
+import { PIECES } from "../core/configs/unitDetails";
+import { getValidMoves } from "../core/logic/movement";
+import { TERRAIN_TYPES } from "../core/configs/terrainDetails";
+import { BOARD_SIZE } from "../shared/constants/core.constants";
+import type { BoardPiece, TerrainType } from "../core/types/game";
 
 const ITERATIONS_PER_MATCHUP = 500_000;
 const MAX_TURNS = 10;

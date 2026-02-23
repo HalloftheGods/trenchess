@@ -32,14 +32,11 @@ export default defineConfig({
       ),
       "@hooks": path.resolve(__dirname, "./src/shared/hooks"),
       "@utils": path.resolve(__dirname, "./src/shared/utils"),
-      "@assets": path.resolve(__dirname, "./src/assets"),
+      "@assets": path.resolve(__dirname, "./src/shared/assets"),
 
-      // Routes
-      "@routes": path.resolve(__dirname, "./src/app/routes"),
-      "@menu": path.resolve(__dirname, "./src/app/routes/menu"),
-      "@guides": path.resolve(__dirname, "./src/app/routes/guides"),
-      "@game": path.resolve(__dirname, "./src/app/routes/game"),
+      "@game": path.resolve(__dirname, "./src/www/game"),
       "@constants": path.resolve(__dirname, "./src/constants"),
+      "@www": path.resolve(__dirname, "./src/www"),
     },
   },
   server: {

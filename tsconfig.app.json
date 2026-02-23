@@ -6,25 +6,25 @@
         "src/*"
       ],
       "@engine/*": [
-        "src/engine/*"
+        "src/core/*"
       ],
       "@shared/*": [
         "src/shared/*"
       ],
       "@logic/*": [
-        "src/engine/logic/*"
+        "src/core/logic/*"
       ],
       "@ai/*": [
-        "src/engine/ai/*"
+        "src/core/ai/*"
       ],
       "@setup/*": [
-        "src/engine/setup/*"
+        "src/core/setup/*"
       ],
       "@engineConfigs/*": [
-        "src/engine/configs/*"
+        "src/core/configs/*"
       ],
       "@engineTypes/*": [
-        "src/engine/types/*"
+        "src/core/types/*"
       ],
       "@bionics/*": [
         "src/shared/components/*"
@@ -72,23 +72,17 @@
         "src/shared/types/*"
       ],
       "@assets/*": [
-        "src/assets/*"
+        "src/shared/assets/*"
       ],
       "@game/*": [
-        "src/app/routes/game/*"
-      ],
-      "@menu/*": [
-        "src/app/routes/menu/*"
-      ],
-      "@routes/*": [
-        "src/app/routes/*"
-      ],
-      "@routes": [
-        "src/app/routes"
+        "src/client/game/*"
       ],
       "@constants/*": [
-        "src/constants/*"
-      ]
+        "src/shared/constants/*"
+      ],
+      "@www/*": [
+        "src/client/*"
+      ],
     },
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",

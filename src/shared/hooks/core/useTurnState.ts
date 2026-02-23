@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { PLAYER_CONFIGS } from "@constants/unit.constants";
+import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
 
 export interface TurnState {
   turn: string;
@@ -29,7 +29,6 @@ export function useTurnState(): TurnState {
   const [turn, setTurn] = useState("red");
   const [activePlayers, setActivePlayers] = useState(["red", "blue"]);
   const [readyPlayers, setReadyPlayers] = useState<Record<string, boolean>>({});
-
   const [playerTypes, setPlayerTypes] = useState<
     Record<string, "human" | "computer">
   >({
@@ -38,7 +37,6 @@ export function useTurnState(): TurnState {
     green: "human",
     blue: "human",
   });
-
   const [winner, setWinner] = useState<string | null>(null);
   const [inCheck, setInCheck] = useState(false);
   const [isThinking, setIsThinking] = useState(false);

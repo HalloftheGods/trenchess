@@ -1,4 +1,4 @@
-import { DesertIcon } from "@/app/routes/game/components/atoms/UnitIcons";
+import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
 import LogoAsset from "@assets/logo.svg";
 import { Waves, Trees, Mountain } from "lucide-react";
 import { Box, Flex, Text, Heading } from "@/shared/components/atoms";

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { GameMode, GameState, SetupMode } from "@engineTypes/game";
+import type { GameMode, GameState, SetupMode } from "@/core/types/game";
 
 export interface GameConfigState {
   mode: GameMode;
@@ -31,15 +31,6 @@ export interface GameConfigState {
 }
 
 export function useGameConfig(): GameConfigState {
-  const [mode, setMode] = useState<GameMode>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("trenchess_mode");
-      if (saved) return saved as GameMode;
-    }
-    return "2p-ns";
-  });
-
-  const [gameState, setGameState] = useState<GameState>("menu");
   const [setupMode, setSetupMode] = useState<SetupMode>("terrain");
   const [isFlipped, setIsFlipped] = useState(false);
   const [autoFlip, setAutoFlip] = useState(false);
@@ -64,12 +55,6 @@ export function useGameConfig(): GameConfigState {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("trenchess_mode", mode);
-    }
-  }, [mode]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
       if (selectedPreset) {
         localStorage.setItem("trenchess_preset", selectedPreset);
       } else {
@@ -77,6 +62,9 @@ export function useGameConfig(): GameConfigState {
       }
     }
   }, [selectedPreset]);
+
+  const [mode, setMode] = useState<GameMode>("2p-ns");
+  const [gameState, setGameState] = useState<GameState>("menu");
 
   return {
     mode,

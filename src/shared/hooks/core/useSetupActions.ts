@@ -1,13 +1,13 @@
 import { useCallback } from "react";
-import * as SetupLogic from "@setup/setupLogic";
+import * as SetupLogic from "@/core/setup/setupLogic";
 import type {
   GameMode,
   TerrainType,
   BoardPiece,
   PieceType,
-} from "@engineTypes/game";
-import { INITIAL_ARMY } from "@engineConfigs/unitDetails";
-import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
+} from "@/core/types/game";
+import { INITIAL_ARMY } from "@/core/configs/unitDetails";
+import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
 import type { GameCore } from "./useGameLifecycle";
 

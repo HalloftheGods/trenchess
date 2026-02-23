@@ -1,7 +1,9 @@
 import { useState, useCallback } from "react";
-import { getValidMoves } from "@logic/gameLogic";
-import type { PieceType, TerrainType, BoardPiece } from "@engineTypes/game";
+import { getValidMoves } from "@/core/logic/gameLogic";
+import type { PieceType, TerrainType, BoardPiece } from "@/core/types/game";
 import type { GameCore } from "./useGameLifecycle";
+import type { TrenchGameState } from "@/client/game/Game";
+import type { Ctx } from "boardgame.io";
 
 export interface PlacementManager {
   selectedCell: [number, number] | null;
@@ -27,10 +29,16 @@ export interface PlacementManager {
   ) => number[][];
 }
 
-export function usePlacementManager(core: GameCore): PlacementManager {
+export function usePlacementManager(
+  bgioState: { G: TrenchGameState; ctx: Ctx } | null,
+  core: GameCore,
+): PlacementManager {
   const { boardState, configState } = core;
-  const { board, terrain } = boardState;
-  const { mode } = configState;
+
+  // Authoritative state from engine
+  const board = bgioState?.G?.board ?? boardState.board;
+  const terrain = bgioState?.G?.terrain ?? boardState.terrain;
+  const mode = bgioState?.G?.mode ?? configState.mode;
 
   const [selectedCell, setSelectedCell] = useState<[number, number] | null>(
     null,

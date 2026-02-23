@@ -3,12 +3,12 @@ import {
   createInitialState,
   applyClassicalFormation,
   generateElementalTerrain,
-} from "@setup/setupLogic";
-import { getBestMove } from "@ai/aiLogic";
-import { getValidMoves, isPlayerInCheck } from "@logic/gameLogic";
-import type { GameMode } from "@engineTypes/game";
-import { BOARD_SIZE } from "@constants/core.constants";
-import { PIECES } from "@engineConfigs/unitDetails";
+} from "@/core/setup/setupLogic";
+import { getBestMove } from "@/core/ai/aiLogic";
+import { getValidMoves, isPlayerInCheck } from "@/core/logic/gameLogic";
+import type { GameMode } from "@/core/types/game";
+import { BOARD_SIZE } from "@/shared/constants/core.constants";
+import { PIECES } from "@/core/configs/unitDetails";
 
 // Helper to find the king and check if captured
 const isKingAlive = (board: any[][], player: string) => {

@@ -1,11 +1,12 @@
 import { useCallback } from "react";
-import { canPlaceUnit, getPlayerCells } from "@setup/setupLogic";
-import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
-import type { TerrainType, PieceType } from "@engineTypes/game";
+import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
+import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
 import type { MultiplayerState } from "@hooks/useMultiplayer";
 import type { GameCore, BgioClient } from "./useGameLifecycle";
 import type { PlacementManager } from "./usePlacementManager";
-import { MAX_TERRAIN_PER_PLAYER } from "@constants/terrain.constants";
+import type { TrenchGameState } from "@/client/game/Game";
+import type { Ctx } from "boardgame.io";
+import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
 
 export interface BoardInteraction {
   handleCellHover: (r: number, c: number, overrideTurn?: string) => void;
@@ -13,6 +14,7 @@ export interface BoardInteraction {
 }
 
 export function useBoardInteraction(
+  bgioState: { G: TrenchGameState; ctx: Ctx } | null,
   core: GameCore,
   placementManager: PlacementManager,
   executeMove: (
@@ -26,18 +28,27 @@ export function useBoardInteraction(
   bgioClientRef?: React.MutableRefObject<BgioClient | undefined>,
 ): BoardInteraction {
   const { boardState, turnState, configState } = core;
-  const {
-    board,
-    setBoard,
-    terrain,
-    setTerrain,
-    inventory,
-    setInventory,
-    terrainInventory,
-    setTerrainInventory,
-  } = boardState;
-  const { turn, activePlayers, localPlayerName } = turnState;
-  const { gameState, mode, setupMode } = configState;
+
+  // Authoritative state from engine
+  const board = bgioState?.G?.board ?? boardState.board;
+  const terrain = bgioState?.G?.terrain ?? boardState.terrain;
+  const turn =
+    bgioState?.G?.playerMap && bgioState?.ctx
+      ? bgioState.G.playerMap[bgioState.ctx.currentPlayer] || turnState.turn
+      : turnState.turn;
+  const activePlayers = bgioState?.G?.activePlayers ?? turnState.activePlayers;
+  const localPlayerName =
+    bgioState?.G?.playerMap && bgioClientRef?.current?.playerID
+      ? bgioState.G.playerMap[bgioClientRef.current.playerID]
+      : turnState.localPlayerName;
+
+  const gameState =
+    bgioState?.ctx?.phase === "setup"
+      ? "setup"
+      : bgioState?.ctx?.phase === "play"
+        ? "play"
+        : configState.gameState;
+  const { mode, setupMode } = configState;
 
   const {
     selectedCell,
@@ -48,13 +59,15 @@ export function useBoardInteraction(
     setPreviewMoves,
     placementPiece,
     placementTerrain,
-    setPlacementTerrain,
     getValidMovesForPiece,
+    setPlacementTerrain,
+    setPlacementPiece,
   } = placementManager;
 
   const handleCellHover = useCallback(
     (r: number, c: number, overrideTurn?: string) => {
       const startTurn = overrideTurn || turn;
+
       if (
         gameState === "setup" &&
         multiplayer?.socketId &&
@@ -62,47 +75,6 @@ export function useBoardInteraction(
       ) {
         setHoveredCell(null);
         setPreviewMoves([]);
-        return;
-      }
-
-      if (gameState === "zen-garden") {
-        if (placementPiece === ("TRASH" as unknown as PieceType)) {
-          setHoveredCell(board[r][c] ? [r, c] : null);
-          return;
-        }
-        if (placementTerrain === TERRAIN_TYPES.FLAT) {
-          setHoveredCell(terrain[r][c] !== TERRAIN_TYPES.FLAT ? [r, c] : null);
-          return;
-        }
-        if (placementPiece) {
-          const availableCount = (inventory[startTurn] || []).filter(
-            (p) => p === placementPiece,
-          ).length;
-          if (availableCount <= 0) {
-            setHoveredCell(null);
-            setPreviewMoves([]);
-            return;
-          }
-          if (!board[r][c] && canPlaceUnit(placementPiece, terrain[r][c])) {
-            setHoveredCell([r, c]);
-            setPreviewMoves(
-              getValidMovesForPiece(
-                r,
-                c,
-                { type: placementPiece, player: startTurn },
-                startTurn,
-              ),
-            );
-          } else {
-            setHoveredCell(null);
-            setPreviewMoves([]);
-          }
-          return;
-        }
-        if (placementTerrain) {
-          setHoveredCell(!board[r][c] ? [r, c] : null);
-          return;
-        }
         return;
       }
 
@@ -148,7 +120,6 @@ export function useBoardInteraction(
       board,
       getValidMovesForPiece,
       gameState,
-      inventory,
       localPlayerName,
       mode,
       multiplayer,
@@ -165,70 +136,14 @@ export function useBoardInteraction(
   const handleCellClick = useCallback(
     (r: number, c: number, overrideTurn?: string) => {
       const startTurn = overrideTurn || turn;
+      const bgioClient = bgioClientRef?.current;
+
       if (
         gameState === "setup" &&
         multiplayer?.socketId &&
         multiplayer.readyPlayers[multiplayer.socketId]
       )
         return;
-
-      if (gameState === "zen-garden") {
-        if (placementPiece === ("TRASH" as unknown as PieceType)) {
-          if (board[r][c]) {
-            const removed = board[r][c]!;
-            const newBoard = board.map((row) => [...row]);
-            newBoard[r][c] = null;
-            setBoard(newBoard);
-            setInventory((prev) => ({
-              ...prev,
-              [removed.player]: [...(prev[removed.player] || []), removed.type],
-            }));
-          }
-          return;
-        }
-        if (placementTerrain === TERRAIN_TYPES.FLAT) {
-          if (terrain[r][c] !== TERRAIN_TYPES.FLAT) {
-            const old = terrain[r][c];
-            const newTerrain = terrain.map((row) => [...row]);
-            newTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
-            setTerrain(newTerrain);
-            setTerrainInventory((prev) => ({
-              ...prev,
-              [startTurn]: [...(prev[startTurn] || []), old],
-            }));
-          }
-          return;
-        }
-        if (placementPiece) {
-          if (!board[r][c] && canPlaceUnit(placementPiece, terrain[r][c])) {
-            setBoard((prev) => {
-              const nb = prev.map((row) => [...row]);
-              nb[r][c] = { type: placementPiece, player: startTurn };
-              return nb;
-            });
-            setInventory((prev) => {
-              const ni = { ...prev };
-              const idx = (ni[startTurn] || []).indexOf(placementPiece);
-              if (idx !== -1) {
-                const list = [...ni[startTurn]];
-                list.splice(idx, 1);
-                ni[startTurn] = list;
-              }
-              return ni;
-            });
-          }
-          return;
-        }
-        if (placementTerrain) {
-          if (!board[r][c]) {
-            const newTerrain = terrain.map((row) => [...row]);
-            newTerrain[r][c] = placementTerrain;
-            setTerrain(newTerrain);
-          }
-          return;
-        }
-        return;
-      }
 
       if (gameState === "setup") {
         const perspectiveTurn =
@@ -240,19 +155,14 @@ export function useBoardInteraction(
 
         if (setupMode === "terrain") {
           const current = terrain[r][c];
-          const bgioClient = bgioClientRef?.current;
           if (current !== TERRAIN_TYPES.FLAT) {
             if (bgioClient)
-              bgioClient.moves.placeTerrain(r, c, TERRAIN_TYPES.FLAT);
-            else {
-              const nt = terrain.map((row) => [...row]);
-              nt[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
-              setTerrain(nt);
-              setTerrainInventory((prev) => ({
-                ...prev,
-                [perspectiveTurn]: [...(prev[perspectiveTurn] || []), current],
-              }));
-            }
+              bgioClient.moves.placeTerrain(
+                r,
+                c,
+                TERRAIN_TYPES.FLAT,
+                perspectiveTurn,
+              );
           } else if (placementTerrain && !board[r][c]) {
             const max =
               activePlayers.length === 2
@@ -264,27 +174,22 @@ export function useBoardInteraction(
             if (count >= max) return;
 
             if (bgioClient) {
-              bgioClient.moves.placeTerrain(r, c, placementTerrain);
-              const remaining = (
-                terrainInventory[perspectiveTurn] || []
-              ).filter((t: TerrainType) => t === placementTerrain).length;
-              if (remaining <= 1) setPlacementTerrain(null);
-            } else {
-              const nt = terrain.map((row) => [...row]);
-              nt[r][c] = placementTerrain;
-              setTerrain(nt);
-              setTerrainInventory((prev) => {
-                const nti = { ...prev };
-                const idx = (nti[perspectiveTurn] || []).indexOf(
-                  placementTerrain,
-                );
-                if (idx !== -1) {
-                  const list = [...nti[perspectiveTurn]];
-                  list.splice(idx, 1);
-                  nti[perspectiveTurn] = list;
-                }
-                return nti;
-              });
+              bgioClient.moves.placeTerrain(
+                r,
+                c,
+                placementTerrain,
+                perspectiveTurn,
+              );
+
+              // Let boardgame.io handle inventory decrement. The client resets state via subscription.
+              // We just handle local UI state like clearing selected if empty.
+              const inventoryCount =
+                boardState.terrainInventory?.[perspectiveTurn]?.filter(
+                  (t) => t === placementTerrain,
+                ).length || 0;
+              if (inventoryCount <= 1) {
+                setPlacementTerrain(null);
+              }
             }
           }
           return;
@@ -292,37 +197,26 @@ export function useBoardInteraction(
 
         if (placementPiece) {
           if (!board[r][c] && canPlaceUnit(placementPiece, terrain[r][c])) {
-            const bgioClient = bgioClientRef?.current;
-            if (bgioClient) bgioClient.moves.placePiece(r, c, placementPiece);
-            else {
-              const nb = board.map((row) => [...row]);
-              nb[r][c] = { type: placementPiece, player: perspectiveTurn };
-              setBoard(nb);
-              setInventory((prev) => {
-                const ni = { ...prev };
-                const idx = (ni[perspectiveTurn] || []).indexOf(placementPiece);
-                if (idx !== -1) {
-                  const list = [...ni[perspectiveTurn]];
-                  list.splice(idx, 1);
-                  ni[perspectiveTurn] = list;
-                }
-                return ni;
-              });
+            if (bgioClient) {
+              bgioClient.moves.placePiece(
+                r,
+                c,
+                placementPiece,
+                perspectiveTurn,
+              );
+              // Clear selected if it was the last one
+              const inventoryCount =
+                boardState.inventory?.[perspectiveTurn]?.filter(
+                  (p) => p === placementPiece,
+                ).length || 0;
+              if (inventoryCount <= 1) {
+                setPlacementPiece(null);
+              }
             }
           }
         } else if (board[r][c] && board[r][c]!.player === perspectiveTurn) {
-          const bgioClient = bgioClientRef?.current;
-          if (bgioClient) bgioClient.moves.placePiece(r, c, null);
-          else {
-            const piece = board[r][c]!.type;
-            const nb = board.map((row) => [...row]);
-            nb[r][c] = null;
-            setBoard(nb);
-            setInventory((prev) => ({
-              ...prev,
-              [perspectiveTurn]: [...(prev[perspectiveTurn] || []), piece],
-            }));
-          }
+          if (bgioClient)
+            bgioClient.moves.placePiece(r, c, null, perspectiveTurn);
         }
         return;
       }
@@ -347,6 +241,8 @@ export function useBoardInteraction(
       activePlayers.length,
       bgioClientRef,
       board,
+      boardState.terrainInventory,
+      boardState.inventory,
       executeMove,
       getValidMovesForPiece,
       gameState,
@@ -356,16 +252,12 @@ export function useBoardInteraction(
       placementPiece,
       placementTerrain,
       selectedCell,
-      setBoard,
-      setInventory,
       setPlacementTerrain,
+      setPlacementPiece,
       setSelectedCell,
-      setTerrain,
-      setTerrainInventory,
       setValidMoves,
       setupMode,
       terrain,
-      terrainInventory,
       turn,
       validMoves,
     ],

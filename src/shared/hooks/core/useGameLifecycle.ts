@@ -1,14 +1,14 @@
 import { useEffect, useCallback } from "react";
-import { isPlayerInCheck, hasAnyValidMoves } from "@logic/gameLogic";
+import { isPlayerInCheck } from "@/core/logic/gameLogic";
 import { serializeGame } from "@utils/gameUrl";
-import type { GameState } from "@engineTypes/game";
-import type { TrenchGameState } from "@game/Game";
+import type { GameState, BoardPiece, TerrainType } from "@/core/types/game";
+import type { TrenchGameState } from "@/client/game/Game";
 import type { Ctx } from "boardgame.io";
 import {
   getPlayersForMode,
   getQuota,
   isPlayerReadyToPlay,
-} from "@setup/logic/coreHelpers";
+} from "@/core/setup/logic/coreHelpers";
 import type { BoardState } from "./useBoardState";
 import type { TurnState } from "./useTurnState";
 import type { GameConfigState } from "./useGameConfig";
@@ -38,10 +38,12 @@ export function useGameLifecycle(
   boardState: BoardState,
   turnState: TurnState,
   configState: GameConfigState,
+  syncedBoard: (BoardPiece | null)[][],
+  syncedTerrain: TerrainType[][],
 ): GameCore {
   const {
-    board,
-    terrain,
+    board: _localBoard,
+    terrain: _localTerrain,
     inventory,
     setBoard,
     setTerrain,
@@ -49,6 +51,11 @@ export function useGameLifecycle(
     setTerrainInventory,
     setCapturedBy,
   } = boardState;
+
+  // Use synced values for internal logic
+  const board = syncedBoard;
+  const terrain = syncedTerrain;
+
   const {
     turn,
     setTurn,
@@ -74,28 +81,17 @@ export function useGameLifecycle(
     [inventory, terrain, mode],
   );
 
+  // Derived state for placement
   const isAllPlaced =
     activePlayers.length > 0 && activePlayers.every((p) => isPlayerReady(p));
 
-  // Turn Logic: Check & Skip & Auto-flip
+  // In-Check and Auto-flip (UI only)
   useEffect(() => {
     if (gameState !== "play") return;
     if (!board.length || !terrain.length) return;
 
     const isCheck = isPlayerInCheck(turn, board, terrain, mode);
     setInCheck(isCheck);
-
-    const hasMoves = hasAnyValidMoves(turn, board, terrain, mode);
-    if (!hasMoves) {
-      const anyPlayerHasMoves = activePlayers.some((p) =>
-        hasAnyValidMoves(p, board, terrain, mode),
-      );
-      if (!anyPlayerHasMoves) return;
-
-      const nextIdx = (activePlayers.indexOf(turn) + 1) % activePlayers.length;
-      const timer = setTimeout(() => setTurn(activePlayers[nextIdx]), 1000);
-      return () => clearTimeout(timer);
-    }
 
     if (autoFlip) {
       if (mode === "2p-ns") setIsFlipped(turn === "red");
@@ -108,9 +104,7 @@ export function useGameLifecycle(
     board,
     terrain,
     mode,
-    activePlayers,
     autoFlip,
-    setTurn,
     setInCheck,
     setIsFlipped,
   ]);

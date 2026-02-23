@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
-import { PIECE_STYLES, type PieceStyle } from "@constants/unit.constants";
-import type { ArmyUnit } from "@engineTypes/game";
+import {
+  PIECE_STYLES,
+  type PieceStyle,
+} from "@/shared/constants/unit.constants";
+import type { ArmyUnit } from "@/core/types/game";
 
 export interface GameTheme {
   darkMode: boolean;
   pieceStyle: PieceStyle;
   toggleTheme: () => void;
   togglePieceStyle: () => void;
-  getIcon: (unit: ArmyUnit, className?: string) => React.ReactNode;
+  getIcon: (
+    unit: ArmyUnit,
+    className?: string,
+    filled?: boolean,
+  ) => React.ReactNode;
 }
 
 export function useGameTheme(): GameTheme {
@@ -44,14 +51,18 @@ export function useGameTheme(): GameTheme {
     });
   };
 
-  const getIcon = (unit: ArmyUnit, className = "") => {
+  const getIcon = (unit: ArmyUnit, className = "", filled = false) => {
     if (pieceStyle === "custom") {
       const Icon = unit.custom;
       return <Icon className={className} />;
     }
     if (pieceStyle === "lucide") {
       const Icon = unit.lucide;
-      return <Icon className={className} />;
+      return (
+        <span className={`contents${filled ? " [&>svg]:fill-current" : ""}`}>
+          <Icon className={className} />
+        </span>
+      );
     }
     return (
       <span className={className}>

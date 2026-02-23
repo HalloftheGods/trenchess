@@ -3,9 +3,9 @@ import type {
   BoardPiece,
   TerrainType,
   PieceType,
-} from "@engineTypes/game";
-import { BOARD_SIZE } from "@constants/core.constants";
-import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
+} from "@/core/types/game";
+import { BOARD_SIZE } from "@/shared/constants/core.constants";
+import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
 
 interface GameSeed {
   m: GameMode; // mode
@@ -37,12 +37,12 @@ export const serializeGame = (
 
   for (let r = 0; r < BOARD_SIZE; r++) {
     for (let c = 0; c < BOARD_SIZE; c++) {
-      const piece = board[r][c];
+      const piece = board?.[r]?.[c];
       if (piece) {
         bData.push({ r, c, p: piece.player, t: piece.type });
       }
-      const t = terrain[r][c];
-      if (t !== TERRAIN_TYPES.FLAT) {
+      const t = terrain?.[r]?.[c];
+      if (t && t !== TERRAIN_TYPES.FLAT) {
         tData.push({ r, c, v: t });
       }
     }

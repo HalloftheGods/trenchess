@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { serializeGame } from "@utils/gameUrl";
-import { INITIAL_ARMY } from "@engineConfigs/unitDetails";
-import { TERRAIN_TYPES } from "@engineConfigs/terrainDetails";
-import { getPlayerCells } from "@setup/setupLogic";
-import { MAX_TERRAIN_PER_PLAYER } from "@constants/terrain.constants";
+import { INITIAL_ARMY } from "@/core/configs/unitDetails";
+import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+import { getPlayerCells } from "@/core/setup/setupLogic";
+import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
 import type {
   GameMode,
   GameState,
   TerrainType,
   BoardPiece,
   PieceType,
-} from "@engineTypes/game";
+} from "@/core/types/game";
 
 export interface UseDeploymentProps {
   mode: GameMode;
