@@ -7,7 +7,6 @@ import InteractiveGuide, {
 import { DEFAULT_SEEDS } from "@/core/data/defaultSeeds";
 import type { PreviewConfig } from "@/shared/types/game";
 
-// Shared Route Components
 import { GuideListItem } from "@/shared/components/molecules/GuideListItem";
 import {
   CornerStartingPositionsGraphic,
@@ -70,7 +69,7 @@ export const LearnEndgameCtwView: React.FC<CaptureTheWorldGuideProps> = ({
       color: "emerald",
       topLabel: "Win Conditions",
       icon: Earth,
-      previewConfig: customPreviewConfig as any,
+      previewConfig: customPreviewConfig,
       description: (
         <ul className="space-y-6">
           <GuideListItem color="emerald">
@@ -102,7 +101,7 @@ export const LearnEndgameCtwView: React.FC<CaptureTheWorldGuideProps> = ({
       color: "indigo",
       topLabel: "Army Assimilation",
       icon: Replace,
-      previewConfig: customPreviewConfig as any,
+      previewConfig: customPreviewConfig,
       description: (
         <ul className="space-y-4">
           <GuideListItem color="indigo">

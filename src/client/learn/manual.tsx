@@ -1,9 +1,3 @@
-/*
- * Copyright (c) 2006 - 2026 Hall of the Gods, Inc.
- * All Rights Reserved.
- *
- * This software is the confidential and proprietary information of Trenchess.
- */
 import React, { useEffect } from "react";
 import { Waves, Crosshair, ShieldPlus, Zap } from "lucide-react";
 import { useRouteContext } from "@/route.context";
@@ -11,8 +5,8 @@ import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
 import { UNIT_DETAILS, unitColorMap } from "@/core/data/unitDetails";
 import type { PieceStyle } from "@/shared/constants/unit.constants";
+import type { TerrainType } from "@/shared/types/game";
 
-// Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import { UnitMovePreview } from "@/shared/components/molecules/UnitMovePreview";
@@ -81,7 +75,6 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
         color="amber"
       />
       <div className="max-w-5xl mx-auto w-full">
-        {/* New Classes & Abilities Header */}
         <div className="flex flex-col items-center mb-16">
           <SectionDivider
             label="You've Unlocked New Classes & Abilities!"
@@ -90,7 +83,6 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
           />
         </div>
 
-        {/* New Classes Section */}
         <div className="mb-12">
           <div className="grid grid-cols-1 gap-8">
             {[PIECES.KNIGHT, PIECES.BISHOP, PIECES.ROOK].map((type) => {
@@ -109,19 +101,17 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
                   className={`relative p-8 rounded-3xl border-4 ${cardBg} ${colors.border} flex flex-col gap-6 transition-all hover:shadow-lg overflow-hidden`}
                 >
                   <div className="flex flex-col sm:flex-row gap-10 items-center">
-                    {/* Unit Icon (Left) */}
                     <div className="flex flex-col shrink-0 gap-4 items-center">
                       <div
                         className={`w-36 h-36 sm:w-48 sm:h-48 rounded-[2.5rem] ${colors.bg} ${colors.text} flex items-center justify-center shadow-inner border border-white/5 transition-transform hover:-rotate-3 group`}
                       >
                         <IconComp className="w-24 h-24 sm:w-32 sm:h-32 transition-transform group-hover:scale-110" />
                       </div>
-                      {/* Terrain Icons Below Main Icon */}
                       {details.levelUp?.sanctuaryTerrain && (
                         <div className="flex justify-center">
                           <div className="flex gap-2">
                             {details.levelUp.sanctuaryTerrain.map(
-                              (key: any, idx: any) => (
+                              (key: TerrainType, idx: number) => (
                                 <TerrainIconBadge
                                   key={idx}
                                   terrainKey={key}
@@ -139,7 +129,6 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
                       )}
                     </div>
 
-                    {/* Description (Middle) */}
                     <div className="flex-1 min-w-0 flex flex-col text-center sm:text-left justify-center py-2">
                       <div className="flex flex-col gap-1 items-center sm:items-start mb-6">
                         <div className="flex items-center gap-4 justify-center sm:justify-start w-full">
@@ -212,7 +201,6 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
                       </ul>
                     </div>
 
-                    {/* Move Preview (Right) */}
                     <div className="shrink-0 flex flex-col gap-3 items-center sm:items-start">
                       <span
                         className={`text-[10px] font-black uppercase tracking-widest ${subtextColor} flex items-center gap-2`}
@@ -232,7 +220,6 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
           </div>
         </div>
 
-        {/* New Abilities Section */}
         <div className="mb-12">
           <div className="grid grid-cols-1 gap-8">
             {[PIECES.PAWN, PIECES.QUEEN, PIECES.KING].map((type) => {
@@ -251,19 +238,17 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
                   className={`relative p-8 rounded-3xl border-4 ${cardBg} ${colors.border} flex flex-col gap-6 transition-all hover:shadow-lg overflow-hidden`}
                 >
                   <div className="flex flex-col sm:flex-row gap-10 items-center">
-                    {/* Unit Icon (Left) */}
                     <div className="flex flex-col shrink-0 gap-4 items-center">
                       <div
                         className={`w-36 h-36 sm:w-48 sm:h-48 rounded-[2.5rem] ${colors.bg} ${colors.text} flex items-center justify-center shadow-inner border border-white/5 transition-transform hover:-rotate-3 group`}
                       >
                         <IconComp className="w-24 h-24 sm:w-32 sm:h-32 transition-transform group-hover:scale-110" />
                       </div>
-                      {/* Terrain Icons Below Main Icon */}
                       {details.levelUp?.sanctuaryTerrain && (
                         <div className="flex justify-center">
                           <div className="flex gap-2">
                             {details.levelUp.sanctuaryTerrain.map(
-                              (key: any, idx: any) => (
+                              (key: TerrainType, idx: number) => (
                                 <TerrainIconBadge
                                   key={idx}
                                   terrainKey={key}
@@ -281,7 +266,6 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
                       )}
                     </div>
 
-                    {/* Description (Middle) */}
                     <div className="flex-1 min-w-0 flex flex-col text-center sm:text-left justify-center py-2">
                       <div className="flex flex-col gap-1 items-center sm:items-start mb-6">
                         <div className="flex items-center gap-4 justify-center sm:justify-start w-full">
@@ -354,7 +338,6 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
                       </ul>
                     </div>
 
-                    {/* Move Preview (Right) */}
                     <div className="shrink-0 flex flex-col gap-3 items-center sm:items-start">
                       <span
                         className={`text-[10px] font-black uppercase tracking-widest ${subtextColor} flex items-center gap-2`}
@@ -373,7 +356,6 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
             })}
           </div>
         </div>
-        {/* Battlefield Intelligence Section */}
         <div className="mb-12">
           {renderSectionTitle(
             "The Battlefield - Terrain Intel",
@@ -381,7 +363,6 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
             true,
           )}
 
-          {/* Key Terrain Rules Note */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div
               className={`p-6 rounded-3xl border-2 border-amber-500/30 ${cardBg} backdrop-blur-xl shadow-lg relative overflow-hidden group`}
@@ -431,7 +412,6 @@ export const LearnManualView: React.FC<LearnManualViewProps> = ({
           <TerrainIntelTool darkMode={darkMode} />
         </div>
 
-        {/* Engagement Rules */}
         <div
           className={`mb-12 p-8 rounded-3xl border ${cardBg} ${borderColor} backdrop-blur-xl shadow-xl`}
         >

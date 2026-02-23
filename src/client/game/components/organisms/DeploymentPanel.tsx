@@ -1,4 +1,3 @@
-// Deployment panel component
 import { useDeployment } from "@hooks/useDeployment";
 import { SegmentedControl } from "@molecules/SegmentedControl";
 import type {
@@ -10,8 +9,8 @@ import type {
   BoardPiece,
   GameMode,
 } from "@/shared/types/game";
+import type { MultiplayerState } from "@/types/multiplayer";
 
-// Atomic Components
 import { DeploymentHeader } from "./DeploymentHeader";
 import { ZenPlayerTabs } from "../atoms/ZenPlayerTabs";
 import { DeploymentTerrainPalette } from "../molecules/DeploymentTerrainPalette";
@@ -61,7 +60,7 @@ interface DeploymentPanelProps {
   setBoard?: (board: (BoardPiece | null)[][]) => void;
   layoutName?: string;
   setInventory?: (inventory: Record<string, PieceType[]>) => void;
-  multiplayer?: any; // Using any to avoid circular deps or complex matching, but ideally MultiplayerState
+  multiplayer?: MultiplayerState;
   localPlayerId?: string;
   playerTypes: Record<string, "human" | "computer">;
   setPlayerTypes: React.Dispatch<
@@ -137,8 +136,9 @@ const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
     setInventory,
   });
 
-  // Guard against uninitialized state (e.g. during multiplayer sync)
-  if (!terrain || !terrain.length || !board || !board.length) {
+  const isStateInitialized = terrain && terrain.length && board && board.length;
+
+  if (!isStateInitialized) {
     return null;
   }
 

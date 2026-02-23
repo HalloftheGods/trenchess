@@ -296,12 +296,7 @@ const App = () => {
     { path: "learn/math", element: <LazyRoutes.learn.math.main /> },
     {
       path: "scoreboard",
-      element: (
-        <LazyRoutes.scoreboard.view
-          darkMode={darkMode}
-          pieceStyle={pieceStyle}
-        />
-      ),
+      element: <LazyRoutes.scoreboard.view darkMode={darkMode} />,
     },
     {
       path: "rules",

@@ -15,7 +15,6 @@ import {
 import ScoreboardLayout from "@/client/game/components/templates/ScoreboardLayout";
 import { RouteBoardPreview } from "@/shared/components/organisms/RouteBoardPreview";
 import type { GameMode } from "@/shared/types/game";
-import type { PieceStyle } from "@/shared/constants/unit.constants";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import { useRouteContext } from "@/route.context";
 
@@ -42,10 +41,9 @@ interface ScoreboardData {
 
 interface ScoreboardProps {
   darkMode: boolean;
-  pieceStyle: PieceStyle;
 }
 
-export const ScoreboardView = ({ darkMode, pieceStyle }: ScoreboardProps) => {
+export const ScoreboardView = ({ darkMode }: ScoreboardProps) => {
   const { setPreviewConfig, setTerrainSeed } = useRouteContext();
   const [data, setData] = useState<ScoreboardData>({ active: [], history: [] });
   const [loading, setLoading] = useState(true);
@@ -62,7 +60,6 @@ export const ScoreboardView = ({ darkMode, pieceStyle }: ScoreboardProps) => {
     newSocket.on("scoreboard_data", (receivedData: ScoreboardData) => {
       setData(receivedData);
       setLoading(false);
-      // Default hover to first active if available, else first history
       if (receivedData.active.length > 0)
         setHoveredMatch(receivedData.active[0]);
       else if (receivedData.history.length > 0)
@@ -74,9 +71,25 @@ export const ScoreboardView = ({ darkMode, pieceStyle }: ScoreboardProps) => {
     };
   }, []);
 
-  // Sync preview with hovered match
+  const getModeLabel = (mode: string) => {
+    switch (mode) {
+      case "2p-ns":
+        return "North vs South";
+      case "2p-ew":
+        return "East vs West";
+      case "2v2":
+        return "Alliance Mode";
+      case "4p":
+        return "Showdown";
+      default:
+        return mode;
+    }
+  };
+
   useEffect(() => {
-    if (hoveredMatch) {
+    const isHoveredMatchFound = hoveredMatch !== null;
+
+    if (isHoveredMatchFound) {
       setPreviewConfig({
         mode: (hoveredMatch.mode as GameMode) || "2p-ns",
         protocol: "custom",
@@ -93,21 +106,6 @@ export const ScoreboardView = ({ darkMode, pieceStyle }: ScoreboardProps) => {
 
   const handleSpectate = (roomId: string) => {
     navigate(`/play/lobby?join=${roomId}`);
-  };
-
-  const getModeLabel = (mode: string) => {
-    switch (mode) {
-      case "2p-ns":
-        return "North vs South";
-      case "2p-ew":
-        return "East vs West";
-      case "2v2":
-        return "Alliance Mode";
-      case "4p":
-        return "Showdown";
-      default:
-        return mode;
-    }
   };
 
   const sidebar = useMemo(
@@ -150,7 +148,7 @@ export const ScoreboardView = ({ darkMode, pieceStyle }: ScoreboardProps) => {
         )}
       </div>
     ),
-    [hoveredMatch, darkMode, pieceStyle],
+    [hoveredMatch],
   );
 
   return (
@@ -161,7 +159,6 @@ export const ScoreboardView = ({ darkMode, pieceStyle }: ScoreboardProps) => {
       />
 
       <section className="flex flex-col gap-8 mt-4">
-        {/* Active Matches Section */}
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between border-b-2 border-slate-200 dark:border-white/5 pb-4">
             <h2 className="text-xl font-black text-brand-blue uppercase tracking-[0.2em] flex items-center gap-3">
@@ -241,7 +238,6 @@ export const ScoreboardView = ({ darkMode, pieceStyle }: ScoreboardProps) => {
           </div>
         </div>
 
-        {/* History Section */}
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between border-b-2 border-slate-200 dark:border-white/5 pb-4">
             <h2 className="text-xl font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-3">
