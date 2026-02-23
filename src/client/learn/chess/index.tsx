@@ -14,7 +14,7 @@ import {
   Castle,
   Lightbulb,
 } from "lucide-react";
-import type { PieceType } from "@/types/game";
+import type { PieceType } from "@/shared/types/game";
 
 import { useRouteContext } from "@/route.context";
 

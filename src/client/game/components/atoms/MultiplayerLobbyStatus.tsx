@@ -1,7 +1,7 @@
 import React from "react";
 import { Sword } from "lucide-react";
 
-import type { MultiplayerState } from "../../../../types/multiplayer";
+import type { MultiplayerState } from "@/shared/types";
 
 interface MultiplayerLobbyStatusProps {
   multiplayer: MultiplayerState;
@@ -19,21 +19,20 @@ export const MultiplayerLobbyStatus: React.FC<MultiplayerLobbyStatusProps> = ({
         <span>Lobby Status</span>
         <span>
           {
-            multiplayer.players.filter(
-              (p: string) => multiplayer.readyPlayers[p],
-            ).length
+            multiplayer.players.filter((p) => multiplayer.readyPlayers[p.id])
+              .length
           }
           /{multiplayer.players.length} Ready
         </span>
       </div>
 
       <div className="flex gap-2 justify-center">
-        {multiplayer.players.map((pid: string, i: number) => {
-          const isReady = multiplayer.readyPlayers[pid];
-          const isMe = pid === multiplayer.socketId;
+        {multiplayer.players.map((p, i: number) => {
+          const isReady = multiplayer.readyPlayers[p.id];
+          const isMe = p.id === multiplayer.socketId;
           return (
             <div
-              key={pid}
+              key={p.id}
               className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all ${isReady ? "bg-emerald-500 border-emerald-400 text-white" : "bg-slate-200 dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-400"}`}
               title={isMe ? "You" : `Player ${i + 1}`}
             >

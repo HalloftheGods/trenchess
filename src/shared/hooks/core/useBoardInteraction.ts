@@ -7,10 +7,10 @@ import type {
   GameCore,
   BgioClient,
   PlacementManager,
-} from "@/types";
-import type { TrenchGameState } from "@/types/game";
+} from "@/shared/types";
+import type { TrenchGameState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
-import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@/core/constants/terrain.constants";
 
 export function useBoardInteraction(
   bgioState: { G: TrenchGameState; ctx: Ctx } | null,

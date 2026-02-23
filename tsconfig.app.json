@@ -68,7 +68,7 @@
       "@utils": [
         "src/shared/utils"
       ],
-      "@sharedTypes/*": [
+      "@types/*": [
         "src/shared/types/*"
       ],
       "@assets/*": [
@@ -78,7 +78,7 @@
         "src/client/game/*"
       ],
       "@constants/*": [
-        "src/shared/constants/*"
+        "src/core/constants/*"
       ],
       "@client/*": [
         "src/client/*"

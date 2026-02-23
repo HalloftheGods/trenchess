@@ -1,7 +1,7 @@
 // Board cell component
 import { Trees as TreeIcon, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
-import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
+import { PLAYER_CONFIGS } from "@/core/constants/unit.constants";
 import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { getQuadrantBaseStyle } from "@/core/setup/boardLayouts";

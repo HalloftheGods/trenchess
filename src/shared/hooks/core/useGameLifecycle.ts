@@ -8,7 +8,7 @@ import type {
   TurnState,
   GameConfigState,
   GameCore,
-} from "@/types";
+} from "@/shared/types";
 import {
   getPlayersForMode,
   getQuota,

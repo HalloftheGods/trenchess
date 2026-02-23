@@ -7,7 +7,7 @@ import type {
   MultiplayerState,
   MultiplayerPlayer,
   ChatMessage,
-} from "@/types";
+} from "@/shared/types";
 
 export const getServerUrl = () => {
   if (import.meta.env.VITE_SERVER_URL) return import.meta.env.VITE_SERVER_URL;

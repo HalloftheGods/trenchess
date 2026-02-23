@@ -1,8 +1,8 @@
 import { INVALID_MOVE } from "boardgame.io/core";
-import { BOARD_SIZE } from "@/shared/constants/core.constants";
+import { BOARD_SIZE } from "@/core/constants/core.constants";
 import { PIECES } from "@/core/data/unitDetails";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
-import type { PieceType, TrenchGameState } from "@/types/game";
+import type { PieceType, TrenchGameState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
 
 export const playPhase = {

@@ -1,8 +1,12 @@
 import { INVALID_MOVE } from "boardgame.io/core";
-import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@/core/constants/terrain.constants";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
-import type { PieceType, TerrainType, TrenchGameState } from "@/types/game";
+import type {
+  PieceType,
+  TerrainType,
+  TrenchGameState,
+} from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
 
 export const setupPhase = {

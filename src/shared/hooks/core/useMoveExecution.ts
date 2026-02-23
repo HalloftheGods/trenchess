@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import type { MoveExecution, GameCore, BgioClient } from "@/types";
+import type { MoveExecution, GameCore, BgioClient } from "@/shared/types";
 
 export function useMoveExecution(
   _core: GameCore, // core is unused now that we delegate to bgioClient

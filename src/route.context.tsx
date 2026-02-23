@@ -5,7 +5,7 @@ import type {
   PreviewConfig,
   SeedItem,
   MultiplayerState,
-} from "@/types";
+} from "@/shared/types";
 
 interface RouteContextType {
   hoveredMenu: string | null;

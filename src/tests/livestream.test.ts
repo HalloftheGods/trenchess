@@ -5,7 +5,7 @@ import {
   applyClassicalFormation,
   generateElementalTerrain,
 } from "@/core/setup/setupLogic";
-import type { GameMode } from "@/types/game";
+import type { GameMode } from "@/shared/types/game";
 import { getBestMove } from "@/core/ai/aiLogic";
 
 const SERVER_URL = "http://localhost:3001";

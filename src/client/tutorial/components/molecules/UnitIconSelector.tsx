@@ -2,6 +2,8 @@ import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { NavButton } from "../atoms/NavButton";
 
+import type { UnitColors } from "@/shared/types/game";
+
 interface UnitIconSelectorProps {
   Icon: React.ElementType;
   colors: {
@@ -12,16 +14,8 @@ interface UnitIconSelectorProps {
   onNext: () => void;
   PrevIcon?: React.ElementType;
   NextIcon?: React.ElementType;
-  prevUnitColors?: {
-    bg: string;
-    text: string;
-    border: string;
-  };
-  nextUnitColors?: {
-    bg: string;
-    text: string;
-    border: string;
-  };
+  prevUnitColors?: UnitColors | null;
+  nextUnitColors?: UnitColors | null;
 }
 
 export const UnitIconSelector: React.FC<UnitIconSelectorProps> = ({

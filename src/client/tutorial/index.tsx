@@ -10,7 +10,7 @@ import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import { isUnitProtected } from "@/core/rules/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import { UNIT_DETAILS, unitColorMap } from "@/core/data/unitDetails";
-import { TERRAIN_LIST } from "@/shared/constants/terrain.constants";
+import { TERRAIN_LIST } from "@/core/constants/terrain.constants";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 import { deserializeGame } from "@/shared/utils/serialization";
 import TerrainDetailsPanel from "@/client/game/components/organisms/TerrainDetailsPanel";

@@ -2,10 +2,13 @@ import React from "react";
 import { Users, Copy, Wifi, LogOut, GlobeLock, Globe } from "lucide-react";
 import RouteCard from "@/shared/components/molecules/RouteCard";
 
-import type { MultiplayerState, MultiplayerPlayer } from "@/types/multiplayer";
+import type {
+  MultiplayerState,
+  MultiplayerPlayer,
+} from "@/shared/types/multiplayer";
 
 interface HeaderLobbyProps {
-  multiplayer: MultiplayerState;
+  multiplayer?: MultiplayerState | null;
   onClick?: () => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;

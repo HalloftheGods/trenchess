@@ -1,6 +1,6 @@
-import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@/core/constants/terrain.constants";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
-import type { GameMode, PieceType, TerrainType } from "@/types";
+import type { GameMode, PieceType, TerrainType } from "@/shared/types";
 import { getPlayerCells } from "./territory";
 
 export const getPlayersForMode = (m: GameMode) =>

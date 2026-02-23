@@ -1,4 +1,4 @@
-import type { PlayerConfig } from "@/types";
+import type { PlayerConfig } from "@/shared/types";
 import { PIECES } from "@/core/data/unitDetails";
 
 // --- Piece Style Options ---

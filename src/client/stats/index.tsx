@@ -11,7 +11,7 @@ import {
 import type { TerrainType } from "@/shared/types/game";
 import { TERRAIN_DETAILS, TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { useRouteContext } from "@/route.context";
-import type { PieceStyle } from "@/shared/constants/unit.constants";
+import type { PieceStyle } from "@/core/constants/unit.constants";
 
 // Cast the imported JSON to our type
 const statsData = statsDataObj as unknown as Record<

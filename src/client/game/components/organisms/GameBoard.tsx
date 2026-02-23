@@ -2,7 +2,7 @@
 import BoardCell from "@/client/game/components/organisms/BoardCell";
 import VictoryOverlay from "@/client/game/components/atoms/VictoryOverlay";
 import { EyeOff } from "lucide-react";
-import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
+import { PLAYER_CONFIGS } from "@/core/constants/unit.constants";
 import type {
   BoardPiece,
   TerrainType,

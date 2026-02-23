@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send, MessageSquare } from "lucide-react";
 
-import type { MultiplayerState, ChatMessage } from "@/types/multiplayer";
+import type { MultiplayerState, ChatMessage } from "@/shared/types/multiplayer";
 
 interface ShoutboxProps {
-  multiplayer: MultiplayerState | null;
+  multiplayer: MultiplayerState | null | undefined;
   darkMode: boolean;
 }
 

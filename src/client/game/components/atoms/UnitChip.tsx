@@ -2,8 +2,8 @@ import React from "react";
 import { ShieldPlus, Ban, Zap } from "lucide-react";
 import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import { unitColorMap } from "@/core/data/unitDetails";
-import { CHESS_NAME } from "@/shared/constants/intel.constants";
-import type { PieceStyle } from "@/shared/constants/unit.constants";
+import { CHESS_NAME } from "@/core/constants/intel.constants";
+import type { PieceStyle } from "@/core/constants/unit.constants";
 
 interface UnitChipProps {
   pieceKey: string;

@@ -1,7 +1,7 @@
 import React from "react";
 import { MultiplayerLobbyStatus } from "../atoms/MultiplayerLobbyStatus";
 
-import type { MultiplayerState } from "@/types/multiplayer";
+import type { MultiplayerState } from "@/shared/types/multiplayer";
 
 interface MultiplayerFooterControlsProps {
   isZen: boolean;
@@ -33,7 +33,7 @@ export const MultiplayerFooterControls: React.FC<
       <MultiplayerLobbyStatus multiplayer={multiplayer} />
 
       {multiplayer.isHost &&
-      multiplayer.players.every((p: string) => multiplayer.readyPlayers[p]) ? (
+      multiplayer.players.every((p) => multiplayer.readyPlayers[p.id]) ? (
         <button
           onClick={() => {
             if (startGame) startGame();
@@ -76,9 +76,7 @@ export const MultiplayerFooterControls: React.FC<
 
       {multiplayer.socketId &&
         multiplayer.readyPlayers[multiplayer.socketId] &&
-        !multiplayer.players.every(
-          (p: string) => multiplayer.readyPlayers[p],
-        ) && (
+        !multiplayer.players.every((p) => multiplayer.readyPlayers[p.id]) && (
           <div className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest animate-pulse">
             Waiting for other players...
           </div>

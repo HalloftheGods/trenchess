@@ -5,7 +5,7 @@ import { IconButton } from "@/shared/components/atoms/IconButton";
 import { FileText, Trophy, AudioWaveform } from "lucide-react";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
 import BackButton from "@/shared/components/molecules/BackButton";
-import type { GameMode, MultiplayerState } from "@/types";
+import type { GameMode, MultiplayerState } from "@/shared/types";
 
 interface MenuLayoutProps {
   darkMode: boolean;

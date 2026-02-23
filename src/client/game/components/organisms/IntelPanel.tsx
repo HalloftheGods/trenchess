@@ -21,7 +21,7 @@ import type {
 import {
   UNIT_INTEL_PANEL,
   TERRAIN_INTEL_PANEL,
-} from "@/shared/constants/intel.constants";
+} from "@/core/constants/intel.constants";
 import { UnitIntelCard } from "../molecules/UnitIntelCard";
 import { TerrainPreviewGrid } from "../molecules/TerrainPreviewGrid";
 

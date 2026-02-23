@@ -20,10 +20,10 @@ import { useBgioSync } from "./core/useBgioSync";
 import { Client } from "boardgame.io/client";
 import { SocketIO } from "boardgame.io/multiplayer";
 import { TrenchGame } from "@/core/TrenchGame";
-import type { TrenchGameState } from "@/types/game";
+import type { TrenchGameState } from "@/shared/types/game";
 import { createInitialState, getPlayersForMode } from "@/core/setup/setupLogic";
 import type { Ctx } from "boardgame.io";
-import type { GameStateHook, BgioClient } from "@/types";
+import type { GameStateHook, BgioClient } from "@/shared/types";
 
 export function useGameState(): GameStateHook {
   const theme = useGameTheme();

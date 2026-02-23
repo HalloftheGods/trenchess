@@ -13,8 +13,8 @@ import {
   UNIT_COLORS,
   UNIT_NAMES,
   ALL_UNITS,
-} from "@/shared/constants/unit.constants";
-import { TERRAIN_LIST } from "@/shared/constants/terrain.constants";
+} from "@/core/constants/unit.constants";
+import { TERRAIN_LIST } from "@/core/constants/terrain.constants";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 
 interface InteractiveHeaderProps {

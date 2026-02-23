@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
-import type { TurnState } from "@/types";
+import { PLAYER_CONFIGS } from "@/core/constants/unit.constants";
+import type { TurnState } from "@/shared/types";
 
 export function useTurnState(): TurnState {
   const [turn, setTurn] = useState("red");

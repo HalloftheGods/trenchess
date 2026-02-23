@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { serializeGame, deserializeGame } from "@utils/gameUrl";
 import { getPlayerCells } from "@/core/setup/setupLogic";
-import { BOARD_SIZE } from "@/shared/constants/core.constants";
+import { BOARD_SIZE } from "@/core/constants/core.constants";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import type {

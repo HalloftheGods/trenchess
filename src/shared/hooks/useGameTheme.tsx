@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { PIECE_STYLES } from "@/shared/constants/unit.constants";
-import type { GameTheme, PieceStyle, ArmyUnit } from "@/types";
+import { PIECE_STYLES } from "@/core/constants/unit.constants";
+import type { GameTheme, PieceStyle, ArmyUnit } from "@/shared/types";
 
 export function useGameTheme(): GameTheme {
   const [darkMode, setDarkMode] = useState(() => {

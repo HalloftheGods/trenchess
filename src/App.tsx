@@ -10,7 +10,7 @@ import {
 import { useGameState } from "@hooks/useGameState";
 import { ROUTES, LazyRoutes } from "@/routes";
 
-import type { TerrainType, GameMode, SeedItem } from "@/types";
+import type { TerrainType, GameMode, SeedItem } from "@/shared/types";
 import { LoadingFallback } from "@/shared/components/molecules/LoadingFallback";
 import { RouteProvider } from "@/route.context";
 import { DEFAULT_SEEDS } from "@/core/data/defaultSeeds";

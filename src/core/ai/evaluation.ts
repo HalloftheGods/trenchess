@@ -1,8 +1,5 @@
-import { BOARD_SIZE } from "@/shared/constants/core.constants";
-import {
-  CENTER_WEIGHT,
-  KING_HUNT_WEIGHT,
-} from "@/shared/constants/ai.constants";
+import { BOARD_SIZE } from "@/core/constants/core.constants";
+import { CENTER_WEIGHT, KING_HUNT_WEIGHT } from "@/core/constants/ai.constants";
 import { PIECES } from "@/core/data/unitDetails";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 import { isPlayerInCheck } from "../rules/gameState";

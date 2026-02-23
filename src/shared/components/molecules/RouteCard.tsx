@@ -1,5 +1,5 @@
 import { type LucideIcon } from "lucide-react";
-import { type PreviewConfig } from "@/types/game";
+import { type PreviewConfig } from "@/shared/types";
 import { useRouteContext } from "@/route.context";
 
 type ColorVariant =

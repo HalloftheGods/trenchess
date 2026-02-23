@@ -19,8 +19,8 @@ import type {
   ArmyUnit,
   UnitDetails,
   UnitColors,
-} from "@/types/game";
-import type { UnitIntelEntry } from "@/types/guide";
+} from "@/shared/types/game";
+import type { UnitIntelEntry } from "@/shared/types/guide";
 
 // --- Piece Types ---
 export const PIECES: Record<string, PieceType> = {

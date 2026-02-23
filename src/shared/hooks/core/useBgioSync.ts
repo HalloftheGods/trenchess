@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import type { TrenchGameState } from "@/types/game";
+import type { TrenchGameState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
-import type { BgioSync, BgioClient } from "@/types";
+import type { BgioSync, BgioClient } from "@/shared/types";
 
 export function useBgioSync(
   bgioClientRef: React.MutableRefObject<BgioClient | undefined>,

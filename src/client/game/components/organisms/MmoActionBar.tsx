@@ -4,7 +4,7 @@ import { ActionBarPalette } from "../molecules/ActionBarPalette";
 import { ActionBarSlot } from "../atoms/ActionBarSlot";
 import { TERRAIN_INTEL, TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { INITIAL_ARMY, PIECES } from "@/core/data/unitDetails";
-import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
+import { PLAYER_CONFIGS } from "@/core/constants/unit.constants";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
 import type {
   ArmyUnit,
@@ -13,7 +13,7 @@ import type {
   TerrainType,
   GameState,
 } from "@/shared/types/game";
-import type { PieceStyle } from "@/shared/constants/unit.constants";
+import type { PieceStyle } from "@/core/constants/unit.constants";
 
 interface MmoActionBarProps {
   gameState?: GameState;

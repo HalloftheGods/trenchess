@@ -9,7 +9,7 @@ import type {
   TerrainType,
   ArmyUnit,
   PieceStyle,
-} from "@/types";
+} from "@/shared/types";
 
 export interface UseBoardPreviewProps {
   selectedMode: GameMode | null;

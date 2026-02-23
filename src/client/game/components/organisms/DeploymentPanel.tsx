@@ -9,7 +9,7 @@ import type {
   BoardPiece,
   GameMode,
 } from "@/shared/types/game";
-import type { MultiplayerState } from "@/types/multiplayer";
+import type { MultiplayerState } from "@/shared/types/multiplayer";
 
 import { DeploymentHeader } from "./DeploymentHeader";
 import { ZenPlayerTabs } from "../atoms/ZenPlayerTabs";

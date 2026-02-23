@@ -3,7 +3,7 @@ import { serializeGame } from "@utils/gameUrl";
 import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { getPlayerCells } from "@/core/setup/setupLogic";
-import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@/core/constants/terrain.constants";
 import type {
   GameMode,
   GameState,

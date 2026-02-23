@@ -7,7 +7,7 @@ import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import { UNIT_DETAILS, unitColorMap } from "@/core/data/unitDetails";
 import { TERRAIN_DETAILS } from "@/core/data/terrainDetails";
 import type { TerrainType, PieceType } from "@/shared/types/game";
-import type { PieceStyle } from "@/shared/constants/unit.constants";
+import type { PieceStyle } from "@/core/constants/unit.constants";
 
 interface TrenchCardDetailProps {
   terrainType: TerrainType;
@@ -17,7 +17,7 @@ interface TrenchCardDetailProps {
   onUnitSelect?: (unitType: string) => void;
 }
 
-import { CHESS_NAME } from "@/shared/constants/intel.constants";
+import { CHESS_NAME } from "@/core/constants/intel.constants";
 
 const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
   terrainType,

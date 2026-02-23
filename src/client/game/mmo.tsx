@@ -9,9 +9,14 @@ import { useDeployment } from "@hooks/useDeployment";
 import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/core/data/terrainDetails";
 import { getPlayerCells } from "@/core/setup/setupLogic";
-import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@/core/constants/terrain.constants";
 import { getServerUrl } from "@hooks/useMultiplayer";
-import type { GameStateHook, GameMode, TerrainType, PieceType } from "@/types";
+import type {
+  GameStateHook,
+  GameMode,
+  TerrainType,
+  PieceType,
+} from "@/shared/types";
 import { GameStartOverlay, ReadyUpPanel } from "./components";
 
 interface MmoViewProps {

@@ -1,7 +1,7 @@
 import React from "react";
 import { Copy, Save } from "lucide-react";
 
-import type { GameState } from "@/types/game";
+import type { GameState } from "@/shared/types/game";
 
 interface ZenActionsProps {
   mirrorBoard?: () => void;

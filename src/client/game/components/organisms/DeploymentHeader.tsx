@@ -1,9 +1,9 @@
 import React from "react";
 import { Sparkles, Sword } from "lucide-react";
-import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
+import { PLAYER_CONFIGS } from "@/core/constants/unit.constants";
 import { PlayerTypeToggle } from "../atoms/PlayerTypeToggle";
 
-import type { MultiplayerState } from "@/types/multiplayer";
+import type { MultiplayerState } from "@/shared/types/multiplayer";
 
 interface DeploymentHeaderProps {
   isZen: boolean;

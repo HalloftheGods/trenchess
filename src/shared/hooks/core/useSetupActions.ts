@@ -7,7 +7,7 @@ import type {
   TerrainType,
   BoardPiece,
   PieceType,
-} from "@/types";
+} from "@/shared/types";
 import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";

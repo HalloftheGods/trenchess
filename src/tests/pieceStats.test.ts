@@ -4,8 +4,8 @@ import * as path from "path";
 import { PIECES } from "../core/data/unitDetails";
 import { getValidMoves } from "../core/rules/movement";
 import { TERRAIN_TYPES } from "../core/data/terrainDetails";
-import { BOARD_SIZE } from "../shared/constants/core.constants";
-import type { BoardPiece, TerrainType, PieceType } from "@/types";
+import { BOARD_SIZE } from "../core/constants/core.constants";
+import type { BoardPiece, TerrainType, PieceType } from "@/shared/types";
 
 const ITERATIONS_PER_MATCHUP = 500_000;
 const MAX_TURNS = 10;

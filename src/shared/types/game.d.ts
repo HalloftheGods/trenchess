@@ -31,6 +31,26 @@ export interface BoardPiece {
   player: string;
 }
 
+export interface TrenchGameState {
+  board: (BoardPiece | null)[][];
+  terrain: TerrainType[][];
+  inventory: Record<string, PieceType[]>;
+  terrainInventory: Record<string, TerrainType[]>;
+  capturedBy: Record<string, BoardPiece[]>;
+  mode: GameMode;
+  activePlayers: string[];
+  readyPlayers: Record<string, boolean>;
+  playerMap: Record<string, string>;
+}
+
+export interface TrenchGameSetupData {
+  mode?: GameMode;
+  board?: (BoardPiece | null)[][];
+  terrain?: TerrainType[][];
+  inventory?: Record<string, PieceType[]>;
+  terrainInventory?: Record<string, TerrainType[]>;
+}
+
 export interface PlayerConfig {
   name: string;
   color: string;
@@ -74,4 +94,30 @@ export interface SeedItem {
   seed: string;
   mode: string;
   createdAt: string;
+}
+
+export type PieceStyle = "emoji" | "bold" | "outlined" | "custom" | "lucide";
+
+export interface UnitDetails {
+  title: string;
+  subtitle?: string;
+  role: string;
+  desc?: string[];
+  levelUp?: {
+    title: string;
+    stats: string[];
+    sanctuaryTerrain?: TerrainType[];
+  };
+  movePattern: (r: number, c: number) => [number, number][];
+  newMovePattern?: (r: number, c: number) => [number, number][];
+  attackPattern?: (r: number, c: number) => [number, number][];
+}
+
+export interface UnitColors {
+  text: string;
+  bg: string;
+  border: string;
+  shadow: string;
+  ribbonBg: string;
+  ring: string;
 }

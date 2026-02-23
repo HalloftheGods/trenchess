@@ -1,10 +1,10 @@
 import React from "react";
 import { useBoardPreview } from "@hooks/useBoardPreview";
-import { BOARD_SIZE } from "@/shared/constants/core.constants";
+import { BOARD_SIZE } from "@/core/constants/core.constants";
 import {
   PLAYER_CONFIGS,
   type PieceStyle,
-} from "@/shared/constants/unit.constants";
+} from "@/core/constants/unit.constants";
 import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { getQuadrantBaseStyle } from "@/core/setup/boardLayouts";

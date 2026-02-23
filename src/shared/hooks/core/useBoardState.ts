@@ -1,5 +1,10 @@
 import { useState } from "react";
-import type { BoardState, BoardPiece, TerrainType, PieceType } from "@/types";
+import type {
+  BoardState,
+  BoardPiece,
+  TerrainType,
+  PieceType,
+} from "@/shared/types";
 
 export function useBoardState(): BoardState {
   const [board, setBoard] = useState<(BoardPiece | null)[][]>(() =>

@@ -9,8 +9,8 @@ import type {
   PieceType,
   TerrainType,
   TrenchGameState,
-} from "@/types/game";
-import type { MultiplayerPlayer } from "@/types/multiplayer";
+} from "@/shared/types/game";
+import type { MultiplayerPlayer } from "@/shared/types/multiplayer";
 
 interface OnlineInfo {
   roomId: string | null;

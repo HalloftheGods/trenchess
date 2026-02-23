@@ -1,8 +1,13 @@
-import { BOARD_SIZE } from "@/shared/constants/core.constants";
-import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
+import { BOARD_SIZE } from "@/core/constants/core.constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@/core/constants/terrain.constants";
 import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
-import type { GameMode, BoardPiece, TerrainType, PieceType } from "@/types";
+import type {
+  GameMode,
+  BoardPiece,
+  TerrainType,
+  PieceType,
+} from "@/shared/types";
 
 export interface SetupResult {
   board: (BoardPiece | null)[][];

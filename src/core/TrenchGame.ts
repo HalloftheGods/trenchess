@@ -4,7 +4,7 @@ import type {
   GameMode,
   TrenchGameState,
   TrenchGameSetupData,
-} from "@/types/game";
+} from "@/shared/types/game";
 import { setupPhase } from "@/core/phases/setupPhase";
 import { playPhase } from "@/core/phases/playPhase";
 

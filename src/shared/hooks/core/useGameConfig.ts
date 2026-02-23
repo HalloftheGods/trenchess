@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import type { GameConfigState, GameMode, GameState, SetupMode } from "@/types";
+import type {
+  GameConfigState,
+  GameMode,
+  GameState,
+  SetupMode,
+} from "@/shared/types";
 
 export function useGameConfig(): GameConfigState {
   const [setupMode, setSetupMode] = useState<SetupMode>("terrain");

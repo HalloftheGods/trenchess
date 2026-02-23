@@ -1,6 +1,6 @@
 import React from "react";
 import { Bomb } from "lucide-react";
-import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
+import { PLAYER_CONFIGS } from "@/core/constants/unit.constants";
 import { PlayerTypeToggle } from "../atoms/PlayerTypeToggle";
 
 interface ReadyUpPanelProps {

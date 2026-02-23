@@ -10,7 +10,7 @@ import { ShieldPlus, X } from "lucide-react";
 import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
 import { TERRAIN_INTEL } from "@/core/data/terrainDetails";
 import { isUnitProtected } from "@/core/rules/gameLogic";
-import type { TerrainType } from "@/types/game";
+import type { TerrainType } from "@/shared/types/game";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -28,7 +28,7 @@ import {
   MOVE_PATTERNS,
   canTraverse,
   ALL_UNITS,
-} from "@/shared/constants/intel.constants";
+} from "@/core/constants/intel.constants";
 
 // ═════════════════════════════════════════════════════════════════════
 // Component

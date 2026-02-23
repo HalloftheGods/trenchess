@@ -9,7 +9,7 @@ import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
-import type { RoomInfo } from "@/types/multiplayer";
+import type { RoomInfo } from "@/shared/types/multiplayer";
 
 export const PlayLobbyView: React.FC = () => {
   const navigate = useNavigate();
@@ -147,15 +147,15 @@ export const PlayLobbyView: React.FC = () => {
           </span>
         </h4>
         <div className="space-y-2">
-          {multiplayer?.players.map((p: string, i: number) => {
-            const isMe = p === multiplayer.socketId;
+          {multiplayer?.players.map((p, i: number) => {
+            const isMe = p.id === multiplayer.socketId;
             const pIdx = i; // Server should ideally provide this, but order is consistent
             const isWhite = pIdx === 0;
             const isBlack = pIdx === 1;
 
             return (
               <div
-                key={p}
+                key={p.id}
                 className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
               >
                 <div className="flex items-center gap-3">
@@ -173,10 +173,10 @@ export const PlayLobbyView: React.FC = () => {
                   <span
                     className={`font-medium ${isMe ? "text-brand-blue font-bold" : "text-slate-700 dark:text-slate-200"}`}
                   >
-                    {isMe ? "You (Operator)" : `Player ${p.slice(0, 4)}`}
+                    {isMe ? "You (Operator)" : `Player ${p.id.slice(0, 4)}`}
                   </span>
                 </div>
-                {multiplayer.readyPlayers[p] && (
+                {multiplayer.readyPlayers[p.id] && (
                   <span className="text-xs font-bold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">
                     READY
                   </span>

@@ -6,8 +6,8 @@ import {
 } from "@/core/setup/setupLogic";
 import { getBestMove } from "@/core/ai/aiLogic";
 import { getValidMoves, isPlayerInCheck } from "@/core/rules/gameLogic";
-import type { BoardPiece, TerrainType, GameMode } from "@/types/game";
-import { BOARD_SIZE } from "@/shared/constants/core.constants";
+import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
+import { BOARD_SIZE } from "@/core/constants/core.constants";
 import { PIECES } from "@/core/data/unitDetails";
 
 // Helper to find the king and check if captured

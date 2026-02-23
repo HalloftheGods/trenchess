@@ -6,8 +6,8 @@ import type {
   PieceType,
   TerrainType,
   BoardPiece,
-} from "@/types";
-import type { TrenchGameState } from "@/types/game";
+} from "@/shared/types";
+import type { TrenchGameState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
 
 export function usePlacementManager(

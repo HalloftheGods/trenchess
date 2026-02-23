@@ -1,5 +1,5 @@
 import { serializeGame } from "@utils/gameUrl";
-import { BOARD_SIZE } from "@/shared/constants/core.constants";
+import { BOARD_SIZE } from "@/core/constants/core.constants";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import type { TerrainType, BoardPiece } from "@/shared/types/game";
 
