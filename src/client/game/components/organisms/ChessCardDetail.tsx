@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { ShieldPlus, UserPlus } from "lucide-react";
-import { PIECES, INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { isUnitProtected } from "@/core/logic/gameLogic";
+import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
+import { isUnitProtected } from "@/core/rules/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import { UNIT_DETAILS, unitColorMap } from "@/core/configs/unitDetails";
-import { TERRAIN_DETAILS } from "@/core/configs/terrainDetails";
-import type { PieceType, TerrainType } from "@/core/types/game";
+import { UNIT_DETAILS, unitColorMap } from "@/core/data/unitDetails";
+import { TERRAIN_DETAILS } from "@/core/data/terrainDetails";
+import type { PieceType, TerrainType } from "@/shared/types/game";
 
 interface ChessCardDetailProps {
   unitType: string;

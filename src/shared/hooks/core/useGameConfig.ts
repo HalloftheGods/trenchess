@@ -1,34 +1,5 @@
 import { useState, useEffect } from "react";
-import type { GameMode, GameState, SetupMode } from "@/core/types/game";
-
-export interface GameConfigState {
-  mode: GameMode;
-  setMode: React.Dispatch<React.SetStateAction<GameMode>>;
-  gameState: GameState;
-  setGameState: React.Dispatch<React.SetStateAction<GameState>>;
-  setupMode: SetupMode;
-  setSetupMode: React.Dispatch<React.SetStateAction<SetupMode>>;
-  isFlipped: boolean;
-  setIsFlipped: React.Dispatch<React.SetStateAction<boolean>>;
-  autoFlip: boolean;
-  setAutoFlip: React.Dispatch<React.SetStateAction<boolean>>;
-  layoutName: string;
-  setLayoutName: React.Dispatch<React.SetStateAction<string>>;
-  selectedPreset:
-    | "classic"
-    | "quick"
-    | "terrainiffic"
-    | "custom"
-    | "zen-garden"
-    | null;
-  setSelectedPreset: React.Dispatch<
-    React.SetStateAction<
-      "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden" | null
-    >
-  >;
-  showBgDebug: boolean;
-  setShowBgDebug: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import type { GameConfigState, GameMode, GameState, SetupMode } from "@/types";
 
 export function useGameConfig(): GameConfigState {
   const [setupMode, setSetupMode] = useState<SetupMode>("terrain");

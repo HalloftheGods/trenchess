@@ -1,15 +1,5 @@
 import { useCallback } from "react";
-import type { GameCore, BgioClient } from "./useGameLifecycle";
-
-export interface MoveExecution {
-  executeMove: (
-    fromR: number,
-    fromC: number,
-    toR: number,
-    toC: number,
-    isAiMove?: boolean,
-  ) => void;
-}
+import type { MoveExecution, GameCore, BgioClient } from "@/types";
 
 export function useMoveExecution(
   _core: GameCore, // core is unused now that we delegate to bgioClient

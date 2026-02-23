@@ -7,22 +7,28 @@ import { ReadyUpPanel } from "./components/molecules/ReadyUpPanel";
 import { GameStartOverlay } from "./components/atoms/GameStartOverlay";
 import { useRouteContext } from "@/route.context";
 import { useDeployment } from "@hooks/useDeployment";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/core/configs/terrainDetails";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/core/data/terrainDetails";
 import { getPlayerCells } from "@/core/setup/setupLogic";
 import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
 import { getServerUrl } from "@hooks/useMultiplayer";
-import type { useGameState } from "@hooks/useGameState";
-import type { GameMode } from "@/core/types/game";
+import type {
+  GameStateHook,
+  GameMode,
+  BgioMatch,
+  BgioMatchPlayer,
+  TerrainType,
+  PieceType,
+} from "@/types";
 
 interface MmoViewProps {
-  game: ReturnType<typeof useGameState>;
+  game: GameStateHook;
 }
 
 const isPlayerFullyPlaced = (
   pid: string,
-  terrain: any[][],
-  inventory: Record<string, any[]>,
+  terrain: TerrainType[][],
+  inventory: Record<string, PieceType[]>,
   mode: GameMode,
   activePlayers: string[],
 ): boolean => {

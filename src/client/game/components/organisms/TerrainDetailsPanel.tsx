@@ -12,13 +12,13 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { TERRAIN_INTEL } from "@/core/configs/terrainDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import { isUnitProtected } from "@/core/logic/gameLogic";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { TERRAIN_INTEL } from "@/core/data/terrainDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { isUnitProtected } from "@/core/rules/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import { unitColorMap } from "@/core/configs/unitDetails";
-import type { PieceType, TerrainType } from "@/core/types/game";
+import { unitColorMap } from "@/core/data/unitDetails";
+import type { PieceType, TerrainType } from "@/shared/types/game";
 
 interface TerrainDetailsPanelProps {
   darkMode: boolean;

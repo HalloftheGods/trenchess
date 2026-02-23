@@ -1,7 +1,7 @@
 import { BOARD_SIZE } from "@/shared/constants/core.constants";
-import { PIECES } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES, TERRAIN_DETAILS } from "@/core/configs/terrainDetails";
-import type { PieceType, TerrainType } from "@/core/types/game";
+import { PIECES } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES, TERRAIN_DETAILS } from "@/core/data/terrainDetails";
+import type { PieceType, TerrainType } from "@/shared/types/game";
 import { getValidMoves } from "./movement";
 
 export const isUnitProtected = (

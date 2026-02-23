@@ -1,8 +1,8 @@
 import { INVALID_MOVE } from "boardgame.io/core";
 import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
-import type { PieceType, TerrainType } from "@/core/types/game";
+import type { PieceType, TerrainType } from "@/shared/types/game";
 
 export const setupPhase = {
   start: true,

@@ -1,7 +1,7 @@
 import Stockfish from "fairy-stockfish-nnue.wasm/stockfish.js";
-import type { BoardPiece } from "@/core/types/game";
+import type { BoardPiece } from "@/shared/types/game";
 import { BOARD_SIZE } from "@/shared/constants/core.constants";
-import { PIECES } from "@/core/configs/unitDetails";
+import { PIECES } from "@/core/data/unitDetails";
 
 class StockfishEngine {
   private engine: any = null;

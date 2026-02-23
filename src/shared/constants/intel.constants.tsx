@@ -1,13 +1,13 @@
 import React from "react";
 import { Waves, Trees, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
-import { PIECES } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import type { PieceType } from "@/core/types/game";
+import { PIECES } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import type { PieceType } from "@/shared/types/game";
 import type {
   UnitIntelPanelEntry,
   TerrainIntelPanelEntry,
-} from "@/core/types/guide";
+} from "@/shared/types/guide";
 
 export interface TerrainDef {
   name: string;

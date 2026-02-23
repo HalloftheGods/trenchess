@@ -1,7 +1,7 @@
 import React from "react";
 import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
-import type { ArmyUnit, BoardPiece } from "@/core/types/game";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import type { ArmyUnit, BoardPiece } from "@/shared/types/game";
 
 export interface UnitIntelCardProps {
   pid: string;

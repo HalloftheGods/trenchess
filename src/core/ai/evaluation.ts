@@ -3,9 +3,9 @@ import {
   CENTER_WEIGHT,
   KING_HUNT_WEIGHT,
 } from "@/shared/constants/ai.constants";
-import { PIECES } from "@/core/configs/unitDetails";
-import type { BoardPiece, TerrainType, GameMode } from "@/core/types/game";
-import { isPlayerInCheck } from "../logic/gameState";
+import { PIECES } from "@/core/data/unitDetails";
+import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
+import { isPlayerInCheck } from "../rules/gameState";
 
 // --- Heuristic Weights ---
 export const SCORES: Record<string, number> = {

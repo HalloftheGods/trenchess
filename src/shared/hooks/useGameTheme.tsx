@@ -1,21 +1,6 @@
 import { useState, useEffect } from "react";
-import {
-  PIECE_STYLES,
-  type PieceStyle,
-} from "@/shared/constants/unit.constants";
-import type { ArmyUnit } from "@/core/types/game";
-
-export interface GameTheme {
-  darkMode: boolean;
-  pieceStyle: PieceStyle;
-  toggleTheme: () => void;
-  togglePieceStyle: () => void;
-  getIcon: (
-    unit: ArmyUnit,
-    className?: string,
-    filled?: boolean,
-  ) => React.ReactNode;
-}
+import { PIECE_STYLES } from "@/shared/constants/unit.constants";
+import type { GameTheme, PieceStyle, ArmyUnit } from "@/types";
 
 export function useGameTheme(): GameTheme {
   const [darkMode, setDarkMode] = useState(() => {

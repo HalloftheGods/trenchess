@@ -1,9 +1,9 @@
 import React from "react";
-import { PIECES } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import { getValidMoves } from "@/core/logic/gameLogic";
-import type { PieceType } from "@/core/types/game";
-import type { TerrainIntelPanelEntry } from "@/core/types/guide";
+import { PIECES } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { getValidMoves } from "@/core/rules/gameLogic";
+import type { PieceType } from "@/shared/types/game";
+import type { TerrainIntelPanelEntry } from "@/shared/types/guide";
 
 export interface TerrainPreviewGridProps {
   unitType: string;

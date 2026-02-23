@@ -1,38 +1,24 @@
 import { useEffect, useCallback } from "react";
-import { isPlayerInCheck } from "@/core/logic/gameLogic";
+import { isPlayerInCheck } from "@/core/rules/gameLogic";
 import { serializeGame } from "@utils/gameUrl";
-import type { GameState, BoardPiece, TerrainType } from "@/core/types/game";
-import type { TrenchGameState } from "@/client/game/Game";
+import type {
+  GameState,
+  BoardPiece,
+  TerrainType,
+  BoardState,
+  TurnState,
+  GameConfigState,
+  BgioClient,
+  GameCore,
+} from "@/types";
+import type { TrenchGameState } from "@/types/game";
 import type { Ctx } from "boardgame.io";
 import {
   getPlayersForMode,
   getQuota,
   isPlayerReadyToPlay,
-} from "@/core/setup/logic/coreHelpers";
-import type { BoardState } from "./useBoardState";
-import type { TurnState } from "./useTurnState";
-import type { GameConfigState } from "./useGameConfig";
+} from "@/core/setup/generators/coreHelpers";
 import { useUrlSync } from "./useUrlSync";
-
-export interface BgioClient {
-  moves: Record<string, (...args: unknown[]) => void>;
-  stop: () => void;
-  start: () => void;
-  subscribe: (
-    cb: (state: { G: TrenchGameState; ctx: Ctx } | null) => void,
-  ) => () => void;
-  playerID: string | null;
-  matchID: string | null;
-}
-
-export interface GameCore {
-  boardState: BoardState;
-  turnState: TurnState;
-  configState: GameConfigState;
-  isAllPlaced: boolean;
-  isPlayerReady: (p: string) => boolean;
-  initFromSeed: (seed: string, targetState?: GameState) => boolean;
-}
 
 export function useGameLifecycle(
   boardState: BoardState,

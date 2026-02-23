@@ -1,7 +1,7 @@
 import { BOARD_SIZE } from "@/shared/constants/core.constants";
-import { PIECES } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import type { BoardPiece, TerrainType, GameMode } from "@/core/types/game";
+import { PIECES } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 import { isPlayerInCheck } from "./gameState";
 
 export const getValidMoves = (

@@ -3,9 +3,9 @@ import React, { useMemo, useState } from "react";
 import InteractiveGuide, {
   type Slide,
 } from "@/shared/components/templates/InteractiveGuide";
-import { PIECES, INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { UNIT_DETAILS, unitColorMap } from "@/core/configs/unitDetails";
-import type { PieceType, TerrainType, ArmyUnit } from "@/core/types/game";
+import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
+import { UNIT_DETAILS, unitColorMap } from "@/core/data/unitDetails";
+import type { PieceType, TerrainType, ArmyUnit } from "@/shared/types/game";
 // Shared Route Components
 import { TerrainIconBadge } from "@/shared/components/atoms/TerrainIconBadge";
 import { UnitMovePreview } from "@/shared/components/molecules/UnitMovePreview";

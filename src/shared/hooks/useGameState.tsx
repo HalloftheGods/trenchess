@@ -1,62 +1,42 @@
 import { useRef, useEffect, useCallback, useState } from "react";
-import { useGameTheme, type GameTheme } from "@hooks/useGameTheme";
-import {
-  useMultiplayer,
-  getServerUrl,
-  type MultiplayerState,
-} from "@hooks/useMultiplayer";
+import { useGameTheme } from "@hooks/useGameTheme";
+import { useMultiplayer, getServerUrl } from "@hooks/useMultiplayer";
 import { useComputerOpponent } from "@hooks/useComputerOpponent";
 
 // Core State Atoms
-import { useBoardState, type BoardState } from "./core/useBoardState";
-import { useTurnState, type TurnState } from "./core/useTurnState";
-import { useGameConfig, type GameConfigState } from "./core/useGameConfig";
+import { useBoardState } from "./core/useBoardState";
+import { useTurnState } from "./core/useTurnState";
+import { useGameConfig } from "./core/useGameConfig";
 
 // Logic Directors
-import {
-  useGameLifecycle,
-  type GameCore,
-  type BgioClient,
-} from "./core/useGameLifecycle";
-import {
-  usePlacementManager,
-  type PlacementManager,
-} from "./core/usePlacementManager";
-import { useMoveExecution, type MoveExecution } from "./core/useMoveExecution";
-import {
-  useBoardInteraction,
-  type BoardInteraction,
-} from "./core/useBoardInteraction";
-import {
-  useZenGardenInteraction,
-  type ZenGardenInteraction,
-} from "./core/useZenGardenInteraction";
-import { useSetupActions, type SetupActions } from "./core/useSetupActions";
+import { useGameLifecycle } from "./core/useGameLifecycle";
+import { usePlacementManager } from "./core/usePlacementManager";
+import { useMoveExecution } from "./core/useMoveExecution";
+import { useBoardInteraction } from "./core/useBoardInteraction";
+import { useZenGardenInteraction } from "./core/useZenGardenInteraction";
+import { useSetupActions } from "./core/useSetupActions";
 import { useBgioSync } from "./core/useBgioSync";
 
 import { Client } from "boardgame.io/client";
 import { SocketIO } from "boardgame.io/multiplayer";
-import { TrenchGame, type TrenchGameState } from "@/client/game/Game";
+import { TrenchGame } from "@/core/TrenchGame";
+import type { TrenchGameState } from "@/types/game";
 import { createInitialState, getPlayersForMode } from "@/core/setup/setupLogic";
 import type { Ctx } from "boardgame.io";
-
-export interface GameStateHook
-  extends
-    GameTheme,
-    BoardState,
-    TurnState,
-    GameConfigState,
-    GameCore,
-    PlacementManager,
-    MoveExecution,
-    BoardInteraction,
-    ZenGardenInteraction,
-    SetupActions {
-  bgioState: { G: TrenchGameState; ctx: Ctx } | null;
-  ready: () => void;
-  startGame: () => void;
-  multiplayer: MultiplayerState;
-}
+import type {
+  GameStateHook,
+  BoardState,
+  TurnState,
+  GameConfigState,
+  GameCore,
+  PlacementManager,
+  MoveExecution,
+  BoardInteraction,
+  ZenGardenInteraction,
+  SetupActions,
+  BgioClient,
+  MultiplayerState,
+} from "@/types";
 
 export function useGameState(): GameStateHook {
   const theme = useGameTheme();

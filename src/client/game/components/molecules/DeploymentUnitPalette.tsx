@@ -1,7 +1,7 @@
 import React from "react";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
-import type { ArmyUnit, PieceType, SetupMode } from "@/core/types/game";
+import type { ArmyUnit, PieceType, SetupMode } from "@/shared/types/game";
 
 interface DeploymentUnitPaletteProps {
   turn: string;

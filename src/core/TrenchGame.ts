@@ -2,32 +2,11 @@ import type { Game } from "boardgame.io";
 import { createInitialState } from "@/core/setup/setupLogic";
 import type {
   GameMode,
-  BoardPiece,
-  TerrainType,
-  PieceType,
-} from "@/core/types/game";
+  TrenchGameState,
+  TrenchGameSetupData,
+} from "@/types/game";
 import { setupPhase } from "@/core/phases/setupPhase";
 import { playPhase } from "@/core/phases/playPhase";
-
-export interface TrenchGameState {
-  board: (BoardPiece | null)[][];
-  terrain: TerrainType[][];
-  inventory: Record<string, PieceType[]>;
-  terrainInventory: Record<string, TerrainType[]>;
-  capturedBy: Record<string, BoardPiece[]>;
-  mode: GameMode;
-  activePlayers: string[];
-  readyPlayers: Record<string, boolean>;
-  playerMap: Record<string, string>;
-}
-
-export interface TrenchGameSetupData {
-  mode?: GameMode;
-  board?: (BoardPiece | null)[][];
-  terrain?: TerrainType[][];
-  inventory?: Record<string, PieceType[]>;
-  terrainInventory?: Record<string, TerrainType[]>;
-}
 
 export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
   name: "battle-chess",

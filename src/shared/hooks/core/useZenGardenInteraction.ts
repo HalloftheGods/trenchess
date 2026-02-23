@@ -1,16 +1,15 @@
 import { useCallback } from "react";
 import { canPlaceUnit } from "@/core/setup/setupLogic";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import type { TerrainType, PieceType } from "@/core/types/game";
-import type { GameCore } from "./useGameLifecycle";
-import type { PlacementManager } from "./usePlacementManager";
-import type { TrenchGameState } from "@/client/game/Game";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import type {
+  ZenGardenInteraction,
+  GameCore,
+  PlacementManager,
+  TerrainType,
+  PieceType,
+} from "@/types";
+import type { TrenchGameState } from "@/types/game";
 import type { Ctx } from "boardgame.io";
-
-export interface ZenGardenInteraction {
-  handleZenGardenHover: (r: number, c: number, overrideTurn?: string) => void;
-  handleZenGardenClick: (r: number, c: number, overrideTurn?: string) => void;
-}
 
 export function useZenGardenInteraction(
   bgioState: { G: TrenchGameState; ctx: Ctx } | null,

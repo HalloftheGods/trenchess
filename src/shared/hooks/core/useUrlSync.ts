@@ -2,15 +2,15 @@ import { useCallback, useEffect } from "react";
 import { serializeGame, deserializeGame } from "@utils/gameUrl";
 import { getPlayerCells } from "@/core/setup/setupLogic";
 import { BOARD_SIZE } from "@/shared/constants/core.constants";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
 import type {
   GameMode,
   GameState as GameStateType,
   PieceType,
   TerrainType,
   BoardPiece,
-} from "@/core/types/game";
+} from "@/shared/types/game";
 
 interface UrlSyncDeps {
   mode: GameMode;

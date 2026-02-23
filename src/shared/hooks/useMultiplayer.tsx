@@ -1,5 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
 import { LobbyClient } from "boardgame.io/client";
+import type {
+  RoomInfo,
+  BgioMatchPlayer,
+  BgioMatch,
+  MultiplayerState,
+} from "@/types";
 
 export const getServerUrl = () => {
   if (typeof window === "undefined") return "http://localhost:3001";
@@ -8,51 +14,6 @@ export const getServerUrl = () => {
   }
   return window.location.protocol + "//" + window.location.hostname + ":3001";
 };
-
-export interface RoomInfo {
-  id: string;
-  players: number;
-  maxPlayers: number;
-  status: string;
-  mode: string;
-  isPrivate: boolean;
-  raw: Record<string, unknown>;
-}
-
-export interface BgioMatchPlayer {
-  id: number;
-  name?: string;
-}
-
-export interface BgioMatch {
-  matchID: string;
-  players: BgioMatchPlayer[];
-  gameover?: unknown;
-  setupData?: { mode?: string };
-  [key: string]: unknown;
-}
-
-export interface MultiplayerState {
-  isConnected: boolean;
-  roomId: string | null;
-  players: string[];
-  readyPlayers: Record<string, boolean>;
-  socketId: string | null;
-  isHost: boolean;
-  availableRooms: RoomInfo[];
-  onlineCount: number;
-  playerIndex: number | null;
-  playerCredentials: string | null;
-  chatMessages: Record<string, unknown>[];
-  sendMessage: (text: string) => void;
-  joinGame: (roomId: string) => Promise<void>;
-  hostGame: () => Promise<string>;
-  leaveGame: () => Promise<void>;
-  toggleReady: (isReady: boolean) => void;
-  sendGameState: (state: Record<string, unknown>) => void;
-  sendMove: (move: Record<string, unknown>) => void;
-  refreshRooms: () => Promise<void>;
-}
 
 export function useMultiplayer(): MultiplayerState {
   const [isConnected, setIsConnected] = useState(false);

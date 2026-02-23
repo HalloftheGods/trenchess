@@ -1,7 +1,7 @@
 import React from "react";
-import { INITIAL_ARMY, unitColorMap } from "@/core/configs/unitDetails";
+import { INITIAL_ARMY, unitColorMap } from "@/core/data/unitDetails";
 import { CHESS_NAME } from "./UnitChip";
-import type { TerrainDetail } from "@/core/configs/terrainDetails";
+import type { TerrainDetail } from "@/core/data/terrainDetails";
 
 interface SanctuaryBadgeListProps {
   terrain: TerrainDetail;

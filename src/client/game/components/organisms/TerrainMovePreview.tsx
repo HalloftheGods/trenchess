@@ -6,9 +6,9 @@
  */
 import React from "react";
 import { Trees, Waves, Mountain, ShieldPlus, X } from "lucide-react";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import { PIECES } from "@/core/configs/unitDetails";
-import { isUnitProtected } from "@/core/logic/gameLogic";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { PIECES } from "@/core/data/unitDetails";
+import { isUnitProtected } from "@/core/rules/gameLogic";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
 
 /** Which terrain icon keys each unit has in its levelUp data. */

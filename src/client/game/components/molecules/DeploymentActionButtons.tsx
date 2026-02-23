@@ -1,6 +1,6 @@
 import React from "react";
 import { Shuffle, LayoutGrid, Bomb, Mountain } from "lucide-react";
-import type { SetupMode } from "@/core/types/game";
+import type { SetupMode } from "@/shared/types/game";
 
 interface DeploymentActionButtonsProps {
   setupMode: SetupMode;

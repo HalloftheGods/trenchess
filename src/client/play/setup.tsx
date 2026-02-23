@@ -20,7 +20,7 @@ import {
   DualToneSwords,
   DualToneSwordsEw,
 } from "@/shared/components/atoms/RouteIcons";
-import type { GameMode } from "@/core/types/game";
+import type { GameMode } from "@/shared/types/game";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";

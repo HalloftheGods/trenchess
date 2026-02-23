@@ -1,2 +1,2 @@
-export * from "./logic/styling";
-export * from "./logic/formations";
+export * from "./generators/styling";
+export * from "./generators/formations";

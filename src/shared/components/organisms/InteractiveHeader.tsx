@@ -6,8 +6,8 @@
  */
 import React from "react";
 import { ArrowLeft } from "lucide-react";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { isUnitProtected } from "@/core/logic/gameLogic";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { isUnitProtected } from "@/core/rules/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import {
   UNIT_COLORS,
@@ -15,7 +15,7 @@ import {
   ALL_UNITS,
 } from "@/shared/constants/unit.constants";
 import { TERRAIN_LIST } from "@/shared/constants/terrain.constants";
-import type { PieceType, TerrainType } from "@/core/types/game";
+import type { PieceType, TerrainType } from "@/shared/types/game";
 
 interface InteractiveHeaderProps {
   darkMode: boolean;

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import InteractiveGuide, {
   type Slide,
 } from "@/shared/components/templates/InteractiveGuide";
-import { DEFAULT_SEEDS } from "@/core/configs/defaultSeeds";
+import { DEFAULT_SEEDS } from "@/core/data/defaultSeeds";
 
 // Shared Route Components
 import { GuideListItem } from "@/shared/components/molecules/GuideListItem";

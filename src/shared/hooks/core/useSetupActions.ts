@@ -1,32 +1,16 @@
 import { useCallback } from "react";
 import * as SetupLogic from "@/core/setup/setupLogic";
 import type {
+  SetupActions,
+  GameCore,
   GameMode,
   TerrainType,
   BoardPiece,
   PieceType,
-} from "@/core/types/game";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+} from "@/types";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
-import type { GameCore } from "./useGameLifecycle";
-
-export interface SetupActions {
-  initGame: (selectedMode: GameMode) => void;
-  initGameWithPreset: (
-    selectedMode: GameMode,
-    preset: string | null,
-    newPlayerTypes?: Record<string, "human" | "computer">,
-    seed?: string,
-  ) => void;
-  randomizeTerrain: () => void;
-  generateElementalTerrain: () => void;
-  randomizeUnits: () => void;
-  setClassicalFormation: () => void;
-  mirrorBoard: () => void;
-  resetTerrain: () => void;
-  resetUnits: () => void;
-}
 
 export function useSetupActions(
   core: GameCore,

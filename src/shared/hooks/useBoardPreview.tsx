@@ -1,15 +1,16 @@
 import { useMemo } from "react";
-import { PIECES } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+import { PIECES } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
-import { TerraForm } from "@/core/setup/TerraForm";
+import { TerraForm } from "@/core/setup/generateTrench";
 import type {
   GameMode,
   PieceType,
   TerrainType,
   ArmyUnit,
-} from "@/core/types/game";
-import type { PieceStyle } from "@/shared/constants/unit.constants";
+  PieceStyle,
+} from "@/types";
+healthcare;
 
 export interface UseBoardPreviewProps {
   selectedMode: GameMode | null;

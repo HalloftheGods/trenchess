@@ -1,17 +1,16 @@
 import { useCallback } from "react";
 import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import type { MultiplayerState } from "@hooks/useMultiplayer";
-import type { GameCore, BgioClient } from "./useGameLifecycle";
-import type { PlacementManager } from "./usePlacementManager";
-import type { TrenchGameState } from "@/client/game/Game";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import type {
+  BoardInteraction,
+  MultiplayerState,
+  GameCore,
+  BgioClient,
+  PlacementManager,
+} from "@/types";
+import type { TrenchGameState } from "@/types/game";
 import type { Ctx } from "boardgame.io";
 import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
-
-export interface BoardInteraction {
-  handleCellHover: (r: number, c: number, overrideTurn?: string) => void;
-  handleCellClick: (r: number, c: number, overrideTurn?: string) => void;
-}
 
 export function useBoardInteraction(
   bgioState: { G: TrenchGameState; ctx: Ctx } | null,

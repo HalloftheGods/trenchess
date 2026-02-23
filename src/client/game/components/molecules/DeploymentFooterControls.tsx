@@ -1,7 +1,7 @@
 import React from "react";
 import { RotateCcw } from "lucide-react";
 import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
-import type { PieceType, TerrainType } from "@/core/types/game";
+import type { PieceType, TerrainType } from "@/shared/types/game";
 
 interface DeploymentFooterControlsProps {
   isZen: boolean;

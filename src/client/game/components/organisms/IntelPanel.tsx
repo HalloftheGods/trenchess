@@ -1,11 +1,11 @@
 // Intel panel component
 import { Info, Users, ThumbsUp, ThumbsDown, AlertTriangle } from "lucide-react";
-import { isUnitProtected } from "@/core/logic/gameLogic";
+import { isUnitProtected } from "@/core/rules/gameLogic";
 import { getTraversableTerrains } from "@/core/setup/terrainCompat";
 import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
-import { PIECES, INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { TERRAIN_INTEL } from "@/core/configs/terrainDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
+import { TERRAIN_INTEL } from "@/core/data/terrainDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import type {
   GameState,
   SetupMode,
@@ -13,11 +13,11 @@ import type {
   TerrainType,
   BoardPiece,
   ArmyUnit,
-} from "@/core/types/game";
+} from "@/shared/types/game";
 import type {
   UnitIntelPanelEntry,
   TerrainIntelPanelEntry,
-} from "@/core/types/guide";
+} from "@/shared/types/guide";
 
 import {
   UNIT_INTEL_PANEL,

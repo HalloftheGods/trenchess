@@ -1,7 +1,7 @@
 import React from "react";
 import { Database } from "lucide-react";
 import { deserializeGame } from "@utils/gameUrl";
-import type { BoardPiece, TerrainType, PieceType } from "@/core/types/game";
+import type { BoardPiece, TerrainType, PieceType } from "@/shared/types/game";
 
 interface SeedLibraryProps {
   librarySeeds: any[];

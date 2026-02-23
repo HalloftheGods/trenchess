@@ -1,4 +1,4 @@
-import type { BoardPiece, TerrainType, GameMode } from "@/core/types/game";
+import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 import { getAllMoves, minimax } from "./minimax";
 
 export interface Move {

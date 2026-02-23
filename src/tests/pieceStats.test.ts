@@ -2,10 +2,10 @@ import { describe, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
 import { PIECES } from "../core/configs/unitDetails";
-import { getValidMoves } from "../core/logic/movement";
+import { getValidMoves } from "../core/rules/movement";
 import { TERRAIN_TYPES } from "../core/configs/terrainDetails";
 import { BOARD_SIZE } from "../shared/constants/core.constants";
-import type { BoardPiece, TerrainType } from "../core/types/game";
+import type { BoardPiece, TerrainType } from "../shared/types/game";
 
 const ITERATIONS_PER_MATCHUP = 500_000;
 const MAX_TURNS = 10;

@@ -7,9 +7,9 @@
  */
 import React from "react";
 import { ShieldPlus, X } from "lucide-react";
-import { PIECES, INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { TERRAIN_INTEL } from "@/core/configs/terrainDetails";
-import { isUnitProtected } from "@/core/logic/gameLogic";
+import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
+import { TERRAIN_INTEL } from "@/core/data/terrainDetails";
+import { isUnitProtected } from "@/core/rules/gameLogic";
 
 // ── Types ────────────────────────────────────────────────────────────
 

@@ -1,9 +1,9 @@
 import React from "react";
 import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { Box, Flex } from "@atoms";
-import type { ArmyUnit, PieceType, TerrainType } from "@/core/types/game";
+import type { ArmyUnit, PieceType, TerrainType } from "@/shared/types/game";
 
 interface PiecePlacementPreviewProps {
   placementPiece: PieceType | null;

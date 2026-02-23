@@ -1,7 +1,7 @@
 import { BOARD_SIZE } from "@/shared/constants/core.constants";
 import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import type { GameMode, TerrainType } from "@/core/types/game";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import type { GameMode, TerrainType } from "@/shared/types/game";
 import { getPlayerCells } from "@/core/setup/setupLogic";
 
 interface GenerationOptions {

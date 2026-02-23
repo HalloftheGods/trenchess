@@ -1,7 +1,7 @@
 import React from "react";
-import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/core/configs/terrainDetails";
+import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/core/data/terrainDetails";
 import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
-import type { TerrainType, SetupMode, PieceType } from "@/core/types/game";
+import type { TerrainType, SetupMode, PieceType } from "@/shared/types/game";
 
 interface DeploymentTerrainPaletteProps {
   turn: string;

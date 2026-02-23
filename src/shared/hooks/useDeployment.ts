@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { serializeGame } from "@utils/gameUrl";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { getPlayerCells } from "@/core/setup/setupLogic";
 import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
 import type {
@@ -10,7 +10,7 @@ import type {
   TerrainType,
   BoardPiece,
   PieceType,
-} from "@/core/types/game";
+} from "@/shared/types/game";
 
 export interface UseDeploymentProps {
   mode: GameMode;

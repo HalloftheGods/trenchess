@@ -1,8 +1,8 @@
 import { INVALID_MOVE } from "boardgame.io/core";
 import { BOARD_SIZE } from "@/shared/constants/core.constants";
-import { PIECES } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import type { PieceType } from "@/core/types/game";
+import { PIECES } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import type { PieceType } from "@/shared/types/game";
 
 export const playPhase = {
   turn: {

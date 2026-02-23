@@ -1,5 +1,5 @@
-import type { PlayerConfig } from "@/core/types/game";
-import { PIECES } from "@/core/configs/unitDetails";
+import type { PlayerConfig } from "@/types";
+import { PIECES } from "@/core/data/unitDetails";
 
 // --- Piece Style Options ---
 export const PIECE_STYLES = [

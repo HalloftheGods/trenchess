@@ -1,13 +1,8 @@
 import { BOARD_SIZE } from "@/shared/constants/core.constants";
 import { MAX_TERRAIN_PER_PLAYER } from "@/shared/constants/terrain.constants";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import type {
-  GameMode,
-  BoardPiece,
-  TerrainType,
-  PieceType,
-} from "@/core/types/game";
-import { TerraForm } from "../TerraForm";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import type { GameMode, BoardPiece, TerrainType, PieceType } from "@/types";
+import { TerraForm } from "../generateTrench";
 import { getPlayerCells } from "./territory";
 import { canPlaceUnit } from "./validation";
 

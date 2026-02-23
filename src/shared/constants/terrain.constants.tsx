@@ -1,7 +1,7 @@
 import React from "react";
 import { Trees, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 
 // --- Terrain Limits & Deck ---
 export const MAX_TERRAIN_PER_PLAYER = {

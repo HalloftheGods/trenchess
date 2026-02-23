@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import ScoreboardLayout from "@/client/game/components/templates/ScoreboardLayout";
 import { RouteBoardPreview } from "@/shared/components/organisms/RouteBoardPreview";
-import type { GameMode } from "@/core/types/game";
+import type { GameMode } from "@/shared/types/game";
 import type { PieceStyle } from "@/shared/constants/unit.constants";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import { useRouteContext } from "@/route.context";

@@ -5,6 +5,7 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/trenchess/",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -34,9 +35,9 @@ export default defineConfig({
       "@utils": path.resolve(__dirname, "./src/shared/utils"),
       "@assets": path.resolve(__dirname, "./src/shared/assets"),
 
-      "@game": path.resolve(__dirname, "./src/www/game"),
+      "@game": path.resolve(__dirname, "./src/client/game"),
       "@constants": path.resolve(__dirname, "./src/constants"),
-      "@www": path.resolve(__dirname, "./src/www"),
+      "@client": path.resolve(__dirname, "./src/client"),
     },
   },
   server: {

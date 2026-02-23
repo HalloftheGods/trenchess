@@ -5,13 +5,13 @@ import {
   PLAYER_CONFIGS,
   type PieceStyle,
 } from "@/shared/constants/unit.constants";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { getQuadrantBaseStyle } from "@/core/setup/boardLayouts";
-import type { GameMode, TerrainType } from "@/core/types/game";
+import type { GameMode, TerrainType } from "@/shared/types/game";
 import { Edit, Ban } from "lucide-react";
-import { TERRAIN_INTEL } from "@/core/configs/terrainDetails";
-import { TERRAIN_DETAILS } from "@/core/configs/terrainDetails";
+import { TERRAIN_INTEL } from "@/core/data/terrainDetails";
+import { TERRAIN_DETAILS } from "@/core/data/terrainDetails";
 
 interface BoardPreviewProps {
   selectedMode: GameMode | null;

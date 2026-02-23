@@ -12,7 +12,7 @@
         "src/shared/*"
       ],
       "@logic/*": [
-        "src/core/logic/*"
+        "src/core/rules/*"
       ],
       "@ai/*": [
         "src/core/ai/*"
@@ -24,7 +24,7 @@
         "src/core/configs/*"
       ],
       "@engineTypes/*": [
-        "src/core/types/*"
+        "src/shared/types/*"
       ],
       "@bionics/*": [
         "src/shared/components/*"
@@ -80,7 +80,7 @@
       "@constants/*": [
         "src/shared/constants/*"
       ],
-      "@www/*": [
+      "@client/*": [
         "src/client/*"
       ],
     },

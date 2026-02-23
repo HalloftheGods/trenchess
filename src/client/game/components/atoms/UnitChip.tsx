@@ -1,7 +1,7 @@
 import React from "react";
 import { ShieldPlus, Ban, Zap } from "lucide-react";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { unitColorMap } from "@/core/configs/unitDetails";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { unitColorMap } from "@/core/data/unitDetails";
 import { CHESS_NAME } from "@/shared/constants/intel.constants";
 import type { PieceStyle } from "@/shared/constants/unit.constants";
 

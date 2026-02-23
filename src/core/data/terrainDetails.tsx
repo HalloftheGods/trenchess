@@ -7,9 +7,9 @@
 
 import { Trees, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
-import { PIECES } from "@/core/configs/unitDetails";
-import type { TerrainType, PieceType } from "@/core/types/game";
-import type { TerrainIntelEntry } from "@/core/types/guide";
+import { PIECES } from "@/core/data/unitDetails";
+import type { TerrainType, PieceType } from "@/shared/types/game";
+import type { TerrainIntelEntry } from "@/shared/types/guide";
 
 export const TERRAIN_TYPES: Record<string, TerrainType> = {
   FLAT: "flat",

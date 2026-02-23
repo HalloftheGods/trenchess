@@ -4,8 +4,8 @@ import {
   applyClassicalFormation,
 } from "@/core/setup/setupLogic";
 import { getBestMove } from "@/core/ai/aiLogic";
-import { getValidMoves, isPlayerInCheck } from "@/core/logic/gameLogic";
-import type { BoardPiece, TerrainType, GameMode } from "@/core/types/game";
+import { getValidMoves, isPlayerInCheck } from "@/core/rules/gameLogic";
+import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 
 // Configuration
 const SERVER_URL = "http://localhost:3001";

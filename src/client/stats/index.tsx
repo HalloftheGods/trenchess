@@ -7,8 +7,8 @@ import {
   unitColorMap,
   UNIT_DETAILS,
   INITIAL_ARMY,
-} from "@/core/configs/unitDetails";
-import { TERRAIN_DETAILS, TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+} from "@/core/data/unitDetails";
+import { TERRAIN_DETAILS, TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { useRouteContext } from "@/route.context";
 import type { PieceStyle } from "@/shared/constants/unit.constants";
 

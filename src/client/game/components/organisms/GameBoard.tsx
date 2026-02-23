@@ -9,7 +9,7 @@ import type {
   GameState,
   ArmyUnit,
   PieceType,
-} from "@/core/types/game";
+} from "@/shared/types/game";
 
 interface GameBoardProps {
   board: (BoardPiece | null)[][];

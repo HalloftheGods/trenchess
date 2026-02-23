@@ -6,12 +6,12 @@
  * Using new 5-column layout.
  */
 import React, { useState, useEffect, useMemo } from "react";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { isUnitProtected } from "@/core/logic/gameLogic";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { isUnitProtected } from "@/core/rules/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import { UNIT_DETAILS, unitColorMap } from "@/core/configs/unitDetails";
+import { UNIT_DETAILS, unitColorMap } from "@/core/data/unitDetails";
 import { TERRAIN_LIST } from "@/shared/constants/terrain.constants";
-import type { PieceType, TerrainType } from "@/core/types/game";
+import type { PieceType, TerrainType } from "@/shared/types/game";
 import { deserializeGame } from "@/shared/utils/serialization";
 import TerrainDetailsPanel from "@/client/game/components/organisms/TerrainDetailsPanel";
 import InteractiveHeader from "@/shared/components/organisms/InteractiveHeader";

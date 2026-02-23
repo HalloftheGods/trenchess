@@ -1,12 +1,12 @@
 import { BOARD_SIZE } from "@/shared/constants/core.constants";
-import { PIECES } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+import { PIECES } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import type {
   GameMode,
   BoardPiece,
   TerrainType,
   PieceType,
-} from "@/core/types/game";
+} from "@/shared/types/game";
 import { getPlayerCells } from "./territory";
 import { canPlaceUnit } from "./validation";
 

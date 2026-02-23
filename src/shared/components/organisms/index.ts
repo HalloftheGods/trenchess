@@ -2,3 +2,8 @@ export * from './ChiLayoutModal';
 export * from './ErrorBoundary';
 export * from './Header';
 export * from './InteractiveHeader';
+export * from './RouteBoardPreview';
+export * from './RouteBreadcrumbs';
+export * from './RouteDetailModal';
+export * from './RoutePageFooter';
+export * from './RoutePageHeader';

@@ -14,8 +14,8 @@ import {
   KnightIcon,
   PawnIcon,
 } from "@/client/game/components/atoms/UnitIcons";
-import type { TerrainType, PieceType, ArmyUnit } from "@/core/types/game";
-import type { UnitIntelEntry } from "@/core/types/guide";
+import type { TerrainType, PieceType, ArmyUnit } from "@/shared/types/game";
+import type { UnitIntelEntry } from "@/shared/types/guide";
 
 // --- Piece Types ---
 export const PIECES: Record<string, PieceType> = {

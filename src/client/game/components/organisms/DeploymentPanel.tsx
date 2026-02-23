@@ -9,7 +9,7 @@ import type {
   ArmyUnit,
   BoardPiece,
   GameMode,
-} from "@/core/types/game";
+} from "@/shared/types/game";
 
 // Atomic Components
 import { DeploymentHeader } from "./DeploymentHeader";

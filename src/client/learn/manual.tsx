@@ -7,9 +7,9 @@
 import React, { useEffect } from "react";
 import { Waves, Crosshair, ShieldPlus, Zap } from "lucide-react";
 import { useRouteContext } from "@/route.context";
-import { PIECES, INITIAL_ARMY } from "@/core/configs/unitDetails";
+import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
-import { UNIT_DETAILS, unitColorMap } from "@/core/configs/unitDetails";
+import { UNIT_DETAILS, unitColorMap } from "@/core/data/unitDetails";
 import type { PieceStyle } from "@/shared/constants/unit.constants";
 
 // Shared Route Components

@@ -1,29 +1,6 @@
 import { useState, useCallback } from "react";
 import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
-
-export interface TurnState {
-  turn: string;
-  setTurn: React.Dispatch<React.SetStateAction<string>>;
-  activePlayers: string[];
-  setActivePlayers: React.Dispatch<React.SetStateAction<string[]>>;
-  readyPlayers: Record<string, boolean>;
-  setReadyPlayers: React.Dispatch<
-    React.SetStateAction<Record<string, boolean>>
-  >;
-  playerTypes: Record<string, "human" | "computer">;
-  setPlayerTypes: React.Dispatch<
-    React.SetStateAction<Record<string, "human" | "computer">>
-  >;
-  winner: string | null;
-  setWinner: React.Dispatch<React.SetStateAction<string | null>>;
-  inCheck: boolean;
-  setInCheck: React.Dispatch<React.SetStateAction<boolean>>;
-  isThinking: boolean;
-  setIsThinking: React.Dispatch<React.SetStateAction<boolean>>;
-  localPlayerName: string;
-  setLocalPlayerName: React.Dispatch<React.SetStateAction<string>>;
-  getPlayerDisplayName: (pid: string) => string;
-}
+import type { TurnState } from "@/types";
 
 export function useTurnState(): TurnState {
   const [turn, setTurn] = useState("red");

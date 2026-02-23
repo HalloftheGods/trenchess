@@ -1,9 +1,9 @@
 import React from "react";
 import { Trees as TreeIcon, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { Flex } from "@atoms";
-import type { TerrainType } from "@/core/types/game";
+import type { TerrainType } from "@/shared/types/game";
 
 interface TerrainOverlayProps {
   terrainType: TerrainType;

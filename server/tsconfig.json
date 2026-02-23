@@ -84,7 +84,7 @@
         "src/app/assets/*"
       ],
       "@game/*": [
-        "src/app/routes/game/*"
+        "src/client/game/*"
       ],
       "@menu/*": [
         "src/app/routes/menu/*"

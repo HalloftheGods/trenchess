@@ -1,6 +1,6 @@
 import React from "react";
 import { Ban, ShieldPlus, Zap } from "lucide-react";
-import { PIECES, INITIAL_ARMY, unitColorMap } from "@/core/configs/unitDetails";
+import { PIECES, INITIAL_ARMY, unitColorMap } from "@/core/data/unitDetails";
 
 export const CHESS_NAME: Record<string, { chess: string; role: string }> = {
   [PIECES.ROOK]: { chess: "Rook", role: "Heavy Armor" },

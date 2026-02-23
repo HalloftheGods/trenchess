@@ -2,16 +2,21 @@ import fs from "node:fs";
 import path from "node:path";
 
 const TARGET_DIRS = [
-  "src/app/routes/game/components/atoms",
-  "src/app/routes/game/components/molecules",
-  "src/app/routes/game/components/organisms",
-  "src/app/routes/game/components/templates",
-  "src/app/routes/game/components",
   "src/shared/components/atoms",
   "src/shared/components/molecules",
   "src/shared/components/organisms",
   "src/shared/components/templates",
   "src/shared/components",
+  "src/client/game/components/atoms",
+  "src/client/game/components/molecules",
+  "src/client/game/components/organisms",
+  "src/client/game/components/templates",
+  "src/client/game/components",
+  "src/client/tutorial/components/atoms",
+  "src/client/tutorial/components/molecules",
+  "src/client/tutorial/components/organisms",
+  "src/client/tutorial/components/templates",
+  "src/client/tutorial/components",
 ];
 
 const generateBarrel = (dir) => {

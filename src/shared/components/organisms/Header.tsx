@@ -1,5 +1,5 @@
 import { BookOpen, Database } from "lucide-react";
-import type { GameMode } from "@/core/types/game";
+import type { GameMode } from "@/shared/types/game";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 import { SegmentedControl } from "@/shared/components/molecules/SegmentedControl";
 import { PlayerBadge } from "@/client/game/components/atoms/PlayerBadge";

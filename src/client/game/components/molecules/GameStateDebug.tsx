@@ -7,7 +7,7 @@ import type {
   SetupMode,
   PieceType,
   TerrainType,
-} from "@/core/types/game";
+} from "@/shared/types/game";
 
 interface OnlineInfo {
   roomId: string | null;

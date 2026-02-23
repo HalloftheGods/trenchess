@@ -1,12 +1,12 @@
 import React from "react";
 import { ShieldPlus, Ban, Zap, Sparkles } from "lucide-react";
-import { INITIAL_ARMY, PIECES } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
-import { isUnitProtected } from "@/core/logic/gameLogic";
+import { INITIAL_ARMY, PIECES } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
+import { isUnitProtected } from "@/core/rules/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import { UNIT_DETAILS, unitColorMap } from "@/core/configs/unitDetails";
-import { TERRAIN_DETAILS } from "@/core/configs/terrainDetails";
-import type { TerrainType, PieceType } from "@/core/types/game";
+import { UNIT_DETAILS, unitColorMap } from "@/core/data/unitDetails";
+import { TERRAIN_DETAILS } from "@/core/data/terrainDetails";
+import type { TerrainType, PieceType } from "@/shared/types/game";
 import type { PieceStyle } from "@/shared/constants/unit.constants";
 
 interface TrenchCardDetailProps {

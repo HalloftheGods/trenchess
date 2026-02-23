@@ -2,10 +2,10 @@
 import { Trees as TreeIcon, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
 import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
-import { INITIAL_ARMY } from "@/core/configs/unitDetails";
-import { TERRAIN_TYPES } from "@/core/configs/terrainDetails";
+import { INITIAL_ARMY } from "@/core/data/unitDetails";
+import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
 import { getQuadrantBaseStyle } from "@/core/setup/boardLayouts";
-import { isUnitProtected } from "@/core/logic/gameLogic";
+import { isUnitProtected } from "@/core/rules/gameLogic";
 import { Box, Flex } from "@atoms";
 import type {
   BoardPiece,
@@ -13,7 +13,7 @@ import type {
   GameState,
   ArmyUnit,
   PieceType,
-} from "@/core/types/game";
+} from "@/shared/types/game";
 
 interface BoardCellProps {
   r: number;

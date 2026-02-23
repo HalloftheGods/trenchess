@@ -36,7 +36,7 @@ import {
   PIECES,
   UNIT_DETAILS,
   unitColorMap,
-} from "@/core/configs/unitDetails";
+} from "@/core/data/unitDetails";
 
 export const LearnChessMainView: React.FC = () => {
   const navigate = useNavigate();
