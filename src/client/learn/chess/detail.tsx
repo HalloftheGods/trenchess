@@ -5,7 +5,12 @@ import InteractiveGuide, {
 } from "@/shared/components/templates/InteractiveGuide";
 import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
 import { UNIT_DETAILS, unitColorMap } from "@/core/data/unitDetails";
-import type { PieceType, TerrainType, ArmyUnit } from "@/shared/types/game";
+import type {
+  PieceType,
+  TerrainType,
+  ArmyUnit,
+  PreviewConfig,
+} from "@/shared/types/game";
 // Shared Route Components
 import { TerrainIconBadge } from "@/shared/components/atoms/TerrainIconBadge";
 import { UnitMovePreview } from "@/shared/components/molecules/UnitMovePreview";
@@ -23,29 +28,31 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
 }) => {
   const [selectedTerrain, setSelectedTerrain] = useState<string | null>(null);
 
-  const UNIT_ORDER = initialUnit
-    ? [
-        initialUnit,
-        ...[
-          PIECES.PAWN,
-          PIECES.KNIGHT,
-          PIECES.BISHOP,
-          PIECES.ROOK,
-          PIECES.QUEEN,
-          PIECES.KING,
-        ].filter((u: PieceType | string) => u !== initialUnit),
-      ]
-    : [
-        PIECES.PAWN,
-        PIECES.KNIGHT,
-        PIECES.BISHOP,
-        PIECES.ROOK,
-        PIECES.QUEEN,
-        PIECES.KING,
-      ];
-
   const slides: Slide[] = useMemo(() => {
-    return UNIT_ORDER.map((type: PieceType | string) => {
+    const UNIT_ORDER: PieceType[] = (
+      initialUnit
+        ? [
+            initialUnit,
+            ...[
+              PIECES.PAWN,
+              PIECES.KNIGHT,
+              PIECES.BISHOP,
+              PIECES.ROOK,
+              PIECES.QUEEN,
+              PIECES.KING,
+            ].filter((u: string) => u !== initialUnit),
+          ]
+        : [
+            PIECES.PAWN,
+            PIECES.KNIGHT,
+            PIECES.BISHOP,
+            PIECES.ROOK,
+            PIECES.QUEEN,
+            PIECES.KING,
+          ]
+    ) as PieceType[];
+
+    return UNIT_ORDER.map((type: PieceType) => {
       const unit = INITIAL_ARMY.find((u: ArmyUnit) => u.type === type);
       const details = UNIT_DETAILS[type];
 
@@ -70,8 +77,8 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
       ];
       const finalColor = validColors.includes(colorName) ? colorName : "slate";
 
-      const getClassicMoveName = (type: string) => {
-        switch (type) {
+      const getClassicMoveName = (ptype: string) => {
+        switch (ptype) {
           case PIECES.KING:
             return "The 1 OrthogDiagonal Step";
           case PIECES.QUEEN:
@@ -89,8 +96,8 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
         }
       };
 
-      const getThemedMoveName = (type: string) => {
-        switch (type) {
+      const getThemedMoveName = (ptype: string) => {
+        switch (ptype) {
           case PIECES.KING:
             return "The Somersault Assault";
           case PIECES.QUEEN:
@@ -120,15 +127,15 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
           protocol: "classic",
           showIcons: false,
           hideUnits: false,
-        },
+        } as PreviewConfig,
         leftContent: details.levelUp?.sanctuaryTerrain ? (
           <div className="flex items-center gap-6">
             <div className="flex gap-2">
               {details.levelUp.sanctuaryTerrain.map(
-                (key: TerrainType | string, idx: number) => (
+                (key: TerrainType, idx: number) => (
                   <TerrainIconBadge
                     key={idx}
-                    terrainKey={key as TerrainType}
+                    terrainKey={key}
                     active={selectedTerrain === key}
                     onClick={() =>
                       setSelectedTerrain((prev) =>
@@ -227,7 +234,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
         ),
       };
     }).filter(Boolean) as Slide[];
-  }, [UNIT_ORDER, selectedTerrain]);
+  }, [initialUnit, selectedTerrain]);
 
   return (
     <InteractiveGuide

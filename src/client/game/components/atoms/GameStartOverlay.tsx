@@ -1,5 +1,5 @@
 import TrenchessText from "@/shared/components/atoms/TrenchessText";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 
 interface GameStartOverlayProps {
@@ -15,12 +15,7 @@ export const GameStartOverlay: React.FC<GameStartOverlayProps> = ({
   onLockIn,
   onStart,
 }) => {
-  const [visible, setVisible] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
-
-  useEffect(() => {
-    setVisible(true);
-  }, []);
 
   const handleStart = () => {
     setIsFadingOut(true);
@@ -36,7 +31,8 @@ export const GameStartOverlay: React.FC<GameStartOverlayProps> = ({
       className={`
         fixed inset-0 z-[100] flex items-center justify-center
         bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl transition-opacity duration-500
-        ${visible && !isFadingOut ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+        animate-in fade-in
+        ${!isFadingOut ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
       `}
     >
       <div className="relative group scale-110 lg:scale-150">

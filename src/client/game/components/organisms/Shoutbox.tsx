@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send, MessageSquare } from "lucide-react";
 
+import type { MultiplayerState, ChatMessage } from "@/types/multiplayer";
+
 interface ShoutboxProps {
-  multiplayer: any;
+  multiplayer: MultiplayerState | null;
   darkMode: boolean;
 }
 
@@ -72,8 +74,8 @@ const Shoutbox: React.FC<ShoutboxProps> = ({ multiplayer, darkMode }) => {
             </p>
           </div>
         ) : (
-          messages.map((msg: any) => {
-            const isMe = msg.senderId === multiplayer.socketId;
+          messages.map((msg: ChatMessage) => {
+            const isMe = msg.senderId === multiplayer?.socketId;
             return (
               <div
                 key={msg.id}

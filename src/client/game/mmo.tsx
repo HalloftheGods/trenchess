@@ -248,10 +248,12 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
                 isReady={game.readyPlayers[pid]}
                 playerType={game.playerTypes[pid] || "human"}
                 setPlayerType={(type) =>
-                  game.setPlayerTypes((prev: any) => ({
-                    ...prev,
-                    [pid]: type,
-                  }))
+                  game.setPlayerTypes(
+                    (prev: Record<string, "human" | "computer">) => ({
+                      ...prev,
+                      [pid]: type,
+                    }),
+                  )
                 }
                 isOnline={isOnline}
                 isLocalTurn={game.turn === pid}
@@ -297,10 +299,12 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
                 isReady={game.readyPlayers[pid]}
                 playerType={game.playerTypes[pid] || "human"}
                 setPlayerType={(type) =>
-                  game.setPlayerTypes((prev: any) => ({
-                    ...prev,
-                    [pid]: type,
-                  }))
+                  game.setPlayerTypes(
+                    (prev: Record<string, "human" | "computer">) => ({
+                      ...prev,
+                      [pid]: type,
+                    }),
+                  )
                 }
                 isOnline={isOnline}
                 isLocalTurn={game.turn === pid}

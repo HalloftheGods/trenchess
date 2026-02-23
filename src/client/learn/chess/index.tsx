@@ -14,6 +14,7 @@ import {
   Castle,
   Lightbulb,
 } from "lucide-react";
+import type { PieceType } from "@/types/game";
 
 import { useRouteContext } from "@/route.context";
 
@@ -50,13 +51,16 @@ export const LearnChessMainView: React.FC = () => {
 
   const getCategoryForUnit = (type: string | undefined) => {
     if (!type) return null;
-    if (CHESS_PIECES.includes(type as any)) return "chessmen";
+    if (CHESS_PIECES.includes(type as PieceType)) return "chessmen";
     return null;
   };
 
   const [view, setView] = useState<"selection" | "chessmen">(() => {
     if (unitType) {
-      return (getCategoryForUnit(unitType) as any) || "selection";
+      return (
+        (getCategoryForUnit(unitType) as "selection" | "chessmen") ||
+        "selection"
+      );
     }
     const state = location.state as { view?: "selection" | "chessmen" } | null;
     return state?.view || "selection";
@@ -80,7 +84,7 @@ export const LearnChessMainView: React.FC = () => {
   };
 
   // Navigation Logic
-  const chessIndex = UNIT_ORDER.indexOf(unitType as any);
+  const chessIndex = UNIT_ORDER.indexOf(unitType as PieceType);
   const prevUnitType =
     chessIndex !== -1
       ? UNIT_ORDER[(chessIndex - 1 + UNIT_ORDER.length) % UNIT_ORDER.length]
@@ -163,7 +167,7 @@ export const LearnChessMainView: React.FC = () => {
               | "purple"
               | "slate" = "slate";
 
-            let HoverIconComponent: any = unit.custom;
+            let HoverIconComponent: React.ElementType = unit.custom;
 
             if (type === PIECES.PAWN) {
               cardColor = "blue";

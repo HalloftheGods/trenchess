@@ -14,8 +14,13 @@ import {
   KnightIcon,
   PawnIcon,
 } from "@/client/game/components/atoms/UnitIcons";
-import type { TerrainType, PieceType, ArmyUnit } from "@/shared/types/game";
-import type { UnitIntelEntry } from "@/shared/types/guide";
+import type {
+  PieceType,
+  ArmyUnit,
+  UnitDetails,
+  UnitColors,
+} from "@/types/game";
+import type { UnitIntelEntry } from "@/types/guide";
 
 // --- Piece Types ---
 export const PIECES: Record<string, PieceType> = {
@@ -27,17 +32,7 @@ export const PIECES: Record<string, PieceType> = {
   KING: "king",
 };
 
-export const unitColorMap: Record<
-  string,
-  {
-    text: string;
-    bg: string;
-    border: string;
-    shadow: string;
-    ribbonBg: string;
-    ring: string;
-  }
-> = {
+export const unitColorMap: Record<string, UnitColors> = {
   [PIECES.KING]: {
     text: "text-brand-red",
     bg: "bg-brand-red/10",
@@ -88,23 +83,7 @@ export const unitColorMap: Record<
   },
 };
 
-export const UNIT_DETAILS: Record<
-  string,
-  {
-    title: string;
-    subtitle?: string;
-    role: string;
-    desc?: string[];
-    levelUp?: {
-      title: string;
-      stats: string[];
-      sanctuaryTerrain?: TerrainType[];
-    };
-    movePattern: (r: number, c: number) => number[][];
-    newMovePattern?: (r: number, c: number) => number[][];
-    attackPattern?: (r: number, c: number) => number[][];
-  }
-> = {
+export const UNIT_DETAILS: Record<string, UnitDetails> = {
   [PIECES.KING]: {
     title: "Equinox King",
     subtitle: "The Kings",
@@ -118,7 +97,7 @@ export const UNIT_DETAILS: Record<
       ],
       sanctuaryTerrain: ["rubble", "trees", "ponds"],
     },
-    movePattern: (r, c) => [
+    movePattern: (r: number, c: number): [number, number][] => [
       [r - 1, c],
       [r + 1, c],
       [r, c - 1],
@@ -128,13 +107,13 @@ export const UNIT_DETAILS: Record<
       [r + 1, c - 1],
       [r + 1, c + 1],
     ],
-    newMovePattern: (r, c) => [
+    newMovePattern: (r: number, c: number): [number, number][] => [
       [r - 2, c],
       [r + 2, c],
       [r, c - 2],
       [r, c + 2],
     ],
-    attackPattern: (r, c) => [
+    attackPattern: (r: number, c: number): [number, number][] => [
       [r - 1, c],
       [r + 1, c],
       [r, c - 1],
@@ -151,8 +130,8 @@ export const UNIT_DETAILS: Record<
       stats: ["Leap over units L-shape."],
       sanctuaryTerrain: ["rubble", "trees", "ponds"],
     },
-    movePattern: (r, c) => {
-      const moves: number[][] = [];
+    movePattern: (r: number, c: number): [number, number][] => {
+      const moves: [number, number][] = [];
       for (let i = 1; i < 12; i++) {
         moves.push([r + i, c], [r - i, c], [r, c + i], [r, c - i]);
         moves.push(
@@ -164,7 +143,7 @@ export const UNIT_DETAILS: Record<
       }
       return moves;
     },
-    newMovePattern: (r, c) =>
+    newMovePattern: (r: number, c: number): [number, number][] =>
       [
         [-2, -1],
         [-2, 1],
@@ -174,7 +153,10 @@ export const UNIT_DETAILS: Record<
         [1, 2],
         [2, -1],
         [2, 1],
-      ].map(([dr, dc]) => [r + dr, c + dc]),
+      ].map(([dr, dc]): [number, number] => [r + dr, c + dc]) as [
+        number,
+        number,
+      ][],
   },
   [PIECES.ROOK]: {
     title: "Twilight Fortress",
@@ -189,7 +171,7 @@ export const UNIT_DETAILS: Record<
       ],
       sanctuaryTerrain: ["ponds"],
     },
-    newMovePattern(r, c) {
+    newMovePattern(r: number, c: number): [number, number][] {
       return [
         [r - 1, c - 1],
         [r + 1, c - 1],
@@ -197,8 +179,8 @@ export const UNIT_DETAILS: Record<
         [r - 1, c + 1],
       ];
     },
-    movePattern: (r, c) => {
-      const moves: number[][] = [];
+    movePattern: (r: number, c: number): [number, number][] => {
+      const moves: [number, number][] = [];
       for (let i = 1; i < 12; i++) {
         moves.push([r + i, c], [r - i, c], [r, c + i], [r, c - i]);
       }
@@ -218,7 +200,7 @@ export const UNIT_DETAILS: Record<
       ],
       sanctuaryTerrain: ["trees"],
     },
-    newMovePattern(r, c) {
+    newMovePattern(r: number, c: number): [number, number][] {
       return [
         [r - 2, c - 0],
         [r + 2, c - 0],
@@ -226,8 +208,8 @@ export const UNIT_DETAILS: Record<
         [r + 0, c + 2],
       ];
     },
-    movePattern: (r, c) => {
-      const moves: number[][] = [];
+    movePattern: (r: number, c: number): [number, number][] => {
+      const moves: [number, number][] = [];
       for (let i = 1; i < 12; i++) {
         moves.push(
           [r + i, c + i],
@@ -253,15 +235,15 @@ export const UNIT_DETAILS: Record<
       sanctuaryTerrain: ["rubble"],
     },
 
-    newMovePattern(r, c) {
+    newMovePattern(r: number, c: number): [number, number][] {
       return [
         [r + 3, c - 0],
         [r - 3, c - 0],
-        [r + 0, c - 3],
-        [r + 0, c + 3],
+        [r + 0, c - 2],
+        [r + 0, c + 2],
       ];
     },
-    movePattern: (r, c) => [
+    movePattern: (r: number, c: number): [number, number][] => [
       [r - 2, c - 1],
       [r - 2, c + 1],
       [r - 1, c - 2],
@@ -285,13 +267,13 @@ export const UNIT_DETAILS: Record<
       ],
       sanctuaryTerrain: ["rubble", "trees", "ponds"],
     },
-    movePattern: (r, c) => [[r - 1, c]],
-    newMovePattern: (r, c) => [
+    movePattern: (r: number, c: number): [number, number][] => [[r - 1, c]],
+    newMovePattern: (r: number, c: number): [number, number][] => [
       [r + 2, c],
       [r + 2, c - 1],
       [r + 2, c + 1],
     ],
-    attackPattern: (r, c) => [
+    attackPattern: (r: number, c: number): [number, number][] => [
       [r - 1, c - 1],
       [r - 1, c + 1],
       [r + 2, c - 1],

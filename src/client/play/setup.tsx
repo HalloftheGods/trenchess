@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Eye,
@@ -30,7 +30,7 @@ import RouteCard from "@/shared/components/molecules/RouteCard";
 
 export const PlaySetupView: React.FC = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     darkMode,
@@ -45,18 +45,13 @@ export const PlaySetupView: React.FC = () => {
     multiplayer,
   } = useRouteContext();
 
-  const [step, setStep] = useState(1); // 1 = Board, 2 = Preset
-
-  // Initialize from URL param if present
-  useEffect(() => {
-    const s = searchParams.get("step");
-    if (s === "1") setStep(1);
-    if (s === "2") setStep(2);
-  }, [searchParams]);
+  const step = searchParams.get("step") === "2" ? 2 : 1;
 
   const handleBoardSelect = (mode: GameMode) => {
     setSelectedBoard(mode);
-    setStep(2);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("step", "2");
+    setSearchParams(newParams);
   };
 
   const handlePresetSelect = (
@@ -123,7 +118,9 @@ export const PlaySetupView: React.FC = () => {
         onBackClick={() => {
           if (isOnline && !isHost) return;
           if (step === 2) {
-            setStep(1);
+            const newParams = new URLSearchParams(searchParams);
+            newParams.set("step", "1");
+            setSearchParams(newParams);
           } else {
             navigate(isOnline ? "/play/lobby" : "/play/local");
           }
@@ -251,7 +248,7 @@ export const PlaySetupView: React.FC = () => {
             />
             <RouteCard
               onClick={() => {
-                isHost && handlePresetSelect("terrainiffic");
+                if (isHost) handlePresetSelect("terrainiffic");
               }}
               isSelected={selectedPreset === "terrainiffic"}
               preview={{

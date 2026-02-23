@@ -1,13 +1,15 @@
 import React, { useState, useCallback } from "react";
 import AccordionSection from "../atoms/AccordionSection";
 import JsonTreeViewer from "../atoms/JsonTreeViewer";
+import type { Ctx } from "boardgame.io";
 import type {
   GameState,
   GameMode,
   SetupMode,
   PieceType,
   TerrainType,
-} from "@/shared/types/game";
+  TrenchGameState,
+} from "@/types/game";
 
 interface OnlineInfo {
   roomId: string | null;
@@ -63,7 +65,7 @@ interface GameStateDebugProps {
   setActivePlayers?: (val: string[]) => void;
   showBgDebug?: boolean;
   setShowBgDebug?: (val: boolean) => void;
-  bgioState?: { G: any; ctx: any } | null;
+  bgioState?: { G: TrenchGameState; ctx: Ctx } | null;
   onlineInfo?: OnlineInfo;
 }
 
@@ -463,7 +465,7 @@ const GameStateDebug: React.FC<GameStateDebugProps> = ({
           onToggle={() => toggleSection("bgio-g")}
         >
           <div className="py-1">
-            <JsonTreeViewer data={bgioState?.G ?? null} />
+            <JsonTreeViewer data={(bgioState?.G as any) ?? null} />
           </div>
         </AccordionSection>
 
@@ -473,7 +475,7 @@ const GameStateDebug: React.FC<GameStateDebugProps> = ({
           onToggle={() => toggleSection("bgio-ctx")}
         >
           <div className="py-1">
-            <JsonTreeViewer data={bgioState?.ctx ?? null} />
+            <JsonTreeViewer data={(bgioState?.ctx as any) ?? null} />
           </div>
         </AccordionSection>
       </div>

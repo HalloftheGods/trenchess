@@ -1,10 +1,15 @@
 import React from "react";
 import { Database } from "lucide-react";
 import { deserializeGame } from "@utils/gameUrl";
-import type { BoardPiece, TerrainType, PieceType } from "@/shared/types/game";
+import type {
+  BoardPiece,
+  TerrainType,
+  PieceType,
+  SeedItem,
+} from "@/shared/types/game";
 
 interface SeedLibraryProps {
-  librarySeeds: any[];
+  librarySeeds: SeedItem[];
   setBoard?: (board: (BoardPiece | null)[][]) => void;
   setTerrain?: (terrain: TerrainType[][]) => void;
   setPlacementPiece: (piece: PieceType | null) => void;

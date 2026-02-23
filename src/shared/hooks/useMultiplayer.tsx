@@ -5,9 +5,11 @@ import type {
   BgioMatchPlayer,
   BgioMatch,
   MultiplayerState,
+  ChatMessage,
 } from "@/types";
 
 export const getServerUrl = () => {
+  if (import.meta.env.VITE_SERVER_URL) return import.meta.env.VITE_SERVER_URL;
   if (typeof window === "undefined") return "http://localhost:3001";
   if (window.location.hostname.includes("loca.lt")) {
     return "https://battle-chess-server.loca.lt";
@@ -51,7 +53,7 @@ export function useMultiplayer(): MultiplayerState {
   const socketId = playerIndex !== null ? String(playerIndex) : null;
   const readyPlayers = {}; // Tracked in boardgame.io G state
   const onlineCount = availableRooms.length * 2; // Approximated for global lobby
-  const chatMessages: Record<string, unknown>[] = [];
+  const chatMessages: ChatMessage[] = [];
 
   const refreshRooms = useCallback(async () => {
     try {

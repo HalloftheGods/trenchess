@@ -2,7 +2,7 @@
  * Copyright (c) 2006 - 2026 Hall of the Gods, Inc.
  * All Rights Reserved.
  */
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   ChevronLeft,
   Play,
@@ -101,29 +101,25 @@ const SeedLibrary: React.FC<SeedLibraryProps> = ({
   onEditInZen,
   activeMode,
 }) => {
-  const [seeds, setSeeds] = useState<SeedItem[]>([]);
-  const [search, setSearch] = useState("");
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
-  useEffect(() => {
+  const [seeds, setSeeds] = useState<SeedItem[]>(() => {
     const stored = localStorage.getItem("trenchess_seeds");
     if (stored) {
       try {
         const data = JSON.parse(stored);
         if (Array.isArray(data)) {
-          setSeeds(
-            data.sort(
-              (a, b) =>
-                new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime(),
-            ),
+          return data.sort(
+            (a: SeedItem, b: SeedItem) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
           );
         }
       } catch (e) {
         console.error("Failed to parse seeds", e);
       }
     }
-  }, []);
+    return [];
+  });
+  const [search, setSearch] = useState("");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleDelete = (id: string) => {
     if (confirm("Permanently delete this seed?")) {

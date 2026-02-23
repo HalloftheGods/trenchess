@@ -9,6 +9,7 @@ import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
+import type { RoomInfo } from "@/types/multiplayer";
 
 export const PlayLobbyView: React.FC = () => {
   const navigate = useNavigate();
@@ -251,7 +252,7 @@ export const PlayLobbyView: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-        {multiplayer?.availableRooms?.map((room: any) => {
+        {multiplayer?.availableRooms?.map((room: RoomInfo) => {
           const isPrivate = room.isPrivate;
           return (
             <div

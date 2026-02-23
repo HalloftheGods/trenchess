@@ -104,3 +104,27 @@ export const PIECE_STYLES = [
   "lucide",
 ] as const;
 export type PieceStyle = (typeof PIECE_STYLES)[number];
+
+export interface UnitDetails {
+  title: string;
+  subtitle?: string;
+  role: string;
+  desc?: string[];
+  levelUp?: {
+    title: string;
+    stats: string[];
+    sanctuaryTerrain?: TerrainType[];
+  };
+  movePattern: (r: number, c: number) => [number, number][];
+  newMovePattern?: (r: number, c: number) => [number, number][];
+  attackPattern?: (r: number, c: number) => [number, number][];
+}
+
+export interface UnitColors {
+  text: string;
+  bg: string;
+  border: string;
+  shadow: string;
+  ribbonBg: string;
+  ring: string;
+}

@@ -7,6 +7,8 @@ import ForwardButton from "@molecules/ForwardButton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { UNIT_INTEL } from "@/core/data/unitDetails";
 
+import type { PreviewConfig } from "@/shared/types/game";
+
 export interface Slide {
   id: string;
   title: string;
@@ -16,7 +18,7 @@ export interface Slide {
   icon: React.ElementType;
   sideContent?: React.ReactNode;
   infoContent?: React.ReactNode;
-  previewConfig: any;
+  previewConfig: PreviewConfig;
   color:
     | "red"
     | "blue"

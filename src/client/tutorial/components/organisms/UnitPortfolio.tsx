@@ -6,17 +6,18 @@ import { UnitIconSelector } from "../molecules/UnitIconSelector";
 import { MiniMovePreview } from "../molecules/MiniMovePreview";
 import { StatList } from "../molecules/StatList";
 import { TerrainAffinityBar } from "../molecules/TerrainAffinityBar";
+import type { UnitDetails, UnitColors, ArmyUnit } from "@/types/game";
 import type { TerrainAffinityItem } from "../molecules/TerrainAffinityBar";
 
 interface UnitPortfolioProps {
   selectedUnit: string | null;
-  details: any;
-  colors: any;
-  unit: any;
+  details: UnitDetails;
+  colors: UnitColors;
+  unit: ArmyUnit;
   prevUnitType: string;
   nextUnitType: string;
-  prevUnitColors: any;
-  nextUnitColors: any;
+  prevUnitColors: UnitColors;
+  nextUnitColors: UnitColors;
   PrevIcon?: React.ElementType;
   NextIcon?: React.ElementType;
   handlePrevUnit: () => void;

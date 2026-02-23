@@ -1,3 +1,11 @@
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  playerIndex: number;
+  text: string;
+  timestamp: number;
+}
+
 export interface RoomInfo {
   id: string;
   players: number;
@@ -32,7 +40,7 @@ export interface MultiplayerState {
   onlineCount: number;
   playerIndex: number | null;
   playerCredentials: string | null;
-  chatMessages: Record<string, unknown>[];
+  chatMessages: ChatMessage[];
   sendMessage: (text: string) => void;
   joinGame: (roomId: string) => Promise<void>;
   hostGame: () => Promise<string>;

@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  is-generator-function: 1.1.0
-
 importers:
 
   .:
@@ -81,6 +78,9 @@ importers:
       tailwindcss:
         specifier: ^4.2.0
         version: 4.2.0
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -105,6 +105,9 @@ importers:
       is-generator-function:
         specifier: 1.1.0
         version: 1.1.0
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
     devDependencies:
       '@types/cors':
         specifier: ^2.8.19
@@ -121,9 +124,6 @@ importers:
       nodemon:
         specifier: ^3.1.14
         version: 3.1.14
-      tsx:
-        specifier: ^4.21.0
-        version: 4.21.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

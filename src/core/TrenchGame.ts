@@ -11,10 +11,10 @@ import { playPhase } from "@/core/phases/playPhase";
 export const TrenchGame: Game<TrenchGameState, any, TrenchGameSetupData> = {
   name: "battle-chess",
 
-  setup: ({ setupData }) => {
+  setup: ({ setupData }: { setupData?: TrenchGameSetupData }) => {
     const data = setupData as TrenchGameSetupData;
     const mode: GameMode = data?.mode || "2p-ns";
-    let players: string[] = [];
+    let players: string[];
 
     const playerMap: Record<string, string> = {
       "0": "red",

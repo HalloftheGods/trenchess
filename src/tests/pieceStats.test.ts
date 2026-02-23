@@ -195,7 +195,10 @@ describe("Piece Statistics Generator", () => {
       }
     }
 
-    const outputPath = path.resolve(__dirname, "../assets/statistics.json");
+    const outputPath = path.resolve(
+      __dirname,
+      "../shared/assets/statistics.json",
+    );
     fs.writeFileSync(outputPath, JSON.stringify(stats, null, 2), "utf8");
     console.log(
       `Statistics generated with per-terrain data: ${ITERATIONS_PER_MATCHUP.toLocaleString()} per matchup`,

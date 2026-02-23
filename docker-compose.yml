@@ -8,6 +8,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - /app/server/node_modules
     environment:
       - VITE_SERVER_URL=http://localhost:3001
     networks:
@@ -23,6 +24,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - /app/server/node_modules
     networks:
       - trenchess-net
 

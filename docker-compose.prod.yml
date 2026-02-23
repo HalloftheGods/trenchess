@@ -12,7 +12,8 @@ services:
 
   server:
     build:
-      context: ./server
+      context: .
+      dockerfile: server/Dockerfile
       target: prod
     ports:
       - "3001:3001"

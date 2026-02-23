@@ -4,6 +4,7 @@ import InteractiveGuide, {
   type Slide,
 } from "@/shared/components/templates/InteractiveGuide";
 import { TERRAIN_DETAILS } from "@/core/data/terrainDetails";
+import type { PreviewConfig } from "@/shared/types/game";
 
 // Shared Route Components
 import { GuideListItem } from "@/shared/components/molecules/GuideListItem";
@@ -51,7 +52,7 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
             hideUnits: false,
             forcedTerrain: terrain.key,
             useDefaultFormation: true,
-          },
+          } as PreviewConfig,
           description: (
             <div className="space-y-4">
               <ul className="space-y-3">
@@ -82,7 +83,7 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
         showIcons: true,
         hideUnits: false,
         useDefaultFormation: true,
-      },
+      } as PreviewConfig,
       description: (
         <div className="space-y-6 mt-4">
           <div className="flex gap-4">

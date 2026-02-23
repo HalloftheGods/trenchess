@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "tsx index.ts",
     "lint": "tsc --noEmit"
   },
   "keywords": [],
@@ -15,7 +15,8 @@
   "dependencies": {
     "@koa/cors": "^5.0.0",
     "boardgame.io": "^0.50.2",
-    "is-generator-function": "^1.1.2"
+    "is-generator-function": "1.1.0",
+    "tsx": "^4.21.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
@@ -23,7 +24,6 @@
     "@types/node": "^25.3.0",
     "@types/socket.io": "^3.0.2",
     "nodemon": "^3.1.14",
-    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "engines": {

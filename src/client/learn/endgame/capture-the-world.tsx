@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Earth, Crown, Replace, Swords } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import InteractiveGuide, {
   type Slide,
 } from "@/shared/components/templates/InteractiveGuide";
 import { DEFAULT_SEEDS } from "@/core/data/defaultSeeds";
+import type { PreviewConfig } from "@/shared/types/game";
 
 // Shared Route Components
 import { GuideListItem } from "@/shared/components/molecules/GuideListItem";
@@ -21,14 +22,16 @@ interface CaptureTheWorldGuideProps {
 export const LearnEndgameCtwView: React.FC<CaptureTheWorldGuideProps> = ({
   onBack,
 }) => {
-  const randomSeed = useMemo(() => {
+  const [randomSeed, setRandomSeed] = useState<string | undefined>();
+  useEffect(() => {
     const seeds = DEFAULT_SEEDS;
-    if (seeds.length === 0) return undefined;
-    const idx = Math.floor(Math.random() * seeds.length);
-    return seeds[idx]?.seed;
+    if (seeds.length > 0) {
+      const idx = Math.floor(Math.random() * seeds.length);
+      setRandomSeed(seeds[idx]?.seed);
+    }
   }, []);
 
-  const customPreviewConfig = useMemo(() => {
+  const customPreviewConfig: PreviewConfig = useMemo(() => {
     return {
       mode: "2v2",
       protocol: "terrainiffic",
@@ -46,7 +49,7 @@ export const LearnEndgameCtwView: React.FC<CaptureTheWorldGuideProps> = ({
       color: "amber",
       topLabel: "Pregame Setup",
       icon: Crown,
-      previewConfig: customPreviewConfig as any,
+      previewConfig: customPreviewConfig,
       description: (
         <ul className="space-y-4">
           <GuideListItem color="amber">

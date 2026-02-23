@@ -10,6 +10,7 @@ import type {
   TerrainType,
   BoardPiece,
   PieceType,
+  SeedItem,
 } from "@/shared/types/game";
 
 export interface UseDeploymentProps {
@@ -40,15 +41,7 @@ export function useDeployment({
   setInventory,
 }: UseDeploymentProps) {
   const [copied, setCopied] = useState(false);
-  const [librarySeeds, setLibrarySeeds] = useState<
-    {
-      id: string;
-      name: string;
-      seed: string;
-      mode: string;
-      createdAt: string;
-    }[]
-  >([]);
+  const [librarySeeds, setLibrarySeeds] = useState<SeedItem[]>([]);
 
   useEffect(() => {
     if (gameState === "zen-garden") {
@@ -57,10 +50,9 @@ export function useDeployment({
         if (stored) {
           const data = JSON.parse(stored);
           if (Array.isArray(data)) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
             setLibrarySeeds(
               data.sort(
-                (a, b) =>
+                (a: SeedItem, b: SeedItem) =>
                   new Date(b.createdAt).getTime() -
                   new Date(a.createdAt).getTime(),
               ),
@@ -124,13 +116,8 @@ export function useDeployment({
   };
 
   const handleClearBoard = () => {
-    if (
-      confirm("Clear entire layout?") &&
-      setBoard &&
-      setTerrain &&
-      board &&
-      terrain
-    ) {
+    const isConfirmed = confirm("Clear entire layout?");
+    if (isConfirmed && setBoard && setTerrain && board && terrain) {
       setBoard(board.map((row) => row.map(() => null)));
       setTerrain(
         terrain.map((row) => row.map(() => TERRAIN_TYPES.FLAT as TerrainType)),

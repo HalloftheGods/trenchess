@@ -2,7 +2,6 @@
 import { Info, Users, ThumbsUp, ThumbsDown, AlertTriangle } from "lucide-react";
 import { isUnitProtected } from "@/core/rules/gameLogic";
 import { getTraversableTerrains } from "@/core/setup/terrainCompat";
-import { PLAYER_CONFIGS } from "@/shared/constants/unit.constants";
 import { PIECES, INITIAL_ARMY } from "@/core/data/unitDetails";
 import { TERRAIN_INTEL } from "@/core/data/terrainDetails";
 import { TERRAIN_TYPES } from "@/core/data/terrainDetails";
@@ -90,7 +89,6 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
 
             <div className="space-y-4">
               {activePlayers.map((pid) => {
-                PLAYER_CONFIGS[pid];
                 // Calculate army value
                 let armyValue = 0;
 
@@ -281,7 +279,9 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                         const intel = TERRAIN_INTEL[t];
                         if (!intel) return null;
                         const IconComp = intel.icon;
-                        const canTraverse = traversable.includes(t as any);
+                        const canTraverse = traversable.includes(
+                          t as TerrainType,
+                        );
                         const colorClass = intel.color;
                         return (
                           <div
@@ -334,8 +334,6 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
     borderClass = "border-brand-blue/30";
     textClass = "text-brand-blue";
   } else if (terrainData.color === "sky") {
-    bgClass = "bg-sky-50 dark:bg-sky-900/20";
-    borderClass = "border-sky-200 dark:border-sky-500/30";
     bgClass = "bg-sky-50 dark:bg-sky-900/20";
     borderClass = "border-sky-200 dark:border-sky-500/30";
     textClass = "text-sky-500 dark:text-sky-400";
@@ -394,7 +392,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                       tKey = TERRAIN_TYPES.DESERT;
 
                     const isProtected =
-                      tKey && isUnitProtected(uType as any, tKey);
+                      tKey && isUnitProtected(uType as PieceType, tKey);
 
                     return u ? (
                       <div
