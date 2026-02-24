@@ -33,6 +33,7 @@ interface GameBoardProps {
   getIcon: (
     unit: ArmyUnit,
     className?: string,
+    size?: number | string,
     filled?: boolean,
   ) => React.ReactNode;
   getPlayerDisplayName: (pid: string) => string;

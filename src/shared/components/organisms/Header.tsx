@@ -6,7 +6,7 @@ import { PlayerBadge } from "@/client/game/shared/components/atoms/PlayerBadge";
 import { PLAYER_CONFIGS } from "@/constants";
 import GameLogo from "@/shared/components/molecules/GameLogo";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
-import type { PieceStyle } from "@/constants";
+import type { PieceStyle } from "@/shared/types/game";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -55,7 +55,7 @@ const Header = ({
           togglePieceStyle={togglePieceStyle}
           onZenGarden={onZenGarden}
         />
-        
+
         <IconButton
           icon={<BookOpen size={20} />}
           label="Field Manual"

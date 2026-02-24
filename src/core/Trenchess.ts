@@ -9,7 +9,7 @@ import { setupPhase } from "@/core/phases/setupPhase";
 import { playPhase } from "@/core/phases/playPhase";
 import { forfeit } from "@/core/moves/forfeit";
 
-export const Trenchess: Game<TrenchessState, Ctx, TrenchessSetupData> = {
+export const Trenchess: Game<TrenchessState, any, TrenchessSetupData> = {
   name: "trenchess",
 
   setup: (_, setupData) => {

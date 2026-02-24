@@ -67,11 +67,12 @@ export const PlaySetupView: React.FC = () => {
 
       // Determine which slots are human based on the count and the likely board
       // If we don't have a board yet, we'll assume standard 2p (red/blue) or 4p
-      const pids = count <= 2 ? ["red", "blue"] : ["red", "yellow", "green", "blue"];
+      const pids =
+        count <= 2 ? ["red", "blue"] : ["red", "yellow", "green", "blue"];
       pids.forEach((pid, i) => {
         if (i < count) defaultTypes[pid] = "human";
       });
-      
+
       setPlayerTypes(defaultTypes);
     }
 
@@ -272,24 +273,6 @@ export const PlaySetupView: React.FC = () => {
               className="w-full"
             />
             <RouteCard
-              onClick={() => isHost && handlePresetSelect("classic")}
-              isSelected={selectedPreset === "classic"}
-              preview={{
-                mode: selectedBoard,
-                protocol: "classic",
-                hideUnits: false,
-                useDefaultFormation: true,
-              }}
-              darkMode={darkMode}
-              title="π Pi"
-              description='"Library layout. Standard formation."'
-              Icon={Pizza}
-              color="amber"
-              badge="Instant Play"
-              HoverIcon={Pi}
-              className="w-full"
-            />
-            <RouteCard
               onClick={() => {
                 if (isHost) setIsChiModalOpen(true);
               }}
@@ -307,6 +290,24 @@ export const PlaySetupView: React.FC = () => {
               color="emerald"
               badge="Drafting"
               HoverIcon={LandPlot}
+              className="w-full"
+            />
+            <RouteCard
+              onClick={() => isHost && handlePresetSelect("classic")}
+              isSelected={selectedPreset === "classic"}
+              preview={{
+                mode: selectedBoard,
+                protocol: "classic",
+                hideUnits: false,
+                useDefaultFormation: true,
+              }}
+              darkMode={darkMode}
+              title="π Pi"
+              description='"Library layout. Standard formation."'
+              Icon={Pizza}
+              color="amber"
+              badge="Instant Play"
+              HoverIcon={Pi}
               className="w-full"
             />
             <RouteCard

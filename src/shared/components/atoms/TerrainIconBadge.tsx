@@ -34,7 +34,7 @@ export const TerrainIconBadge: React.FC<TerrainIconBadgeProps> = ({
         className={`terrain-badge clickable-unit ${badgeType} ${active ? "ring-4 ring-white shadow-2xl scale-110 z-10" : "opacity-60 hover:opacity-100"} ${className}`}
         onClick={onClick}
       >
-        <Icon size={28} className="fill-current" />
+        {Icon && <Icon size={28} className="fill-current" />}
       </Box>
     );
   }

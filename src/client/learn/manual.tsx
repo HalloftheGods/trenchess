@@ -4,7 +4,7 @@ import { useRouteContext } from "@/route.context";
 import { PIECES, INITIAL_ARMY } from "@/constants";
 import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
 import { UNIT_DETAILS, unitColorMap } from "@/constants";
-import type { PieceStyle } from "@/constants";
+import type { PieceStyle } from "@/shared/types/game";
 import type { TerrainType } from "@/shared/types/game";
 
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";

@@ -1,5 +1,9 @@
 import { TERRAIN_TYPES } from "@/constants";
-import { buildClassicalBoard, buildTerrain, serializeGame } from "./utils";
+import {
+  buildClassicalBoard,
+  buildTerrain,
+  serializeGame,
+} from "@/core/setup/seeds/utils";
 
 export const createGreatDivide = () => {
   const terrain = buildTerrain();

@@ -12,7 +12,7 @@ import {
 import type { TerrainType } from "@/shared/types/game";
 import { TERRAIN_TYPES } from "@/constants";
 import { useRouteContext } from "@/route.context";
-import type { PieceStyle } from "@/constants";
+import type { PieceStyle } from "@/shared/types/game";
 
 // Cast the imported JSON to our type
 const statsData = statsDataObj as unknown as Record<
@@ -296,9 +296,11 @@ export const StatsView = () => {
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-3">
                           <div
-                            className={`p-2 rounded-lg ${terrain.color.bg} ${terrain.color.text}`}
+                            className={`p-2 rounded-lg ${terrain.color?.bg} ${terrain.color?.text}`}
                           >
-                            <terrain.icon className="w-4 h-4" />
+                            {terrain.icon && (
+                              <terrain.icon className="w-4 h-4" />
+                            )}
                           </div>
                           <div>
                             <div className="text-sm font-bold text-white flex items-center gap-2">
