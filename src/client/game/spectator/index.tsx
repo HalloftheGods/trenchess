@@ -95,6 +95,9 @@ const SpectatorView: React.FC<SpectatorViewProps> = ({
           placementTerrain={null}
           setupMode={game.setupMode}
           winner={game.winner}
+          winnerReason={game.winnerReason}
+          inCheck={game.inCheck}
+          lastMove={game.lastMove}
           getIcon={game.getIcon}
           getPlayerDisplayName={game.getPlayerDisplayName}
           handleCellClick={() => {}}

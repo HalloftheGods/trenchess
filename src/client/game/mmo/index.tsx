@@ -210,6 +210,7 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
           winner={game.winner}
           winnerReason={game.winnerReason}
           inCheck={game.inCheck}
+          lastMove={game.lastMove}
           getIcon={game.getIcon}
           getPlayerDisplayName={game.getPlayerDisplayName}
           handleCellClick={(r, c) => game.handleCellClick(r, c)}

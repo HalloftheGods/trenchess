@@ -9,6 +9,7 @@ import type {
   GameState,
   ArmyUnit,
   PieceType,
+  TrenchessState,
 } from "@/shared/types/game";
 
 interface GameBoardProps {
@@ -28,11 +29,7 @@ interface GameBoardProps {
   winner: string | null;
   winnerReason?: string | null;
   inCheck: boolean;
-  lastMove: {
-    from: [number, number];
-    to: [number, number];
-    path: [number, number][];
-  } | null;
+  lastMove: TrenchessState["lastMove"];
   getIcon: (
     unit: ArmyUnit,
     className?: string,

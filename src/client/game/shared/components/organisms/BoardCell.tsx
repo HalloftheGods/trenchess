@@ -12,6 +12,7 @@ import type {
   GameState,
   ArmyUnit,
   PieceType,
+  TrenchessState,
 } from "@/shared/types/game";
 
 interface BoardCellProps {
@@ -32,11 +33,7 @@ interface BoardCellProps {
   setupMode: string;
   fogged: boolean;
   inCheck: boolean;
-  lastMove: {
-    from: [number, number];
-    to: [number, number];
-    path: [number, number][];
-  } | null;
+  lastMove: TrenchessState["lastMove"];
   getIcon: (
     unit: ArmyUnit,
     className?: string,

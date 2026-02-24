@@ -51,7 +51,7 @@ export const LearnEndgameMainView: React.FC = () => {
         <RouteCard
           Icon={Blocks}
           HoverIcon={ChessQueen}
-          title="Capture the Mercenaries"
+          title="Capture the Mercs"
           description='"Some shall sell their swords to the highest bidder."'
           className="h-full w-full"
           color="yellow"
