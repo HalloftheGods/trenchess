@@ -7,6 +7,7 @@ import {
   ChessQueen,
   Earth,
   Tornado,
+  VenetianMask,
 } from "lucide-react";
 import { useRouteContext } from "@/route.context";
 
@@ -24,7 +25,7 @@ export const LearnEndgameMainView: React.FC = () => {
   return (
     <RoutePageLayout>
       <RoutePageHeader
-        label="The Endgame split into 3 different win conditions"
+        label="The Endgame split into 3 different ways to play"
         color="emerald"
         onBackClick={() => navigate("/learn")}
       />
@@ -50,7 +51,7 @@ export const LearnEndgameMainView: React.FC = () => {
         {/* Capture the Mercenaries */}
         <RouteCard
           Icon={Blocks}
-          HoverIcon={ChessQueen}
+          HoverIcon={VenetianMask}
           title="Capture the Mercs"
           description='"Some shall sell their swords to the highest bidder."'
           className="h-full w-full"
