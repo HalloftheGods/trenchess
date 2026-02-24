@@ -1,7 +1,10 @@
 import React from "react";
-import { Columns4 } from "lucide-react";
+import { Columns4, Shield, X } from "lucide-react";
 import { UNIT_DETAILS, PIECES, INITIAL_ARMY, TERRAIN_DETAILS } from "@/constants";
 import { useRouteContext } from "@/route.context";
+import { isUnitProtected } from "@/core/mechanics/gameLogic";
+import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
+import type { PieceType, TerrainType } from "@/shared/types";
 
 interface UnitMovePreviewProps {
   unitType: string;
@@ -44,6 +47,13 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
     : null;
   const TerrainIcon = terrainInfo?.icon;
 
+  const isProtected = selectedTerrain 
+    ? isUnitProtected(unitType, selectedTerrain)
+    : false;
+  const canTraverse = selectedTerrain
+    ? canUnitTraverseTerrain(unitType as PieceType, selectedTerrain as TerrainType)
+    : true;
+
   return (
     <div
       className={`bg-slate-100 dark:bg-white/5 rounded-2xl p-3 border border-slate-200 dark:border-white/5 shadow-inner transition-all duration-300 w-fit ${containerClassName}`}
@@ -58,14 +68,14 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
             const c = i % previewGridSize;
             const isCenter = r === centerRow && c === centerCol;
 
-            // Terrain rows: 1 in front, 1 in back
+            // Terrain area: front and back rows relative to center
             const isFrontRow = r === centerRow - 1;
             const isBackRow = r === centerRow + 1;
             const isTerrainCell = selectedTerrain && (isFrontRow || isBackRow);
 
             const isMoveFound = moves.some(([mr, mc]) => mr === r && mc === c);
             const isNewMoveFound = newMoves.some(
-              ([nr, nc]) => nr === r && nc === c,
+              ([nr, mc]) => nr === r && mc === c,
             );
             const isAttackFound = attacks.some(
               ([ar, ac]) => ar === r && ac === c,
@@ -97,45 +107,57 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
             return (
               <div
                 key={i}
-                className={`w-3 h-3 sm:w-4 sm:h-4 rounded-[1px] relative flex items-center justify-center transition-all duration-300 ${
+                className={`w-4 h-4 sm:w-6 sm:h-6 rounded-[2px] relative flex items-center justify-center transition-all duration-300 ${
                   isCenter
-                    ? "bg-slate-800 dark:bg-white z-20 shadow-lg scale-110"
-                    : isAttack
-                      ? "bg-brand-red shadow-[0_0_15px_rgba(239,68,68,0.4)] z-10"
-                      : isNewMove
-                        ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)] z-10 animate-pulse"
-                        : isMove
-                          ? "bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] z-10"
-                          : isPromotionRow
-                            ? "bg-amber-500/20"
-                            : isTerrainCell
-                              ? `${terrainBg} z-0`
-                              : baseColor
+                    ? "bg-slate-800 dark:bg-white z-30 shadow-xl scale-110"
+                    : isTerrainCell
+                      ? `${terrainBg} z-0`
+                      : baseColor
                 }`}
               >
-                {isPromotionRow && (
+                {isPromotionRow && !isMove && !isNewMove && !isAttack && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500/40" />
                   </div>
                 )}
-                {isAttack && !isCenter && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Columns4
-                      className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white/90"
-                      strokeWidth={2.5}
-                    />
+                
+                {/* Center Piece */}
+                {isCenter && unit && (
+                  getIcon(unit, "dark:text-slate-900 text-white", 18)
+                )}
+
+                {/* Move Indicators - Square-y style */}
+                {(isMove || isNewMove || isAttack) && (
+                  <div className={`absolute inset-[1px] z-10 rounded-sm shadow-sm flex items-center justify-center transition-all ${
+                    isAttack ? "bg-brand-red" :
+                    isNewMove ? "bg-amber-500 animate-pulse" :
+                    isTerrainCell ? (terrainInfo?.color?.headerBg || "bg-emerald-500") :
+                    "bg-emerald-500"
+                  }`}>
+                    {isAttack && <Columns4 size={12} strokeWidth={3} className="text-white/90" />}
+                    {isTerrainCell && isProtected && (
+                      <Shield size={12} className="text-white fill-white/20" />
+                    )}
                   </div>
                 )}
-                {isCenter && unit && (
-                  getIcon(unit, "dark:text-slate-900 text-white", 16)
-                )}
-                {isTerrainCell && TerrainIcon && terrainInfo && (
-                  <TerrainIcon
-                    size={12}
-                    className={`${terrainInfo.color?.text || ""} opacity-60`}
-                  />
+
+                {/* Terrain Decor & Logic */}
+                {isTerrainCell && !isCenter && !isMove && !isNewMove && !isAttack && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    {!canTraverse ? (
+                      <X className="w-3 h-3 text-brand-red/60" strokeWidth={4} />
+                    ) : (
+                      TerrainIcon && (
+                        <TerrainIcon
+                          size={12}
+                          className={`${terrainInfo.color?.text || ""} opacity-20`}
+                        />
+                      )
+                    )}
+                  </div>
                 )}
               </div>
+            );
             );
           },
         )}

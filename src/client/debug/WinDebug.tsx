@@ -13,6 +13,8 @@ const WinDebug: React.FC = () => {
   };
 
   const mockBoard = Array(12).fill(null).map(() => Array(12).fill(null));
+  const mockTerrain = Array(12).fill("flat").map(() => Array(12).fill("flat"));
+  
   // Add some pieces for the winner (red)
   mockBoard[0][0] = { type: "king", player: "red" };
   mockBoard[0][1] = { type: "queen", player: "red" };
@@ -25,6 +27,8 @@ const WinDebug: React.FC = () => {
         reason="checkmate"
         localPlayerName="red"
         board={mockBoard}
+        terrain={mockTerrain as any}
+        mode="2p-ns"
         getPlayerDisplayName={getPlayerDisplayName}
         setGameState={(state) => console.log("Set game state to", state)}
       />

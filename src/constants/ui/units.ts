@@ -157,8 +157,8 @@ export const UNIT_INTEL: Record<string, UnitIntelEntry> = {
     ],
     levelUp: {
       title: "Somersault Assault",
-      stats: ["Speed: +2 (Jump)", "Sanctuary: Forest, Mountains, Swamp"],
-      sanctuaryTerrain: [FORESTS, MOUNTAINS, SWAMPS],
+      stats: ["Speed: +2 (Jump)", "Sanctuary: Forest"],
+      sanctuaryTerrain: [FORESTS],
     },
   },
   [QUEEN]: {
@@ -170,8 +170,8 @@ export const UNIT_INTEL: Record<string, UnitIntelEntry> = {
     ],
     levelUp: {
       title: "8 Legged Gallop",
-      stats: ["Jump: Any Distance", "Sanctuary: Forest, Mountains, Swamp"],
-      sanctuaryTerrain: [FORESTS, MOUNTAINS, SWAMPS],
+      stats: ["Jump: Any Distance", "Sanctuary: Forest"],
+      sanctuaryTerrain: [FORESTS],
     },
   },
   [ROOK]: {
@@ -222,8 +222,8 @@ export const UNIT_INTEL: Record<string, UnitIntelEntry> = {
     ],
     levelUp: {
       title: '"Double-back" Flip',
-      stats: ["Evasion: +5", "Sanctuary: All"],
-      sanctuaryTerrain: [FORESTS, MOUNTAINS, SWAMPS],
+      stats: ["Evasion: +5", "Sanctuary: Forest"],
+      sanctuaryTerrain: [FORESTS],
     },
   },
 };

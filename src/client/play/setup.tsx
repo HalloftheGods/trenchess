@@ -27,12 +27,10 @@ import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
-import ChiLayoutModal from "@/shared/components/organisms/ChiLayoutModal";
 
 export const PlaySetupView: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isChiModalOpen, setIsChiModalOpen] = React.useState(false);
 
   const {
     darkMode,
@@ -131,12 +129,6 @@ export const PlaySetupView: React.FC = () => {
 
       onStartGame(selectedBoard, preset, finalPlayerConfig, seed);
     }
-  };
-
-  const handleChiSelect = (index: number) => {
-    setPreviewSeedIndex(index);
-    const selectedSeed = seeds[index]?.seed;
-    handlePresetSelect("terrainiffic", selectedSeed);
   };
 
   const isMultiplayerMode = (playerCount ?? 2) >= 3;
@@ -274,7 +266,7 @@ export const PlaySetupView: React.FC = () => {
             />
             <RouteCard
               onClick={() => {
-                if (isHost) setIsChiModalOpen(true);
+                if (isHost) handlePresetSelect("terrainiffic");
               }}
               isSelected={selectedPreset === "terrainiffic"}
               preview={{
@@ -288,7 +280,7 @@ export const PlaySetupView: React.FC = () => {
               description='"Select preconfigured terrain."'
               Icon={Shell}
               color="emerald"
-              badge="Drafting"
+              badge="Instant Play"
               HoverIcon={LandPlot}
               className="w-full"
             />
@@ -377,15 +369,6 @@ export const PlaySetupView: React.FC = () => {
           </div>
         </div>
       )}
-
-      <ChiLayoutModal
-        isOpen={isChiModalOpen}
-        onClose={() => setIsChiModalOpen(false)}
-        seeds={seeds}
-        onSelect={handleChiSelect}
-        selectedIndex={previewSeedIndex}
-        activeMode={selectedBoard}
-      />
     </RoutePageLayout>
   );
 };

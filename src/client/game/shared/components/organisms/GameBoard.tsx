@@ -242,6 +242,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
             reason={winnerReason || undefined}
             localPlayerName={localPlayerName}
             board={board}
+            terrain={terrain}
+            mode={mode as any}
             getPlayerDisplayName={getPlayerDisplayName}
             setGameState={setGameState}
           />

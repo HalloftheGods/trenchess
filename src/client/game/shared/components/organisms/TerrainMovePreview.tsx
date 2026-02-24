@@ -311,50 +311,31 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
                 return (
                   <div
                     key={i}
-                    className={`aspect-square rounded-sm relative flex items-center justify-center transition-all duration-300
-                     ${
-                       isAttack
-                         ? "bg-brand-red shadow-[0_0_15px_rgba(239,68,68,0.5)] z-20"
-                         : isMove
-                           ? inTerrain
-                             ? getTerrainMoveShadow()
-                             : "bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] z-20"
-                           : isBlocked
-                             ? inTerrain
-                               ? getTerrainMoveShadow()
-                               : "bg-brand-red/40 z-10"
-                             : cellBg
-                     }
-                   `}
+                    className={`aspect-square rounded-[2px] relative flex items-center justify-center transition-all duration-300 ${cellBg}`}
                   >
-                    {/* Tiny terrain icons */}
-                    {inTerrain && (
-                      <div
-                        className={`absolute inset-0 flex items-center justify-center ${
-                          isMove || isBlocked ? "opacity-60" : "opacity-40"
-                        } scale-[0.45] pointer-events-none`}
-                      >
-                        {terrain.icon && <terrain.icon size={16} />}
+                    {/* Move Indicators - Square-y style */}
+                    {(isMove || isBlocked) && (
+                      <div className={`absolute inset-[1px] z-10 rounded-sm shadow-sm flex items-center justify-center transition-all ${
+                        isBlocked ? "bg-brand-red/40" :
+                        isAttack ? "bg-brand-red shadow-[0_0_10px_rgba(239,68,68,0.4)]" :
+                        validMoves.some(([mr, mc]) => mr === r && mc === c && pattern?.newMove?.(centerRow, centerCol).some(([nr, nc]) => nr === r && nc === c)) ? "bg-amber-500 animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.4)]" :
+                        inTerrain ? (terrain.color?.headerBg || "bg-emerald-500") :
+                        "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                      }`}>
+                        {isBlocked && <X size={12} strokeWidth={4} className="text-white" />}
+                        {isAttack && !isBlocked && <Columns4 size={12} strokeWidth={3} className="text-white/90" />}
+                        
+                        {/* Shield inside move square if on terrain and protected */}
+                        {isMove && inTerrain && isProtected && (
+                          <Shield size={12} className="text-white fill-white/20" />
+                        )}
                       </div>
                     )}
 
-                    {isBlocked && (
-                      <div
-                        className={`${
-                          inTerrain ? "text-white" : "text-brand-red/40"
-                        } z-20 scale-75`}
-                      >
-                        <X size={16} strokeWidth={3} />
-                      </div>
-                    )}
-
-                    {isMove && inTerrain && (
-                      <div className="text-white drop-shadow-md z-20 scale-75">
-                        <ShieldPlus
-                          size={16}
-                          strokeWidth={3}
-                          className="fill-white/20"
-                        />
+                    {/* Terrain Icons (only if no move indicator) */}
+                    {inTerrain && !isCenter && !isMove && !isBlocked && (
+                      <div className="absolute inset-0 flex items-center justify-center z-0 opacity-20">
+                        {terrain.icon && <terrain.icon size={12} className={terrain.color?.text} />}
                       </div>
                     )}
                   </div>

@@ -172,26 +172,30 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
         className="mb-0"
       />
 
-      <div className="w-full flex items-center justify-between gap-4 px-4 lg:px-0 mt-8">
+      <div className="w-full flex items-center justify-between gap-4 px-4 lg:px-8 mt-8 relative group/nav">
+        {/* Navigation Arrows - Absolute on sides for cleaner feel */}
         <button
           onClick={() =>
             setCurrentSlideIndex(
               (currentSlideIndex - 1 + slides.length) % slides.length,
             )
           }
-          className="guide-nav-button"
+          className="absolute left-4 lg:left-8 z-30 p-4 rounded-full bg-slate-900/40 hover:bg-slate-900/60 text-white/50 hover:text-white border border-white/5 hover:border-white/20 transition-all duration-300 backdrop-blur-md shadow-2xl group/btn"
         >
-          <ChevronLeft size={32} />
+          <ChevronLeft size={32} className="group-hover/btn:-translate-x-1 transition-transform" />
         </button>
 
-        <div className="flex-1 max-w-4xl mx-auto">
-          <div className={`guide-card group ${cardBg} ${cmap.border}`}>
-            <div className="flex flex-col w-full gap-8 mt-0">
+        <div className="flex-1 max-w-5xl mx-auto z-10">
+          <div className={`guide-card group ${cardBg} ${cmap.border} relative overflow-hidden`}>
+            {/* Background Glow */}
+            <div className={`absolute -right-32 -top-32 w-96 h-96 rounded-full ${cmap.iconBg} blur-[120px] opacity-30 pointer-events-none`} />
+            
+            <div className="flex flex-col w-full gap-8 mt-0 relative z-10">
               {/* Row 1: Header */}
-              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 pb-8 border-b border-slate-200/10">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 pb-10 border-b border-slate-200/10">
+                <div className="flex items-center gap-6">
                   <div
-                    className={`p-4 rounded-[1.5rem] border-2 shadow-xl ${cmap.iconBg} ${cmap.iconText} ${cmap.iconBorder} flex items-center justify-center w-24 h-24 shrink-0 transition-transform hover:scale-105 duration-500`}
+                    className={`p-5 rounded-[2rem] border-2 shadow-2xl ${cmap.iconBg} ${cmap.iconText} ${cmap.iconBorder} flex items-center justify-center w-28 h-28 shrink-0 transition-all hover:scale-105 hover:rotate-2 duration-500`}
                   >
                     {(() => {
                       const Icon = currentSlide.icon;
@@ -200,30 +204,32 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
                       if (React.isValidElement(Icon)) return Icon;
 
                       const IconComponent = Icon as React.ElementType;
-                      return <IconComponent size={48} />;
+                      return <IconComponent size={56} />;
                     })()}
                   </div>
                   <div className="flex flex-col">
-                    {UNIT_INTEL[currentSlide.id] && (
-                      <p
-                        className={`text-sm font-bold ${subtextColor} uppercase tracking-widest mb-0`}
-                      >
-                        The {String(UNIT_INTEL[currentSlide.id]?.title || "")}{" "}
-                        Learned a new job!
-                      </p>
-                    )}
                     <h3
-                      className={`text-5xl font-black uppercase tracking-tight ${textColor}`}
+                      className={`text-5xl lg:text-7xl font-black uppercase tracking-tighter ${textColor} leading-none mb-1`}
                     >
                       {currentSlide.title}
                     </h3>
-                    {currentSlide.topLabel && (
-                      <p
-                        className={`text-sm font-bold ${subtextColor} uppercase tracking-widest mt-1`}
-                      >
-                        {currentSlide.topLabel}
-                      </p>
-                    )}
+                    <div className="flex items-center gap-3">
+                      {currentSlide.topLabel && (
+                        <p
+                          className={`text-xs lg:text-sm font-black ${subtextColor} uppercase tracking-[0.3em] opacity-60`}
+                        >
+                          {currentSlide.topLabel}
+                        </p>
+                      )}
+                      {currentSlide.subtitle && (
+                        <>
+                          <div className="w-1.5 h-1.5 rounded-full bg-amber-500/40" />
+                          <p className={`text-xs lg:text-sm font-black text-amber-500/80 uppercase tracking-[0.2em]`}>
+                            {currentSlide.subtitle}
+                          </p>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -233,22 +239,27 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
               </div>
 
               {/* Row 2: Visuals & Description */}
-              <div className="flex flex-col lg:flex-row items-center lg:items-center justify-around gap-12 w-full">
+              <div className="flex flex-col lg:flex-row items-start justify-between gap-12 w-full pt-4">
+                {/* Description (Simple List) */}
+                {currentSlide.description && (
+                  <div
+                    className={`flex flex-col justify-start text-left max-w-sm`}
+                  >
+                    <div className="flex items-center gap-3 mb-8 opacity-60">
+                      <div className={`w-2 h-2 rounded-full ${cmap.indicatorOn}`} />
+                      <span className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Tactical Intel</span>
+                    </div>
+                    {currentSlide.description}
+                  </div>
+                )}
+
                 {currentSlide.sideContent && (
                   <div
-                    className={`flex flex-col items-center justify-center ${currentSlide.description ? "flex-1" : "w-full"}`}
+                    className={`flex flex-col items-center justify-center flex-1`}
                   >
                     {currentSlide.sideContent}
                   </div>
                 )}
-                {/* Description (Simple List) */}
-                {/* {currentSlide.description && (
-                  <div
-                    className={`flex flex-col justify-center text-left ${currentSlide.sideContent ? "flex-1" : "w-full"}`}
-                  >
-                    {currentSlide.description}
-                  </div>
-                )} */}
               </div>
 
               {/* Row 4: Info/Legend (Bottom Row) */}
@@ -265,9 +276,9 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
           onClick={() =>
             setCurrentSlideIndex((currentSlideIndex + 1) % slides.length)
           }
-          className="guide-nav-button"
+          className="absolute right-4 lg:right-8 z-30 p-4 rounded-full bg-slate-900/40 hover:bg-slate-900/60 text-white/50 hover:text-white border border-white/5 hover:border-white/20 transition-all duration-300 backdrop-blur-md shadow-2xl group/btn"
         >
-          <ChevronRight size={32} />
+          <ChevronRight size={32} className="group-hover/btn:translate-x-1 transition-transform" />
         </button>
       </div>
 

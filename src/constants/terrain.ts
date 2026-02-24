@@ -64,7 +64,7 @@ export const CORE_TERRAIN_INTEL: Record<string, TerrainIntel> = {
     label: "Deserts",
     desc: "The harsh desert is home to all units, but none can stay for long.",
     sanctuaryUnits: [],
-    allowedUnits: [KING, QUEEN, BISHOP, KNIGHT, PAWN],
+    allowedUnits: [KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN],
     blockedUnits: [],
     subtitle: "The Endless Sands",
     tagline: "Deadly Mirage",

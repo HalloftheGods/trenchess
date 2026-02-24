@@ -41,18 +41,18 @@ export const MiniMovePreview: React.FC<MiniMovePreviewProps> = ({
           return (
             <div
               key={i}
-              className={`aspect-square rounded-sm relative transition-all duration-300 ${
-                isCenter
-                  ? "bg-white z-20 shadow-md"
-                  : isAttack
-                    ? "bg-brand-red shadow-[0_0_8px_rgba(239,68,68,0.4)] z-10"
-                    : isNewMove
-                      ? "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)] z-10 animate-pulse"
-                      : isMove
-                        ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)] z-10"
-                        : baseColor
-              }`}
-            />
+              className={`aspect-square rounded-[1px] relative flex items-center justify-center transition-all duration-300 ${baseColor}`}
+            >
+              {isCenter ? (
+                <div className="w-full h-full bg-slate-800 dark:bg-white z-20 shadow-md" />
+              ) : (isMove || isNewMove || isAttack) ? (
+                <div className={`w-2 h-2 rounded-full z-10 transition-all duration-300 ${
+                  isAttack ? "bg-brand-red shadow-[0_0_8px_rgba(239,68,68,0.4)]" :
+                  isNewMove ? "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)] animate-pulse" :
+                  "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]"
+                }`} />
+              ) : null}
+            </div>
           );
         })}
       </div>

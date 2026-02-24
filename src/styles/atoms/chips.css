@@ -51,9 +51,10 @@
   position: absolute;
   top: calc(-1 * var(--f));
   right: 20px;
-  padding: .2em;
-  padding-bottom: calc(var(--f) + 1.2em);
+  padding: .8em 1.2em;
+  padding-bottom: calc(var(--f) + 1.8em);
   border-right: var(--f) solid rgba(0,0,0,0.3);
+  min-width: 60px;
   clip-path: polygon(
     calc(100% - var(--f)) 0,
     0 0,
@@ -71,9 +72,10 @@
   position: absolute;
   top: calc(-1 * var(--f));
   left: 20px;
-  padding: .2em;
-  padding-bottom: calc(var(--f) + 1.2em);
+  padding: .8em 1.2em;
+  padding-bottom: calc(var(--f) + 1.8em);
   border-left: var(--f) solid rgba(0,0,0,0.3);
+  min-width: 60px;
   clip-path: polygon(
     var(--f) 0,
     100% 0,

@@ -175,26 +175,55 @@ export function useSetupActions(
 
         setGameState("play");
       } else if (isChiMode) {
-        const layoutSeed = seed;
-        if (!layoutSeed) {
-          const terrainResult = SetupLogic.randomizeTerrain(
-            matchState.terrain,
-            matchState.board,
-            matchState.terrainInventory,
-            activePlayersForMatch,
-            selectedMode,
-          );
-          matchState.terrain = terrainResult.terrain;
-          matchState.terrainInventory = terrainResult.terrainInventory;
-        } else {
-          const decodedLayout = deserializeGame(layoutSeed);
-          if (decodedLayout) {
-            const adaptedLayout = adaptSeedToMode(decodedLayout, selectedMode);
-            matchState.terrain = adaptedLayout.terrain;
-            matchState.board = adaptedLayout.board;
+        let layoutSeed = seed;
+        const isNoSeedProvided = !layoutSeed;
+
+        if (isNoSeedProvided) {
+          const modeSeeds = DEFAULT_SEEDS.filter((s) => s.mode === selectedMode);
+          const randomIndex = Math.floor(Math.random() * modeSeeds.length);
+          layoutSeed = modeSeeds[randomIndex]?.seed || DEFAULT_SEEDS[0].seed;
+        }
+
+        const decodedLayout = deserializeGame(layoutSeed);
+        if (decodedLayout) {
+          const adaptedLayout = adaptSeedToMode(decodedLayout, selectedMode);
+          matchState.terrain = adaptedLayout.terrain;
+          matchState.board = adaptedLayout.board;
+
+          // Check if seed has units
+          let seedHasUnits = false;
+          for (let r = 0; r < 12; r++) {
+            for (let c = 0; c < 12; c++) {
+              if (adaptedLayout.board[r][c]) {
+                seedHasUnits = true;
+                break;
+              }
+            }
+          }
+
+          if (seedHasUnits) {
+            // Seed has units, clear inventory for all active players
+            activePlayersForMatch.forEach((pid) => {
+              matchState.inventory[pid] = [];
+            });
+          } else {
+            // Apply classical formation if no units in seed
+            const formationResult = SetupLogic.applyClassicalFormation(
+              matchState.board,
+              matchState.terrain,
+              matchState.inventory,
+              matchState.terrainInventory,
+              activePlayersForMatch,
+              selectedMode,
+              "classical",
+            );
+            matchState.board = formationResult.board;
+            matchState.terrain = formationResult.terrain;
+            matchState.inventory = formationResult.inventory;
+            matchState.terrainInventory = formationResult.terrainInventory;
           }
         }
-        setGameState("setup");
+        setGameState("play");
       } else if (isZenGardenMode) {
         matchState.terrain = matchState.terrain.map((row) =>
           row.map(() => "flat" as TerrainType),

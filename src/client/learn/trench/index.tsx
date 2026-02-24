@@ -1,10 +1,9 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Trees, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
 import { useRouteContext } from "@/route.context";
 import type { TerrainType } from "@/shared/types/game";
-import { TERRAIN_DETAILS } from "@/constants";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
@@ -12,40 +11,19 @@ import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import RoutePageFooter from "@/shared/components/organisms/RoutePageFooter";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
-import RouteDetailModal from "@/shared/components/organisms/RouteDetailModal";
-import TrenchCardDetail from "@/client/game/shared/components/organisms/TrenchCardDetail";
 
 export const LearnTrenchMainView: React.FC = () => {
   const navigate = useNavigate();
-  const { terrain } = useParams<{ terrain: string }>();
   const {
     setHoveredMenu,
     setHoveredTerrain,
     setTerrainSeed,
     darkMode,
-    pieceStyle,
   } = useRouteContext();
 
   const handleTrenchClick = (t: TerrainType) => {
     navigate(`/learn/trench/${t}`);
   };
-
-  const closeModal = () => {
-    navigate("/learn/trench");
-  };
-
-  // Navigation Logic
-  const currentIndex = TERRAIN_DETAILS.findIndex((t) => t.key === terrain);
-  const prevTerrain =
-    currentIndex !== -1
-      ? TERRAIN_DETAILS[
-          (currentIndex - 1 + TERRAIN_DETAILS.length) % TERRAIN_DETAILS.length
-        ]
-      : null;
-  const nextTerrain =
-    currentIndex !== -1
-      ? TERRAIN_DETAILS[(currentIndex + 1) % TERRAIN_DETAILS.length]
-      : null;
 
   return (
     <RoutePageLayout>
@@ -57,10 +35,10 @@ export const LearnTrenchMainView: React.FC = () => {
 
       <RouteGrid cols={4}>
         <RouteCard
-          onClick={() => handleTrenchClick("rubble")}
+          onClick={() => handleTrenchClick("mountains")}
           onMouseEnter={() => {
             setHoveredMenu("how-to-play");
-            setHoveredTerrain("rubble");
+            setHoveredTerrain("mountains");
             setTerrainSeed(Math.random());
           }}
           onMouseLeave={() => {
@@ -69,7 +47,7 @@ export const LearnTrenchMainView: React.FC = () => {
           }}
           preview={{
             mode: null,
-            forcedTerrain: "rubble",
+            forcedTerrain: "mountains",
             showIcons: true,
             hideUnits: true,
           }}
@@ -83,10 +61,10 @@ export const LearnTrenchMainView: React.FC = () => {
         />
 
         <RouteCard
-          onClick={() => handleTrenchClick("ponds")}
+          onClick={() => handleTrenchClick("swamps")}
           onMouseEnter={() => {
             setHoveredMenu("how-to-play");
-            setHoveredTerrain("ponds");
+            setHoveredTerrain("swamps");
             setTerrainSeed(Math.random());
           }}
           onMouseLeave={() => {
@@ -95,7 +73,7 @@ export const LearnTrenchMainView: React.FC = () => {
           }}
           preview={{
             mode: null,
-            forcedTerrain: "ponds",
+            forcedTerrain: "swamps",
             showIcons: true,
             hideUnits: true,
           }}
@@ -109,10 +87,10 @@ export const LearnTrenchMainView: React.FC = () => {
         />
 
         <RouteCard
-          onClick={() => handleTrenchClick("trees")}
+          onClick={() => handleTrenchClick("forests")}
           onMouseEnter={() => {
             setHoveredMenu("how-to-play");
-            setHoveredTerrain("trees");
+            setHoveredTerrain("forests");
             setTerrainSeed(Math.random());
           }}
           onMouseLeave={() => {
@@ -121,7 +99,7 @@ export const LearnTrenchMainView: React.FC = () => {
           }}
           preview={{
             mode: null,
-            forcedTerrain: "trees",
+            forcedTerrain: "forests",
             showIcons: true,
             hideUnits: true,
           }}
@@ -161,58 +139,11 @@ export const LearnTrenchMainView: React.FC = () => {
         />
       </RouteGrid>
 
-      {!terrain && (
-        <RoutePageFooter
-          onForwardClick={() => navigate("/learn/chess")}
-          forwardLabel="Claim the Chess"
-          forwardIcon={Waves}
-        />
-      )}
-
-      <RouteDetailModal
-        isOpen={!!terrain}
-        onClose={closeModal}
-        darkMode={darkMode}
-        color={
-          terrain === "rubble"
-            ? "red"
-            : terrain === "ponds"
-              ? "blue"
-              : terrain === "trees"
-                ? "emerald"
-                : "amber"
-        }
-        prev={
-          prevTerrain && prevTerrain.icon
-            ? {
-                icon: prevTerrain.icon,
-                label: prevTerrain.label,
-                onClick: () =>
-                  handleTrenchClick(prevTerrain.key as TerrainType),
-                className: prevTerrain.color?.text || "",
-              }
-            : undefined
-        }
-        next={
-          nextTerrain && nextTerrain.icon
-            ? {
-                icon: nextTerrain.icon,
-                label: nextTerrain.label,
-                onClick: () =>
-                  handleTrenchClick(nextTerrain.key as TerrainType),
-                className: nextTerrain.color?.text || "",
-              }
-            : undefined
-        }
-      >
-        {terrain && (
-          <TrenchCardDetail
-            terrainType={terrain as TerrainType}
-            darkMode={darkMode}
-            pieceStyle={pieceStyle}
-          />
-        )}
-      </RouteDetailModal>
+      <RoutePageFooter
+        onForwardClick={() => navigate("/learn/chess")}
+        forwardLabel="Claim the Chess"
+        forwardIcon={Waves}
+      />
     </RoutePageLayout>
   );
 };

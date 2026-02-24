@@ -57,9 +57,9 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
           } as PreviewConfig,
           description: (
             <div className="space-y-4">
-              <ul className="space-y-3">
+              <ul className="space-y-6">
                 {terrain.flavorStats?.map((stat: string, i: number) => (
-                  <GuideListItem key={i} color="amber">
+                  <GuideListItem key={i} color="amber" size="sm">
                     {stat}
                   </GuideListItem>
                 ))}
@@ -156,6 +156,9 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
       slides={slides}
       onBack={onBack}
       labelColor="amber"
+      onSlideChange={(id) => {
+        window.history.replaceState(null, "", `/learn/trench/${id}`);
+      }}
     />
   );
 };

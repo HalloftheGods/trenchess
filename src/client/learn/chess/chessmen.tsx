@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Tornado,
   Rabbit,
@@ -9,7 +9,6 @@ import {
   SunMoon,
   TreePine,
 } from "lucide-react";
-import type { PieceType } from "@/shared/types/game";
 
 import { useRouteContext } from "@/route.context";
 
@@ -19,15 +18,12 @@ import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import RoutePageFooter from "@/shared/components/organisms/RoutePageFooter";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
-import RouteDetailModal from "@/shared/components/organisms/RouteDetailModal";
-import ChessCardDetail from "@/client/game/shared/components/organisms/ChessCardDetail";
-import { INITIAL_ARMY, PIECES, UNIT_DETAILS, unitColorMap } from "@/constants";
+import { INITIAL_ARMY, PIECES, UNIT_DETAILS } from "@/constants";
 import { DualToneSwordsFlipped } from "@/shared/components";
 
 export const LearnChessmenView: React.FC = () => {
   const navigate = useNavigate();
-  const { unitType } = useParams<{ unitType: string }>();
-  const { setHoveredMenu, darkMode, getIcon } = useRouteContext();
+  const { setHoveredMenu, darkMode } = useRouteContext();
 
   // Define piece groups
   const CHESS_PIECES = [
@@ -38,10 +34,6 @@ export const LearnChessmenView: React.FC = () => {
     PIECES.QUEEN, // Queen
     PIECES.KING, // King
   ];
-
-  const closeModal = () => {
-    navigate("/learn/chess/chessmen");
-  };
 
   const UNIT_ORDER = CHESS_PIECES;
 
@@ -54,18 +46,6 @@ export const LearnChessmenView: React.FC = () => {
     [PIECES.QUEEN]: "Queen",
     [PIECES.KING]: "King",
   };
-
-  // Navigation Logic
-  const chessIndex = UNIT_ORDER.indexOf(unitType as PieceType);
-  const prevUnitType =
-    chessIndex !== -1
-      ? UNIT_ORDER[(chessIndex - 1 + UNIT_ORDER.length) % UNIT_ORDER.length]
-      : null;
-  const nextUnitType =
-    chessIndex !== -1 ? UNIT_ORDER[(chessIndex + 1) % UNIT_ORDER.length] : null;
-
-  const prevUnit = INITIAL_ARMY.find((u) => u.type === prevUnitType);
-  const nextUnit = INITIAL_ARMY.find((u) => u.type === nextUnitType);
 
   return (
     <RoutePageLayout>
@@ -136,67 +116,14 @@ export const LearnChessmenView: React.FC = () => {
         })}
       </RouteGrid>
 
-      {!unitType && (
-        <RoutePageFooter
-          onBackClick={() => navigate("/learn/trench")}
-          backLabel="Open the Trench"
-          backIcon={Tornado}
-          onForwardClick={() => navigate("/learn/endgame")}
-          forwardLabel="The Endgame"
-          forwardIcon={ChessKing}
-        />
-      )}
-
-      <RouteDetailModal
-        isOpen={!!unitType}
-        onClose={closeModal}
-        darkMode={darkMode}
-        color={
-          unitType === PIECES.QUEEN
-            ? "purple"
-            : unitType === PIECES.KING
-              ? "red"
-              : unitType === PIECES.BISHOP
-                ? "emerald"
-                : unitType === PIECES.ROOK
-                  ? "amber"
-                  : unitType === PIECES.PAWN
-                    ? "blue"
-                    : "slate"
-        }
-        prev={
-          prevUnit
-            ? {
-                icon: (props: { className?: string; size?: number }) =>
-                  getIcon(prevUnit, props.className, props.size),
-                label:
-                  UNIT_DETAILS[prevUnit.type]?.title ||
-                  displayNames[prevUnit.type],
-                onClick: () =>
-                  navigate(`/learn/chess/chessmen/${prevUnit.type}`),
-                className: unitColorMap[prevUnit.type].text,
-              }
-            : undefined
-        }
-        next={
-          nextUnit
-            ? {
-                icon: (props: { className?: string; size?: number }) =>
-                  getIcon(nextUnit, props.className, props.size),
-                label:
-                  UNIT_DETAILS[nextUnit.type]?.title ||
-                  displayNames[nextUnit.type],
-                onClick: () =>
-                  navigate(`/learn/chess/chessmen/${nextUnit.type}`),
-                className: unitColorMap[nextUnit.type].text,
-              }
-            : undefined
-        }
-      >
-        {unitType && (
-          <ChessCardDetail unitType={unitType} darkMode={darkMode} />
-        )}
-      </RouteDetailModal>
+      <RoutePageFooter
+        onBackClick={() => navigate("/learn/trench")}
+        backLabel="Open the Trench"
+        backIcon={Tornado}
+        onForwardClick={() => navigate("/learn/endgame")}
+        forwardLabel="The Endgame"
+        forwardIcon={ChessKing}
+      />
     </RoutePageLayout>
   );
 };

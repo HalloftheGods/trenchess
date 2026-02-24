@@ -169,7 +169,17 @@ const App = () => {
         setGameState("menu");
         navigate(ROUTES.HOME);
       },
-      onZenGarden: () => navigate(ROUTES.ZEN),
+      onZenGarden: () => {
+        initGameWithPreset("2p-ns", "terrainiffic", {
+          red: "human",
+          blue: "human",
+        });
+        startGame();
+        const target = multiplayer?.roomId
+          ? `${ROUTES.GAME}/${multiplayer.roomId}`
+          : ROUTES.GAME_MMO;
+        navigate(target);
+      },
       onStartGame: (
         startGameMode: GameMode,
         preset: string | null,
