@@ -223,8 +223,8 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
 
               if (inTerrain) {
                 cellBg = isEven
-                  ? terrain.color.bg.replace("/10", "/40")
-                  : terrain.color.bg.replace("/10", "/30");
+                  ? terrain.color?.bg.replace("/10", "/40") || ""
+                  : terrain.color?.bg.replace("/10", "/30") || "";
               }
 
               // Logic coloring
@@ -272,8 +272,8 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
                 >
                   {highlightLayer}
                   {!isCenter && !isThreat && inTerrain && (
-                    <div className={`${terrain.color.text} opacity-20`}>
-                      <IconComp size={12} />
+                    <div className={`${terrain.color?.text || ""} opacity-20`}>
+                      {IconComp && <IconComp size={12} />}
                     </div>
                   )}
                   {!inTerrain && i === 0 && (
@@ -294,7 +294,7 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
     >
       {/* Full-width Top Ribbon */}
       <div
-        className={`absolute top-0 left-0 right-0 z-20 ${terrain.color.headerBg} py-2 lg:py-3 shadow-lg border-b border-white/10 flex justify-center items-center`}
+        className={`absolute top-0 left-0 right-0 z-20 ${terrain.color?.headerBg || ""} py-2 lg:py-3 shadow-lg border-b border-white/10 flex justify-center items-center`}
       >
         <span className="text-white text-lg lg:text-xl font-black uppercase tracking-[0.4em] drop-shadow-md">
           Trench Intel
@@ -303,14 +303,14 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
 
       {/* Background decoration */}
       <div
-        className={`absolute -right-20 -top-20 w-64 h-64 rounded-full ${terrain.color.bg} blur-[80px] opacity-20`}
+        className={`absolute -right-20 -top-20 w-64 h-64 rounded-full ${terrain.color?.bg || ""} blur-[80px] opacity-20`}
       />
 
       {/* Subtitle */}
       <div className="flex items-center gap-2 mb-1 mt-10 lg:mt-12 opacity-80">
-        <Sparkles size={20} className={terrain.color.text} />
+        <Sparkles size={20} className={terrain.color?.text || ""} />
         <span
-          className={`text-xs font-bold uppercase tracking-[0.2em] ${terrain.color.text}`}
+          className={`text-xs font-bold uppercase tracking-[0.2em] ${terrain.color?.text || ""}`}
         >
           {terrain.subtitle}
         </span>
@@ -324,7 +324,7 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
       </h3>
 
       <div
-        className={`px-5 py-1.5 rounded-2xl ${terrain.color.bg} ${terrain.color.text} text-[11px] lg:text-sm font-black uppercase tracking-[0.3em] border border-white/5 mb-6 lg:mb-8`}
+        className={`px-5 py-1.5 rounded-2xl ${terrain.color?.bg || ""} ${terrain.color?.text || ""} text-[11px] lg:text-sm font-black uppercase tracking-[0.3em] border border-white/5 mb-6 lg:mb-8`}
       >
         {terrain.tagline}
       </div>
@@ -333,12 +333,14 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
         {/* Left: Terrain Icon */}
         <div className="flex flex-col items-center gap-4 w-full">
           <div
-            className={`relative w-32 h-32 lg:w-40 lg:h-40 rounded-[2.5rem] lg:rounded-[3rem] ${terrain.color.iconBg} ${terrain.color.text} flex items-center justify-center shadow-inner border border-white/5 transition-transform hover:-rotate-3 group`}
+            className={`relative w-32 h-32 lg:w-40 lg:h-40 rounded-[2.5rem] lg:rounded-[3rem] ${terrain.color?.iconBg || terrain.color?.bg || ""} ${terrain.color?.text || ""} flex items-center justify-center shadow-inner border border-white/5 transition-transform hover:-rotate-3 group`}
           >
-            <IconComp
-              size={80}
-              className="transition-transform group-hover:scale-110"
-            />
+            {IconComp && (
+              <IconComp
+                size={80}
+                className="transition-transform group-hover:scale-110"
+              />
+            )}
           </div>
 
           <span

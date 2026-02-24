@@ -8,7 +8,12 @@ export interface UnitIntelCardProps {
   armyValue: number;
   captureValue: number;
   capturedUnits: BoardPiece[];
-  getIcon: (unit: ArmyUnit, className?: string) => React.ReactNode;
+  getIcon: (
+    unit: ArmyUnit,
+    className?: string,
+    size?: number | string,
+    filled?: boolean,
+  ) => React.ReactNode;
 }
 
 export const UnitIntelCard: React.FC<UnitIntelCardProps> = ({

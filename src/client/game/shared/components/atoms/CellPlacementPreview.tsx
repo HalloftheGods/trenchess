@@ -18,7 +18,12 @@ interface CellPlacementPreviewProps {
   currentTerrain: TerrainType;
   turn: string;
   rotationStyle: React.CSSProperties;
-  getIcon: (unit: ArmyUnit, className?: string) => React.ReactNode;
+  getIcon: (
+    unit: ArmyUnit,
+    className?: string,
+    size?: number | string,
+    filled?: boolean,
+  ) => React.ReactNode;
 }
 
 /**

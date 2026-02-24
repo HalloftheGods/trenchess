@@ -231,11 +231,13 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
 
   // ── Terrain cell colour helper ────────────────────────────────────
   const getTerrainCellBg = (isEven: boolean) => {
-    return isEven ? `${terrain.bg.replace('/10', '/60')}` : `${terrain.bg.replace('/10', '/40')}`;
+    const bg = terrain.bg || "bg-slate-200/10";
+    return isEven ? `${bg.replace("/10", "/60")}` : `${bg.replace("/10", "/40")}`;
   };
 
   const getTerrainMoveShadow = () => {
-    return `${terrain.solid} z-20 shadow-[0_0_15px_rgba(0,0,0,0.5)]`;
+    const solid = terrain.headerBg || "bg-amber-500";
+    return `${solid} z-20 shadow-[0_0_15px_rgba(0,0,0,0.5)]`;
   };
 
   return (

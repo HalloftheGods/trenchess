@@ -203,7 +203,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
                     } w-full h-full relative z-20`;
 
                     if (isSanctuary && tDetails) {
-                      wrapperClass += ` border-double border-4 ${tDetails.color.border} rounded-md bg-black/20 backdrop-blur-sm`;
+                      wrapperClass += ` border-double border-4 ${tDetails.color?.border || ""} rounded-md bg-black/20 backdrop-blur-sm`;
                     }
 
                     return (

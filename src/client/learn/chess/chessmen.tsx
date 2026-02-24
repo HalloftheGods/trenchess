@@ -9,6 +9,8 @@ import {
   VenetianMask,
   Castle,
   Lightbulb,
+  Crown,
+  Shell,
 } from "lucide-react";
 import type { PieceType } from "@/shared/types/game";
 
@@ -23,6 +25,7 @@ import RouteCard from "@/shared/components/molecules/RouteCard";
 import RouteDetailModal from "@/shared/components/organisms/RouteDetailModal";
 import ChessCardDetail from "@/client/game/shared/components/organisms/ChessCardDetail";
 import { INITIAL_ARMY, PIECES, UNIT_DETAILS, unitColorMap } from "@/constants";
+import { DualToneSwords, DualToneSwordsFlipped } from "@/shared/components";
 
 export const LearnChessmenView: React.FC = () => {
   const navigate = useNavigate();
@@ -107,10 +110,10 @@ export const LearnChessmenView: React.FC = () => {
             HoverIconComponent = Castle;
           } else if (type === PIECES.QUEEN) {
             cardColor = "purple";
-            HoverIconComponent = ChessKnight;
+            HoverIconComponent = Shell;
           } else if (type === PIECES.KING) {
             cardColor = "red";
-            HoverIconComponent = Swords;
+            HoverIconComponent = DualToneSwordsFlipped;
           }
 
           return (

@@ -239,7 +239,7 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
           >
             {(() => {
               const Icon = terrain.icon;
-              return <Icon className="w-12 h-12 sm:w-16 sm:h-16" />;
+              return Icon ? <Icon className="w-12 h-12 sm:w-16 sm:h-16" /> : null;
             })()}
           </div>
 
@@ -261,7 +261,7 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
                 >
                   {(() => {
                     const Icon = t.icon;
-                    return <Icon className="w-5 h-5" />;
+                    return Icon ? <Icon className="w-5 h-5" /> : null;
                   })()}
                 </button>
               );
@@ -366,7 +366,7 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
                         >
                           {(() => {
                             const Icon = terrain.icon;
-                            return <Icon />;
+                            return Icon ? <Icon /> : null;
                           })()}
                         </div>
                       )}
@@ -407,7 +407,7 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
           >
             {(() => {
               const Icon = terrain.icon;
-              return <Icon className="w-8 h-8" />;
+              return Icon ? <Icon className="w-8 h-8" /> : null;
             })()}
           </div>
           <div className="flex-1 text-center sm:text-left">

@@ -10,7 +10,12 @@ interface DeploymentUnitPaletteProps {
   setPlacementTerrain: (terrain: null) => void;
   setSetupMode: (mode: SetupMode) => void;
   pieceStyle: string;
-  getIcon: (unit: ArmyUnit, className?: string) => React.ReactNode;
+  getIcon: (
+    unit: ArmyUnit,
+    className?: string,
+    size?: number | string,
+    filled?: boolean,
+  ) => React.ReactNode;
 }
 
 export const DeploymentUnitPalette: React.FC<DeploymentUnitPaletteProps> = ({

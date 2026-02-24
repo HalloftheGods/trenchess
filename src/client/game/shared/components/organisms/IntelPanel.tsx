@@ -137,7 +137,12 @@ interface IntelPanelProps {
   board: (BoardPiece | null)[][];
   terrain: TerrainType[][];
   pieceStyle: string;
-  getIcon: (unit: ArmyUnit, className?: string) => React.ReactNode;
+  getIcon: (
+    unit: ArmyUnit,
+    className?: string,
+    size?: number | string,
+    filled?: boolean,
+  ) => React.ReactNode;
   activePlayers?: string[];
   capturedBy?: Record<string, BoardPiece[]>;
 }

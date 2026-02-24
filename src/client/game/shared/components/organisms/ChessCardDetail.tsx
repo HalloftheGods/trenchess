@@ -56,10 +56,10 @@ const ChessCardDetail: React.FC<ChessCardDetailProps> = ({
                 ${isActive ? "scale-110 ring-2 ring-offset-2 ring-offset-slate-900" : "hover:scale-105 opacity-70 hover:opacity-100"}
                 ${isActive ? colors.ring : "ring-transparent"}
                 ${!canTraverse ? "grayscale opacity-30" : ""}
-                ${t.color.bg} ${t.color.text} border ${t.color.border}
+                ${t.color?.bg || ""} ${t.color?.text || ""} border ${t.color?.border || ""}
               `}
             >
-              <TIcon size={20} />
+              {TIcon && <TIcon size={20} />}
 
               {isProtected && (
                 <div className="absolute -top-2 -right-2 bg-white dark:bg-slate-800 rounded-full p-0.5 shadow-md border border-slate-200 dark:border-slate-700">
