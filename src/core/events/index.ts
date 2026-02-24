@@ -23,16 +23,21 @@ export const applyDesertRule = (
         if (!justMoved || r !== justMoved.r || c !== justMoved.c) {
           if (p.type === KING) {
             const victim = p.player;
+            G.lostToDesert.push({ ...p });
             G.activePlayers = G.activePlayers.filter(
               (ap: string) => ap !== victim,
             );
             for (let row = 0; row < BOARD_SIZE; row++) {
               for (let col = 0; col < BOARD_SIZE; col++) {
-                if (G.board[row][col]?.player === victim)
+                const pieceAtCell = G.board[row][col];
+                if (pieceAtCell?.player === victim) {
+                  G.lostToDesert.push({ ...pieceAtCell });
                   G.board[row][col] = null;
+                }
               }
             }
           } else {
+            G.lostToDesert.push({ ...p });
             G.board[r][c] = null;
           }
         }

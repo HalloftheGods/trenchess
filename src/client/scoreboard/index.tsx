@@ -12,7 +12,7 @@ import {
   User,
   ChevronRight,
 } from "lucide-react";
-import ScoreboardLayout from "@/client/game/components/templates/ScoreboardLayout";
+import ScoreboardLayout from "@/client/game/shared/components/templates/ScoreboardLayout";
 import { RouteBoardPreview } from "@/shared/components/organisms/RouteBoardPreview";
 import type { GameMode } from "@/shared/types/game";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Globe, Key, GlobeLock } from "lucide-react";
 import { useRouteContext } from "@/route.context";
-import Shoutbox from "@/client/game/components/organisms/Shoutbox";
+import Shoutbox from "@/client/game/shared/components/organisms/Shoutbox";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";

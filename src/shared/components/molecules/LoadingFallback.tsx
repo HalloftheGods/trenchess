@@ -1,5 +1,5 @@
 import { Mountain, Trees, Waves } from "lucide-react";
-import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
+import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
 import TrenchessText from "@/shared/components/atoms/TrenchessText";
 
 const LOADING_MESSAGES = [

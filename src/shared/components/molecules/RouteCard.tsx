@@ -1,5 +1,5 @@
 import { type LucideIcon } from "lucide-react";
-import { type PreviewConfig } from "@/shared/types";
+import { type PreviewConfig, type ArmyUnit } from "@/shared/types";
 import { useRouteContext } from "@/route.context";
 
 type ColorVariant =
@@ -17,7 +17,8 @@ interface MenuCardProps {
   onClick: () => void;
   title: string;
   description: string;
-  Icon: LucideIcon | React.ComponentType<{ size?: number; className?: string }>;
+  Icon?: LucideIcon | React.ComponentType<{ size?: number; className?: string }>;
+  unit?: ArmyUnit;
   color: ColorVariant;
   badge?: string;
   hoverText?: string;
@@ -154,6 +155,7 @@ const RouteCard: React.FC<
   title,
   description,
   Icon,
+  unit,
   color = "red",
   onClick,
   onMouseEnter,
@@ -170,7 +172,7 @@ const RouteCard: React.FC<
   variant = "tinted",
 }) => {
   const styles = COLOR_STYLES[color];
-  const { setPreviewConfig, selectedBoard } = useRouteContext();
+  const { setPreviewConfig, selectedBoard, getIcon } = useRouteContext();
 
   const handleMouseEnter = () => {
     if (onMouseEnter) onMouseEnter();
@@ -188,6 +190,14 @@ const RouteCard: React.FC<
       });
     }
   };
+
+  const iconClasses = `transition-all duration-700 absolute z-10 ${
+    hoverText || HoverIcon
+      ? "group-hover:opacity-0 group-hover:scale-50 group-hover:rotate-180"
+      : isSelected
+        ? "scale-110 rotate-3"
+        : "group-hover:scale-110 group-hover:-rotate-3"
+  } ${styles.iconColor} drop-shadow-[0_0_15px_currentColor]`;
 
   return (
     <button
@@ -248,16 +258,14 @@ const RouteCard: React.FC<
         <div
           className={`absolute inset-0 blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-700 ${styles.iconColor.replace("text", "bg")}`}
         />
-        <Icon
-          size={80}
-          className={`transition-all duration-700 absolute z-10 ${
-            hoverText || HoverIcon
-              ? "group-hover:opacity-0 group-hover:scale-50 group-hover:rotate-180"
-              : isSelected
-                ? "scale-110 rotate-3"
-                : "group-hover:scale-110 group-hover:-rotate-3"
-          } ${styles.iconColor} drop-shadow-[0_0_15px_currentColor]`}
-        />
+        {unit ? (
+          getIcon(unit, iconClasses, 80)
+        ) : Icon ? (
+          <Icon
+            size={80}
+            className={iconClasses}
+          />
+        ) : null}
         {hoverText && (
           <div
             className={`transition-all duration-700 absolute flex items-center justify-center z-10 text-7xl opacity-0 scale-50 -rotate-180 font-serif group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-0 ${styles.iconColor} drop-shadow-[0_0_25px_currentColor]`}

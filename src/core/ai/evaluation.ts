@@ -1,7 +1,7 @@
 import { BOARD_SIZE } from "@/constants";
 import { PIECES } from "@/constants";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
-import { isPlayerInCheck } from "@/core/mechanics/gameState";
+import { isPlayerInCheck } from "@/core/mechanics/gameLogic";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 

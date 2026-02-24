@@ -1,6 +1,6 @@
-import { PIECES } from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
-import type { PieceType, TerrainBlueprint } from "@/shared/types";
+import { PIECES } from "@/constants/pieces";
+import { TERRAIN_TYPES } from "@/constants/terrain";
+import type { TerrainBlueprint } from "@/shared/types";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 

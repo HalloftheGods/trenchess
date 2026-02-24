@@ -67,6 +67,7 @@ const App = () => {
     activePlayers,
     darkMode,
     pieceStyle,
+    getIcon,
     toggleTheme,
     togglePieceStyle,
   } = game;
@@ -157,6 +158,7 @@ const App = () => {
       darkMode,
       multiplayer,
       pieceStyle,
+      getIcon,
       toggleTheme,
       togglePieceStyle,
       onTutorial: () => {
@@ -218,6 +220,7 @@ const App = () => {
     location.pathname,
     darkMode,
     pieceStyle,
+    getIcon,
     toggleTheme,
     togglePieceStyle,
     setGameState,

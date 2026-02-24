@@ -13,11 +13,11 @@ import {
   BishopIcon,
   KnightIcon,
   PawnIcon,
-} from "@/client/game/components/atoms/UnitIcons";
+} from "@/client/game/shared/components/atoms/UnitIcons";
 import { PIECES, CORE_INITIAL_ARMY } from "../pieces";
 import { TERRAIN_TYPES } from "../terrain";
 import { UNIT_BLUEPRINTS } from "@/core/blueprints/units";
-import type { UnitColors, ArmyUnit, UnitDetails, PieceStyle } from "@/shared/types";
+import type { UnitColors, ArmyUnit, UnitDetails } from "@/shared/types";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 const { FORESTS, MOUNTAINS, SWAMPS } = TERRAIN_TYPES;
@@ -128,7 +128,7 @@ export const UNIT_THEME_DATA = {
   },
 };
 
-export const UNIT_INTEL: Record<string, any> = {
+export const UNIT_INTEL: Record<string, Record<string, unknown>> = {
   [KING]: {
     title: "Equinox King",
     subtitle: "The Sovereign",

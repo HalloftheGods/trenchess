@@ -4,7 +4,8 @@
  */
 import React from "react";
 import { X, Map as MapIcon, ChevronRight } from "lucide-react";
-import { MiniBoard } from "@/client/game/components/organisms/SeedLibrary";
+import BoardPreview from "@/client/game/shared/components/organisms/BoardPreview";
+import { useRouteContext } from "@/route.context";
 import type { GameMode, SeedItem } from "@/shared/types/game";
 
 interface ChiLayoutModalProps {
@@ -24,6 +25,7 @@ const ChiLayoutModal: React.FC<ChiLayoutModalProps> = ({
   selectedIndex,
   activeMode,
 }) => {
+  const { darkMode, pieceStyle } = useRouteContext();
   if (!isOpen) return null;
 
   return (
@@ -77,38 +79,43 @@ const ChiLayoutModal: React.FC<ChiLayoutModalProps> = ({
                 }`}
               >
                 <div
-                  className={`relative w-full aspect-square rounded-[2rem] overflow-hidden border-2 transition-all duration-300 ${
+                  className={`relative w-full aspect-square rounded-2xl overflow-hidden border-2 transition-all duration-500 ${
                     selectedIndex === index
-                      ? "border-emerald-500 shadow-xl shadow-emerald-500/20"
+                      ? "border-emerald-500 shadow-[0_0_25px_rgba(16,185,129,0.3)] scale-[1.02] z-10"
                       : "border-slate-200 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/20 shadow-lg"
                   }`}
                 >
-                  <MiniBoard
-                    seed={item.seed}
-                    mode={item.mode}
-                    activeMode={activeMode}
+                  <BoardPreview
+                    selectedMode={(item.mode as GameMode) || activeMode}
+                    selectedProtocol="terrainiffic"
+                    customSeed={item.seed}
+                    darkMode={darkMode}
+                    pieceStyle={pieceStyle}
+                    showTerrainIcons
+                    hideUnits={true}
+                    variant="mini"
                   />
 
                   {/* Overlay for selection state */}
                   {selectedIndex === index && (
-                    <div className="absolute inset-0 bg-emerald-500/10 flex items-center justify-center">
-                      <div className="bg-emerald-500 text-white p-2 rounded-full shadow-lg">
+                    <div className="absolute inset-0 bg-emerald-500/5 flex items-center justify-center pointer-events-none z-40">
+                      <div className="bg-emerald-500 text-white p-2 rounded-full shadow-lg scale-110 animate-in zoom-in duration-300">
                         <ChevronRight size={24} />
                       </div>
                     </div>
                   )}
 
                   {/* Badge for Mode */}
-                  <div className="absolute bottom-4 left-0 right-0 z-30 flex items-center justify-center pointer-events-none">
-                    <div className="bg-slate-900/80 backdrop-blur-md text-white px-3 py-1.5 rounded-full border border-white/10 shadow-xl flex items-center justify-center">
-                      <span className="text-[8px] font-black uppercase tracking-[0.2em] leading-none">
+                  <div className="absolute top-3 right-3 z-30 pointer-events-none">
+                    <div className="bg-slate-900/90 backdrop-blur-md text-white px-2 py-1 rounded-md border border-white/10 shadow-xl">
+                      <span className="text-[7px] font-black uppercase tracking-[0.2em] leading-none">
                         {item.mode}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-4 px-2">
+                <div className="mt-4 px-1">
                   <h3
                     className={`text-sm font-black uppercase tracking-tight truncate transition-colors ${
                       selectedIndex === index
@@ -118,9 +125,12 @@ const ChiLayoutModal: React.FC<ChiLayoutModalProps> = ({
                   >
                     {item.name || "Unnamed Layout"}
                   </h3>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                    {item.id ? "Saved Layout" : "Default Layout"}
-                  </p>
+                  <div className="flex items-center gap-2 mt-1 opacity-60">
+                    <div className={`w-1 h-1 rounded-full ${selectedIndex === index ? "bg-emerald-500" : "bg-slate-400"}`} />
+                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                      {item.id ? "Tactical Blueprint" : "Default Field"}
+                    </p>
+                  </div>
                 </div>
               </button>
             ))}

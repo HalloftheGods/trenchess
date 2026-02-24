@@ -1,6 +1,6 @@
 // Theme controls component
 import { Sun, Moon, ChessKnight, Shell } from "lucide-react";
-import { BattleKnightIcon } from "@/client/game/components/atoms/UnitIcons";
+import { BattleKnightIcon } from "@/client/game/shared/components/atoms/UnitIcons";
 import type { PieceStyle } from "@/constants";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 interface ThemeControlsProps {
@@ -39,9 +39,9 @@ const ThemeControls: React.FC<ThemeControlsProps> = ({
           ) : pieceStyle === "outlined" ? (
             <span className="text-xl">♘︎</span>
           ) : pieceStyle === "custom" ? (
-            <BattleKnightIcon className="w-6 h-6" />
+            <BattleKnightIcon size={20} className="w-5 h-5" />
           ) : (
-            <ChessKnight className="w-6 h-6" />
+            <ChessKnight size={20} className="w-5 h-5" />
           )
         }
         label={`Piece Style: ${pieceStyle}`}

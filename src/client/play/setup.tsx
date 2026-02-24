@@ -27,10 +27,12 @@ import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
+import ChiLayoutModal from "@/shared/components/organisms/ChiLayoutModal";
 
 export const PlaySetupView: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isChiModalOpen, setIsChiModalOpen] = React.useState(false);
 
   const {
     darkMode,
@@ -40,12 +42,46 @@ export const PlaySetupView: React.FC = () => {
     selectedBoard,
     setSelectedBoard,
     playerConfig,
+    setPlayerTypes,
     previewConfig,
     playerCount,
     multiplayer,
+    seeds,
+    previewSeedIndex,
+    setPreviewSeedIndex,
   } = useRouteContext();
 
   const step = searchParams.get("step") === "2" ? 2 : 1;
+
+  // Initialize from URL parameters if needed
+  React.useEffect(() => {
+    const playersParam = searchParams.get("players");
+    if (playersParam && setPlayerTypes) {
+      const count = parseInt(playersParam, 10);
+      const defaultTypes = {
+        red: "computer",
+        yellow: "computer",
+        green: "computer",
+        blue: "computer",
+      } as Record<string, "human" | "computer">;
+
+      // Determine which slots are human based on the count and the likely board
+      // If we don't have a board yet, we'll assume standard 2p (red/blue) or 4p
+      const pids = count <= 2 ? ["red", "blue"] : ["red", "yellow", "green", "blue"];
+      pids.forEach((pid, i) => {
+        if (i < count) defaultTypes[pid] = "human";
+      });
+      
+      setPlayerTypes(defaultTypes);
+    }
+
+    if (!selectedBoard) {
+      const modeParam = searchParams.get("mode");
+      if (modeParam === "couch" || modeParam === "practice") {
+        // Just a hint, wait for explicit board selection in step 1
+      }
+    }
+  }, [searchParams, selectedBoard, setSelectedBoard, setPlayerTypes]);
 
   const handleBoardSelect = (mode: GameMode) => {
     setSelectedBoard(mode);
@@ -56,6 +92,7 @@ export const PlaySetupView: React.FC = () => {
 
   const handlePresetSelect = (
     preset: "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden",
+    seed?: string,
   ) => {
     setSelectedPreset(preset);
     if (selectedBoard) {
@@ -91,8 +128,14 @@ export const PlaySetupView: React.FC = () => {
         });
       }
 
-      onStartGame(selectedBoard, preset, finalPlayerConfig);
+      onStartGame(selectedBoard, preset, finalPlayerConfig, seed);
     }
+  };
+
+  const handleChiSelect = (index: number) => {
+    setPreviewSeedIndex(index);
+    const selectedSeed = seeds[index]?.seed;
+    handlePresetSelect("terrainiffic", selectedSeed);
   };
 
   const isMultiplayerMode = (playerCount ?? 2) >= 3;
@@ -221,10 +264,10 @@ export const PlaySetupView: React.FC = () => {
               }}
               darkMode={darkMode}
               title="Ω Omega"
-              description='"Setup the board Gamemaster."'
+              description='"Design the field. Deploy the army."'
               Icon={Eye}
               color="red"
-              badge="Custom"
+              badge="Setup Mode"
               HoverIcon={Omega}
               className="w-full"
             />
@@ -239,16 +282,16 @@ export const PlaySetupView: React.FC = () => {
               }}
               darkMode={darkMode}
               title="π Pi"
-              description='"Grab a hot slice of Classic."'
+              description='"Library layout. Standard formation."'
               Icon={Pizza}
               color="amber"
-              badge="EZ as Pi"
+              badge="Instant Play"
               HoverIcon={Pi}
               className="w-full"
             />
             <RouteCard
               onClick={() => {
-                if (isHost) handlePresetSelect("terrainiffic");
+                if (isHost) setIsChiModalOpen(true);
               }}
               isSelected={selectedPreset === "terrainiffic"}
               preview={{
@@ -259,10 +302,10 @@ export const PlaySetupView: React.FC = () => {
               }}
               darkMode={darkMode}
               title="χ Chi"
-              description='"Walk the community garden."'
+              description='"Select preconfigured terrain."'
               Icon={Shell}
               color="emerald"
-              badge="Feng Shui"
+              badge="Drafting"
               HoverIcon={LandPlot}
               className="w-full"
             />
@@ -276,10 +319,10 @@ export const PlaySetupView: React.FC = () => {
               }}
               darkMode={darkMode}
               title="α Alpha"
-              description='"Roll the dice of Entropy."'
+              description='"Entropy unleashed. Full random."'
               Icon={Dices}
               color="blue"
-              badge="Random Chaos"
+              badge="Chaos Mode"
               HoverIcon={ShieldQuestion}
               className="w-full"
             />
@@ -333,6 +376,15 @@ export const PlaySetupView: React.FC = () => {
           </div>
         </div>
       )}
+
+      <ChiLayoutModal
+        isOpen={isChiModalOpen}
+        onClose={() => setIsChiModalOpen(false)}
+        seeds={seeds}
+        onSelect={handleChiSelect}
+        selectedIndex={previewSeedIndex}
+        activeMode={selectedBoard}
+      />
     </RoutePageLayout>
   );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Trees, Waves, Mountain } from "lucide-react";
-import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
+import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
 import { useRouteContext } from "@/route.context";
 import type { TerrainType } from "@/shared/types/game";
 import { TERRAIN_DETAILS } from "@/constants";
@@ -13,7 +13,7 @@ import RoutePageFooter from "@/shared/components/organisms/RoutePageFooter";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
 import RouteDetailModal from "@/shared/components/organisms/RouteDetailModal";
-import TrenchCardDetail from "@/client/game/components/organisms/TrenchCardDetail";
+import TrenchCardDetail from "@/client/game/shared/components/organisms/TrenchCardDetail";
 
 export const LearnTrenchMainView: React.FC = () => {
   const navigate = useNavigate();

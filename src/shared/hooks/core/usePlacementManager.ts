@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
+import { useState, useCallback, useMemo } from "react";
+import { getValidMoves } from "@/core/mechanics/gameLogic";
 import type {
   PlacementManager,
   GameCore,
@@ -17,9 +17,18 @@ export function usePlacementManager(
   const { boardState, configState } = core;
 
   // Authoritative state from engine
-  const board = bgioState?.G?.board ?? boardState.board;
-  const terrain = bgioState?.G?.terrain ?? boardState.terrain;
-  const mode = bgioState?.G?.mode ?? configState.mode;
+  const board = useMemo(
+    () => bgioState?.G?.board ?? boardState.board,
+    [bgioState?.G?.board, boardState.board],
+  );
+  const terrain = useMemo(
+    () => bgioState?.G?.terrain ?? boardState.terrain,
+    [bgioState?.G?.terrain, boardState.terrain],
+  );
+  const mode = useMemo(
+    () => bgioState?.G?.mode ?? configState.mode,
+    [bgioState?.G?.mode, configState.mode],
+  );
 
   const [selectedCell, setSelectedCell] = useState<[number, number] | null>(
     null,
@@ -39,8 +48,19 @@ export function usePlacementManager(
       piece: BoardPiece,
       player: string,
       depth = 0,
+      skipCheck = false,
     ): number[][] => {
-      return getValidMoves(r, c, piece, player, board, terrain, mode, depth);
+      return getValidMoves(
+        r,
+        c,
+        piece,
+        player,
+        board,
+        terrain,
+        mode,
+        depth,
+        skipCheck,
+      );
     },
     [board, terrain, mode],
   );

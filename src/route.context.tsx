@@ -15,6 +15,12 @@ interface RouteContextType {
   pieceStyle: "bold" | "emoji" | "outlined" | "custom" | "lucide";
   toggleTheme?: () => void;
   togglePieceStyle?: () => void;
+  getIcon: (
+    unit: ArmyUnit,
+    className?: string,
+    size?: number | string,
+    filled?: boolean,
+  ) => React.ReactNode;
   onTutorial?: () => void;
   onLogoClick?: () => void;
   onZenGarden?: () => void;

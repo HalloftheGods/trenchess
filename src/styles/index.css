@@ -1,22 +1,24 @@
 @import "tailwindcss";
 
-/* Theme and Base */
+/* 1. Tokens and Theme */
 @import "./theme.css";
 @import "./base.css";
 
-/* Animations */
-@import "./animations.css";
+/* 2. Atomic Utilities (Foundational) */
+@import "./atoms/animations.css";
+@import "./atoms/typography.css";
+@import "./atoms/glass.css";
+@import "./atoms/branding.css";
+@import "./atoms/layout.css";
+@import "./atoms/chips.css";
 
-/* Utilities */
-@import "./utilities/glasmorphism.css";
-@import "./utilities/terrain.css";
-@import "./utilities/branding.css";
-@import "./utilities/layout.css";
-@import "./utilities/cards.css";
-@import "./utilities/buttons.css";
-@import "./utilities/dialogs.css";
-@import "./utilities/guides.css";
-@import "./utilities/board.css";
-@import "./utilities/sections.css";
-@import "./utilities/typography.css";
-@import "./utilities/chips.css";
+/* 3. Molecular Utilities (Interactive & Composed) */
+@import "./molecules/buttons.css";
+@import "./molecules/terrain-overlays.css";
+@import "./molecules/sections.css";
+
+/* 4. Organismic Utilities (Structural & Complex) */
+@import "./organisms/cards.css";
+@import "./organisms/dialogs.css";
+@import "./organisms/guides.css";
+@import "./organisms/tactical-field.css";

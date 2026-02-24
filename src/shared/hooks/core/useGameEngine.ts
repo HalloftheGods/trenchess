@@ -13,6 +13,7 @@ interface UseGameEngineProps {
   showBgDebug: boolean;
   multiplayer: MultiplayerState;
   isStarted: boolean;
+  setupData?: TrenchessSetupData;
 }
 
 /**
@@ -23,6 +24,7 @@ export function useGameEngine({
   showBgDebug,
   multiplayer,
   isStarted,
+  setupData,
 }: UseGameEngineProps) {
   const [bgioState, setBgioState] = useState<{
     G: TrenchessState;
@@ -37,6 +39,7 @@ export function useGameEngine({
     playerID?: string;
     roomId?: string;
     debug?: boolean;
+    setupData?: TrenchessSetupData;
   }>({});
 
   const initClient = useCallback(() => {
@@ -54,7 +57,7 @@ export function useGameEngine({
       numPlayers,
       debug: showBgDebug,
       playerID,
-      setupData: createInitialState(mode, getPlayersForMode(mode)),
+      setupData: setupData || createInitialState(mode, getPlayersForMode(mode)),
     } as Parameters<typeof Client>[0];
 
     if (multiplayer.roomId && multiplayer.playerCredentials) {
@@ -76,8 +79,9 @@ export function useGameEngine({
       playerID,
       roomId: multiplayer.roomId || undefined,
       debug: showBgDebug,
+      setupData,
     };
-  }, [mode, showBgDebug, multiplayer.playerIndex, multiplayer.roomId, multiplayer.playerCredentials]);
+  }, [mode, showBgDebug, multiplayer.playerIndex, multiplayer.roomId, multiplayer.playerCredentials, setupData]);
 
   useEffect(() => {
     const isOnline = !!multiplayer.roomId;
@@ -90,17 +94,26 @@ export function useGameEngine({
 
     const shouldStart = isStarted || !!multiplayer.roomId;
 
+    const currentRoomId = multiplayer.roomId || undefined;
+
     const hasClient = !!clientRef.current;
     const hasPlayerChanged = local.playerID !== playerID;
-    const hasRoomChanged = local.roomId !== multiplayer.roomId;
+    const hasRoomChanged = local.roomId !== currentRoomId;
     const hasDebugChanged = local.debug !== showBgDebug;
+    const hasSetupDataChanged = local.setupData !== setupData;
 
-    const needsReinit = !hasClient || hasPlayerChanged || hasRoomChanged || hasDebugChanged;
+    const needsReinit =
+      !hasClient ||
+      hasPlayerChanged ||
+      hasRoomChanged ||
+      hasDebugChanged ||
+      hasSetupDataChanged;
 
     if (shouldStart && needsReinit) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       initClient();
     }
-  }, [multiplayer.playerIndex, multiplayer.roomId, mode, showBgDebug, initClient, isStarted]);
+  }, [multiplayer.playerIndex, multiplayer.roomId, mode, showBgDebug, initClient, isStarted, setupData]);
 
   // Authorization: Unified Sync Logic
   useEffect(() => {
@@ -117,6 +130,15 @@ export function useGameEngine({
     const unsubscribe = clientInstance!.subscribe(onStateUpdate);
     return unsubscribe;
   }, [clientInstance]);
+
+  // Authorization: Final Cleanup
+  useEffect(() => {
+    return () => {
+      if (clientRef.current) {
+        clientRef.current.stop();
+      }
+    };
+  }, []);
 
   return {
     bgioState,

@@ -1,12 +1,13 @@
 import React from "react";
 import { UserPlus } from "lucide-react";
+import { useRouteContext } from "@/route.context";
 import { PanelCard } from "../atoms/PanelCard";
 import { UnitIdentityHeader } from "../molecules/UnitIdentityHeader";
 import { UnitIconSelector } from "../molecules/UnitIconSelector";
 import { MiniMovePreview } from "../molecules/MiniMovePreview";
 import { StatList } from "../molecules/StatList";
 import { TerrainAffinityBar } from "../molecules/TerrainAffinityBar";
-import type { UnitDetails, UnitColors, ArmyUnit } from "@/shared/types/game";
+import type { UnitDetails, UnitColors, ArmyUnit } from "@/shared/types";
 import type { TerrainAffinityItem } from "../molecules/TerrainAffinityBar";
 
 interface UnitPortfolioProps {
@@ -54,6 +55,7 @@ export const UnitPortfolio: React.FC<UnitPortfolioProps> = ({
   panelBorderStyle,
   darkMode,
 }) => {
+  const { getIcon } = useRouteContext();
   if (!selectedUnit || !details || !unit || !colors) {
     return (
       <div className="h-full flex flex-col relative group/panel">
@@ -73,8 +75,6 @@ export const UnitPortfolio: React.FC<UnitPortfolioProps> = ({
       </div>
     );
   }
-
-  const IconComp = unit.lucide;
 
   return (
     <div className="h-full flex flex-col relative group/panel">
@@ -98,7 +98,7 @@ export const UnitPortfolio: React.FC<UnitPortfolioProps> = ({
 
           <div className="flex flex-row items-center gap-10 mb-6">
             <UnitIconSelector
-              Icon={IconComp}
+              icon={getIcon(unit, "transition-transform group-hover:rotate-3", 80)}
               colors={colors}
               onPrev={handlePrevUnit}
               onNext={handleNextUnit}

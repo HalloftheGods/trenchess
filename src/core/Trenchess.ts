@@ -1,4 +1,4 @@
-import type { Game } from "boardgame.io";
+import type { Game, Ctx } from "boardgame.io";
 import { createInitialState } from "@/core/setup/setupLogic";
 import type {
   GameMode,
@@ -8,8 +8,7 @@ import type {
 import { setupPhase } from "@/core/phases/setupPhase";
 import { playPhase } from "@/core/phases/playPhase";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const Trenchess: Game<TrenchessState, any, TrenchessSetupData> = {
+export const Trenchess: Game<TrenchessState, Ctx, TrenchessSetupData> = {
   name: "trenchess",
 
   setup: (_, setupData) => {
@@ -70,6 +69,8 @@ export const Trenchess: Game<TrenchessState, any, TrenchessSetupData> = {
       inventory: data?.inventory || initialInventory,
       terrainInventory: data?.terrainInventory || initialTerrainInventory,
       capturedBy: { red: [], yellow: [], green: [], blue: [] },
+      lostToDesert: [],
+      lastMove: null,
       mode,
       activePlayers: players,
       readyPlayers: allPlaced ? initialReadyPlayers : {},

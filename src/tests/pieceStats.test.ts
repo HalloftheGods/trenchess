@@ -2,7 +2,7 @@ import { describe, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
 import { PIECES, TERRAIN_TYPES, BOARD_SIZE } from "@constants";
-import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
+import { getValidMoves } from "@/core/mechanics/gameLogic";
 import type { BoardPiece, TerrainType, PieceType } from "@/shared/types/game";
 
 const ITERATIONS_PER_MATCHUP = 500_000;
@@ -73,7 +73,7 @@ const createInitialTerrainStats = () => ({
 describe("Piece Statistics Generator", () => {
   it("generates piece capture threat surface statistics", () => {
     const pieceKeys = Object.values(PIECES) as PieceType[];
-    const stats: Record<string, any> = {};
+    const stats: Record<string, unknown> = {};
 
     pieceKeys.forEach((attacker) => {
       stats[attacker] = {};

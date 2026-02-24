@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { LobbyClient } from "boardgame.io/client";
 import type {
   RoomInfo,
@@ -51,10 +51,13 @@ export function useMultiplayer(): MultiplayerState {
   });
   const [availableRooms, setAvailableRooms] = useState<RoomInfo[]>([]);
 
-  const socketId = playerIndex !== null ? String(playerIndex) : null;
-  const readyPlayers = {}; // Tracked in boardgame.io G state
+  const socketId = useMemo(
+    () => (playerIndex !== null ? String(playerIndex) : null),
+    [playerIndex],
+  );
+  const readyPlayers = useMemo(() => ({}), []); // Tracked in boardgame.io G state
   const onlineCount = availableRooms.length * 2; // Approximated for global lobby
-  const chatMessages: ChatMessage[] = [];
+  const chatMessages = useMemo<ChatMessage[]>(() => [], []);
 
   const refreshRooms = useCallback(async () => {
     try {
@@ -147,7 +150,7 @@ export function useMultiplayer(): MultiplayerState {
     try {
       const lobbyClient = new LobbyClient({ server: getServerUrl() });
       const { matchID } = await lobbyClient.createMatch("battle-chess", {
-        numPlayers: 2, // Hardcoded for 2P initially, updated when transitioning to play
+        numPlayers: 4, // Hardcoded for 2P initially, updated when transitioning to play
       });
 
       const res = await lobbyClient.joinMatch("battle-chess", matchID, {
@@ -204,25 +207,48 @@ export function useMultiplayer(): MultiplayerState {
   const sendMove = useCallback((_move: Record<string, unknown>) => {}, []);
   const sendMessage = useCallback((_text: string) => {}, []);
 
-  return {
-    isConnected,
-    roomId,
-    players,
-    readyPlayers,
-    socketId,
-    isHost,
-    availableRooms,
-    onlineCount,
-    playerIndex,
-    playerCredentials,
-    chatMessages,
-    sendMessage,
-    joinGame,
-    hostGame,
-    leaveGame,
-    toggleReady,
-    sendGameState,
-    sendMove,
-    refreshRooms,
-  };
+  return useMemo(
+    () => ({
+      isConnected,
+      roomId,
+      players,
+      readyPlayers,
+      socketId,
+      isHost,
+      availableRooms,
+      onlineCount,
+      playerIndex,
+      playerCredentials,
+      chatMessages,
+      sendMessage,
+      joinGame,
+      hostGame,
+      leaveGame,
+      toggleReady,
+      sendGameState,
+      sendMove,
+      refreshRooms,
+    }),
+    [
+      isConnected,
+      roomId,
+      players,
+      socketId,
+      isHost,
+      availableRooms,
+      onlineCount,
+      playerIndex,
+      playerCredentials,
+      chatMessages,
+      readyPlayers,
+      sendMessage,
+      joinGame,
+      hostGame,
+      leaveGame,
+      toggleReady,
+      sendGameState,
+      sendMove,
+      refreshRooms,
+    ],
+  );
 }

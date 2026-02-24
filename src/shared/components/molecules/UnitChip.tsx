@@ -1,6 +1,7 @@
 import React from "react";
 import { Ban, ShieldPlus, Zap } from "lucide-react";
 import { INITIAL_ARMY, unitColorMap } from "@/constants";
+import { useRouteContext } from "@/route.context";
 
 import { CHESS_NAME } from "@/constants";
 
@@ -10,6 +11,7 @@ interface UnitChipProps {
 }
 
 export const UnitChip: React.FC<UnitChipProps> = ({ pieceKey, status }) => {
+  const { getIcon } = useRouteContext();
   const unit = INITIAL_ARMY.find((u) => u.type === pieceKey);
   if (!unit) return null;
   const colors = unitColorMap[pieceKey];
@@ -17,11 +19,9 @@ export const UnitChip: React.FC<UnitChipProps> = ({ pieceKey, status }) => {
   const isBlock = status === "block";
   const chessInfo = CHESS_NAME[pieceKey];
 
-  const Icon = unit.lucide;
-
   return (
     <div
-      className={`chip-base ${
+      className={`action-chip ${
         isBlock
           ? "bg-red-500/5 border-red-500/20 opacity-60"
           : isSanctuary
@@ -32,16 +32,16 @@ export const UnitChip: React.FC<UnitChipProps> = ({ pieceKey, status }) => {
       <div
         className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${isBlock ? "text-slate-500" : colors.text}`}
       >
-        <Icon className="w-full h-full" />
+        {getIcon(unit, "", 32)}
       </div>
       <div className="flex-1 min-w-0">
         <span
-          className={`unit-name-label mb-0.5 ${isBlock ? "text-slate-500" : colors.text}`}
+          className={`unit-title-text mb-0.5 ${isBlock ? "text-slate-500" : colors.text}`}
         >
           {chessInfo?.chess || unit.type}
         </span>
         <span
-          className={`status-label ${isBlock ? "text-brand-red" : isSanctuary ? "text-amber-400" : "text-emerald-400"}`}
+          className={`status-text ${isBlock ? "text-brand-red" : isSanctuary ? "text-amber-400" : "text-emerald-400"}`}
         >
           {isBlock ? "✗ Blocked" : isSanctuary ? "⚔ Sanctuary" : "✓ Can Enter"}
         </span>

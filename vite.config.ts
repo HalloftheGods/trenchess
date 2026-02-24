@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -7,6 +8,11 @@ import path from "path";
 export default defineConfig({
   base: "/",
   plugins: [react(), tailwindcss()],
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: "./src/tests/setup.ts",
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -36,7 +42,8 @@ export default defineConfig({
       "@assets": path.resolve(__dirname, "./src/shared/assets"),
 
       "@game": path.resolve(__dirname, "./src/client/game"),
-      "@gameUtils": path.resolve(__dirname, "./src/client/game/utils"),
+      "@gameHooks": path.resolve(__dirname, "./src/client/game/shared/hooks"),
+      "@gameUtils": path.resolve(__dirname, "./src/client/game/shared/utils"),
       "@constants": path.resolve(__dirname, "./src/constants"),
       "@client": path.resolve(__dirname, "./src/client"),
     },

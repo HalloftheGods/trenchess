@@ -15,7 +15,7 @@ export interface Slide {
   subtitle?: string;
   description: React.ReactNode;
   leftContent?: React.ReactNode;
-  icon: React.ElementType;
+  icon: React.ReactNode | React.ElementType;
   sideContent?: React.ReactNode;
   infoContent?: React.ReactNode;
   previewConfig: PreviewConfig;
@@ -193,16 +193,25 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
                   <div
                     className={`p-4 rounded-[1.5rem] border-2 shadow-xl ${cmap.iconBg} ${cmap.iconText} ${cmap.iconBorder} flex items-center justify-center w-24 h-24 shrink-0 transition-transform hover:scale-105 duration-500`}
                   >
-                    <currentSlide.icon size={48} />
+                    {(() => {
+                      const Icon = currentSlide.icon;
+                      if (!Icon) return null;
+
+                      if (React.isValidElement(Icon)) return Icon;
+
+                      const IconComponent = Icon as React.ElementType;
+                      return <IconComponent size={48} />;
+                    })()}
                   </div>
                   <div className="flex flex-col">
-                    <p
-                      className={`text-sm font-bold ${subtextColor} uppercase tracking-widest mb-0`}
-                    >
-                      {/* use original name */}
-                      The {UNIT_INTEL[currentSlide.id]?.title} Learned a new
-                      job!
-                    </p>
+                    {UNIT_INTEL[currentSlide.id] && (
+                      <p
+                        className={`text-sm font-bold ${subtextColor} uppercase tracking-widest mb-0`}
+                      >
+                        The {UNIT_INTEL[currentSlide.id]?.title} Learned a new
+                        job!
+                      </p>
+                    )}
                     <h3
                       className={`text-5xl font-black uppercase tracking-tight ${textColor}`}
                     >

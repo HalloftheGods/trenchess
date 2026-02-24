@@ -1,6 +1,7 @@
 import React from "react";
 import { INITIAL_ARMY, unitColorMap } from "@/constants";
 import { UnitMovePreview } from "@/shared/components/molecules/UnitMovePreview";
+import { useRouteContext } from "@/route.context";
 import type { TerrainDetail } from "@/shared/types/game";
 import type { PieceType } from "@/shared/types/game";
 
@@ -17,10 +18,10 @@ const UnitPreviewCell: React.FC<UnitPreviewCellProps> = ({
   pieceKey,
   terrainKey,
 }) => {
+  const { getIcon } = useRouteContext();
   const colors = unitColorMap[pieceKey];
   const unit = INITIAL_ARMY.find((u) => u.type === pieceKey);
   if (!unit || !colors) return null;
-  const Icon = unit.lucide;
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -33,7 +34,7 @@ const UnitPreviewCell: React.FC<UnitPreviewCellProps> = ({
         centerCol={3}
       />
       <div className={`flex items-center gap-1 ${colors.text}`}>
-        <Icon className="w-3 h-3" />
+        {getIcon(unit, "", 12)}
         <span className="text-[8px] font-bold uppercase tracking-widest">
           {unit.type}
         </span>

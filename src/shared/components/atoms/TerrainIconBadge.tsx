@@ -2,7 +2,7 @@ import React from "react";
 import type { TerrainType } from "@/shared/types/game";
 import { TERRAIN_DETAILS } from "@/constants";
 import { Mountain, Trees, Waves } from "lucide-react";
-import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
+import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
 import { TERRAIN_TYPES } from "@/constants";
 import { Box } from "@atoms";
 

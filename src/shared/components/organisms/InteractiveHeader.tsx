@@ -9,6 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { INITIAL_ARMY } from "@/constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
+import { useRouteContext } from "@/route.context";
 import {
   UNIT_COLORS,
   UNIT_NAMES,
@@ -34,6 +35,7 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
   onTerrainSelect,
   onBack,
 }) => {
+  const { getIcon } = useRouteContext();
   const cardBg = darkMode ? "bg-slate-900/50" : "bg-white/70";
   const borderColor = darkMode ? "border-white/10" : "border-slate-200";
   const terrain =
@@ -66,7 +68,6 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
             {ALL_UNITS.map((uType) => {
               const u = INITIAL_ARMY.find((x) => x.type === uType);
               if (!u) return null;
-              const Icon = u.lucide as React.ElementType;
               const colors = UNIT_COLORS[uType];
               const isActive = selectedUnit === uType;
 
@@ -92,7 +93,7 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
                   } ${uProtected ? "border-double border-4" : ""} ${uBlocked ? "border-dotted border-4" : ""}`}
                   title={UNIT_NAMES[uType]}
                 >
-                  <Icon size={20} />
+                  {getIcon(u, "", 20)}
                   {/* Tooltip */}
                   <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
                     {UNIT_NAMES[uType]}
@@ -134,12 +135,7 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
                   } ${tProtected ? "border-dotted border-4" : ""} ${tBlocked ? "border-double border-4" : ""}`}
                   title={t.name}
                 >
-                  {React.cloneElement(
-                    t.icon as React.ReactElement<{ size?: number }>,
-                    {
-                      size: 20,
-                    },
-                  )}
+                  {t.icon && <t.icon size={20} />}
                   {/* Tooltip */}
                   <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
                     {t.name}

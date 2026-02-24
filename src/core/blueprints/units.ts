@@ -1,5 +1,5 @@
-import { PIECES } from "@/constants";
-import type { PieceType, UnitBlueprint } from "@/shared/types";
+import { PIECES } from "@/constants/pieces";
+import type { UnitBlueprint } from "@/shared/types";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 
@@ -27,6 +27,14 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
       [r + 1, c],
       [r, c - 1],
       [r, c + 1],
+      [r - 1, c - 1],
+      [r - 1, c + 1],
+      [r + 1, c - 1],
+      [r + 1, c + 1],
+      [r - 2, c],
+      [r + 2, c],
+      [r, c - 2],
+      [r, c + 2],
     ],
     sanctuaryTerrain: ["rubble", "trees", "ponds"],
   },

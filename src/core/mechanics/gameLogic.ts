@@ -1,4 +1,3 @@
 export * from "@/core/moves";
-export * from "./gameState";
+export { isPlayerInCheck, hasAnyValidMoves, getValidMoves } from "./movement/movementLogic";
 export * from "./terrain";
-export { getValidMoves } from "./movement/movementLogic";

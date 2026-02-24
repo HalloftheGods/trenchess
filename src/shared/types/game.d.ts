@@ -45,7 +45,16 @@ export interface TrenchessState {
   inventory: Record<string, PieceType[]>;
   terrainInventory: Record<string, TerrainType[]>;
   capturedBy: Record<string, BoardPiece[]>;
+  lostToDesert: BoardPiece[];
   mode: GameMode;
+  lastMove: {
+    from: [number, number];
+    to: [number, number];
+    path: [number, number][];
+    type: PieceType;
+    player: string;
+    isAiMove?: boolean;
+  } | null;
   activePlayers: string[];
   readyPlayers: Record<string, boolean>;
   playerMap: Record<string, string>;
@@ -143,7 +152,7 @@ export interface TerrainDetail {
   tagline?: string;
   flavorTitle?: string;
   flavorStats?: string[];
-  icon?: any;
+  icon?: React.ComponentType<{ size?: number | string; className?: string }>;
   bg?: string;
   text?: string;
   border?: string;

@@ -1,6 +1,7 @@
 import React from "react";
 import { Columns4 } from "lucide-react";
 import { UNIT_DETAILS, PIECES, INITIAL_ARMY, TERRAIN_DETAILS } from "@/constants";
+import { useRouteContext } from "@/route.context";
 
 interface UnitMovePreviewProps {
   unitType: string;
@@ -23,11 +24,11 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
   mode = "both",
   selectedTerrain,
 }) => {
+  const { getIcon } = useRouteContext();
   const details = UNIT_DETAILS[unitType];
   if (!details) return null;
 
   const unit = INITIAL_ARMY.find((u) => u.type === unitType);
-  const PieceIcon = unit?.lucide;
 
   const movePattern = details.movePattern;
   const moves = movePattern(centerRow, centerCol);
@@ -125,11 +126,8 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
                     />
                   </div>
                 )}
-                {isCenter && PieceIcon && (
-                  <PieceIcon
-                    size={16}
-                    className="dark:text-slate-900 text-white"
-                  />
+                {isCenter && unit && (
+                  getIcon(unit, "dark:text-slate-900 text-white", 16)
                 )}
                 {isTerrainCell && TerrainIcon && terrainInfo && (
                   <TerrainIcon

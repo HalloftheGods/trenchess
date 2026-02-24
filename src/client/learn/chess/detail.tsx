@@ -5,6 +5,7 @@ import InteractiveGuide, {
 } from "@/shared/components/templates/InteractiveGuide";
 import { PIECES, INITIAL_ARMY } from "@/constants";
 import { UNIT_DETAILS, unitColorMap } from "@/constants";
+import { useRouteContext } from "@/route.context";
 import type {
   PieceType,
   TerrainType,
@@ -26,6 +27,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
   onBack,
   initialUnit,
 }) => {
+  const { getIcon } = useRouteContext();
   const [selectedTerrain, setSelectedTerrain] = useState<string | null>(null);
 
   const slides: Slide[] = useMemo(() => {
@@ -59,7 +61,6 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
       if (!unit || !details) return null;
 
       const colors = unitColorMap[unit.type];
-      const IconComp = unit.lucide;
 
       // Extract base color from the text class (e.g., "text-slate-500" or "text-brand-red" -> "red")
       const colorMatch = colors.text.match(/text-(?:brand-)?([a-z]+)/);
@@ -121,7 +122,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
         subtitle: details.subtitle,
         color: finalColor as Slide["color"],
         topLabel: details.role,
-        icon: IconComp,
+        icon: getIcon(unit, "", 48),
         previewConfig: {
           mode: "2p-ns",
           protocol: "classic",
@@ -234,7 +235,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
         ),
       };
     }).filter(Boolean) as Slide[];
-  }, [initialUnit, selectedTerrain]);
+  }, [initialUnit, selectedTerrain, getIcon]);
 
   return (
     <InteractiveGuide

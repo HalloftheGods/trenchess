@@ -1,6 +1,6 @@
 import React, { lazy } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { CornerControls } from "@/client/game/components/organisms/CornerControls";
+import { CornerControls } from "@/client/game/shared/components/organisms/CornerControls";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 import { FileText, Trophy, AudioWaveform } from "lucide-react";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";

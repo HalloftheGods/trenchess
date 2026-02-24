@@ -63,7 +63,8 @@ describe("CPU vs CPU Game Simulation", () => {
       const mode: GameMode = "2p-ns";
 
       const initialState = createInitialState(mode, players);
-      let { board, terrain, inventory, terrainInventory } = initialState;
+      const { inventory } = initialState;
+      let { board, terrain, terrainInventory } = initialState;
 
       const terrainSetupResult = generateElementalTerrain(terrain, board, terrainInventory, players, mode);
       terrain = terrainSetupResult.terrain;

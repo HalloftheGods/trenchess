@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import * as SetupLogic from "@/core/setup/setupLogic";
+import * as SetupLogic from "@/core/setup";
 import type {
   SetupActions,
   GameCore,
@@ -7,21 +7,27 @@ import type {
   TerrainType,
   BoardPiece,
   PieceType,
+  BgioClient,
 } from "@/shared/types";
 import { INITIAL_ARMY } from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
+import { DEFAULT_SEEDS } from "@/core/setup/seeds";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
 
+/**
+ * useSetupActions — Hook for managing pre-game setup maneuvers.
+ * Refactored to support both local fallback state and authoritative engine moves.
+ */
 export function useSetupActions(
   core: GameCore,
   setPlacementPiece: React.Dispatch<React.SetStateAction<PieceType | null>>,
   setPlacementTerrain: React.Dispatch<React.SetStateAction<TerrainType | null>>,
   setPreviewMoves: React.Dispatch<React.SetStateAction<number[][]>>,
+  bgioClientRef?: React.MutableRefObject<BgioClient | undefined>,
+  authoritativeBoard?: (BoardPiece | null)[][],
+  authoritativeTerrain?: TerrainType[][],
 ): SetupActions {
   const { boardState, configState, turnState } = core;
   const {
-    board,
-    terrain,
     inventory,
     terrainInventory,
     setBoard,
@@ -31,7 +37,11 @@ export function useSetupActions(
     setCapturedBy,
   } = boardState;
   const { mode, setMode, setGameState } = configState;
-  const { turn, setTurn, setActivePlayers, setPlayerTypes } = turnState;
+  const { turn, setActivePlayers, setPlayerTypes } = turnState;
+
+  // Source of truth for local calculations (fallback to boardState if no authoritative data)
+  const currentBoard = authoritativeBoard || boardState.board;
+  const currentTerrain = authoritativeTerrain || boardState.terrain;
 
   const initGame = useCallback(
     (selectedMode: GameMode) => {
@@ -48,7 +58,7 @@ export function useSetupActions(
       setInventory(state.inventory);
       setTerrainInventory(state.terrainInventory);
       setActivePlayers(players);
-      setTurn(players[0]);
+      turnState.setTurn(players[0]);
       setMode(selectedMode);
       setGameState("setup");
       setPlacementPiece(null);
@@ -66,7 +76,7 @@ export function useSetupActions(
       setPlacementTerrain,
       setTerrain,
       setTerrainInventory,
-      setTurn,
+      turnState,
     ],
   );
 
@@ -77,106 +87,131 @@ export function useSetupActions(
       newPlayerTypes?: Record<string, "human" | "computer">,
       seed?: string,
     ) => {
-      if (typeof window !== "undefined") {
-        const url = new URL(window.location.href);
-        url.searchParams.delete("seed");
-        window.history.pushState({}, "", url.toString());
+      const isBrowser = typeof window !== "undefined";
+      if (isBrowser) {
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.delete("seed");
+        window.history.pushState({}, "", currentUrl.toString());
       }
-      const players = SetupLogic.getPlayersForMode(selectedMode);
-      if (newPlayerTypes)
-        setPlayerTypes((prev: Record<string, "human" | "computer">) => ({
-          ...prev,
-          ...newPlayerTypes,
-        }));
-      else
+
+      const activePlayersForMatch = SetupLogic.getPlayersForMode(selectedMode);
+
+      if (newPlayerTypes) {
+        setPlayerTypes(
+          (currentTypes: Record<string, "human" | "computer">) => ({
+            ...currentTypes,
+            ...newPlayerTypes,
+          }),
+        );
+      } else {
         setPlayerTypes({
           red: "human",
           yellow: "human",
           green: "human",
           blue: "human",
         });
+      }
 
-      const state = SetupLogic.createInitialState(selectedMode, players);
+      const matchState = SetupLogic.createInitialState(
+        selectedMode,
+        activePlayersForMatch,
+      );
 
-      if (preset === "quick") {
-        const tr = SetupLogic.randomizeTerrain(
-          state.terrain,
-          state.board,
-          state.terrainInventory,
-          players,
+      const isAlphaMode = preset === "quick";
+      const isPiMode = preset === "classic";
+      const isChiMode = preset === "terrainiffic";
+      const isZenGardenMode = preset === "zen-garden";
+
+      if (isAlphaMode) {
+        const terrainResult = SetupLogic.randomizeTerrain(
+          matchState.terrain,
+          matchState.board,
+          matchState.terrainInventory,
+          activePlayersForMatch,
           selectedMode,
         );
-        state.terrain = tr.terrain;
-        state.terrainInventory = tr.terrainInventory;
-        const ur = SetupLogic.randomizeUnits(
-          state.board,
-          state.terrain,
-          state.inventory,
-          players,
+        matchState.terrain = terrainResult.terrain;
+        matchState.terrainInventory = terrainResult.terrainInventory;
+
+        const unitsResult = SetupLogic.randomizeUnits(
+          matchState.board,
+          matchState.terrain,
+          matchState.inventory,
+          activePlayersForMatch,
           selectedMode,
         );
-        state.board = ur.board;
-        state.inventory = ur.inventory;
+        matchState.board = unitsResult.board;
+        matchState.inventory = unitsResult.inventory;
+
         setGameState("play");
-      } else if (preset === "classic") {
-        const tr = SetupLogic.generateElementalTerrain(
-          state.terrain,
-          state.board,
-          state.terrainInventory,
-          players,
+      } else if (isPiMode) {
+        let layoutSeed = seed;
+        const isNoSeedProvided = !layoutSeed;
+
+        if (isNoSeedProvided) {
+          const randomIndex = Math.floor(Math.random() * DEFAULT_SEEDS.length);
+          layoutSeed = DEFAULT_SEEDS[randomIndex].seed;
+        }
+
+        const decodedLayout = deserializeGame(layoutSeed!);
+        if (decodedLayout) {
+          const adaptedLayout = adaptSeedToMode(decodedLayout!, selectedMode);
+          matchState.terrain = adaptedLayout.terrain;
+          matchState.terrainInventory = {};
+        }
+
+        const formationResult = SetupLogic.applyClassicalFormation(
+          matchState.board,
+          matchState.terrain,
+          matchState.inventory,
+          matchState.terrainInventory,
+          activePlayersForMatch,
           selectedMode,
         );
-        state.terrain = tr.terrain;
-        state.terrainInventory = tr.terrainInventory;
-        const fr = SetupLogic.applyClassicalFormation(
-          state.board,
-          state.terrain,
-          state.inventory,
-          state.terrainInventory,
-          players,
-          selectedMode,
-        );
-        state.board = fr.board;
-        state.terrain = fr.terrain;
-        state.inventory = fr.inventory;
-        state.terrainInventory = fr.terrainInventory;
+        matchState.board = formationResult.board;
+        matchState.terrain = formationResult.terrain;
+        matchState.inventory = formationResult.inventory;
+        matchState.terrainInventory = formationResult.terrainInventory;
+
         setGameState("play");
-      } else if (preset === "terrainiffic") {
-        const tr = SetupLogic.randomizeTerrain(
-          state.terrain,
-          state.board,
-          state.terrainInventory,
-          players,
-          selectedMode,
-        );
-        state.terrain = tr.terrain;
-        state.terrainInventory = tr.terrainInventory;
-        setGameState("setup");
-        if (seed) {
-          const sd = deserializeGame(seed);
-          if (sd) {
-            const adapted = adaptSeedToMode(sd, selectedMode);
-            if (adapted.terrain) state.terrain = adapted.terrain;
-            if (adapted.board) state.board = adapted.board;
+      } else if (isChiMode) {
+        const layoutSeed = seed;
+        if (!layoutSeed) {
+          const terrainResult = SetupLogic.randomizeTerrain(
+            matchState.terrain,
+            matchState.board,
+            matchState.terrainInventory,
+            activePlayersForMatch,
+            selectedMode,
+          );
+          matchState.terrain = terrainResult.terrain;
+          matchState.terrainInventory = terrainResult.terrainInventory;
+        } else {
+          const decodedLayout = deserializeGame(layoutSeed);
+          if (decodedLayout) {
+            const adaptedLayout = adaptSeedToMode(decodedLayout, selectedMode);
+            matchState.terrain = adaptedLayout.terrain;
+            matchState.board = adaptedLayout.board;
           }
         }
-      } else if (preset === "zen-garden") {
-        state.terrain = state.terrain.map((row) =>
-          row.map(() => TERRAIN_TYPES.FLAT as TerrainType),
+        setGameState("setup");
+      } else if (isZenGardenMode) {
+        matchState.terrain = matchState.terrain.map((row) =>
+          row.map(() => "flat" as TerrainType),
         );
-        state.board = state.board.map((row) => row.map(() => null));
-        state.terrainInventory = {};
+        matchState.board = matchState.board.map((row) => row.map(() => null));
+        matchState.terrainInventory = {};
         setGameState("zen-garden");
       } else {
         setGameState("setup");
       }
 
-      setBoard(state.board);
-      setTerrain(state.terrain);
-      setInventory(state.inventory);
-      setTerrainInventory(state.terrainInventory);
-      setActivePlayers(players);
-      setTurn(players[0]);
+      setBoard(matchState.board);
+      setTerrain(matchState.terrain);
+      setInventory(matchState.inventory);
+      setTerrainInventory(matchState.terrainInventory);
+      setActivePlayers(activePlayersForMatch);
+      turnState.setTurn(activePlayersForMatch[0]);
       setMode(selectedMode);
       setPlacementPiece(null);
       setPlacementTerrain(null);
@@ -194,103 +229,130 @@ export function useSetupActions(
       setPlayerTypes,
       setTerrain,
       setTerrainInventory,
-      setTurn,
+      turnState,
     ],
   );
 
   const randomizeTerrain = useCallback(() => {
-    if (configState.gameState !== "setup") return;
-    const result = SetupLogic.randomizeTerrain(
-      terrain,
-      board,
-      terrainInventory,
-      [turn],
-      mode,
-    );
-    setTerrain(result.terrain);
-    setTerrainInventory(result.terrainInventory);
+    const bgioClient = bgioClientRef?.current;
+    if (bgioClient) {
+      bgioClient.moves.randomizeTerrain(turn);
+    } else {
+      const result = SetupLogic.randomizeTerrain(
+        currentTerrain,
+        currentBoard,
+        terrainInventory,
+        [turn],
+        mode,
+      );
+      setTerrain(result.terrain);
+      setTerrainInventory(result.terrainInventory);
+    }
     setPlacementTerrain(null);
   }, [
-    board,
-    configState.gameState,
+    currentBoard,
+    currentTerrain,
+    bgioClientRef,
     mode,
     setPlacementTerrain,
     setTerrain,
     setTerrainInventory,
-    terrain,
     terrainInventory,
     turn,
   ]);
 
   const generateElementalTerrain = useCallback(() => {
-    if (configState.gameState !== "setup") return;
-    const result = SetupLogic.generateElementalTerrain(
-      terrain,
-      board,
-      terrainInventory,
-      [turn],
-      mode,
-    );
-    setTerrain(result.terrain);
-    setTerrainInventory(result.terrainInventory);
+    const bgioClient = bgioClientRef?.current;
+    if (bgioClient) {
+      bgioClient.moves.applyChiGarden(turn);
+    } else {
+      const result = SetupLogic.generateElementalTerrain(
+        currentTerrain,
+        currentBoard,
+        terrainInventory,
+        [turn],
+        mode,
+      );
+      setTerrain(result.terrain);
+      setTerrainInventory(result.terrainInventory);
+    }
     setPlacementTerrain(null);
   }, [
-    board,
-    configState.gameState,
+    currentBoard,
+    currentTerrain,
+    bgioClientRef,
     mode,
     setPlacementTerrain,
     setTerrain,
     setTerrainInventory,
-    terrain,
     terrainInventory,
     turn,
   ]);
 
   const randomizeUnits = useCallback(() => {
-    if (configState.gameState !== "setup") return;
-    const result = SetupLogic.randomizeUnits(
-      board,
-      terrain,
-      inventory,
-      [turn],
-      mode,
-    );
-    setBoard(result.board);
-    setInventory(result.inventory);
+    const bgioClient = bgioClientRef?.current;
+    if (bgioClient) {
+      bgioClient.moves.randomizeUnits(turn);
+    } else {
+      const result = SetupLogic.randomizeUnits(
+        currentBoard,
+        currentTerrain,
+        inventory,
+        [turn],
+        mode,
+      );
+      setBoard(result.board);
+      setInventory(result.inventory);
+    }
     setPlacementPiece(null);
     setPreviewMoves([]);
   }, [
-    board,
-    configState.gameState,
+    currentBoard,
+    currentTerrain,
+    bgioClientRef,
     inventory,
     mode,
     setBoard,
     setInventory,
     setPlacementPiece,
     setPreviewMoves,
-    terrain,
     turn,
   ]);
 
   const setClassicalFormation = useCallback(() => {
-    if (configState.gameState !== "setup") return;
-    const result = SetupLogic.applyClassicalFormation(
-      board,
-      terrain,
-      inventory,
-      terrainInventory,
-      [turn],
-      mode,
-    );
-    setBoard(result.board);
-    setTerrain(result.terrain);
-    setInventory(result.inventory);
-    setTerrainInventory(result.terrainInventory);
+    const bgioClient = bgioClientRef?.current;
+    if (bgioClient) {
+      bgioClient.moves.setClassicalFormation(turn);
+    } else {
+      // Pi Mode: Standard formation + ALWAYS 16 terrain tiles
+      const terrainResult = SetupLogic.randomizeTerrain(
+        currentTerrain,
+        currentBoard,
+        terrainInventory,
+        [turn],
+        mode,
+        16,
+      );
+      const result = SetupLogic.applyClassicalFormation(
+        currentBoard,
+        terrainResult.terrain,
+        inventory,
+        terrainResult.terrainInventory,
+        [turn],
+        mode,
+        "classical",
+      );
+      setBoard(result.board);
+      setTerrain(result.terrain);
+      setInventory(result.inventory);
+      setTerrainInventory(result.terrainInventory);
+    }
     setPlacementPiece(null);
     setPreviewMoves([]);
   }, [
-    board,
-    configState.gameState,
+    currentBoard,
+    currentTerrain,
+    bgioClientRef,
     inventory,
     mode,
     setBoard,
@@ -299,8 +361,105 @@ export function useSetupActions(
     setPreviewMoves,
     setTerrain,
     setTerrainInventory,
-    terrain,
     terrainInventory,
+    turn,
+  ]);
+
+  const applyChiGarden = useCallback(() => {
+    const bgioClient = bgioClientRef?.current;
+    if (bgioClient) {
+      bgioClient.moves.applyChiGarden(turn);
+    } else {
+      const gardenSeeds = DEFAULT_SEEDS.filter((s) => s.mode === mode);
+      const seedToUse =
+        gardenSeeds.length > 0
+          ? gardenSeeds[Math.floor(Math.random() * gardenSeeds.length)].seed
+          : DEFAULT_SEEDS[0].seed;
+
+      const decoded = deserializeGame(seedToUse);
+      if (decoded) {
+        const adapted = adaptSeedToMode(decoded, mode);
+        const myCells = SetupLogic.getPlayerCells(turn, mode);
+        const nextTerrain = currentTerrain.map((r) => [...r]);
+        const nextBoard = currentBoard.map((r) => [...r]);
+
+        let seedHasUnits = false;
+        for (const [r, c] of myCells) {
+          if (adapted.board[r][c]) {
+            seedHasUnits = true;
+            break;
+          }
+        }
+
+        for (const [r, c] of myCells) {
+          nextTerrain[r][c] = adapted.terrain[r][c];
+          if (seedHasUnits) {
+            nextBoard[r][c] = adapted.board[r][c];
+          }
+        }
+
+        setTerrain(nextTerrain);
+
+        if (seedHasUnits) {
+          setBoard(nextBoard);
+          const newInventory = { ...inventory };
+          newInventory[turn] = [];
+          setInventory(newInventory);
+        }
+
+        const newTerrainInventory = { ...terrainInventory };
+        newTerrainInventory[turn] = [];
+        setTerrainInventory(newTerrainInventory);
+      }
+    }
+    setPlacementPiece(null);
+    setPlacementTerrain(null);
+    setPreviewMoves([]);
+  }, [
+    bgioClientRef,
+    mode,
+    setBoard,
+    setInventory,
+    setPlacementPiece,
+    setPlacementTerrain,
+    setPreviewMoves,
+    setTerrain,
+    setTerrainInventory,
+    inventory,
+    terrainInventory,
+    turn,
+    currentBoard,
+    currentTerrain,
+  ]);
+
+  const resetToOmega = useCallback(() => {
+    const bgioClient = bgioClientRef?.current;
+    if (bgioClient) {
+      bgioClient.moves.resetToOmega(turn);
+    } else {
+      const players = SetupLogic.getPlayersForMode(mode);
+      const state = SetupLogic.createInitialState(mode, players);
+
+      setBoard(state.board);
+      setTerrain(state.terrain);
+      setInventory(state.inventory);
+      setTerrainInventory(state.terrainInventory);
+      setCapturedBy({ red: [], yellow: [], green: [], blue: [] });
+    }
+    setPlacementPiece(null);
+    setPlacementTerrain(null);
+    setPreviewMoves([]);
+  }, [
+    bgioClientRef,
+    mode,
+    setBoard,
+    setCapturedBy,
+    setInventory,
+    setPlacementPiece,
+    setPlacementTerrain,
+    setPreviewMoves,
+    setTerrain,
+    setTerrainInventory,
     turn,
   ]);
 
@@ -317,19 +476,19 @@ export function useSetupActions(
     }
     if (!target) return;
 
-    const nextBoard = board.map((row) => [...row]);
-    const nextTerrain = terrain.map((row) => [...row]);
+    const nextBoard = currentBoard.map((row) => [...row]);
+    const nextTerrain = currentTerrain.map((row) => [...row]);
     const sourceCells = SetupLogic.getPlayerCells(source, mode);
     const targetCells = SetupLogic.getPlayerCells(target, mode);
 
     for (const [r, c] of targetCells) {
       nextBoard[r][c] = null;
-      nextTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+      nextTerrain[r][c] = "flat" as TerrainType;
     }
 
     for (const [r, c] of sourceCells) {
-      const piece = board[r][c];
-      const terr = terrain[r][c];
+      const piece = currentBoard[r][c];
+      const terr = currentTerrain[r][c];
       const tr = 11 - r;
       const tc = 11 - c;
       if (tr >= 0 && tr < 12 && tc >= 0 && tc < 12) {
@@ -340,12 +499,12 @@ export function useSetupActions(
 
     const updateInventoryForPlayer = (
       p: string,
-      currentBoard: (BoardPiece | null)[][],
+      cBoard: (BoardPiece | null)[][],
     ) => {
       const placedUnits: Record<string, number> = {};
       for (let r = 0; r < 12; r++) {
         for (let c = 0; c < 12; c++) {
-          const piece = currentBoard[r][c];
+          const piece = cBoard[r][c];
           if (piece && piece.player === p)
             placedUnits[piece.type] = (placedUnits[piece.type] || 0) + 1;
         }
@@ -368,25 +527,25 @@ export function useSetupActions(
     newInventory[target] = updateInventoryForPlayer(target, nextBoard);
     setInventory(newInventory);
   }, [
-    board,
+    currentBoard,
+    currentTerrain,
     inventory,
     mode,
     setBoard,
     setInventory,
     setTerrain,
-    terrain,
     turn,
   ]);
 
   const resetTerrain = useCallback(() => {
-    const nextTerrain = terrain.map((row) => [...row]);
+    const nextTerrain = currentTerrain.map((row) => [...row]);
     const nextTInv = { ...terrainInventory };
     const myCells = SetupLogic.getPlayerCells(turn, mode);
     const reclaimed: TerrainType[] = [];
     for (const [r, c] of myCells) {
-      if (nextTerrain[r][c] !== TERRAIN_TYPES.FLAT) {
+      if (nextTerrain[r][c] !== "flat") {
         reclaimed.push(nextTerrain[r][c]);
-        nextTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+        nextTerrain[r][c] = "flat" as TerrainType;
       }
     }
     nextTInv[turn] = [...(nextTInv[turn] || []), ...reclaimed];
@@ -394,17 +553,17 @@ export function useSetupActions(
     setTerrainInventory(nextTInv);
     setPlacementTerrain(null);
   }, [
+    currentTerrain,
     mode,
     setPlacementTerrain,
     setTerrain,
     setTerrainInventory,
-    terrain,
     terrainInventory,
     turn,
   ]);
 
   const resetUnits = useCallback(() => {
-    const nextBoard = board.map((row) => [...row]);
+    const nextBoard = currentBoard.map((row) => [...row]);
     const nextInv = { ...inventory };
     const myCells = SetupLogic.getPlayerCells(turn, mode);
     const reclaimed: PieceType[] = [];
@@ -418,7 +577,7 @@ export function useSetupActions(
     setBoard(nextBoard);
     setInventory(nextInv);
     setPlacementPiece(null);
-  }, [board, inventory, mode, setBoard, setInventory, setPlacementPiece, turn]);
+  }, [currentBoard, inventory, mode, setBoard, setInventory, setPlacementPiece, turn]);
 
   return {
     initGame,
@@ -427,6 +586,8 @@ export function useSetupActions(
     generateElementalTerrain,
     randomizeUnits,
     setClassicalFormation,
+    applyChiGarden,
+    resetToOmega,
     mirrorBoard,
     resetTerrain,
     resetUnits,

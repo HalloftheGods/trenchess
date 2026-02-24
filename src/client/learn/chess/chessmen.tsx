@@ -21,7 +21,7 @@ import RoutePageFooter from "@/shared/components/organisms/RoutePageFooter";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
 import RouteDetailModal from "@/shared/components/organisms/RouteDetailModal";
-import ChessCardDetail from "@/client/game/components/organisms/ChessCardDetail";
+import ChessCardDetail from "@/client/game/shared/components/organisms/ChessCardDetail";
 import { INITIAL_ARMY, PIECES, UNIT_DETAILS, unitColorMap } from "@/constants";
 
 export const LearnChessmenView: React.FC = () => {
@@ -127,7 +127,7 @@ export const LearnChessmenView: React.FC = () => {
               darkMode={darkMode}
               title={details?.title || displayNames[type]}
               description={details?.role || "Unit Details"}
-              Icon={unit.lucide}
+              unit={unit}
               HoverIcon={HoverIconComponent}
               color={cardColor}
               className="h-full w-full px-2 py-4"
@@ -167,7 +167,8 @@ export const LearnChessmenView: React.FC = () => {
         prev={
           prevUnit
             ? {
-                icon: prevUnit.lucide,
+                icon: (props: { className?: string; size?: number }) =>
+                  getIcon(prevUnit, props.className, props.size),
                 label:
                   UNIT_DETAILS[prevUnit.type]?.title ||
                   displayNames[prevUnit.type],
@@ -180,7 +181,8 @@ export const LearnChessmenView: React.FC = () => {
         next={
           nextUnit
             ? {
-                icon: nextUnit.lucide,
+                icon: (props: { className?: string; size?: number }) =>
+                  getIcon(nextUnit, props.className, props.size),
                 label:
                   UNIT_DETAILS[nextUnit.type]?.title ||
                   displayNames[nextUnit.type],

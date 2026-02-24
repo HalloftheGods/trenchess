@@ -36,21 +36,37 @@ export function useGameTheme(): GameTheme {
     });
   };
 
-  const getIcon = (unit: ArmyUnit, className = "", filled = false) => {
-    if (pieceStyle === "custom") {
-      const Icon = unit.custom;
-      return <Icon className={className} />;
-    }
-    if (pieceStyle === "lucide") {
-      const Icon = unit.lucide;
+  const getIcon = (
+    unit: ArmyUnit,
+    className = "",
+    size: number | string = "100%",
+    filled = false,
+  ) => {
+    const isComponentStyle = pieceStyle === "custom" || pieceStyle === "lucide";
+    const IconComponent =
+      pieceStyle === "custom" ? unit.custom : (unit.lucide as React.ElementType);
+
+    const baseStyles = `${className} inline-flex items-center justify-center transition-all duration-700`;
+
+    if (isComponentStyle) {
       return (
-        <span className={`contents${filled ? " [&>svg]:fill-current" : ""}`}>
-          <Icon className={className} />
+        <span
+          className={baseStyles}
+          style={{ width: size, height: size }}
+        >
+          <IconComponent
+            size="100%"
+            className={filled ? "fill-current" : ""}
+          />
         </span>
       );
     }
+
     return (
-      <span className={className}>
+      <span
+        className={baseStyles}
+        style={{ fontSize: size, width: size, height: size }}
+      >
         {unit[pieceStyle as "emoji" | "bold" | "outlined"]}
       </span>
     );

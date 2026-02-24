@@ -1,5 +1,5 @@
-import { useCallback } from "react";
-import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
+import { useCallback, useMemo } from "react";
+import * as SetupLogic from "@/core/setup";
 import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER } from "@/constants";
 import type {
   BoardInteraction,
@@ -8,8 +8,15 @@ import type {
   BgioClient,
   PlacementManager,
 } from "@/shared/types";
-import type { TrenchessState } from "@/shared/types/game";
+import type {
+  TrenchessState,
+  BoardPiece,
+  TerrainType,
+} from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
+
+const EMPTY_BOARD: (BoardPiece | null)[][] = [];
+const EMPTY_TERRAIN: TerrainType[][] = [];
 
 /**
  * useBoardInteraction — Handles user input on the game board.
@@ -33,21 +40,29 @@ export function useBoardInteraction(
   const { configState } = core;
 
   // Derive Authoritative Truths
-  const board = bgioState?.G.board || [];
-  const terrain = bgioState?.G.terrain || [];
+  const board = useMemo(
+    () => bgioState?.G.board || EMPTY_BOARD,
+    [bgioState?.G.board],
+  );
+  const terrain = useMemo(
+    () => bgioState?.G.terrain || EMPTY_TERRAIN,
+    [bgioState?.G.terrain],
+  );
   const mode = bgioState?.G.mode || configState.mode;
-  
-  const currentPlayerName = bgioState?.G.playerMap && bgioState?.ctx
-    ? bgioState.G.playerMap[bgioState.ctx.currentPlayer]
-    : "red";
 
-  const localPlayerName = bgioState?.G.playerMap && playerID
-    ? bgioState.G.playerMap[playerID]
-    : core.turnState.turn;
+  const currentPlayerName =
+    bgioState?.G.playerMap && bgioState?.ctx
+      ? bgioState.G.playerMap[bgioState.ctx.currentPlayer]
+      : "red";
+
+  const localPlayerName =
+    bgioState?.G.playerMap && playerID
+      ? bgioState.G.playerMap[playerID]
+      : core.turnState.turn;
 
   const currentPhase = bgioState?.ctx.phase || "menu";
   const isSetupPhase = currentPhase === "setup";
-  
+
   const {
     selectedCell,
     setSelectedCell,
@@ -71,8 +86,10 @@ export function useBoardInteraction(
       }
 
       // In setup, we only care about the local player's area
-      const myCells = getPlayerCells(localPlayerName, mode);
-      const isWithinMyTerritory = myCells.some(([r, c]) => r === row && c === col);
+      const myCells = SetupLogic.getPlayerCells(localPlayerName, mode);
+      const isWithinMyTerritory = myCells.some(
+        ([r, c]) => r === row && c === col,
+      );
 
       if (!isWithinMyTerritory || board[row][col]) {
         setHoveredCell(null);
@@ -86,7 +103,10 @@ export function useBoardInteraction(
         return;
       }
 
-      if (placementPiece && canPlaceUnit(placementPiece, terrain[row][col])) {
+      if (
+        placementPiece &&
+        SetupLogic.canPlaceUnit(placementPiece, terrain[row][col])
+      ) {
         setHoveredCell([row, col]);
         setPreviewMoves(
           getValidMovesForPiece(
@@ -94,6 +114,8 @@ export function useBoardInteraction(
             col,
             { type: placementPiece, player: localPlayerName },
             localPlayerName,
+            0,
+            true,
           ),
         );
       } else {
@@ -122,28 +144,34 @@ export function useBoardInteraction(
       if (!bgioClient) return;
 
       if (isSetupPhase) {
-        const myCells = getPlayerCells(localPlayerName, mode);
-        const isWithinMyTerritory = myCells.some(([r, c]) => r === row && c === col);
+        const myCells = SetupLogic.getPlayerCells(localPlayerName, mode);
+        const isWithinMyTerritory = myCells.some(
+          ([r, c]) => r === row && c === col,
+        );
         if (!isWithinMyTerritory) return;
 
         if (configState.setupMode === "terrain") {
           const currentTerrain = terrain[row][col];
           if (currentTerrain !== TERRAIN_TYPES.FLAT) {
-            bgioClient.moves.placeTerrain(row, col, TERRAIN_TYPES.FLAT, localPlayerName);
+            bgioClient.moves.placeTerrain(row, col, TERRAIN_TYPES.FLAT);
           } else if (placementTerrain && !board[row][col]) {
-            const maxQuota = bgioState?.G.activePlayers.length === 2
-              ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-              : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
-            
+            const maxQuota =
+              bgioState?.G.activePlayers.length === 2
+                ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+                : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+
             let placedCount = 0;
             for (const [r, c] of myCells) {
               if (terrain[r][c] !== TERRAIN_TYPES.FLAT) placedCount++;
             }
-            
+
             if (placedCount < maxQuota) {
-              bgioClient.moves.placeTerrain(row, col, placementTerrain, localPlayerName);
-              
-              const remainingInInventory = bgioState?.G.terrainInventory[localPlayerName]?.filter(t => t === placementTerrain).length || 0;
+              bgioClient.moves.placeTerrain(row, col, placementTerrain);
+
+              const remainingInInventory =
+                bgioState?.G.terrainInventory[localPlayerName]?.filter(
+                  (t) => t === placementTerrain,
+                ).length || 0;
               if (remainingInInventory <= 1) setPlacementTerrain(null);
             }
           }
@@ -151,14 +179,23 @@ export function useBoardInteraction(
         }
 
         if (placementPiece) {
-          if (!board[row][col] && canPlaceUnit(placementPiece, terrain[row][col])) {
-            bgioClient.moves.placePiece(row, col, placementPiece, localPlayerName);
-            
-            const remainingInInventory = bgioState?.G.inventory[localPlayerName]?.filter(p => p === placementPiece).length || 0;
+          if (
+            !board[row][col] &&
+            SetupLogic.canPlaceUnit(placementPiece, terrain[row][col])
+          ) {
+            bgioClient.moves.placePiece(row, col, placementPiece);
+
+            const remainingInInventory =
+              bgioState?.G.inventory[localPlayerName]?.filter(
+                (p) => p === placementPiece,
+              ).length || 0;
             if (remainingInInventory <= 1) setPlacementPiece(null);
           }
-        } else if (board[row][col] && board[row][col]?.player === localPlayerName) {
-          bgioClient.moves.placePiece(row, col, null, localPlayerName);
+        } else if (
+          board[row][col] &&
+          board[row][col]?.player === localPlayerName
+        ) {
+          bgioClient.moves.placePiece(row, col, null);
         }
         return;
       }
@@ -166,8 +203,10 @@ export function useBoardInteraction(
       // Handle Play Phase Movement
       if (selectedCell) {
         const [srcRow, srcCol] = selectedCell;
-        const isTargetValid = validMoves.some(([vr, vc]) => vr === row && vc === col);
-        
+        const isTargetValid = validMoves.some(
+          ([vr, vc]) => vr === row && vc === col,
+        );
+
         if (isTargetValid) {
           executeMove(srcRow, srcCol, row, col);
           setSelectedCell(null);
@@ -180,7 +219,9 @@ export function useBoardInteraction(
         const piece = board[row][col];
         if (piece && piece.player === currentPlayerName) {
           setSelectedCell([row, col]);
-          setValidMoves(getValidMovesForPiece(row, col, piece, currentPlayerName));
+          setValidMoves(
+            getValidMovesForPiece(row, col, piece, currentPlayerName),
+          );
         }
       }
     },

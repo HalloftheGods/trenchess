@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useGameTheme } from "@hooks/useGameTheme";
 import { useMultiplayer } from "@hooks/useMultiplayer";
-import { useComputerOpponent } from "@hooks/useComputerOpponent";
+import { useComputerOpponent } from "@/client/game/shared/hooks/useComputerOpponent";
 
 // Core State Atoms (Fallback/Transient)
 import { useBoardState } from "./core/useBoardState";
@@ -32,24 +32,54 @@ export function useGameState(): GameStateHook {
   const boardState = useBoardState();
   const turnState = useTurnState();
   const configState = useGameConfig();
-  
+
   // 2. Transient UI states
   const [isStarted, setIsStarted] = useState(false);
 
+  const {
+    board: fallbackBoard,
+    terrain: fallbackTerrain,
+    inventory: fallbackInventory,
+    terrainInventory: fallbackTerrainInventory,
+  } = boardState;
+  const { mode, showBgDebug } = configState;
+
+  const setupData = useMemo(
+    () => ({
+      mode,
+      board: fallbackBoard,
+      terrain: fallbackTerrain,
+      inventory: fallbackInventory,
+      terrainInventory: fallbackTerrainInventory,
+    }),
+    [
+      mode,
+      fallbackBoard,
+      fallbackTerrain,
+      fallbackInventory,
+      fallbackTerrainInventory,
+    ],
+  );
+
   // 3. Authoritative Engine Instance
   const { bgioState, clientRef, isEngineActive } = useGameEngine({
-    mode: configState.mode,
-    showBgDebug: configState.showBgDebug,
+    mode,
+    showBgDebug,
     multiplayer,
     isStarted,
+    setupData,
   });
 
   // 4. Derive authoritative values from engine (G/ctx)
-  const board = isEngineActive ? bgioState!.G.board : boardState.board;
-  const terrain = isEngineActive ? bgioState!.G.terrain : boardState.terrain;
-  const inventory = isEngineActive ? bgioState!.G.inventory : boardState.inventory;
-  const terrainInventory = isEngineActive ? bgioState!.G.terrainInventory : boardState.terrainInventory;
-  const capturedBy = isEngineActive ? bgioState!.G.capturedBy : boardState.capturedBy;
+  const board = isEngineActive ? bgioState!.G.board : fallbackBoard;
+  const terrain = isEngineActive ? bgioState!.G.terrain : fallbackTerrain;
+  const inventory = isEngineActive ? bgioState!.G.inventory : fallbackInventory;
+  const terrainInventory = isEngineActive
+    ? bgioState!.G.terrainInventory
+    : fallbackTerrainInventory;
+  const capturedBy = isEngineActive
+    ? bgioState!.G.capturedBy
+    : boardState.capturedBy;
 
   const isOnline = !!multiplayer.roomId;
 
@@ -59,14 +89,22 @@ export function useGameState(): GameStateHook {
         ? bgioState!.G.playerMap[bgioState!.ctx.currentPlayer] || turnState.turn
         : turnState.turn
       : turnState.turn;
-    
-  const activePlayers = isEngineActive ? bgioState!.G.activePlayers : turnState.activePlayers;
-  const readyPlayers = isEngineActive ? bgioState!.G.readyPlayers : turnState.readyPlayers;
-  const winner = isEngineActive ? (bgioState!.ctx.gameover?.winner ?? null) : turnState.winner;
+
+  const activePlayers = isEngineActive
+    ? bgioState!.G.activePlayers
+    : turnState.activePlayers;
+  const readyPlayers = isEngineActive
+    ? bgioState!.G.readyPlayers
+    : turnState.readyPlayers;
+  const winner = isEngineActive
+    ? (bgioState!.ctx.gameover?.winner ?? null)
+    : turnState.winner;
 
   const gameState = isEngineActive
     ? (bgioState!.ctx.phase as "setup" | "play")
-    : isStarted ? "setup" : "menu";
+    : isStarted
+      ? configState.gameState
+      : "menu";
 
   // 5. Lifecycle Orchestrator
   const core = useGameLifecycle(
@@ -80,8 +118,7 @@ export function useGameState(): GameStateHook {
   // 6. Action Managers
   const placementManager = usePlacementManager(bgioState, core);
   const moveExecution = useMoveExecution(core, clientRef);
-  
-  const isOnline = !!multiplayer.roomId;
+
   const playerID = isOnline
     ? multiplayer.playerIndex !== null
       ? String(multiplayer.playerIndex)
@@ -97,7 +134,7 @@ export function useGameState(): GameStateHook {
     clientRef,
     playerID,
   );
-  
+
   const zenGardenInteraction = useZenGardenInteraction(
     bgioState,
     core,
@@ -109,6 +146,9 @@ export function useGameState(): GameStateHook {
     placementManager.setPlacementPiece,
     placementManager.setPlacementTerrain,
     placementManager.setPreviewMoves,
+    clientRef,
+    board,
+    terrain,
   );
 
   // 7. AI Integration
@@ -149,15 +189,28 @@ export function useGameState(): GameStateHook {
     ...zenGardenInteraction,
     ...setupActions,
     bgioState,
-    
-    ready: () => {
+
+    ready: (pid?: string) => {
       if (multiplayer.roomId) {
         if (clientRef.current) clientRef.current.moves.ready();
       } else {
         if (clientRef.current) {
-          activePlayers.forEach((p) => {
-            clientRef.current!.moves.ready(p);
-          });
+          if (pid) {
+            clientRef.current.moves.ready(pid);
+
+            // Auto-switch perspective to the next player who isn't ready
+            const nextNonReadyPlayer = activePlayers.find(
+              (p) => p !== pid && !readyPlayers[p],
+            );
+            if (nextNonReadyPlayer) {
+              turnState.setTurn(nextNonReadyPlayer);
+            }
+          } else {
+            // Fallback: ready everyone if no PID provided
+            activePlayers.forEach((p) => {
+              clientRef.current!.moves.ready(p);
+            });
+          }
         }
       }
     },

@@ -2,47 +2,125 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@engine/*": ["src/core/*"],
-      "@shared/*": ["src/shared/*"],
-      "@logic/*": ["src/core/mechanics/*"],
-      "@ai/*": ["src/core/ai/*"],
-      "@setup/*": ["src/core/setup/*"],
-      "@mechanics/*": ["src/core/mechanics/*"],
-      "@primitives/*": ["src/core/primitives/*"],
-      "@blueprints/*": ["src/core/blueprints/*"],
-      "@seeds/*": ["src/core/setup/seeds/*"],
-      "@engineTypes/*": ["src/shared/types/*"],
-      "@bionics/*": ["src/shared/components/*"],
-      "@bionics": ["src/shared/components"],
-      "@atoms/*": ["src/shared/components/atoms/*"],
-      "@atoms": ["src/shared/components/atoms"],
-      "@molecules/*": ["src/shared/components/molecules/*"],
-      "@molecules": ["src/shared/components/molecules"],
-      "@organisms/*": ["src/shared/components/organisms/*"],
-      "@organisms": ["src/shared/components/organisms"],
-      "@templates/*": ["src/shared/components/templates/*"],
-      "@templates": ["src/shared/components/templates"],
-      "@hooks/*": ["src/shared/hooks/*"],
-      "@hooks": ["src/shared/hooks"],
-      "@utils/*": ["src/shared/utils/*"],
-      "@utils": ["src/shared/utils"],
-      "@types/*": ["src/shared/types/*"],
-      "@assets/*": ["src/shared/assets/*"],
-      "@game/*": ["src/client/game/*"],
-      "@gameUtils/*": ["src/client/game/utils/*"],
-      "@gameUtils": ["src/client/game/utils"],
-      "@constants": ["src/constants"],
-      "@constants/*": ["src/constants/*"],
-      "@client/*": ["src/client/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "@engine/*": [
+        "src/core/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
+      ],
+      "@logic/*": [
+        "src/core/mechanics/*"
+      ],
+      "@ai/*": [
+        "src/core/ai/*"
+      ],
+      "@setup/*": [
+        "src/core/setup/*"
+      ],
+      "@mechanics/*": [
+        "src/core/mechanics/*"
+      ],
+      "@primitives/*": [
+        "src/core/primitives/*"
+      ],
+      "@blueprints/*": [
+        "src/core/blueprints/*"
+      ],
+      "@seeds/*": [
+        "src/core/setup/seeds/*"
+      ],
+      "@engineTypes/*": [
+        "src/shared/types/*"
+      ],
+      "@bionics/*": [
+        "src/shared/components/*"
+      ],
+      "@bionics": [
+        "src/shared/components"
+      ],
+      "@atoms/*": [
+        "src/shared/components/atoms/*"
+      ],
+      "@atoms": [
+        "src/shared/components/atoms"
+      ],
+      "@molecules/*": [
+        "src/shared/components/molecules/*"
+      ],
+      "@molecules": [
+        "src/shared/components/molecules"
+      ],
+      "@organisms/*": [
+        "src/shared/components/organisms/*"
+      ],
+      "@organisms": [
+        "src/shared/components/organisms"
+      ],
+      "@templates/*": [
+        "src/shared/components/templates/*"
+      ],
+      "@templates": [
+        "src/shared/components/templates"
+      ],
+      "@hooks/*": [
+        "src/shared/hooks/*"
+      ],
+      "@hooks": [
+        "src/shared/hooks"
+      ],
+      "@utils/*": [
+        "src/shared/utils/*"
+      ],
+      "@utils": [
+        "src/shared/utils"
+      ],
+      "@types/*": [
+        "src/shared/types/*"
+      ],
+      "@assets/*": [
+        "src/shared/assets/*"
+      ],
+      "@game/*": [
+        "src/client/game/*"
+      ],
+      "@gameHooks/*": [
+        "src/client/game/shared/hooks/*"
+      ],
+      "@gameHooks": [
+        "src/client/game/shared/hooks"
+      ],
+      "@gameUtils/*": [
+        "src/client/game/shared/utils/*"
+      ],
+      "@gameUtils": [
+        "src/client/game/shared/utils"
+      ],
+      "@constants": [
+        "src/constants"
+      ],
+      "@constants/*": [
+        "src/constants/*"
+      ],
+      "@client/*": [
+        "src/client/*"
+      ]
     },
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2022",
     "useDefineForClassFields": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
-    "types": ["vite/client"],
+    "types": [
+      "vite/client"
+    ],
     "skipLibCheck": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -55,5 +133,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "src/client/game/shared"
+  ]
 }

@@ -9,14 +9,16 @@ import type {
 import { TerraForm } from "./generateTrench";
 import { getPlayerCells } from "./territory";
 import { canPlaceUnit } from "./validation";
+import { UNIT_BLUEPRINTS } from "../blueprints/units";
 
 /**
  * shuffle (Atom)
  * Standard Fisher-Yates shuffle implementation.
  */
-export const shuffle = <T>(array: T[]) => {
+export const shuffle = <T>(array: T[], randomSource?: { Number: () => number }) => {
+  const getRand = () => randomSource ? randomSource.Number() : Math.random();
   for (let index = array.length - 1; index > 0; index--) {
-    const randomIndex = Math.floor(Math.random() * (index + 1));
+    const randomIndex = Math.floor(getRand() * (index + 1));
     [array[index], array[randomIndex]] = [array[randomIndex], array[index]];
   }
 };
@@ -31,12 +33,16 @@ export const generateElementalTerrain = (
   _terrainInventory: Record<string, TerrainType[]>,
   players: string[],
   mode: GameMode,
+  randomSource?: { Number: () => number },
 ) => {
+  const getRand = () => randomSource ? randomSource.Number() : Math.random();
+  
   const nextTerrainMap = TerraForm.generate({
     mode,
-    seed: Math.random(),
+    seed: getRand(),
     symmetry: "rotational",
   });
+// ... (rest of the function using nextTerrainMap and players)
 
   const nextTerrainInventory: Record<string, TerrainType[]> = {};
   players.forEach((player) => {
@@ -67,7 +73,7 @@ export const generateElementalTerrain = (
 
 /**
  * randomizeTerrain (Molecule)
- * Shuffles and re-places all available terrain for the given players.
+ * Shuffles and re-places all available terrain for the given players with tactical intelligence.
  */
 export const randomizeTerrain = (
   currentTerrain: TerrainType[][],
@@ -75,69 +81,104 @@ export const randomizeTerrain = (
   terrainInventory: Record<string, TerrainType[]>,
   players: string[],
   mode: GameMode,
+  forceQuota?: number,
+  randomSource?: { Number: () => number },
 ) => {
+  const getRand = () => randomSource ? randomSource.Number() : Math.random();
   const nextTerrainMap = currentTerrain.map((row) => [...row]);
   const nextTerrainInventory = { ...terrainInventory };
 
   const isTwoPlayerMode = mode === "2p-ns" || mode === "2p-ew";
-  const terrainQuota = isTwoPlayerMode
-    ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-    : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+  const terrainQuota = forceQuota !== undefined 
+    ? forceQuota 
+    : (isTwoPlayerMode
+        ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+        : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER);
 
   players.forEach((player) => {
     const myTerritoryCells = getPlayerCells(player, mode);
     let playerTerrainPool = [...(nextTerrainInventory[player] || [])];
 
-    // If inventory is empty, generate a balanced fallback pool
-    const isInventoryEmpty = playerTerrainPool.length === 0;
-    if (isInventoryEmpty) {
+    // 1. Ensure pool can meet quota (fallback generation)
+    if (playerTerrainPool.length < terrainQuota) {
       const terrainTypes = [
-        TERRAIN_TYPES.TREES,
-        TERRAIN_TYPES.PONDS,
-        TERRAIN_TYPES.RUBBLE,
+        TERRAIN_TYPES.FORESTS,
+        TERRAIN_TYPES.SWAMPS,
+        TERRAIN_TYPES.MOUNTAINS,
         TERRAIN_TYPES.DESERT,
       ];
-      playerTerrainPool = terrainTypes.flatMap((type) => Array(4).fill(type));
+      // Generate enough pieces to meet the quota if needed
+      while (playerTerrainPool.length < terrainQuota + 4) {
+        playerTerrainPool.push(...terrainTypes);
+      }
     }
 
-    // Reclaim already placed terrain from the board
+    // 2. Reclaim existing terrain
     for (const [row, col] of myTerritoryCells) {
       const terrainAtCell = nextTerrainMap[row][col];
-      const isSpecialTerrain = terrainAtCell !== TERRAIN_TYPES.FLAT;
-      
-      if (isSpecialTerrain) {
+      if (terrainAtCell !== TERRAIN_TYPES.FLAT) {
         playerTerrainPool.push(terrainAtCell);
         nextTerrainMap[row][col] = TERRAIN_TYPES.FLAT as TerrainType;
       }
     }
 
-    shuffle(playerTerrainPool);
+    shuffle(playerTerrainPool, randomSource);
 
     const availableCells = [...myTerritoryCells];
-    shuffle(availableCells);
-
     let currentPlacedCount = 0;
     const remainingInventory: TerrainType[] = [];
 
     for (const terrainTypeToPlace of playerTerrainPool) {
-      const isQuotaReached = currentPlacedCount >= terrainQuota;
-      if (isQuotaReached) {
+      if (currentPlacedCount >= terrainQuota) {
         remainingInventory.push(terrainTypeToPlace);
         continue;
       }
 
-      const cellIndex = availableCells.findIndex(([row, col]) => {
-        const pieceAtCell = currentBoard[row][col];
-        const isCellEmpty = !pieceAtCell;
-        const isPieceCompatible = isCellEmpty || canPlaceUnit(pieceAtCell!.type, terrainTypeToPlace);
-        return isPieceCompatible;
+      // 3. Intelligent Terrain Placement
+      const cellScores = availableCells.map(([r, c]) => {
+        const piece = currentBoard[r][c];
+        
+        // Block if piece is incompatible
+        if (piece && !canPlaceUnit(piece.type, terrainTypeToPlace)) {
+          return { r, c, score: -1000 };
+        }
+
+        let score = 0;
+
+        // Advantage Scoring: Place terrain where allied units benefit
+        if (piece && piece.player === player) {
+          const blueprint = UNIT_BLUEPRINTS[piece.type];
+          if (blueprint?.sanctuaryTerrain?.includes(terrainTypeToPlace)) {
+            score += 100; // Buff existing unit
+          }
+        }
+
+        // Distance from units (Synergy search)
+        // Check neighbors for units that like this terrain
+        const neighbors = [[r-1,c], [r+1,c], [r,c-1], [r,c+1]];
+        neighbors.forEach(([nr, nc]) => {
+          if (nr>=0 && nr<12 && nc>=0 && nc<12) {
+            const neighborPiece = currentBoard[nr][nc];
+            if (neighborPiece && neighborPiece.player === player) {
+              const blueprint = UNIT_BLUEPRINTS[neighborPiece.type];
+              if (blueprint?.sanctuaryTerrain?.includes(terrainTypeToPlace)) {
+                score += 30; // Place near units that like it
+              }
+            }
+          }
+        });
+
+        score += getRand() * 10;
+        return { r, c, score };
       });
 
-      const isCellFound = cellIndex !== -1;
-      if (isCellFound) {
-        const [row, col] = availableCells[cellIndex];
-        nextTerrainMap[row][col] = terrainTypeToPlace;
-        availableCells.splice(cellIndex, 1);
+      cellScores.sort((a, b) => b.score - a.score);
+      const bestCell = cellScores.find(cell => cell.score > -500);
+
+      if (bestCell) {
+        nextTerrainMap[bestCell.r][bestCell.c] = terrainTypeToPlace;
+        const idx = availableCells.findIndex(([r, c]) => r === bestCell.r && c === bestCell.c);
+        if (idx !== -1) availableCells.splice(idx, 1);
         currentPlacedCount++;
       } else {
         remainingInventory.push(terrainTypeToPlace);
@@ -152,7 +193,7 @@ export const randomizeTerrain = (
 
 /**
  * randomizeUnits (Molecule)
- * Shuffles and re-places all units for the given players.
+ * Shuffles and re-places all units for the given players with tactical intelligence.
  */
 export const randomizeUnits = (
   currentBoard: (BoardPiece | null)[][],
@@ -160,7 +201,9 @@ export const randomizeUnits = (
   unitInventory: Record<string, PieceType[]>,
   players: string[],
   mode: GameMode,
+  randomSource?: { Number: () => number },
 ) => {
+  const getRand = () => randomSource ? randomSource.Number() : Math.random();
   const nextBoardState = currentBoard.map((row) => [...row]);
   const nextUnitInventory = { ...unitInventory };
 
@@ -168,7 +211,7 @@ export const randomizeUnits = (
     const myTerritoryCells = getPlayerCells(player, mode);
     const playerUnitPool = [...(nextUnitInventory[player] || [])];
 
-    // Reclaim units from the board
+    // 1. Reclaim units from the board
     for (const [row, col] of myTerritoryCells) {
       const pieceAtCell = nextBoardState[row][col];
       const isOwnPieceAtCell = pieceAtCell && pieceAtCell.player === player;
@@ -179,27 +222,59 @@ export const randomizeUnits = (
       }
     }
 
-    shuffle(playerUnitPool);
+    // 2. Intelligent Placement Logic
+    shuffle(playerUnitPool, randomSource);
 
     const availableCells = myTerritoryCells.filter(([row, col]) => {
       const isCellOccupied = !!nextBoardState[row][col];
       return !isCellOccupied;
     });
-    shuffle(availableCells);
 
     const remainingInventory: PieceType[] = [];
+    
     for (const unitTypeToPlace of playerUnitPool) {
-      const cellIndex = availableCells.findIndex(([row, col]) => {
-        const terrainAtCell = currentTerrain[row][col];
-        const isCompatibleWithTerrain = canPlaceUnit(unitTypeToPlace, terrainAtCell);
-        return isCompatibleWithTerrain;
+      // Score every cell for this unit
+      const cellScores = availableCells.map(([r, c]) => {
+        const terrain = currentTerrain[r][c];
+        const isCompatible = canPlaceUnit(unitTypeToPlace, terrain);
+        if (!isCompatible) return { r, c, score: -1000 };
+
+        let score = 0;
+        
+        // Sanctuary / Blueprint Advantages
+        const blueprint = UNIT_BLUEPRINTS[unitTypeToPlace];
+        if (blueprint?.sanctuaryTerrain?.includes(terrain)) {
+          score += 50; // Tactical Advantage
+        }
+
+        // Row positioning (Pawns forward, Kings back)
+        const isNorthPlayer = player === "red" || player === "yellow";
+        const rank = isNorthPlayer ? r : 11 - r;
+        
+        if (unitTypeToPlace === "pawn") score += rank * 5; // Pawns like the front
+        if (unitTypeToPlace === "king") score -= rank * 10; // Kings stay back
+        if (unitTypeToPlace === "rook") score -= rank * 2; // Rooks like back ranks
+
+        // Column positioning (Center control)
+        const centerDistance = Math.abs(c - 5.5);
+        score -= centerDistance * 3; // Prefer central files
+
+        // Random noise to keep it fresh
+        score += getRand() * 10;
+
+        return { r, c, score };
       });
 
-      const isCellFound = cellIndex !== -1;
-      if (isCellFound) {
-        const [row, col] = availableCells[cellIndex];
-        nextBoardState[row][col] = { type: unitTypeToPlace, player: player };
-        availableCells.splice(cellIndex, 1);
+      // Sort by score descending
+      cellScores.sort((a, b) => b.score - a.score);
+
+      const bestCell = cellScores.find(cell => cell.score > -500);
+      
+      if (bestCell) {
+        nextBoardState[bestCell.r][bestCell.c] = { type: unitTypeToPlace, player: player };
+        // Remove from available
+        const idx = availableCells.findIndex(([r, c]) => r === bestCell.r && c === bestCell.c);
+        if (idx !== -1) availableCells.splice(idx, 1);
       } else {
         remainingInventory.push(unitTypeToPlace);
       }

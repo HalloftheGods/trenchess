@@ -12,7 +12,7 @@ import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import { UNIT_DETAILS, unitColorMap, TERRAIN_LIST } from "@/constants";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 import { deserializeGame } from "@/shared/utils/serialization";
-import TerrainDetailsPanel from "@/client/game/components/organisms/TerrainDetailsPanel";
+import TerrainDetailsPanel from "@/client/game/shared/components/organisms/TerrainDetailsPanel";
 import InteractiveHeader from "@/shared/components/organisms/InteractiveHeader";
 import CopyrightFooter from "@/shared/components/molecules/CopyrightFooter";
 import { UnitPortfolio } from "./components/organisms/UnitPortfolio";
@@ -271,22 +271,15 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
       onNext={handleNextTerrain}
       prevTerrainIcon={
         selectedTerrainIdx >= 0
-          ? React.cloneElement(
-              TERRAIN_LIST[
-                (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
-                  TERRAIN_LIST.length
-              ].icon as React.ReactElement<{ size?: number }>,
-              { size: 20 },
-            )
+          ? TERRAIN_LIST[
+              (selectedTerrainIdx - 1 + TERRAIN_LIST.length) %
+                TERRAIN_LIST.length
+            ].icon
           : undefined
       }
       nextTerrainIcon={
         selectedTerrainIdx >= 0
-          ? React.cloneElement(
-              TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length]
-                .icon as React.ReactElement<{ size?: number }>,
-              { size: 20 },
-            )
+          ? TERRAIN_LIST[(selectedTerrainIdx + 1) % TERRAIN_LIST.length].icon
           : undefined
       }
       prevTerrainColors={

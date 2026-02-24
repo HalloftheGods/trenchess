@@ -6,7 +6,7 @@
  */
 import React from "react";
 import { useRouteContext } from "@/route.context";
-import BoardPreview from "@/client/game/components/organisms/BoardPreview";
+import BoardPreview from "@/client/game/shared/components/organisms/BoardPreview";
 
 interface MenuBoardPreviewProps {
   className?: string;

@@ -27,6 +27,7 @@ import {
 } from "@/shared/components/atoms/RouteIcons";
 import { RouteBoardPreview } from "./RouteBoardPreview";
 import BackButton from "@/shared/components/molecules/BackButton";
+import JumpInButton from "@/shared/components/molecules/JumpInButton";
 import RouteBreadcrumbs from "./RouteBreadcrumbs";
 
 const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
@@ -36,8 +37,14 @@ const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
   onBackClick,
   backLabel,
 }) => {
-  const { onLogoClick, multiplayer, selectedBoard, selectedPreset } =
-    useRouteContext();
+  const {
+    onLogoClick,
+    multiplayer,
+    selectedBoard,
+    selectedPreset,
+    onStartGame,
+    playerConfig,
+  } = useRouteContext();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -69,6 +76,19 @@ const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
     }
   };
 
+  const handleJumpIn = () => {
+    if (isResuming) {
+      handleResume();
+    } else {
+      // "pi" is the classic preset
+      const board = selectedBoard || "2p-ns";
+      const preset = selectedPreset || "classic";
+
+      // If no config is saved, start with "pi" (classic)
+      onStartGame(board, preset, playerConfig);
+    }
+  };
+
   return (
     <div className={`w-full flex flex-col items-center pt-3 mb-4 ${className}`}>
       {/* 2-Column Desktop Layout */}
@@ -97,14 +117,14 @@ const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
         </div>
       </div>
 
-      {/* Back Button Row */}
-      {onBackClick && (
-        <div className="w-full">
-          <div className="flex justify-start">
-            <BackButton onClick={onBackClick} label={backLabel} />
-          </div>
-        </div>
-      )}
+      {/* Action Row (Back/Jump In) - Fixed height prevents layout shift */}
+      <div className="w-full h-10 flex items-center justify-start">
+        {onBackClick ? (
+          <BackButton onClick={onBackClick} label={backLabel} />
+        ) : isHome ? (
+          <JumpInButton onClick={handleJumpIn} />
+        ) : null}
+      </div>
 
       <SectionDivider label={label} color={color} />
     </div>

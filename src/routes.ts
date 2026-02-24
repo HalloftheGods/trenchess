@@ -54,7 +54,7 @@ export const LazyRoutes = {
     screen: lazy(() => import("@/client/game/index")),
     mmo: lazy(() => import("@/client/game/mmo")),
     library: lazy(
-      () => import("@/client/game/components/organisms/SeedLibrary"),
+      () => import("@/client/game/shared/components/organisms/SeedLibrary"),
     ),
   },
   play: {

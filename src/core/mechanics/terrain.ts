@@ -2,7 +2,7 @@ import { BOARD_SIZE } from "@/constants";
 import { PIECES } from "@/constants";
 import { TERRAIN_TYPES, TERRAIN_DETAILS } from "@/constants";
 import type { PieceType, TerrainType } from "@/shared/types";
-import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
+import { getValidMoves } from "./movement/movementLogic";
 
 /**
  * isUnitProtected (Atom)
@@ -12,7 +12,7 @@ export const isUnitProtected = (
   unitType: string,
   terrainType: TerrainType | string,
 ): boolean => {
-  const matchByTerrainKey = (terrain: any) => terrain.key === terrainType;
+  const matchByTerrainKey = (terrain: { key: string }) => terrain.key === terrainType;
   const terrainInfo = TERRAIN_DETAILS.find(matchByTerrainKey);
   
   const hasTerrainInfo = !!terrainInfo;

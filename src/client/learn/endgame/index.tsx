@@ -29,7 +29,7 @@ export const LearnEndgameMainView: React.FC = () => {
         onBackClick={() => navigate("/learn")}
       />
 
-      <RouteGrid cols={3}>
+      <RouteGrid cols={2}>
         {/* Capture the King */}
         <RouteCard
           Icon={Blocks}
@@ -47,6 +47,21 @@ export const LearnEndgameMainView: React.FC = () => {
             label: "Capture the King",
           }}
         />
+        {/* Capture the Mercenaries */}
+        <RouteCard
+          Icon={Blocks}
+          HoverIcon={ChessQueen}
+          title="Capture the Mercenaries"
+          description='"Some shall sell their swords to the highest bidder."'
+          className="h-full w-full"
+          color="yellow"
+          darkMode={darkMode}
+          onClick={() => navigate("/learn/endgame/capture-the-mercenaries")}
+          preview={{
+            mode: "4p",
+            hideUnits: true,
+          }}
+        />
         {/* Capture the Board */}
         <RouteCard
           Icon={Blocks}
@@ -54,7 +69,7 @@ export const LearnEndgameMainView: React.FC = () => {
           title="Capture the Army"
           description='"Others shall seek to control every last Army."'
           className="h-full w-full"
-          color="blue"
+          color="emerald"
           darkMode={darkMode}
           onClick={() => navigate("/learn/endgame/capture-the-army")}
           preview={{
@@ -69,7 +84,7 @@ export const LearnEndgameMainView: React.FC = () => {
           title="Capture the World"
           description='"But most shall race as if to win the world."'
           className="h-full w-full"
-          color="emerald"
+          color="blue"
           darkMode={darkMode}
           onClick={() => navigate("/learn/endgame/capture-the-world")}
           preview={{

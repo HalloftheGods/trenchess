@@ -4,11 +4,9 @@ import { TERRAIN_TYPES } from "@/constants";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
 import { TerraForm } from "@/core/setup/generateTrench";
 import type {
-  GameMode,
   PieceType,
   TerrainType,
   ArmyUnit,
-  PieceStyle,
   UseBoardPreviewProps,
 } from "@/shared/types";
 
@@ -20,6 +18,7 @@ export function useBoardPreview({
   forcedTerrain,
   isReady,
   pieceStyle,
+  hideUnits,
 }: UseBoardPreviewProps) {
   const seedData = useMemo(() => {
     if (customSeed) {
@@ -116,7 +115,7 @@ export function useBoardPreview({
       const t = generatedTerrain[row][col];
       if (t === TERRAIN_TYPES.FLAT) return null;
 
-      if (pieceAt) {
+      if (pieceAt && !hideUnits) {
         if (
           pieceAt.pieceType === PIECES.ROOK &&
           (t === TERRAIN_TYPES.RUBBLE || t === TERRAIN_TYPES.TREES)

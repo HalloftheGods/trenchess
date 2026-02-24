@@ -1,12 +1,16 @@
-import type { TerrainType, PieceType, TerrainIntel } from "@/shared/types";
+import type { TerrainType, TerrainIntel } from "@/shared/types";
 import { PIECES } from "./pieces";
 
 export const TERRAIN_TYPES: Record<string, TerrainType> = {
-  FLAT: "flat",
-  FORESTS: "forests",
-  SWAMPS: "swamps",
-  MOUNTAINS: "mountains",
-  DESERT: "desert",
+  FLAT: "flat", // Plains - Welcome to all
+
+  // Legacy
+  DESERT: "desert", // Desert - One turn only
+  FORESTS: "forests", // Forests - Bishop Sanctuary
+  SWAMPS: "swamps", // Swamps - Rook Sanctuary
+  MOUNTAINS: "mountains", // Mountains - Knight Sanctuary
+
+  // Deprecated
   TREES: "forests",
   PONDS: "swamps",
   RUBBLE: "mountains",
@@ -58,10 +62,9 @@ export const CORE_TERRAIN_INTEL: Record<string, TerrainIntel> = {
   },
   [DESERT]: {
     label: "Deserts",
-    desc: "Exclusive zone for Rooks. Immune to non-Rook attacks. Deserts end movement; must exit next turn.",
-    sanctuaryUnits: [ROOK],
-    allowedUnits: [ROOK],
-    blockedUnits: [KING, QUEEN, BISHOP, KNIGHT, PAWN],
+    desc: "The harsh desert is home to all units, but none can stay for long.",
+    sanctuaryUnits: [],
+    allowedUnits: [KING, QUEEN, BISHOP, KNIGHT, PAWN],
     subtitle: "The Endless Sands",
     tagline: "Deadly Mirage",
     flavorTitle: "Desert stats",

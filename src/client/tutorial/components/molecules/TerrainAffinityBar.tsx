@@ -4,7 +4,7 @@ import { SectionLabel } from "../atoms/Typography";
 
 export interface TerrainAffinityItem {
   name: string;
-  icon: React.ReactNode;
+  icon: React.ElementType;
   bg: string;
   text: string;
   border: string;

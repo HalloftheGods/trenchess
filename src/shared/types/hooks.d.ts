@@ -11,7 +11,7 @@ import type { Ctx } from "boardgame.io";
 import type { MultiplayerState } from "./multiplayer";
 import type { GameTheme } from "./ui";
 
-import type { PieceStyle, TerrainType, BoardPiece, PieceType, SeedItem } from "./game";
+import type { PieceStyle, TerrainType, BoardPiece, PieceType } from "./game";
 
 export interface UseDeploymentProps {
   mode: GameMode;
@@ -41,6 +41,7 @@ export interface UseBoardPreviewProps {
   forcedTerrain?: TerrainType | null;
   isReady?: boolean;
   pieceStyle: PieceStyle;
+  hideUnits?: boolean;
 }
 
 export interface BoardState {
@@ -116,7 +117,12 @@ export interface GameConfigState {
 }
 
 export interface BgioClient {
-  moves: Record<string, (...args: unknown[]) => void>;
+  moves: {
+    ready: (pid?: string) => void;
+    placePiece: (r: number, c: number, type: PieceType | null) => void;
+    placeTerrain: (r: number, c: number, type: TerrainType) => void;
+    movePiece: (from: [number, number], to: [number, number]) => void;
+  };
   stop: () => void;
   start: () => void;
   subscribe: (
@@ -156,6 +162,7 @@ export interface PlacementManager {
     piece: BoardPiece,
     player: string,
     depth?: number,
+    skipCheck?: boolean,
   ) => number[][];
 }
 
@@ -191,6 +198,8 @@ export interface SetupActions {
   generateElementalTerrain: () => void;
   randomizeUnits: () => void;
   setClassicalFormation: () => void;
+  applyChiGarden: () => void;
+  resetToOmega: () => void;
   mirrorBoard: () => void;
   resetTerrain: () => void;
   resetUnits: () => void;

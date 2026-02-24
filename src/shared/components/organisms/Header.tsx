@@ -2,7 +2,7 @@ import { BookOpen, Database } from "lucide-react";
 import type { GameMode } from "@/shared/types/game";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 import { SegmentedControl } from "@/shared/components/molecules/SegmentedControl";
-import { PlayerBadge } from "@/client/game/components/atoms/PlayerBadge";
+import { PlayerBadge } from "@/client/game/shared/components/atoms/PlayerBadge";
 import { PLAYER_CONFIGS } from "@/constants";
 import GameLogo from "@/shared/components/molecules/GameLogo";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
@@ -46,15 +46,16 @@ const Header = ({
 }: HeaderProps) => {
   return (
     <div className="w-full max-w-[1600px] grid grid-cols-1 xl:grid-cols-3 items-center mb-8 gap-6 relative z-20">
-      {/* Left Section: Logo & Navigation */}
-      <div className="flex items-center gap-4 justify-center xl:justify-start">
-        <div
-          className="flex items-center gap-5 cursor-pointer"
-          onClick={onMenuClick}
-        >
-          <GameLogo size="small" />
-        </div>
-
+      {/* Left Section: Options & Theme */}
+      <div className="flex items-center justify-center xl:justify-start gap-3">
+        <ThemeControls
+          darkMode={darkMode}
+          pieceStyle={pieceStyle}
+          toggleTheme={toggleTheme}
+          togglePieceStyle={togglePieceStyle}
+          onZenGarden={onZenGarden}
+        />
+        
         <IconButton
           icon={<BookOpen size={20} />}
           label="Field Manual"
@@ -68,8 +69,19 @@ const Header = ({
         />
       </div>
 
-      {/* Center Section: Board Controls */}
+      {/* Center Section: Logo & Navigation */}
       <div className="flex flex-col items-center justify-center gap-3">
+        <div
+          className="flex items-center gap-5 cursor-pointer"
+          onClick={onMenuClick}
+        >
+          <GameLogo size="small" />
+        </div>
+        {children}
+      </div>
+
+      {/* Right Section: Board Controls & Player Status */}
+      <div className="flex items-center justify-center xl:justify-end gap-3">
         <SegmentedControl
           value={isFlipped}
           onChange={(val) => setIsFlipped(val as boolean)}
@@ -85,18 +97,6 @@ const Header = ({
               activeColor: "bg-blue-600",
             },
           ]}
-        />
-        {children}
-      </div>
-
-      {/* Right Section: Player Status & Theme */}
-      <div className="flex items-center justify-center xl:justify-end gap-3">
-        <ThemeControls
-          darkMode={darkMode}
-          pieceStyle={pieceStyle}
-          toggleTheme={toggleTheme}
-          togglePieceStyle={togglePieceStyle}
-          onZenGarden={onZenGarden}
         />
 
         {/* Helper function to check if we should show player badges */}

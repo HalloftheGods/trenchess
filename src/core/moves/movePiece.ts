@@ -141,6 +141,41 @@ const handleCapture = (
   }
 };
 
+const calculatePath = (
+  from: [number, number],
+  to: [number, number],
+): [number, number][] => {
+  const [fR, fC] = from;
+  const [tR, tC] = to;
+  const path: [number, number][] = [];
+
+  const dR = Math.sign(tR - fR);
+  const dC = Math.sign(tC - fC);
+
+  const isKnightMove =
+    (Math.abs(tR - fR) === 2 && Math.abs(tC - fC) === 1) ||
+    (Math.abs(tR - fR) === 1 && Math.abs(tC - fC) === 2) ||
+    (Math.abs(tR - fR) === 3 && Math.abs(tC - fC) === 0) ||
+    (Math.abs(tR - fR) === 0 && Math.abs(tC - fC) === 3);
+
+  if (isKnightMove) {
+    // Knights jump, so path is just endpoints
+    return [from, to];
+  }
+
+  let currR = fR;
+  let currC = fC;
+
+  while (currR !== tR || currC !== tC) {
+    path.push([currR, currC]);
+    if (currR !== tR) currR += dR;
+    if (currC !== tC) currC += dC;
+  }
+  path.push([tR, tC]);
+
+  return path;
+};
+
 export const movePiece = (
   {
     G: gameState,
@@ -164,6 +199,15 @@ export const movePiece = (
   if (!isPieceOwnedByPlayer) return INVALID_MOVE;
 
   const targetCellPiece = gameState.board[toRow][toCol];
+
+  // 0. Track Move Data
+  gameState.lastMove = {
+    from,
+    to,
+    path: calculatePath(from, to),
+    type: pieceToMove!.type,
+    player: pieceToMove!.player,
+  };
 
   // 1. Move Piece Atom
   gameState.board[toRow][toCol] = pieceToMove!;

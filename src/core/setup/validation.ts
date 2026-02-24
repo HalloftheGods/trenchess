@@ -2,8 +2,8 @@ import { PIECES } from "@/constants";
 import { TERRAIN_TYPES } from "@/constants";
 import type { PieceType, TerrainType } from "@/shared/types";
 
-const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
-const { FLAT, FORESTS, SWAMPS, MOUNTAINS, DESERT, TREES, PONDS, RUBBLE } = TERRAIN_TYPES;
+const { ROOK, BISHOP, KNIGHT } = PIECES;
+const { FORESTS, SWAMPS, MOUNTAINS, DESERT, TREES, PONDS, RUBBLE } = TERRAIN_TYPES;
 
 /**
  * canPlaceUnit (Atom)

@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Baby, BookOpen, LandPlot, Shell } from "lucide-react";
+import { Baby, BookOpen, Shell, Trees } from "lucide-react";
 import { useRouteContext } from "@/route.context";
 import {
   DualToneSwords,
@@ -80,7 +80,7 @@ export const HomeView: React.FC = () => {
           }}
           isSelected={false}
           darkMode={darkMode}
-          title="Plant The Gardens"
+          title="Lay Trenchess"
           // titleNode={
           //   <>
           //     The <TrenchessText />
@@ -88,8 +88,8 @@ export const HomeView: React.FC = () => {
           //   </>
           // }
           description="Add to the Community Labrynth"
-          Icon={Shell}
-          HoverIcon={LandPlot}
+          Icon={Trees}
+          HoverIcon={Shell}
           color="emerald"
           className="h-full w-full"
         />

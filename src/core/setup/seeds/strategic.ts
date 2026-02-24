@@ -1,5 +1,5 @@
 import { TERRAIN_TYPES } from "@/constants";
-import { buildBoard, buildTerrain, serializeGame } from "./utils";
+import { buildBoard, buildClassicalBoard, buildTerrain, serializeGame } from "./utils";
 
 export const createMountainPass = () => {
   const terrain = buildTerrain();
@@ -10,7 +10,7 @@ export const createMountainPass = () => {
       terrain[r][c] = TERRAIN_TYPES.RUBBLE;
     });
   });
-  return serializeGame("2p-ns", buildBoard(), terrain, "Mountain Pass");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Mountain Pass");
 };
 
 export const createTheDunes = () => {
@@ -30,7 +30,7 @@ export const createTheDunes = () => {
     spots.push([r, c], [r, 11 - c], [11 - r, c], [11 - r, 11 - c]);
   });
   spots.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.DESERT));
-  return serializeGame("2p-ew", buildBoard(), terrain, "The Dunes");
+  return serializeGame("2p-ew", buildClassicalBoard("2p-ew"), terrain, "The Dunes");
 };
 
 export const createGreatDesert = () => {
@@ -54,7 +54,7 @@ export const createGreatDesert = () => {
     [10, 10],
   ];
   guards.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.DESERT));
-  return serializeGame("2p-ns", buildBoard(), terrain, "The Great Desert");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "The Great Desert");
 };
 
 export const createTheRockies = () => {
@@ -98,7 +98,7 @@ export const createTheRockies = () => {
   [...xShape, ...mountainForts].forEach(
     ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE),
   );
-  return serializeGame("2p-ns", buildBoard(), terrain, "The Rockies");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "The Rockies");
 };
 
 export const createCrossfire = () => {
@@ -142,7 +142,7 @@ export const createCrossfire = () => {
   [...walls, ...bunkers].forEach(
     ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE),
   );
-  return serializeGame("2p-ns", buildBoard(), terrain, "Crossfire");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Crossfire");
 };
 
 export const createTheCage = () => {
@@ -186,7 +186,7 @@ export const createTheCage = () => {
   [...diagonals, ...box].forEach(
     ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE),
   );
-  return serializeGame("2p-ns", buildBoard(), terrain, "The Cage");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "The Cage");
 };
 
 export const createTheArena = () => {
@@ -234,7 +234,7 @@ export const createTheArena = () => {
   [...ring, ...inner, ...corners, ...edges].forEach(
     ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE),
   );
-  return serializeGame("2p-ns", buildBoard(), terrain, "The Arena");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "The Arena");
 };
 
 export const createCrossroads = () => {
@@ -249,7 +249,7 @@ export const createCrossroads = () => {
     for (let c = 6; c <= 9; c++) blocks.push([r, c]);
   }
   blocks.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.TREES));
-  return serializeGame("2p-ns", buildBoard(), terrain, "Crossroads");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Crossroads");
 };
 
 export const createTargetPractice = () => {
@@ -295,7 +295,7 @@ export const createTargetPractice = () => {
   [...bullseye, ...ring, ...corners].forEach(
     ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.DESERT),
   );
-  return serializeGame("2p-ns", buildBoard(), terrain, "Target Practice");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Target Practice");
 };
 
 export const createTheWall = () => {
@@ -312,7 +312,7 @@ export const createTheWall = () => {
   terrain[5][6] = TERRAIN_TYPES.RUBBLE;
   terrain[6][5] = TERRAIN_TYPES.RUBBLE;
   terrain[6][6] = TERRAIN_TYPES.RUBBLE;
-  return serializeGame("2p-ns", buildBoard(), terrain, "The Wall");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "The Wall");
 };
 
 export const createTheFortress = () => {
@@ -336,7 +336,7 @@ export const createTheFortress = () => {
     terrain[9][c] = TERRAIN_TYPES.RUBBLE;
   }
   center.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE));
-  return serializeGame("2p-ns", buildBoard(), terrain, "The Fortress");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "The Fortress");
 };
 
 export const createCheckeredPast = () => {
@@ -361,7 +361,7 @@ export const createCheckeredPast = () => {
   [...corners, ...guards].forEach(
     ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.PONDS),
   );
-  return serializeGame("2p-ns", buildBoard(), terrain, "Checkered Past");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Checkered Past");
 };
 
 export const createTheGrid = () => {
@@ -373,7 +373,7 @@ export const createTheGrid = () => {
       terrain[r][c] = TERRAIN_TYPES.RUBBLE;
     });
   });
-  return serializeGame("2p-ns", buildBoard(), terrain, "The Grid");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "The Grid");
 };
 
 export const createCornerConflicts = () => {
@@ -388,7 +388,7 @@ export const createCornerConflicts = () => {
     terrain[11 - r][11] = TERRAIN_TYPES.RUBBLE;
     terrain[11 - r][10] = TERRAIN_TYPES.TREES;
   }
-  return serializeGame("2p-ns", buildBoard(), terrain, "Corner Conflicts");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Corner Conflicts");
 };
 
 export const createTheVoid = () => {
@@ -408,7 +408,7 @@ export const createTheVoid = () => {
     [6, 6],
   ];
   center.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE));
-  return serializeGame("2p-ns", buildBoard(), terrain, "The Void");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "The Void");
 };
 
 export const createTheMaze = () => {
@@ -448,7 +448,7 @@ export const createTheMaze = () => {
     [7, 6],
   ];
   walls.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE));
-  return serializeGame("2p-ns", buildBoard(), terrain, "The Maze");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "The Maze");
 };
 
 export const createTheGalaxy = () => {
@@ -469,5 +469,5 @@ export const createTheGalaxy = () => {
   [...arm1, ...arm2, ...arm3, ...arm4].forEach(
     ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.DESERT),
   );
-  return serializeGame("2p-ns", buildBoard(), terrain, "The Galaxy");
+  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "The Galaxy");
 };

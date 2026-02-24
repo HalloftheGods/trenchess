@@ -5,7 +5,7 @@ import { NavButton } from "../atoms/NavButton";
 import type { UnitColors } from "@/shared/types/game";
 
 interface UnitIconSelectorProps {
-  Icon: React.ElementType;
+  icon: React.ReactNode;
   colors: {
     bg: string;
     text: string;
@@ -19,7 +19,7 @@ interface UnitIconSelectorProps {
 }
 
 export const UnitIconSelector: React.FC<UnitIconSelectorProps> = ({
-  Icon,
+  icon,
   colors,
   onPrev,
   onNext,
@@ -36,7 +36,7 @@ export const UnitIconSelector: React.FC<UnitIconSelectorProps> = ({
       <div
         className={`relative w-36 h-36 rounded-[2.5rem] ${colors.bg} ${colors.text} flex items-center justify-center shadow-inner border border-white/5 group transition-transform hover:scale-105 overflow-visible`}
       >
-        <Icon className="w-20 h-20 transition-transform group-hover:rotate-3" />
+        {icon}
 
         <NavButton
           onClick={onPrev}
