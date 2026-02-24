@@ -10,14 +10,21 @@ import { TerraForm } from "./generateTrench";
 import { getPlayerCells } from "./territory";
 import { canPlaceUnit } from "./validation";
 
-// Helper: Shuffle Array in place
+/**
+ * shuffle (Atom)
+ * Standard Fisher-Yates shuffle implementation.
+ */
 export const shuffle = <T>(array: T[]) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+  for (let index = array.length - 1; index > 0; index--) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [array[index], array[randomIndex]] = [array[randomIndex], array[index]];
   }
 };
 
+/**
+ * generateElementalTerrain (Molecule)
+ * Procedurally generates a new terrain map using the TerraForm engine.
+ */
 export const generateElementalTerrain = (
   _currentTerrain: TerrainType[][],
   currentBoard: (BoardPiece | null)[][],
@@ -25,32 +32,43 @@ export const generateElementalTerrain = (
   players: string[],
   mode: GameMode,
 ) => {
-  const nextTerrain = TerraForm.generate({
+  const nextTerrainMap = TerraForm.generate({
     mode,
     seed: Math.random(),
     symmetry: "rotational",
   });
 
-  const nextTInv: Record<string, TerrainType[]> = {};
-  players.forEach((p) => {
-    nextTInv[p] = [];
+  const nextTerrainInventory: Record<string, TerrainType[]> = {};
+  players.forEach((player) => {
+    nextTerrainInventory[player] = [];
   });
 
-  for (let r = 0; r < BOARD_SIZE; r++) {
-    for (let c = 0; c < BOARD_SIZE; c++) {
-      if (currentBoard[r][c]) {
-        const unit = currentBoard[r][c]!;
-        const terr = nextTerrain[r][c];
-        if (terr !== TERRAIN_TYPES.FLAT && !canPlaceUnit(unit.type, terr)) {
-          nextTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+  for (let row = 0; row < BOARD_SIZE; row++) {
+    for (let col = 0; col < BOARD_SIZE; col++) {
+      const pieceAtCell = currentBoard[row][col];
+      const hasPieceAtCell = !!pieceAtCell;
+      
+      if (hasPieceAtCell) {
+        const pieceType = pieceAtCell!.type;
+        const terrainAtCell = nextTerrainMap[row][col];
+        
+        const isTerrainFlat = terrainAtCell === TERRAIN_TYPES.FLAT;
+        const isTerrainIncompatible = !isTerrainFlat && !canPlaceUnit(pieceType, terrainAtCell);
+        
+        if (isTerrainIncompatible) {
+          nextTerrainMap[row][col] = TERRAIN_TYPES.FLAT as TerrainType;
         }
       }
     }
   }
 
-  return { terrain: nextTerrain, terrainInventory: nextTInv };
+  return { terrain: nextTerrainMap, terrainInventory: nextTerrainInventory };
 };
 
+/**
+ * randomizeTerrain (Molecule)
+ * Shuffles and re-places all available terrain for the given players.
+ */
 export const randomizeTerrain = (
   currentTerrain: TerrainType[][],
   currentBoard: (BoardPiece | null)[][],
@@ -58,72 +76,84 @@ export const randomizeTerrain = (
   players: string[],
   mode: GameMode,
 ) => {
-  const nextTerrain = currentTerrain.map((row) => [...row]);
-  const nextTInv = { ...terrainInventory };
+  const nextTerrainMap = currentTerrain.map((row) => [...row]);
+  const nextTerrainInventory = { ...terrainInventory };
 
-  const isTwoPlayer = mode === "2p-ns" || mode === "2p-ew";
-  const quota = isTwoPlayer
+  const isTwoPlayerMode = mode === "2p-ns" || mode === "2p-ew";
+  const terrainQuota = isTwoPlayerMode
     ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
     : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
 
-  players.forEach((p) => {
-    const myCells = getPlayerCells(p, mode);
-    let playerTerrain = [...(nextTInv[p] || [])];
+  players.forEach((player) => {
+    const myTerritoryCells = getPlayerCells(player, mode);
+    let playerTerrainPool = [...(nextTerrainInventory[player] || [])];
 
-    // BUG FIX: If inventory is empty, generate a balanced pool of 16 (4 of each)
-    if (playerTerrain.length === 0) {
-      const types = [
+    // If inventory is empty, generate a balanced fallback pool
+    const isInventoryEmpty = playerTerrainPool.length === 0;
+    if (isInventoryEmpty) {
+      const terrainTypes = [
         TERRAIN_TYPES.TREES,
         TERRAIN_TYPES.PONDS,
         TERRAIN_TYPES.RUBBLE,
         TERRAIN_TYPES.DESERT,
       ];
-      playerTerrain = types.flatMap((t) => Array(4).fill(t));
+      playerTerrainPool = terrainTypes.flatMap((type) => Array(4).fill(type));
     }
 
-    for (const [r, c] of myCells) {
-      if (nextTerrain[r][c] !== TERRAIN_TYPES.FLAT) {
-        playerTerrain.push(nextTerrain[r][c]);
-        nextTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+    // Reclaim already placed terrain from the board
+    for (const [row, col] of myTerritoryCells) {
+      const terrainAtCell = nextTerrainMap[row][col];
+      const isSpecialTerrain = terrainAtCell !== TERRAIN_TYPES.FLAT;
+      
+      if (isSpecialTerrain) {
+        playerTerrainPool.push(terrainAtCell);
+        nextTerrainMap[row][col] = TERRAIN_TYPES.FLAT as TerrainType;
       }
     }
 
-    shuffle(playerTerrain);
+    shuffle(playerTerrainPool);
 
-    const available = [...myCells];
-    shuffle(available);
+    const availableCells = [...myTerritoryCells];
+    shuffle(availableCells);
 
-    let placedCount = 0;
-    const remaining: TerrainType[] = [];
+    let currentPlacedCount = 0;
+    const remainingInventory: TerrainType[] = [];
 
-    for (const terrType of playerTerrain) {
-      if (placedCount >= quota) {
-        remaining.push(terrType);
+    for (const terrainTypeToPlace of playerTerrainPool) {
+      const isQuotaReached = currentPlacedCount >= terrainQuota;
+      if (isQuotaReached) {
+        remainingInventory.push(terrainTypeToPlace);
         continue;
       }
 
-      const cellIdx = available.findIndex(([r, c]) => {
-        const unit = currentBoard[r][c];
-        if (!unit) return true;
-        return canPlaceUnit(unit.type, terrType);
+      const cellIndex = availableCells.findIndex(([row, col]) => {
+        const pieceAtCell = currentBoard[row][col];
+        const isCellEmpty = !pieceAtCell;
+        const isPieceCompatible = isCellEmpty || canPlaceUnit(pieceAtCell!.type, terrainTypeToPlace);
+        return isPieceCompatible;
       });
 
-      if (cellIdx !== -1) {
-        const [r, c] = available[cellIdx];
-        nextTerrain[r][c] = terrType;
-        available.splice(cellIdx, 1);
-        placedCount++;
+      const isCellFound = cellIndex !== -1;
+      if (isCellFound) {
+        const [row, col] = availableCells[cellIndex];
+        nextTerrainMap[row][col] = terrainTypeToPlace;
+        availableCells.splice(cellIndex, 1);
+        currentPlacedCount++;
       } else {
-        remaining.push(terrType);
+        remainingInventory.push(terrainTypeToPlace);
       }
     }
 
-    nextTInv[p] = remaining;
+    nextTerrainInventory[player] = remainingInventory;
   });
 
-  return { terrain: nextTerrain, terrainInventory: nextTInv };
+  return { terrain: nextTerrainMap, terrainInventory: nextTerrainInventory };
 };
 
+/**
+ * randomizeUnits (Molecule)
+ * Shuffles and re-places all units for the given players.
+ */
 export const randomizeUnits = (
   currentBoard: (BoardPiece | null)[][],
   currentTerrain: TerrainType[][],
@@ -131,41 +161,51 @@ export const randomizeUnits = (
   players: string[],
   mode: GameMode,
 ) => {
-  const nextBoard = currentBoard.map((row) => [...row]);
-  const nextInv = { ...unitInventory };
+  const nextBoardState = currentBoard.map((row) => [...row]);
+  const nextUnitInventory = { ...unitInventory };
 
-  players.forEach((p) => {
-    const myCells = getPlayerCells(p, mode);
-    const playerUnits = [...(nextInv[p] || [])];
+  players.forEach((player) => {
+    const myTerritoryCells = getPlayerCells(player, mode);
+    const playerUnitPool = [...(nextUnitInventory[player] || [])];
 
-    for (const [r, c] of myCells) {
-      if (nextBoard[r][c] && nextBoard[r][c]!.player === p) {
-        playerUnits.push(nextBoard[r][c]!.type);
-        nextBoard[r][c] = null;
+    // Reclaim units from the board
+    for (const [row, col] of myTerritoryCells) {
+      const pieceAtCell = nextBoardState[row][col];
+      const isOwnPieceAtCell = pieceAtCell && pieceAtCell.player === player;
+      
+      if (isOwnPieceAtCell) {
+        playerUnitPool.push(pieceAtCell!.type);
+        nextBoardState[row][col] = null;
       }
     }
 
-    shuffle(playerUnits);
+    shuffle(playerUnitPool);
 
-    const available = myCells.filter(([r, c]) => !nextBoard[r][c]);
-    shuffle(available);
+    const availableCells = myTerritoryCells.filter(([row, col]) => {
+      const isCellOccupied = !!nextBoardState[row][col];
+      return !isCellOccupied;
+    });
+    shuffle(availableCells);
 
-    const remaining: PieceType[] = [];
-    for (const unitType of playerUnits) {
-      const cellIdx = available.findIndex(([r, c]) =>
-        canPlaceUnit(unitType, currentTerrain[r][c]),
-      );
+    const remainingInventory: PieceType[] = [];
+    for (const unitTypeToPlace of playerUnitPool) {
+      const cellIndex = availableCells.findIndex(([row, col]) => {
+        const terrainAtCell = currentTerrain[row][col];
+        const isCompatibleWithTerrain = canPlaceUnit(unitTypeToPlace, terrainAtCell);
+        return isCompatibleWithTerrain;
+      });
 
-      if (cellIdx !== -1) {
-        const [r, c] = available[cellIdx];
-        nextBoard[r][c] = { type: unitType, player: p };
-        available.splice(cellIdx, 1);
+      const isCellFound = cellIndex !== -1;
+      if (isCellFound) {
+        const [row, col] = availableCells[cellIndex];
+        nextBoardState[row][col] = { type: unitTypeToPlace, player: player };
+        availableCells.splice(cellIndex, 1);
       } else {
-        remaining.push(unitType);
+        remainingInventory.push(unitTypeToPlace);
       }
     }
-    nextInv[p] = remaining;
+    nextUnitInventory[player] = remainingInventory;
   });
 
-  return { board: nextBoard, inventory: nextInv };
+  return { board: nextBoardState, inventory: nextUnitInventory };
 };

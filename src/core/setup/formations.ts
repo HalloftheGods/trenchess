@@ -1,98 +1,117 @@
 import { BOARD_SIZE } from "@/constants";
 import { PIECES } from "@/constants";
 import { TERRAIN_TYPES } from "@/constants";
-
-const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 import type {
   GameMode,
   BoardPiece,
   TerrainType,
   PieceType,
-} from "@/shared/types/game";
+} from "@/shared/types";
 import { getPlayerCells } from "./territory";
 import { canPlaceUnit } from "./validation";
 
+const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
+
+/**
+ * getClassicalFormationTargets (Molecule)
+ * Returns a list of intended piece placements for a standard starting formation.
+ */
 export const getClassicalFormationTargets = (
-  p: string,
+  player: string,
   mode: GameMode,
-): { r: number; c: number; type: PieceType }[] => {
-  const targets: { r: number; c: number; type: PieceType }[] = [];
-  if (mode === "2p-ns") {
-    const backRank = [
-      ROOK,
-      KNIGHT,
-      BISHOP,
-      QUEEN,
-      KING,
-      BISHOP,
-      KNIGHT,
-      ROOK,
-    ];
-    const pawnRank = Array(8).fill(PAWN);
-    if (p === "red") {
-      backRank.forEach((type, i) => targets.push({ r: 2, c: 2 + i, type }));
-      pawnRank.forEach((type, i) => targets.push({ r: 3, c: 2 + i, type }));
-    } else {
-      backRank.forEach((type, i) => targets.push({ r: 9, c: 2 + i, type }));
-      pawnRank.forEach((type, i) => targets.push({ r: 8, c: 2 + i, type }));
-    }
-  } else if (mode === "2p-ew") {
-    const backRank = [
-      ROOK,
-      KNIGHT,
-      BISHOP,
-      QUEEN,
-      KING,
-      BISHOP,
-      KNIGHT,
-      ROOK,
-    ];
-    const pawnRank = Array(8).fill(PAWN);
-    if (p === "green") {
-      backRank.forEach((type, i) => targets.push({ r: 2 + i, c: 2, type }));
-      pawnRank.forEach((type, i) => targets.push({ r: 2 + i, c: 3, type }));
-    } else {
-      backRank.forEach((type, i) => targets.push({ r: 2 + i, c: 9, type }));
-      pawnRank.forEach((type, i) => targets.push({ r: 2 + i, c: 8, type }));
-    }
+): { row: number; col: number; type: PieceType }[] => {
+  const formationTargets: { row: number; col: number; type: PieceType }[] = [];
+  
+  const isNorthSouthMode = mode === "2p-ns";
+  const isEastWestMode = mode === "2p-ew";
+  
+  if (isNorthSouthMode) {
+    const backRankUnitOrder = [ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, KNIGHT, ROOK];
+    const pawnRankUnitOrder = Array(8).fill(PAWN);
+    
+    const isRedPlayer = player === "red";
+    const backRankRow = isRedPlayer ? 2 : 9;
+    const pawnRankRow = isRedPlayer ? 3 : 8;
+    const colOffset = 2;
+
+    backRankUnitOrder.forEach((unitType, index) => {
+      formationTargets.push({ row: backRankRow, col: colOffset + index, type: unitType });
+    });
+    
+    pawnRankUnitOrder.forEach((unitType, index) => {
+      formationTargets.push({ row: pawnRankRow, col: colOffset + index, type: unitType });
+    });
+  } else if (isEastWestMode) {
+    const backRankUnitOrder = [ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, KNIGHT, ROOK];
+    const pawnRankUnitOrder = Array(8).fill(PAWN);
+    
+    const isGreenPlayer = player === "green";
+    const backRankCol = isGreenPlayer ? 2 : 9;
+    const pawnRankCol = isGreenPlayer ? 3 : 8;
+    const rowOffset = 2;
+
+    backRankUnitOrder.forEach((unitType, index) => {
+      formationTargets.push({ row: rowOffset + index, col: backRankCol, type: unitType });
+    });
+    
+    pawnRankUnitOrder.forEach((unitType, index) => {
+      formationTargets.push({ row: rowOffset + index, col: pawnRankCol, type: unitType });
+    });
   } else {
-    const formation = [
+    // 4-Player / 2v2 Grid Formations
+    const gridFormation = [
       [ROOK, QUEEN, KING, ROOK],
       [KNIGHT, BISHOP, BISHOP, KNIGHT],
       [PAWN, PAWN, PAWN, PAWN],
       [PAWN, PAWN, PAWN, PAWN],
     ];
-    let rOrigins: number,
-      cOrigins: number,
-      rStep = 1;
-    if (p === "red") {
-      rOrigins = 1;
-      cOrigins = 1;
-    } else if (p === "yellow") {
-      rOrigins = 1;
-      cOrigins = 7;
-    } else if (p === "green") {
-      rOrigins = 10;
-      cOrigins = 1;
-      rStep = -1;
+    
+    let originRow = 0;
+    let originCol = 0;
+    let rowStepDirection = 1;
+    
+    const isRedPlayer = player === "red";
+    const isYellowPlayer = player === "yellow";
+    const isGreenPlayer = player === "green";
+    
+    if (isRedPlayer) {
+      originRow = 1;
+      originCol = 1;
+    } else if (isYellowPlayer) {
+      originRow = 1;
+      originCol = 7;
+    } else if (isGreenPlayer) {
+      originRow = 10;
+      originCol = 1;
+      rowStepDirection = -1;
     } else {
-      rOrigins = 10;
-      cOrigins = 7;
-      rStep = -1;
+      originRow = 10;
+      originCol = 7;
+      rowStepDirection = -1;
     }
-    for (let rIdx = 0; rIdx < 4; rIdx++) {
-      for (let cIdx = 0; cIdx < 4; cIdx++) {
-        targets.push({
-          r: rOrigins + rIdx * rStep,
-          c: cOrigins + cIdx,
-          type: formation[rIdx][cIdx],
+    
+    for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
+      for (let colIndex = 0; colIndex < 4; colIndex++) {
+        const targetRow = originRow + (rowIndex * rowStepDirection);
+        const targetCol = originCol + colIndex;
+        const targetUnitType = gridFormation[rowIndex][colIndex];
+        
+        formationTargets.push({
+          row: targetRow,
+          col: targetCol,
+          type: targetUnitType,
         });
       }
     }
   }
-  return targets;
+  
+  return formationTargets;
 };
 
+/**
+ * applyClassicalFormation (Molecule)
+ * Wipes a player's territory and applies a standard chess-like formation.
+ */
 export const applyClassicalFormation = (
   currentBoard: (BoardPiece | null)[][],
   currentTerrain: TerrainType[][],
@@ -101,42 +120,56 @@ export const applyClassicalFormation = (
   players: string[],
   mode: GameMode,
 ) => {
-  const nextBoard = currentBoard.map((row) => [...row]);
-  const nextTerrain = currentTerrain.map((row) => [...row]);
-  const nextInv = { ...unitInventory };
-  const nextTInv = { ...terrainInventory };
+  const nextBoardState = currentBoard.map((row) => [...row]);
+  const nextTerrainMap = currentTerrain.map((row) => [...row]);
+  const nextUnitInventory = { ...unitInventory };
+  const nextTerrainInventory = { ...terrainInventory };
 
-  players.forEach((p) => {
-    const myCells = getPlayerCells(p, mode);
-    for (const [r, c] of myCells) {
-      if (nextBoard[r][c]?.player === p) {
-        nextBoard[r][c] = null;
+  players.forEach((player) => {
+    const myTerritoryCells = getPlayerCells(player, mode);
+    
+    // Clear existing pieces belonging to this player
+    for (const [row, col] of myTerritoryCells) {
+      const pieceAtCell = nextBoardState[row][col];
+      const isPieceOccupied = !!pieceAtCell;
+      const isOwnPiece = isPieceOccupied && pieceAtCell!.player === player;
+      
+      if (isOwnPiece) {
+        nextBoardState[row][col] = null;
       }
     }
 
-    const targets = getClassicalFormationTargets(p, mode);
+    const formationTargets = getClassicalFormationTargets(player, mode);
+    const playerTerrainPool = [...(nextTerrainInventory[player] || [])];
 
-    const playerTerrainInv = [...(nextTInv[p] || [])];
-    for (const { r, c, type } of targets) {
-      if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) continue;
-      const terr = nextTerrain[r][c];
-
-      if (!canPlaceUnit(type, terr)) {
-        if (terr !== TERRAIN_TYPES.FLAT) {
-          playerTerrainInv.push(terr);
-          nextTerrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
-        }
+    for (const { row, col, type: unitTypeToPlace } of formationTargets) {
+      const isRowInBounds = row >= 0 && row < BOARD_SIZE;
+      const isColInBounds = col >= 0 && col < BOARD_SIZE;
+      const isWithinBoard = isRowInBounds && isColInBounds;
+      
+      if (!isWithinBoard) continue;
+      
+      const terrainAtCell = nextTerrainMap[row][col];
+      const isTerrainFlat = terrainAtCell === TERRAIN_TYPES.FLAT;
+      const isCompatibleWithTerrain = canPlaceUnit(unitTypeToPlace, terrainAtCell);
+      
+      const shouldClearTerrain = !isCompatibleWithTerrain && !isTerrainFlat;
+      if (shouldClearTerrain) {
+        playerTerrainPool.push(terrainAtCell);
+        nextTerrainMap[row][col] = TERRAIN_TYPES.FLAT as TerrainType;
       }
-      nextBoard[r][c] = { type, player: p };
+      
+      nextBoardState[row][col] = { type: unitTypeToPlace, player: player };
     }
-    nextInv[p] = [];
-    nextTInv[p] = playerTerrainInv;
+    
+    nextUnitInventory[player] = [];
+    nextTerrainInventory[player] = playerTerrainPool;
   });
 
   return {
-    board: nextBoard,
-    terrain: nextTerrain,
-    inventory: nextInv,
-    terrainInventory: nextTInv,
+    board: nextBoardState,
+    terrain: nextTerrainMap,
+    inventory: nextUnitInventory,
+    terrainInventory: nextTerrainInventory,
   };
 };

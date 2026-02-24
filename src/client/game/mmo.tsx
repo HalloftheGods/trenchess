@@ -23,30 +23,6 @@ interface MmoViewProps {
   game: GameStateHook;
 }
 
-const isPlayerFullyPlaced = (
-  pid: string,
-  terrain: TerrainType[][],
-  inventory: Record<string, PieceType[]>,
-  mode: GameMode,
-  activePlayers: string[],
-): boolean => {
-  const unitsRemaining = (inventory[pid] || []).length;
-  if (unitsRemaining > 0) return false;
-
-  const myCells = getPlayerCells(pid, mode);
-  const pMaxPlacement =
-    activePlayers.length === 2
-      ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-      : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
-
-  let terrainCount = 0;
-  for (const [r, c] of myCells) {
-    if (terrain[r] && terrain[r][c] !== TERRAIN_TYPES.FLAT) terrainCount++;
-  }
-
-  return terrainCount >= pMaxPlacement;
-};
-
 const MmoView: React.FC<MmoViewProps> = ({ game }) => {
   const ctx = useRouteContext();
   const darkMode = ctx.darkMode;
@@ -55,34 +31,16 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
   const togglePieceStyle = ctx.togglePieceStyle ?? (() => {});
 
   const isOnline = !!game.multiplayer.roomId;
+  const perspectivePlayerId = isOnline ? game.localPlayerName : game.turn;
 
   // Local: show overlay when ALL players have placed everything
   // Online: show overlay when THIS player has placed everything
   const myPlayerId = isOnline ? game.localPlayerName : null;
 
-  const isAllPlacedLocally =
-    !isOnline &&
-    game.activePlayers.length > 0 &&
-    game.activePlayers.every((p: string) =>
-      isPlayerFullyPlaced(
-        p,
-        game.terrain,
-        game.inventory,
-        game.mode,
-        game.activePlayers,
-      ),
-    );
+  const isAllPlacedLocally = !isOnline && game.isAllPlaced;
 
   const isMyPlayerPlaced =
-    isOnline &&
-    !!myPlayerId &&
-    isPlayerFullyPlaced(
-      myPlayerId,
-      game.terrain,
-      game.inventory,
-      game.mode,
-      game.activePlayers,
-    );
+    isOnline && !!myPlayerId && game.isPlayerReady(myPlayerId);
 
   const isMyPlayerLocked =
     isOnline && !!myPlayerId && !!game.readyPlayers[myPlayerId];
@@ -105,24 +63,29 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
   });
 
   const inventoryCounts: Record<string, number> = {};
-  INITIAL_ARMY.forEach((unit) => {
-    inventoryCounts[unit.type] = (
-      game.inventory[game.turn]?.filter((u: string) => u === unit.type) || []
-    ).length;
-  });
+  const updateUnitCounts = (unit: ArmyUnit) => {
+    const unitType = unit.type;
+    const playerInventory = game.inventory[perspectivePlayerId] || [];
+    const count = playerInventory.filter((type: string) => type === unitType).length;
+    inventoryCounts[unitType] = count;
+  };
+  INITIAL_ARMY.forEach(updateUnitCounts);
 
   const terrainInventoryCounts: Record<string, number> = {};
-  [
+  const terrainTypesToCount = [
     TERRAIN_TYPES.TREES,
     TERRAIN_TYPES.PONDS,
     TERRAIN_TYPES.RUBBLE,
     TERRAIN_TYPES.DESERT,
-  ].forEach((tType) => {
-    const label = TERRAIN_INTEL[tType]?.label || tType;
-    terrainInventoryCounts[label] = (
-      game.terrainInventory[game.turn]?.filter((u: string) => u === tType) || []
-    ).length;
-  });
+  ];
+
+  const updateTerrainCounts = (terrainType: TerrainType) => {
+    const label = TERRAIN_INTEL[terrainType]?.label || terrainType;
+    const playerTerrainInventory = game.terrainInventory[perspectivePlayerId] || [];
+    const count = playerTerrainInventory.filter((type: string) => type === terrainType).length;
+    terrainInventoryCounts[label] = count;
+  };
+  terrainTypesToCount.forEach(updateTerrainCounts);
 
   return (
     <MmoLayout
@@ -243,7 +206,12 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
                 ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
                 : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
 
-            const pUnitsPlaced = 16 - (game.inventory[pid] || []).length;
+            const totalUnitCount = INITIAL_ARMY.reduce(
+              (sum, unit) => sum + unit.count,
+              0,
+            );
+            const pUnitsPlaced =
+              totalUnitCount - (game.inventory[pid] || []).length;
 
             return (
               <ReadyUpPanel
@@ -266,6 +234,7 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
                 placedCount={pPlacedCount}
                 maxPlacement={pMaxPlacement}
                 unitsPlaced={pUnitsPlaced}
+                maxUnits={totalUnitCount}
                 onResetTerrain={game.resetTerrain}
                 onResetUnits={game.resetUnits}
               />
@@ -294,7 +263,12 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
                 ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
                 : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
 
-            const pUnitsPlaced = 16 - (game.inventory[pid] || []).length;
+            const totalUnitCount = INITIAL_ARMY.reduce(
+              (sum, unit) => sum + unit.count,
+              0,
+            );
+            const pUnitsPlaced =
+              totalUnitCount - (game.inventory[pid] || []).length;
 
             return (
               <ReadyUpPanel
@@ -317,6 +291,7 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
                 placedCount={pPlacedCount}
                 maxPlacement={pMaxPlacement}
                 unitsPlaced={pUnitsPlaced}
+                maxUnits={totalUnitCount}
                 onResetTerrain={game.resetTerrain}
                 onResetUnits={game.resetUnits}
               />

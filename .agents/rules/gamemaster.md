@@ -23,6 +23,37 @@ You are the world's premier Chess Architect and Game Master. You are building Tr
 - **Commentless Narrative:** Code must tell a story without comments. Use descriptive `Adjective-Noun` or `Verb-Noun` identifiers (e.g., `isValidMove`, `calculateCaptureRate`).
 - **Named Booleans:** Use named boolean variables for all conditionals to ensure readability.
 - **Name Anonymouse functions:** define the function as a const before passing what would have otherwise been a anonymous function. dont abbreviate the params to single letters, i.e. const mapPieces = (piece) => ...
+- **Readable Conditionals & Anonymous Functions:** Always name conditionals and anonymous functions into readable variables to minimize confusion. For example:
+  ```typescript
+  const handlePawnPromotion = (
+    G: TrenchessState,
+    piece: BoardPiece,
+    toR: number,
+    toC: number,
+    pid: string
+  ) => {
+    if (piece.type !== PAWN) return;
+
+    const isNSPromotion =
+      G.mode === "2p-ns" &&
+      ((pid === "red" && toR === BOARD_SIZE - 1) || (pid === "blue" && toR === 0));
+
+    const isEWPromotion =
+      G.mode === "2p-ew" &&
+      ((pid === "green" && toC === BOARD_SIZE - 1) || (pid === "yellow" && toC === 0));
+
+    const is4PPromotion =
+      G.mode === "4p" &&
+      ((pid === "red" && (toR === BOARD_SIZE - 1 || toC === BOARD_SIZE - 1)) ||
+        (pid === "yellow" && (toR === BOARD_SIZE - 1 || toC === 0)) ||
+        (pid === "green" && (toR === 0 || toC === BOARD_SIZE - 1)) ||
+        (pid === "blue" && (toR === 0 || toC === 0)));
+
+    if (isNSPromotion || isEWPromotion || is4PPromotion) {
+      G.board[toR][toC] = { ...piece, type: QUEEN };
+    }
+  };
+  ```
 
 - **Documentation First:** Document new features in `docs/` using `category_folder_file.md` immediately after implementation.
 

@@ -4,7 +4,6 @@ import { SocketIO } from "boardgame.io/multiplayer";
 import { Trenchess } from "@/core/Trenchess";
 import { createInitialState, getPlayersForMode } from "@/core/setup/setupLogic";
 import { getServerUrl } from "@hooks/useMultiplayer";
-import { useBgioSync } from "./useBgioSync";
 import type { Ctx } from "boardgame.io";
 import type { TrenchessState } from "@/shared/types/game";
 import type { BgioClient, GameMode, MultiplayerState } from "@/shared/types";
@@ -30,7 +29,10 @@ export function useGameEngine({
     ctx: Ctx;
   } | null>(null);
 
+  // We keep a ref for immediate access in moves, but also state to trigger effects
   const clientRef = useRef<BgioClient | undefined>(undefined);
+  const [clientInstance, setClientInstance] = useState<BgioClient | null>(null);
+
   const lastClientParamsRef = useRef<{
     playerID?: string;
     roomId?: string;
@@ -65,8 +67,10 @@ export function useGameEngine({
       clientRef.current.stop();
     }
 
-    clientRef.current = Client(clientConfig) as unknown as BgioClient;
-    clientRef.current?.start();
+    const newClient = Client(clientConfig) as unknown as BgioClient;
+    clientRef.current = newClient;
+    setClientInstance(newClient);
+    newClient.start();
 
     lastClientParamsRef.current = {
       playerID,
@@ -86,18 +90,33 @@ export function useGameEngine({
 
     const shouldStart = isStarted || !!multiplayer.roomId;
 
-    if (
-      shouldStart &&
-      (!clientRef.current ||
-        local.playerID !== playerID ||
-        local.roomId !== multiplayer.roomId ||
-        local.debug !== showBgDebug)
-    ) {
+    const hasClient = !!clientRef.current;
+    const hasPlayerChanged = local.playerID !== playerID;
+    const hasRoomChanged = local.roomId !== multiplayer.roomId;
+    const hasDebugChanged = local.debug !== showBgDebug;
+
+    const needsReinit = !hasClient || hasPlayerChanged || hasRoomChanged || hasDebugChanged;
+
+    if (shouldStart && needsReinit) {
       initClient();
     }
   }, [multiplayer.playerIndex, multiplayer.roomId, mode, showBgDebug, initClient, isStarted]);
 
-  useBgioSync(clientRef, setBgioState);
+  // Authorization: Unified Sync Logic
+  useEffect(() => {
+    const isClientAvailable = !!clientInstance;
+    if (!isClientAvailable) return;
+
+    const onStateUpdate = (state: { G: TrenchessState; ctx: Ctx } | null) => {
+      const isStateValid = !!state;
+      if (isStateValid) {
+        setBgioState(state);
+      }
+    };
+
+    const unsubscribe = clientInstance!.subscribe(onStateUpdate);
+    return unsubscribe;
+  }, [clientInstance]);
 
   return {
     bgioState,

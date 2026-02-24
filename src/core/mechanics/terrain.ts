@@ -1,75 +1,104 @@
 import { BOARD_SIZE } from "@/constants";
 import { PIECES } from "@/constants";
 import { TERRAIN_TYPES, TERRAIN_DETAILS } from "@/constants";
-import type { PieceType, TerrainType } from "@/shared/types/game";
+import type { PieceType, TerrainType } from "@/shared/types";
 import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
 
+/**
+ * isUnitProtected (Atom)
+ * Checks if a unit type enjoys sanctuary protection on a specific terrain tile.
+ */
 export const isUnitProtected = (
   unitType: string,
   terrainType: TerrainType | string,
 ): boolean => {
-  const terrainInfo = TERRAIN_DETAILS.find((t) => t.key === terrainType);
-  if (!terrainInfo) return false;
-  return terrainInfo.sanctuaryUnits.includes(unitType as PieceType);
+  const matchByTerrainKey = (terrain: any) => terrain.key === terrainType;
+  const terrainInfo = TERRAIN_DETAILS.find(matchByTerrainKey);
+  
+  const hasTerrainInfo = !!terrainInfo;
+  if (!hasTerrainInfo) return false;
+  
+  const isSanctuaryUnit = terrainInfo!.sanctuaryUnits.includes(unitType as PieceType);
+  return isSanctuaryUnit;
 };
 
 /**
+ * canUnitTraverseTerrain (Molecule)
  * Dynamically checks whether a unit type can traverse a given terrain type
- * by simulating placement on a board filled with that terrain and checking
- * if the unit can move into any adjacent cell of that terrain.
+ * by simulating movement on a sample board.
  */
 export function canUnitTraverseTerrain(
   unitType: PieceType,
   terrainType: TerrainType,
 ): boolean {
-  if (terrainType === TERRAIN_TYPES.FLAT) return true;
+  const isFlatTerrain = terrainType === TERRAIN_TYPES.FLAT;
+  if (isFlatTerrain) return true;
 
-  const simBoard = Array(BOARD_SIZE)
+  const simulationBoard = Array(BOARD_SIZE)
     .fill(null)
     .map(() => Array(BOARD_SIZE).fill(null));
-  const simTerrain = Array(BOARD_SIZE)
+    
+  const simulationTerrain = Array(BOARD_SIZE)
     .fill(null)
     .map(() => Array(BOARD_SIZE).fill(TERRAIN_TYPES.FLAT as TerrainType));
 
-  const center = 6;
+  const centerPoint = 6;
+  const areaOffset = 3;
 
-  for (let r = center - 3; r <= center + 3; r++) {
-    for (let c = center - 3; c <= center + 3; c++) {
-      if (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE) {
-        simTerrain[r][c] = terrainType;
+  for (let row = centerPoint - areaOffset; row <= centerPoint + areaOffset; row++) {
+    for (let col = centerPoint - areaOffset; col <= centerPoint + areaOffset; col++) {
+      const isRowInBounds = row >= 0 && row < BOARD_SIZE;
+      const isColInBounds = col >= 0 && col < BOARD_SIZE;
+      const isWithinSimulationArea = isRowInBounds && isColInBounds;
+      
+      if (isWithinSimulationArea) {
+        simulationTerrain[row][col] = terrainType;
       }
     }
   }
-  simTerrain[center][center] = TERRAIN_TYPES.FLAT as TerrainType;
-  simBoard[center][center] = { type: unitType, player: "red" };
+  
+  simulationTerrain[centerPoint][centerPoint] = TERRAIN_TYPES.FLAT as TerrainType;
+  simulationBoard[centerPoint][centerPoint] = { type: unitType, player: "red" };
 
-  const moves = getValidMoves(
-    center,
-    center,
-    simBoard[center][center]!,
+  const validMoves = getValidMoves(
+    centerPoint,
+    centerPoint,
+    simulationBoard[centerPoint][centerPoint]!,
     "red",
-    simBoard,
-    simTerrain,
+    simulationBoard,
+    simulationTerrain,
     "2p-ns",
     1,
   );
 
-  return moves.some(([r, c]) => simTerrain[r][c] === terrainType);
+  const canEnterTerrainTile = validMoves.some(([row, col]) => {
+    const isTargetTerrainMatch = simulationTerrain[row][col] === terrainType;
+    return isTargetTerrainMatch;
+  });
+  
+  return canEnterTerrainTile;
 }
 
+/**
+ * getTraversableTerrains (Molecule)
+ */
 export function getTraversableTerrains(unitType: PieceType): TerrainType[] {
-  const terrains: TerrainType[] = [
+  const allTerrainTypes: TerrainType[] = [
     TERRAIN_TYPES.TREES as TerrainType,
     TERRAIN_TYPES.PONDS as TerrainType,
     TERRAIN_TYPES.RUBBLE as TerrainType,
     TERRAIN_TYPES.DESERT as TerrainType,
   ];
 
-  return terrains.filter((t) => canUnitTraverseTerrain(unitType, t));
+  const matchByUnitTraversability = (terrain: TerrainType) => canUnitTraverseTerrain(unitType, terrain);
+  return allTerrainTypes.filter(matchByUnitTraversability);
 }
 
+/**
+ * getTraversableUnits (Molecule)
+ */
 export function getTraversableUnits(terrainType: TerrainType): PieceType[] {
-  const unitTypes: PieceType[] = [
+  const allUnitTypes: PieceType[] = [
     PIECES.KING as PieceType,
     PIECES.QUEEN as PieceType,
     PIECES.ROOK as PieceType,
@@ -78,5 +107,6 @@ export function getTraversableUnits(terrainType: TerrainType): PieceType[] {
     PIECES.PAWN as PieceType,
   ];
 
-  return unitTypes.filter((u) => canUnitTraverseTerrain(u, terrainType));
+  const matchByTerrainTraversability = (unit: PieceType) => canUnitTraverseTerrain(unit, terrainType);
+  return allUnitTypes.filter(matchByTerrainTraversability);
 }

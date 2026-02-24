@@ -15,6 +15,7 @@ interface ReadyUpPanelProps {
   placedCount: number;
   maxPlacement: number;
   unitsPlaced: number;
+  maxUnits: number;
   onResetTerrain?: () => void;
   onResetUnits?: () => void;
 }
@@ -34,10 +35,11 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
   placedCount,
   maxPlacement,
   unitsPlaced,
+  maxUnits,
   onResetTerrain,
   onResetUnits,
 }) => {
-  const unitsReady = unitsPlaced >= 16;
+  const unitsReady = unitsPlaced >= maxUnits;
   const terrainReady = placedCount >= maxPlacement;
   const cfg = PLAYER_CONFIGS[playerID];
 
@@ -175,7 +177,7 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
                 <span
                   className={`text-sm font-black font-mono leading-none ${unitsReady ? "text-emerald-400" : "text-slate-400"}`}
                 >
-                  {unitsPlaced}/16
+                  {unitsPlaced}/{maxUnits}
                 </span>
                 <span className="text-[8px] font-black uppercase tracking-tighter text-slate-600">
                   {unitsReady ? "Ready" : "Incomp"}

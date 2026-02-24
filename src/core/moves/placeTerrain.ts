@@ -1,86 +1,137 @@
 import { INVALID_MOVE } from "boardgame.io/core";
-import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER } from "@/constants";
+import { TERRAIN_TYPES } from "@/constants";
 import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
+import { resolvePlayerId, getQuota } from "@/core/setup/coreHelpers";
 import type { TerrainType, TrenchessState, GameMode } from "@/shared/types";
 import type { Ctx } from "boardgame.io";
 
-const resolvePlayerId = (
-  G: TrenchessState,
-  ctx: Ctx,
-  playerID?: string,
-  explicitPid?: string
-): string | null => {
-  const pid = explicitPid || (playerID !== undefined ? G.playerMap[playerID] : G.playerMap[ctx.currentPlayer]);
-  return pid && G.activePlayers.includes(pid) ? pid : null;
-};
-
 const isWithinTerritory = (
-  pid: string,
+  playerId: string,
   mode: GameMode,
-  r: number,
-  c: number
+  row: number,
+  col: number,
 ): boolean => {
-  const myCells = getPlayerCells(pid, mode);
-  return myCells.some(([cellR, cellC]) => cellR === r && cellC === c);
+  const myCells = getPlayerCells(playerId, mode);
+  
+  const isTargetCellInMyCells = myCells.some(
+    ([cellRow, cellCol]) => {
+      const isRowMatch = cellRow === row;
+      const isColMatch = cellCol === col;
+      return isRowMatch && isColMatch;
+    },
+  );
+  
+  return isTargetCellInMyCells;
 };
 
-const getTerrainQuota = (mode: GameMode): number => {
-  return mode === "2p-ns" || mode === "2p-ew"
-    ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-    : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
-};
-
-const countPlacedTerrain = (G: TrenchessState, pid: string): number => {
-  const myCells = getPlayerCells(pid, G.mode);
-  let count = 0;
-  for (const [r, c] of myCells) {
-    if (G.terrain[r][c] !== TERRAIN_TYPES.FLAT) count++;
-  }
-  return count;
-};
-
-export const placeTerrain = (
-  { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
-  r: number,
-  c: number,
-  type: TerrainType,
-  explicitPid?: string,
-) => {
-  const pid = resolvePlayerId(G, ctx, playerID, explicitPid);
-  if (!pid) return INVALID_MOVE;
-
-  if (!isWithinTerritory(pid, G.mode, r, c)) return INVALID_MOVE;
-
-  const oldTerrain = G.terrain[r][c];
-
-  // 1. Remove/Reclaim Atom
-  if (type === TERRAIN_TYPES.FLAT) {
-    if (oldTerrain !== TERRAIN_TYPES.FLAT) {
-      G.terrainInventory[pid].push(oldTerrain);
-      G.terrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+const countPlacedTerrain = (gameState: TrenchessState, playerId: string): number => {
+  const myCells = getPlayerCells(playerId, gameState.mode);
+  let currentTerrainCount = 0;
+  
+  for (const [row, col] of myCells) {
+    const terrainAtCell = gameState.terrain[row][col];
+    const isFlatTerrain = terrainAtCell === TERRAIN_TYPES.FLAT;
+    const isSpecialTerrain = !isFlatTerrain;
+    
+    if (isSpecialTerrain) {
+      currentTerrainCount++;
     }
-    return;
   }
+  
+  return currentTerrainCount;
+};
 
-  // 2. Validate Placement Atom (Unit overlap & Quota)
-  const unit = G.board[r][c];
-  if (unit && !canPlaceUnit(unit.type, type)) return INVALID_MOVE;
+const handleRemoval = (
+  gameState: TrenchessState,
+  playerId: string,
+  row: number,
+  col: number,
+) => {
+  const currentTerrain = gameState.terrain[row][col];
+  const isClearingExistingTerrain = currentTerrain !== TERRAIN_TYPES.FLAT;
+  
+  if (!isClearingExistingTerrain) return;
 
-  const idx = G.terrainInventory[pid]?.indexOf(type);
-  if (idx === -1 || idx === undefined) return INVALID_MOVE;
+  gameState.terrainInventory[playerId].push(currentTerrain);
+  gameState.terrain[row][col] = TERRAIN_TYPES.FLAT as TerrainType;
+};
 
-  const quota = getTerrainQuota(G.mode);
-  const currentCount = countPlacedTerrain(G, pid);
+const handlePlacement = (
+  gameState: TrenchessState,
+  playerId: string,
+  row: number,
+  col: number,
+  type: TerrainType,
+) => {
+  const unitAtCell = gameState.board[row][col];
+  const isUnitAtCell = !!unitAtCell;
+  const isCompatibleWithUnit = isUnitAtCell && canPlaceUnit(unitAtCell!.type, type);
+  const isCellEmpty = !isUnitAtCell;
+  
+  const isPlacementAllowedByUnit = isCellEmpty || isCompatibleWithUnit;
+  if (!isPlacementAllowedByUnit) return INVALID_MOVE;
 
-  if (currentCount >= quota && oldTerrain === TERRAIN_TYPES.FLAT) {
+  const playerTerrainInventory = gameState.terrainInventory[playerId];
+  const terrainIndex = playerTerrainInventory?.indexOf(type);
+  
+  const isIndexValid = terrainIndex !== -1;
+  const isInventoryExists = terrainIndex !== undefined;
+  const isTerrainInInventory = isIndexValid && isInventoryExists;
+  
+  if (!isTerrainInInventory) return INVALID_MOVE;
+
+  const quota = getQuota(gameState.mode);
+  const currentTerrainCount = countPlacedTerrain(gameState, playerId);
+  const isQuotaReached = currentTerrainCount >= quota;
+
+  const currentTerrainAtCell = gameState.terrain[row][col];
+  const isReplacingFlatTerrain = currentTerrainAtCell === TERRAIN_TYPES.FLAT;
+  
+  const isPlacementBlockedByQuota = isQuotaReached && isReplacingFlatTerrain;
+  if (isPlacementBlockedByQuota) {
     return INVALID_MOVE;
   }
 
-  // 3. Swap Atom
-  if (oldTerrain !== TERRAIN_TYPES.FLAT) {
-    G.terrainInventory[pid].push(oldTerrain);
+  const isReplacingExistingTerrain = !isReplacingFlatTerrain;
+  if (isReplacingExistingTerrain) {
+    gameState.terrainInventory[playerId].push(currentTerrainAtCell);
   }
 
-  G.terrain[r][c] = type;
-  G.terrainInventory[pid].splice(idx, 1);
+  gameState.terrain[row][col] = type;
+  gameState.terrainInventory[playerId].splice(terrainIndex, 1);
+};
+
+export const placeTerrain = (
+  {
+    G: gameState,
+    playerID,
+    ctx: context,
+  }: { G: TrenchessState; playerID?: string; ctx: Ctx },
+  row: number,
+  col: number,
+  type: TerrainType,
+  explicitPid?: string,
+) => {
+  const playerId = resolvePlayerId(gameState, context, playerID, explicitPid);
+  const hasPlayerId = !!playerId;
+  if (!hasPlayerId) return INVALID_MOVE;
+
+  const isPlayerPlacingInOwnTerritory = isWithinTerritory(
+    playerId!,
+    gameState.mode,
+    row,
+    col,
+  );
+  if (!isPlayerPlacingInOwnTerritory) return INVALID_MOVE;
+
+  const isClearingTerrain = type === TERRAIN_TYPES.FLAT;
+  if (isClearingTerrain) {
+    handleRemoval(gameState, playerId!, row, col);
+    return;
+  }
+
+  const isPlacingTerrain = !isClearingTerrain;
+  if (isPlacingTerrain) {
+    return handlePlacement(gameState, playerId!, row, col, type);
+  }
 };

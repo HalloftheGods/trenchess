@@ -1,62 +1,110 @@
 import { INVALID_MOVE } from "boardgame.io/core";
 import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
+import { resolvePlayerId } from "@/core/setup/coreHelpers";
 import type { PieceType, TrenchessState, GameMode } from "@/shared/types";
 import type { Ctx } from "boardgame.io";
 
-const resolvePlayerId = (
-  G: TrenchessState,
-  ctx: Ctx,
-  playerID?: string,
-  explicitPid?: string
-): string | null => {
-  const pid = explicitPid || (playerID !== undefined ? G.playerMap[playerID] : G.playerMap[ctx.currentPlayer]);
-  return pid && G.activePlayers.includes(pid) ? pid : null;
+const isWithinTerritory = (
+  playerId: string,
+  mode: GameMode,
+  row: number,
+  col: number,
+): boolean => {
+  const myCells = getPlayerCells(playerId, mode);
+  
+  const isTargetCellInMyCells = myCells.some(
+    ([cellRow, cellCol]) => {
+      const isRowMatch = cellRow === row;
+      const isColMatch = cellCol === col;
+      return isRowMatch && isColMatch;
+    },
+  );
+  
+  return isTargetCellInMyCells;
 };
 
-const isWithinTerritory = (
-  pid: string,
-  mode: GameMode,
-  r: number,
-  c: number
-): boolean => {
-  const myCells = getPlayerCells(pid, mode);
-  return myCells.some(([cellR, cellC]) => cellR === r && cellC === c);
+const handleRemoval = (
+  gameState: TrenchessState,
+  playerId: string,
+  row: number,
+  col: number,
+) => {
+  const currentPiece = gameState.board[row][col];
+  
+  const hasPieceAtCell = !!currentPiece;
+  const isOwnPiece = hasPieceAtCell && currentPiece!.player === playerId;
+  
+  const isRemovingOwnPiece = isOwnPiece;
+  if (!isRemovingOwnPiece) return;
+
+  gameState.inventory[playerId].push(currentPiece!.type);
+  gameState.board[row][col] = null;
+};
+
+const handlePlacement = (
+  gameState: TrenchessState,
+  playerId: string,
+  row: number,
+  col: number,
+  type: PieceType,
+) => {
+  const terrainAtCell = gameState.terrain[row][col];
+  const isCompatibleWithTerrain = canPlaceUnit(type, terrainAtCell);
+  if (!isCompatibleWithTerrain) return INVALID_MOVE;
+
+  const playerInventory = gameState.inventory[playerId];
+  const inventoryIndex = playerInventory?.indexOf(type);
+  
+  const isIndexValid = inventoryIndex !== -1;
+  const isInventoryExists = inventoryIndex !== undefined;
+  const isPieceInInventory = isIndexValid && isInventoryExists;
+  
+  if (!isPieceInInventory) return INVALID_MOVE;
+
+  const currentPieceAtCell = gameState.board[row][col];
+  const hasPieceAtCell = !!currentPieceAtCell;
+  const isOwnPieceAtCell = hasPieceAtCell && currentPieceAtCell!.player === playerId;
+  
+  const isSwappingWithExistingOwnPiece = isOwnPieceAtCell;
+  if (isSwappingWithExistingOwnPiece) {
+    gameState.inventory[playerId].push(currentPieceAtCell!.type);
+  }
+
+  gameState.board[row][col] = { type, player: playerId };
+  gameState.inventory[playerId].splice(inventoryIndex, 1);
 };
 
 export const placePiece = (
-  { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
-  r: number,
-  c: number,
+  {
+    G: gameState,
+    playerID,
+    ctx: context,
+  }: { G: TrenchessState; playerID?: string; ctx: Ctx },
+  row: number,
+  col: number,
   type: PieceType | null,
   explicitPid?: string,
 ) => {
-  const pid = resolvePlayerId(G, ctx, playerID, explicitPid);
-  if (!pid) return INVALID_MOVE;
+  const playerId = resolvePlayerId(gameState, context, playerID, explicitPid);
+  const hasPlayerId = !!playerId;
+  if (!hasPlayerId) return INVALID_MOVE;
 
-  if (!isWithinTerritory(pid, G.mode, r, c)) return INVALID_MOVE;
+  const isPlayerPlacingInOwnTerritory = isWithinTerritory(
+    playerId!,
+    gameState.mode,
+    row,
+    col,
+  );
+  if (!isPlayerPlacingInOwnTerritory) return INVALID_MOVE;
 
-  const oldPiece = G.board[r][c];
-
-  // 1. Remove/Reclaim Atom
-  if (type === null) {
-    if (oldPiece && oldPiece.player === pid) {
-      G.inventory[pid].push(oldPiece.type);
-      G.board[r][c] = null;
-    }
+  const isRemovingPiece = type === null;
+  if (isRemovingPiece) {
+    handleRemoval(gameState, playerId!, row, col);
     return;
   }
 
-  // 2. Validate Placement Atom
-  if (!canPlaceUnit(type, G.terrain[r][c])) return INVALID_MOVE;
-
-  const idx = G.inventory[pid]?.indexOf(type);
-  if (idx === -1 || idx === undefined) return INVALID_MOVE;
-
-  // 3. Swap Atom
-  if (oldPiece && oldPiece.player === pid) {
-    G.inventory[pid].push(oldPiece.type);
+  const isPlacingPiece = !isRemovingPiece;
+  if (isPlacingPiece) {
+    return handlePlacement(gameState, playerId!, row, col, type!);
   }
-
-  G.board[r][c] = { type, player: pid };
-  G.inventory[pid].splice(idx, 1);
 };

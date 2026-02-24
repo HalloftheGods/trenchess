@@ -51,9 +51,14 @@ export function useGameState(): GameStateHook {
   const terrainInventory = isEngineActive ? bgioState!.G.terrainInventory : boardState.terrainInventory;
   const capturedBy = isEngineActive ? bgioState!.G.capturedBy : boardState.capturedBy;
 
-  const turn = isEngineActive && bgioState!.G.playerMap && bgioState!.ctx
-    ? bgioState!.G.playerMap[bgioState!.ctx.currentPlayer] || turnState.turn
-    : turnState.turn;
+  const isOnline = !!multiplayer.roomId;
+
+  const turn =
+    isEngineActive && bgioState!.G.playerMap && bgioState!.ctx
+      ? isOnline || bgioState!.ctx.phase !== "setup"
+        ? bgioState!.G.playerMap[bgioState!.ctx.currentPlayer] || turnState.turn
+        : turnState.turn
+      : turnState.turn;
     
   const activePlayers = isEngineActive ? bgioState!.G.activePlayers : turnState.activePlayers;
   const readyPlayers = isEngineActive ? bgioState!.G.readyPlayers : turnState.readyPlayers;
