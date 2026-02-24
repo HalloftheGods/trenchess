@@ -43,7 +43,7 @@ export function useBoardInteraction(
 
   const localPlayerName = bgioState?.G.playerMap && playerID
     ? bgioState.G.playerMap[playerID]
-    : currentPlayerName;
+    : core.turnState.turn;
 
   const currentPhase = bgioState?.ctx.phase || "menu";
   const isSetupPhase = currentPhase === "setup";

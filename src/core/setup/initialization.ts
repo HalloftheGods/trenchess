@@ -9,14 +9,8 @@ import type {
   BoardPiece,
   TerrainType,
   PieceType,
+  SetupResult,
 } from "@/shared/types";
-
-export interface SetupResult {
-  board: (BoardPiece | null)[][];
-  terrain: TerrainType[][];
-  inventory: Record<string, PieceType[]>;
-  terrainInventory: Record<string, TerrainType[]>;
-}
 
 export const createInitialState = (
   mode: GameMode,

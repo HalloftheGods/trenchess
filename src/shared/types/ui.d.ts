@@ -1,4 +1,4 @@
-import type { PieceStyle, ArmyUnit } from "./game";
+import type { PieceStyle, ArmyUnit, PieceType } from "./game";
 
 export interface GameTheme {
   darkMode: boolean;
@@ -10,4 +10,16 @@ export interface GameTheme {
     className?: string,
     filled?: boolean,
   ) => React.ReactNode;
+}
+
+export interface TerrainIntel {
+  label: string;
+  desc: string;
+  sanctuaryUnits: PieceType[];
+  allowedUnits: PieceType[];
+  blockedUnits: PieceType[];
+  subtitle?: string;
+  tagline?: string;
+  flavorTitle?: string;
+  flavorStats?: string[];
 }

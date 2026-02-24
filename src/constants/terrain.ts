@@ -1,4 +1,4 @@
-import type { TerrainType, PieceType } from "@/shared/types/game";
+import type { TerrainType, PieceType, TerrainIntel } from "@/shared/types";
 import { PIECES } from "./pieces";
 
 export const TERRAIN_TYPES: Record<string, TerrainType> = {
@@ -21,18 +21,6 @@ export const MAX_TERRAIN_PER_PLAYER = {
 };
 
 export const TERRAIN_CARDS_PER_TYPE = 32;
-
-export interface TerrainIntel {
-  label: string;
-  desc: string;
-  sanctuaryUnits: PieceType[];
-  allowedUnits: PieceType[];
-  blockedUnits: PieceType[];
-  subtitle?: string;
-  tagline?: string;
-  flavorTitle?: string;
-  flavorStats?: string[];
-}
 
 export const CORE_TERRAIN_INTEL: Record<string, TerrainIntel> = {
   [SWAMPS]: {

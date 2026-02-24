@@ -1,11 +1,92 @@
 import { INVALID_MOVE } from "boardgame.io/core";
 import { BOARD_SIZE } from "@/constants";
 import { PIECES } from "@/constants";
-import type { TrenchessState } from "@/shared/types/game";
+import type { TrenchessState, BoardPiece } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
 import { applyDesertRule } from "@/core/events";
 
 const { KING, QUEEN, PAWN } = PIECES;
+
+const handlePawnPromotion = (
+  G: TrenchessState,
+  piece: BoardPiece,
+  toR: number,
+  toC: number,
+  pid: string
+) => {
+  if (piece.type !== PAWN) return;
+
+  const isNSPromotion =
+    G.mode === "2p-ns" &&
+    ((pid === "red" && toR === BOARD_SIZE - 1) || (pid === "blue" && toR === 0));
+
+  const isEWPromotion =
+    G.mode === "2p-ew" &&
+    ((pid === "green" && toC === BOARD_SIZE - 1) || (pid === "yellow" && toC === 0));
+
+  const is4PPromotion =
+    G.mode === "4p" &&
+    ((pid === "red" && (toR === BOARD_SIZE - 1 || toC === BOARD_SIZE - 1)) ||
+      (pid === "yellow" && (toR === BOARD_SIZE - 1 || toC === 0)) ||
+      (pid === "green" && (toR === 0 || toC === BOARD_SIZE - 1)) ||
+      (pid === "blue" && (toR === 0 || toC === 0)));
+
+  if (isNSPromotion || isEWPromotion || is4PPromotion) {
+    G.board[toR][toC] = { ...piece, type: QUEEN };
+  }
+};
+
+const handleJoustCapture = (
+  G: TrenchessState,
+  piece: BoardPiece,
+  fromR: number,
+  fromC: number,
+  toR: number,
+  toC: number,
+  pid: string
+): BoardPiece | null => {
+  if (piece.type !== KING) return null;
+
+  const isRowJoust = Math.abs(fromR - toR) === 2 && fromC === toC;
+  const isColJoust = Math.abs(fromC - toC) === 2 && fromR === toR;
+
+  if (isRowJoust || isColJoust) {
+    const midR = fromR + (toR - fromR) / 2;
+    const midC = fromC + (toC - fromC) / 2;
+    const midPiece = G.board[midR][midC];
+
+    if (midPiece && midPiece.player !== pid) {
+      G.board[midR][midC] = null;
+      return midPiece;
+    }
+  }
+
+  return null;
+};
+
+const handleCapture = (
+  G: TrenchessState,
+  capturedPiece: BoardPiece,
+  pid: string
+) => {
+  if (capturedPiece.player === pid) return INVALID_MOVE;
+  
+  G.capturedBy[pid].push(capturedPiece);
+
+  if (capturedPiece.type === KING) {
+    const victim = capturedPiece.player;
+    G.activePlayers = G.activePlayers.filter((p: string) => p !== victim);
+
+    // Victim's remaining pieces convert to capturer
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      for (let c = 0; c < BOARD_SIZE; c++) {
+        if (G.board[r][c]?.player === victim) {
+          G.board[r][c]!.player = pid;
+        }
+      }
+    }
+  }
+};
 
 export const movePiece = (
   { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
@@ -25,77 +106,25 @@ export const movePiece = (
   const piece = G.board[fromR][fromC];
   if (!piece || piece.player !== pid) return INVALID_MOVE;
 
-  const captured = G.board[toR][toC];
+  const targetPiece = G.board[toR][toC];
 
-  // Execute Move
+  // 1. Move Piece Atom
   G.board[toR][toC] = piece;
   G.board[fromR][fromC] = null;
 
-  // Pawn Promotion Logic
-  if (piece.type === PAWN) {
-    let promoted = false;
-    if (G.mode === "2p-ns") {
-      if (pid === "red" && toR === BOARD_SIZE - 1) promoted = true;
-      if (pid === "blue" && toR === 0) promoted = true;
-    } else if (G.mode === "2p-ew") {
-      if (pid === "green" && toC === BOARD_SIZE - 1) promoted = true;
-      if (pid === "yellow" && toC === 0) promoted = true;
-    } else {
-      // 4P Promotion
-      if (pid === "red" && (toR === BOARD_SIZE - 1 || toC === BOARD_SIZE - 1))
-        promoted = true;
-      if (pid === "yellow" && (toR === BOARD_SIZE - 1 || toC === 0))
-        promoted = true;
-      if (pid === "green" && (toR === 0 || toC === BOARD_SIZE - 1))
-        promoted = true;
-      if (pid === "blue" && (toR === 0 || toC === 0)) promoted = true;
-    }
+  // 2. Promotion Molecule
+  handlePawnPromotion(G, piece, toR, toC, pid);
 
-    if (promoted) {
-      G.board[toR][toC] = { ...piece, type: QUEEN };
-    }
-  }
+  // 3. Joust Capture Molecule
+  const joustedPiece = handleJoustCapture(G, piece, fromR, fromC, toR, toC, pid);
+  const capturedPiece = joustedPiece || targetPiece;
 
-  let capturedPiece = captured;
-
-  // King Joust Capture (Checkers-style leap)
-  if (
-    piece.type === KING &&
-    ((Math.abs(fromR - toR) === 2 && fromC === toC) ||
-      (Math.abs(fromC - toC) === 2 && fromR === toR))
-  ) {
-    const midR = fromR + (toR - fromR) / 2;
-    const midC = fromC + (toC - fromC) / 2;
-    const midPiece = G.board[midR][midC];
-    if (midPiece && midPiece.player !== pid) {
-      capturedPiece = midPiece;
-      G.board[midR][midC] = null;
-    }
-  }
-
-  // Handle Capture
+  // 4. Resolve Capture Molecule
   if (capturedPiece) {
-    if (capturedPiece.player === pid) return INVALID_MOVE;
-    G.capturedBy[pid].push(capturedPiece);
-
-    // End Game Condition (King Captured)
-    if (capturedPiece.type === KING) {
-      const victim = capturedPiece.player;
-      G.activePlayers = G.activePlayers.filter((p: string) => p !== victim);
-
-      // Legacy rule: Victim's remaining pieces convert to capturer?
-      // Actually, Trenchess endIf currently just checks activePlayers length.
-      // We'll keep the piece conversion for now as per current playPhase implementation.
-      for (let r = 0; r < BOARD_SIZE; r++) {
-        for (let c = 0; c < BOARD_SIZE; c++) {
-          if (G.board[r][c]?.player === victim) {
-            G.board[r][c]!.player = pid;
-          }
-        }
-      }
-    }
+    const captureResult = handleCapture(G, capturedPiece, pid);
+    if (captureResult === INVALID_MOVE) return INVALID_MOVE;
   }
 
-  // Desert Rule: Must exit or perish next turn
+  // 5. Apply Terrain Rules
   applyDesertRule(G, pid, { r: toR, c: toC });
 };

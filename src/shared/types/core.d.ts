@@ -27,7 +27,4 @@ export interface TerrainBlueprint {
   blockedUnits: PieceType[];
 }
 
-export interface UrlSync {
-  encodeGameState: (state: any) => string;
-  decodeGameState: (hash: string) => any;
-}
+

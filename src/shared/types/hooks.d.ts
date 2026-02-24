@@ -11,6 +11,38 @@ import type { Ctx } from "boardgame.io";
 import type { MultiplayerState } from "./multiplayer";
 import type { GameTheme } from "./ui";
 
+import type { PieceStyle, TerrainType, BoardPiece, PieceType, SeedItem } from "./game";
+
+export interface UseDeploymentProps {
+  mode: GameMode;
+  gameState: GameState;
+  terrain?: TerrainType[][];
+  setTerrain?: (terrain: TerrainType[][]) => void;
+  board?: (BoardPiece | null)[][];
+  setBoard?: (board: (BoardPiece | null)[][]) => void;
+  activePlayers: string[];
+  turn: string;
+  localPlayerName?: string;
+  layoutName?: string;
+  setInventory?: (inventory: Record<string, PieceType[]>) => void;
+}
+
+export interface UseBoardPreviewProps {
+  selectedMode: GameMode | null;
+  selectedProtocol:
+    | "classic"
+    | "quick"
+    | "terrainiffic"
+    | "custom"
+    | "zen-garden"
+    | null;
+  customSeed?: string;
+  terrainSeed?: number;
+  forcedTerrain?: TerrainType | null;
+  isReady?: boolean;
+  pieceStyle: PieceStyle;
+}
+
 export interface BoardState {
   board: (BoardPiece | null)[][];
   setBoard: React.Dispatch<React.SetStateAction<(BoardPiece | null)[][]>>;

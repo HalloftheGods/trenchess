@@ -1,11 +1,5 @@
-import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
+import type { BoardPiece, TerrainType, GameMode, Move } from "@/shared/types";
 import { getAllMoves, minimax } from "./minimax";
-
-export interface Move {
-  from: [number, number];
-  to: [number, number];
-  score?: number;
-}
 
 /**
  * Main entry point for AI to calculate next move.

@@ -1,15 +1,7 @@
 import { PIECES } from "@/constants";
-import type { PieceType } from "@/shared/types/game";
+import type { PieceType, UnitBlueprint } from "@/shared/types";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
-
-export interface UnitBlueprint {
-  type: PieceType;
-  movePattern: (r: number, c: number) => [number, number][];
-  newMovePattern?: (r: number, c: number) => [number, number][];
-  attackPattern?: (r: number, c: number) => [number, number][];
-  sanctuaryTerrain?: string[];
-}
 
 export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
   [KING]: {

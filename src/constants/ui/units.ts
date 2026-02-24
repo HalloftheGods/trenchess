@@ -17,7 +17,7 @@ import {
 import { PIECES, CORE_INITIAL_ARMY } from "../pieces";
 import { TERRAIN_TYPES } from "../terrain";
 import { UNIT_BLUEPRINTS } from "@/core/blueprints/units";
-import type { UnitColors, ArmyUnit, UnitDetails } from "@/shared/types/game";
+import type { UnitColors, ArmyUnit, UnitDetails, PieceStyle } from "@/shared/types";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 const { FORESTS, MOUNTAINS, SWAMPS } = TERRAIN_TYPES;
@@ -29,7 +29,6 @@ export const PIECE_STYLES = [
   "custom",
   "lucide",
 ] as const;
-export type PieceStyle = (typeof PIECE_STYLES)[number];
 
 export const UNIT_COLORS: Record<string, UnitColors> = {
   [KING]: {

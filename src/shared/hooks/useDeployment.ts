@@ -11,21 +11,8 @@ import type {
   BoardPiece,
   PieceType,
   SeedItem,
-} from "@/shared/types/game";
-
-export interface UseDeploymentProps {
-  mode: GameMode;
-  gameState: GameState;
-  terrain?: TerrainType[][];
-  setTerrain?: (terrain: TerrainType[][]) => void;
-  board?: (BoardPiece | null)[][];
-  setBoard?: (board: (BoardPiece | null)[][]) => void;
-  activePlayers: string[];
-  turn: string;
-  localPlayerName?: string;
-  layoutName?: string;
-  setInventory?: (inventory: Record<string, PieceType[]>) => void;
-}
+  UseDeploymentProps,
+} from "@/shared/types";
 
 export function useDeployment({
   mode,

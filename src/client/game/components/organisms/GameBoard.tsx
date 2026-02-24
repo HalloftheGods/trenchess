@@ -166,6 +166,10 @@ const GameBoard: React.FC<GameBoardProps> = ({
         <div className="absolute -inset-20 bg-gradient-to-tr from-red-600/10 via-transparent to-green-600/10 blur-[120px] pointer-events-none" />
 
         <div
+          onMouseLeave={() => {
+            setHoveredCell(null);
+            setPreviewMoves([]);
+          }}
           className="relative w-full h-full grid grid-cols-12 bg-slate-200 dark:bg-slate-900 border-[8px] border-slate-300 dark:border-slate-950 rounded-2xl overflow-hidden shadow-2xl transition-transform duration-700 ease-in-out"
           style={{ transform: isFlipped ? "rotate(180deg)" : "rotate(0deg)" }}
         >

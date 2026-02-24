@@ -6,6 +6,8 @@ import type { Ctx } from "boardgame.io";
 export const playPhase = {
   onMove,
   turn: {
+    minMoves: 1,
+    maxMoves: 1,
     order: {
       first: () => 0,
       next: ({ G, ctx }: { G: TrenchessState; ctx: Ctx }) =>

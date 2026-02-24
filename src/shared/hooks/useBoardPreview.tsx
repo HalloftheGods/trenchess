@@ -9,23 +9,8 @@ import type {
   TerrainType,
   ArmyUnit,
   PieceStyle,
+  UseBoardPreviewProps,
 } from "@/shared/types";
-
-export interface UseBoardPreviewProps {
-  selectedMode: GameMode | null;
-  selectedProtocol:
-    | "classic"
-    | "quick"
-    | "terrainiffic"
-    | "custom"
-    | "zen-garden"
-    | null;
-  customSeed?: string;
-  terrainSeed?: number;
-  forcedTerrain?: TerrainType | null;
-  isReady?: boolean;
-  pieceStyle: PieceStyle;
-}
 
 export function useBoardPreview({
   selectedMode,
