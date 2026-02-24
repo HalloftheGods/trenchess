@@ -1,3 +1,4 @@
+import type { TerrainType, TerrainDetail } from "@/shared/types/game";
 import { Trees, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
 import { TERRAIN_TYPES, CORE_TERRAIN_INTEL } from "../terrain";
@@ -67,7 +68,7 @@ export const TERRAIN_THEME_DATA = {
   },
 };
 
-const mapToTerrainIntel = (acc: Record<string, Record<string, unknown>>, key: string) => {
+const mapToTerrainIntel = (acc: Record<string, any>, key: string) => {
   acc[key] = {
     ...CORE_TERRAIN_INTEL[key],
     ...TERRAIN_THEME_DATA[key as keyof typeof TERRAIN_THEME_DATA],
@@ -75,17 +76,18 @@ const mapToTerrainIntel = (acc: Record<string, Record<string, unknown>>, key: st
   return acc;
 };
 
-export const TERRAIN_INTEL: Record<string, Record<string, unknown>> = Object.keys(CORE_TERRAIN_INTEL).reduce(
-  mapToTerrainIntel,
-  {} as Record<string, Record<string, unknown>>,
-);
+export const TERRAIN_INTEL: Record<string, any> = Object.keys(
+  CORE_TERRAIN_INTEL,
+).reduce(mapToTerrainIntel, {} as Record<string, any>);
 
-const mapToTerrainDetail = (key: string) => ({
+const mapToTerrainDetail = (key: string): TerrainDetail => ({
   key,
+  name: CORE_TERRAIN_INTEL[key].label,
   terrainTypeKey: key as TerrainType,
   ...TERRAIN_INTEL[key],
 });
 
-export const TERRAIN_DETAILS = Object.keys(TERRAIN_INTEL).map(mapToTerrainDetail);
+export const TERRAIN_DETAILS: TerrainDetail[] =
+  Object.keys(TERRAIN_INTEL).map(mapToTerrainDetail);
 
-export const TERRAIN_LIST = TERRAIN_DETAILS;
+export const TERRAIN_LIST: TerrainDetail[] = TERRAIN_DETAILS;

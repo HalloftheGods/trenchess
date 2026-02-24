@@ -208,8 +208,8 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
                       <p
                         className={`text-sm font-bold ${subtextColor} uppercase tracking-widest mb-0`}
                       >
-                        The {UNIT_INTEL[currentSlide.id]?.title} Learned a new
-                        job!
+                        The {String(UNIT_INTEL[currentSlide.id]?.title || "")}{" "}
+                        Learned a new job!
                       </p>
                     )}
                     <h3

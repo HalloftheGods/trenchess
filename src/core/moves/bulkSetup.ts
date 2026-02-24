@@ -27,7 +27,7 @@ export const randomizeTerrain = (
     [playerId],
     G.mode,
     undefined,
-    ctx.random,
+    (ctx as any).random,
   );
   G.terrain = result.terrain;
   G.terrainInventory = result.terrainInventory;
@@ -41,7 +41,7 @@ export const randomizeUnits = (
   if (!playerId) return INVALID_MOVE;
 
   // Random Mode Logic: Choose between intelligent random placement OR a structured formation
-  const strategy = ctx.random?.Number() || Math.random();
+  const strategy = (ctx as any).random?.Number() || Math.random();
 
   if (strategy < 0.4) {
     // 40% chance: Pure intelligent randomization
@@ -51,7 +51,7 @@ export const randomizeUnits = (
       G.inventory,
       [playerId],
       G.mode,
-      ctx.random,
+      (ctx as any).random,
     );
     G.board = result.board;
     G.inventory = result.inventory;
@@ -65,7 +65,9 @@ export const randomizeUnits = (
     ];
     const formation =
       formations[
-        Math.floor((ctx.random?.Number() || Math.random()) * formations.length)
+        Math.floor(
+          ((ctx as any).random?.Number() || Math.random()) * formations.length,
+        )
       ];
 
     const result = applyClassicalFormationLogic(
@@ -123,7 +125,7 @@ export const applyChiGarden = (
 
   // 1. Select a random layout from the library
   const modeSeeds = DEFAULT_SEEDS.filter((s) => s.mode === G.mode);
-  const randVal = ctx.random?.Number() || Math.random();
+  const randVal = (ctx as any).random?.Number() || Math.random();
   const seedToUse =
     modeSeeds.length > 0
       ? modeSeeds[Math.floor(randVal * modeSeeds.length)].seed

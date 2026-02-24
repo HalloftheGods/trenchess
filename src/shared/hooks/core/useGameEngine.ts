@@ -5,7 +5,7 @@ import { Trenchess } from "@/core/Trenchess";
 import { createInitialState, getPlayersForMode } from "@/core/setup/setupLogic";
 import { getServerUrl } from "@hooks/useMultiplayer";
 import type { Ctx } from "boardgame.io";
-import type { TrenchessState } from "@/shared/types/game";
+import type { TrenchessState, TrenchessSetupData } from "@/shared/types/game";
 import type { BgioClient, GameMode, MultiplayerState } from "@/shared/types";
 
 interface UseGameEngineProps {
@@ -58,7 +58,7 @@ export function useGameEngine({
       debug: showBgDebug,
       playerID,
       setupData: setupData || createInitialState(mode, getPlayersForMode(mode)),
-    } as Parameters<typeof Client>[0];
+    } as unknown as Parameters<typeof Client>[0];
 
     if (multiplayer.roomId && multiplayer.playerCredentials) {
       clientConfig.multiplayer = SocketIO({ server: getServerUrl() });
@@ -81,7 +81,14 @@ export function useGameEngine({
       debug: showBgDebug,
       setupData,
     };
-  }, [mode, showBgDebug, multiplayer.playerIndex, multiplayer.roomId, multiplayer.playerCredentials, setupData]);
+  }, [
+    mode,
+    showBgDebug,
+    multiplayer.playerIndex,
+    multiplayer.roomId,
+    multiplayer.playerCredentials,
+    setupData,
+  ]);
 
   useEffect(() => {
     const isOnline = !!multiplayer.roomId;
@@ -113,7 +120,15 @@ export function useGameEngine({
       // eslint-disable-next-line react-hooks/set-state-in-effect
       initClient();
     }
-  }, [multiplayer.playerIndex, multiplayer.roomId, mode, showBgDebug, initClient, isStarted, setupData]);
+  }, [
+    multiplayer.playerIndex,
+    multiplayer.roomId,
+    mode,
+    showBgDebug,
+    initClient,
+    isStarted,
+    setupData,
+  ]);
 
   // Authorization: Unified Sync Logic
   useEffect(() => {

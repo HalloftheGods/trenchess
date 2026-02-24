@@ -125,6 +125,13 @@ export interface BgioClient {
     placeTerrain: (r: number, c: number, type: TerrainType) => void;
     movePiece: (from: [number, number], to: [number, number]) => void;
     forfeit: (pid?: string) => void;
+    randomizeTerrain: (pid?: string) => void;
+    applyChiGarden: (pid?: string) => void;
+    randomizeUnits: (pid?: string) => void;
+    setClassicalFormation: (pid?: string) => void;
+    resetToOmega: (pid?: string) => void;
+    resetTerrain: (pid?: string) => void;
+    resetUnits: (pid?: string) => void;
   };
   stop: () => void;
   start: () => void;
@@ -226,7 +233,8 @@ export interface GameStateHook
     SetupActions {
   bgioState: { G: TrenchessState; ctx: Ctx } | null;
   lastMove: TrenchessState["lastMove"];
-  ready: () => void;
+  ready: (pid?: string) => void;
+  forfeit: (pid?: string) => void;
   startGame: () => void;
   multiplayer: MultiplayerState;
 }
