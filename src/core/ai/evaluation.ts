@@ -1,7 +1,12 @@
 import { BOARD_SIZE } from "@/constants";
 import { PIECES } from "@/constants";
 import { TERRAIN_TYPES, CORE_TERRAIN_INTEL } from "@/constants/terrain";
-import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
+import type {
+  BoardPiece,
+  TerrainType,
+  GameMode,
+  PieceType,
+} from "@/shared/types/game";
 import { isPlayerInCheck } from "@/core/mechanics/gameLogic";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
@@ -55,7 +60,7 @@ const isTerrainSanctuary = (
   const hasIntel = !!terrainIntel;
   if (!hasIntel) return false;
   const isSanctuaryPiece = terrainIntel.sanctuaryUnits.includes(
-    pieceType as any,
+    pieceType as PieceType,
   );
   return isSanctuaryPiece;
 };
@@ -69,7 +74,9 @@ const isTerrainBlocking = (
   if (!hasIntel) return false;
   const hasBlockedUnits = !!terrainIntel.blockedUnits;
   if (!hasBlockedUnits) return false;
-  const isPieceBlocked = terrainIntel.blockedUnits!.includes(pieceType as any);
+  const isPieceBlocked = terrainIntel.blockedUnits!.includes(
+    pieceType as PieceType,
+  );
   return isPieceBlocked;
 };
 
