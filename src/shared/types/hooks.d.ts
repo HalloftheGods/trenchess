@@ -78,6 +78,8 @@ export interface TurnState {
   >;
   winner: string | null;
   setWinner: React.Dispatch<React.SetStateAction<string | null>>;
+  winnerReason: GameOverReason;
+  setWinnerReason: React.Dispatch<React.SetStateAction<GameOverReason>>;
   inCheck: boolean;
   setInCheck: React.Dispatch<React.SetStateAction<boolean>>;
   isThinking: boolean;
@@ -122,6 +124,7 @@ export interface BgioClient {
     placePiece: (r: number, c: number, type: PieceType | null) => void;
     placeTerrain: (r: number, c: number, type: TerrainType) => void;
     movePiece: (from: [number, number], to: [number, number]) => void;
+    forfeit: (pid?: string) => void;
   };
   stop: () => void;
   start: () => void;
@@ -222,6 +225,7 @@ export interface GameStateHook
     ZenGardenInteraction,
     SetupActions {
   bgioState: { G: TrenchessState; ctx: Ctx } | null;
+  lastMove: TrenchessState["lastMove"];
   ready: () => void;
   startGame: () => void;
   multiplayer: MultiplayerState;

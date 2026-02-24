@@ -58,6 +58,8 @@ export interface TrenchessState {
   activePlayers: string[];
   readyPlayers: Record<string, boolean>;
   playerMap: Record<string, string>;
+  winner: string | null;
+  winnerReason: GameOverReason;
 }
 
 export interface TrenchessSetupData {

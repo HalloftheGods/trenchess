@@ -26,6 +26,7 @@ interface GameBoardProps {
   placementTerrain: TerrainType | null;
   setupMode: string;
   winner: string | null;
+  winnerReason?: string | null;
   inCheck: boolean;
   lastMove: {
     from: [number, number];
@@ -62,6 +63,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
   placementTerrain,
   setupMode,
   winner,
+  winnerReason,
   inCheck,
   lastMove,
   getIcon,
@@ -241,6 +243,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
         {gameState === "finished" && winner && (
           <VictoryOverlay
             winner={winner}
+            reason={winnerReason || undefined}
             getPlayerDisplayName={getPlayerDisplayName}
             setGameState={setGameState}
           />

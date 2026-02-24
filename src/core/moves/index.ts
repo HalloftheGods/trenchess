@@ -4,3 +4,4 @@ export * from "./placeTerrain";
 export * from "./ready";
 export * from "./bulkSetup";
 export * from "./resets";
+export * from "./forfeit";

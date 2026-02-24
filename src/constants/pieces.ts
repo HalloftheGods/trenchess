@@ -13,6 +13,15 @@ const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 
 export const ALL_UNITS: PieceType[] = [KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN];
 
+export const UNIT_POINTS: Record<string, number> = {
+  [PAWN]: 1,
+  [KNIGHT]: 3,
+  [BISHOP]: 3,
+  [ROOK]: 5,
+  [QUEEN]: 9,
+  [KING]: 15,
+};
+
 const mapToInitialArmy = ([type, count]: [PieceType, number]) => ({
   type,
   count,

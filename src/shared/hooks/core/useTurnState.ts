@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { PLAYER_CONFIGS } from "@/constants";
-import type { TurnState } from "@/shared/types";
+import type { TurnState, GameOverReason } from "@/shared/types";
 
 export function useTurnState(): TurnState {
   const [turn, setTurn] = useState("red");
@@ -15,6 +15,7 @@ export function useTurnState(): TurnState {
     blue: "human",
   });
   const [winner, setWinner] = useState<string | null>(null);
+  const [winnerReason, setWinnerReason] = useState<GameOverReason>(null);
   const [inCheck, setInCheck] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [localPlayerName, setLocalPlayerName] = useState("");
@@ -34,6 +35,8 @@ export function useTurnState(): TurnState {
     setPlayerTypes,
     winner,
     setWinner,
+    winnerReason,
+    setWinnerReason,
     inCheck,
     setInCheck,
     isThinking,

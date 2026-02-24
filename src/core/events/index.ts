@@ -27,6 +27,10 @@ export const applyDesertRule = (
             G.activePlayers = G.activePlayers.filter(
               (ap: string) => ap !== victim,
             );
+            if (G.activePlayers.length === 1) {
+              G.winner = G.activePlayers[0];
+              G.winnerReason = "checkmate"; // King elimination counts as checkmate/victory
+            }
             for (let row = 0; row < BOARD_SIZE; row++) {
               for (let col = 0; col < BOARD_SIZE; col++) {
                 const pieceAtCell = G.board[row][col];

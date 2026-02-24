@@ -130,6 +130,21 @@ export const minimax = (
       nextBoard[move.to[0]][move.to[1]] = nextBoard[move.from[0]][move.from[1]];
       nextBoard[move.from[0]][move.from[1]] = null;
 
+      // Desert Rule Simulation: After move, other pieces on desert perish
+      for (let dr = 0; dr < BOARD_SIZE; dr++) {
+        for (let dc = 0; dc < BOARD_SIZE; dc++) {
+          const p = nextBoard[dr][dc];
+          if (
+            p &&
+            p.player === currentPlayer &&
+            terrain[dr][dc] === DESERT &&
+            (dr !== move.to[0] || dc !== move.to[1])
+          ) {
+            nextBoard[dr][dc] = null;
+          }
+        }
+      }
+
       const evalu = minimax(
         nextBoard,
         terrain,
@@ -153,6 +168,21 @@ export const minimax = (
       const nextBoard = board.map((row) => [...row]);
       nextBoard[move.to[0]][move.to[1]] = nextBoard[move.from[0]][move.from[1]];
       nextBoard[move.from[0]][move.from[1]] = null;
+
+      // Desert Rule Simulation: After move, other pieces on desert perish
+      for (let dr = 0; dr < BOARD_SIZE; dr++) {
+        for (let dc = 0; dc < BOARD_SIZE; dc++) {
+          const p = nextBoard[dr][dc];
+          if (
+            p &&
+            p.player === currentPlayer &&
+            terrain[dr][dc] === DESERT &&
+            (dr !== move.to[0] || dc !== move.to[1])
+          ) {
+            nextBoard[dr][dc] = null;
+          }
+        }
+      }
 
       const evalu = minimax(
         nextBoard,

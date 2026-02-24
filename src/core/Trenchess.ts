@@ -7,6 +7,7 @@ import type {
 } from "@/shared/types/game";
 import { setupPhase } from "@/core/phases/setupPhase";
 import { playPhase } from "@/core/phases/playPhase";
+import { forfeit } from "@/core/moves/forfeit";
 
 export const Trenchess: Game<TrenchessState, Ctx, TrenchessSetupData> = {
   name: "trenchess",
@@ -75,7 +76,13 @@ export const Trenchess: Game<TrenchessState, Ctx, TrenchessSetupData> = {
       activePlayers: players,
       readyPlayers: allPlaced ? initialReadyPlayers : {},
       playerMap,
+      winner: null,
+      winnerReason: null,
     };
+  },
+
+  moves: {
+    forfeit,
   },
 
   phases: {
@@ -85,7 +92,8 @@ export const Trenchess: Game<TrenchessState, Ctx, TrenchessSetupData> = {
 
   endIf: ({ G }) => {
     if (G.activePlayers.length === 1) {
-      return { winner: G.activePlayers[0] };
+      const winner = G.activePlayers[0];
+      return { winner, reason: G.winnerReason || "checkmate" };
     }
   },
 };

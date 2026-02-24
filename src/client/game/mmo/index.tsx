@@ -6,9 +6,10 @@ import GameStateDebug from "../shared/components/molecules/GameStateDebug";
 
 import { useRouteContext } from "@/route.context";
 import { useDeployment } from "@/client/game/shared/hooks/useDeployment";
-import { INITIAL_ARMY } from "@/constants";
+import { INITIAL_ARMY, UNIT_POINTS } from "@/constants";
 import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/constants";
 import { getPlayerCells } from "@/core/setup/setupLogic";
+import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { MAX_TERRAIN_PER_PLAYER } from "@/constants";
 import { getServerUrl } from "@hooks/useMultiplayer";
 import type { GameStateHook } from "@/shared/types";
@@ -56,6 +57,61 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
     layoutName: game.layoutName,
     setInventory: game.setInventory,
   });
+
+  const sanctuaryBonuses = useMemo(() => {
+    const bonuses: Record<string, number> = {
+      red: 0,
+      yellow: 0,
+      green: 0,
+      blue: 0,
+    };
+
+    if (!game.board || !game.terrain) return bonuses;
+
+    for (let r = 0; r < game.board.length; r++) {
+      for (let c = 0; c < (game.board[r]?.length || 0); c++) {
+        const piece = game.board[r][c];
+        if (piece) {
+          const terrain = game.terrain[r]?.[c];
+          if (terrain && isUnitProtected(piece.type, terrain)) {
+            bonuses[piece.player] = (bonuses[piece.player] || 0) + 1;
+          }
+        }
+      }
+    }
+    return bonuses;
+  }, [game.board, game.terrain]);
+
+  const teamPowerStats = useMemo(() => {
+    const stats: Record<string, { current: number; max: number }> = {
+      red: { current: 0, max: 0 },
+      yellow: { current: 0, max: 0 },
+      green: { current: 0, max: 0 },
+      blue: { current: 0, max: 0 },
+    };
+
+    const initialTotalPower = INITIAL_ARMY.reduce(
+      (sum, unit) => sum + unit.count * (UNIT_POINTS[unit.type] || 0),
+      0,
+    );
+
+    game.activePlayers.forEach((pid) => {
+      stats[pid].max = initialTotalPower;
+      // Scan board for current units
+      let currentMaterial = 0;
+      for (let r = 0; r < game.board.length; r++) {
+        for (let c = 0; c < (game.board[r]?.length || 0); c++) {
+          const piece = game.board[r][c];
+          if (piece && piece.player === pid) {
+            currentMaterial += UNIT_POINTS[piece.type] || 0;
+          }
+        }
+      }
+      stats[pid].current = currentMaterial + sanctuaryBonuses[pid];
+    });
+
+    return stats;
+  }, [game.board, game.activePlayers, sanctuaryBonuses]);
 
   const inventoryCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -152,6 +208,7 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
           placementTerrain={game.placementTerrain}
           setupMode={game.setupMode}
           winner={game.winner}
+          winnerReason={game.winnerReason}
           inCheck={game.inCheck}
           getIcon={game.getIcon}
           getPlayerDisplayName={game.getPlayerDisplayName}
@@ -239,8 +296,11 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
                 maxPlacement={pMaxPlacement}
                 unitsPlaced={pUnitsPlaced}
                 maxUnits={totalUnitCount}
+                currentPower={teamPowerStats[pid].current}
+                maxPower={teamPowerStats[pid].max}
                 onResetTerrain={game.resetTerrain}
                 onResetUnits={game.resetUnits}
+                onForfeit={() => game.forfeit(pid)}
                 onReady={() => game.ready(pid)}
                 capturedPieces={game.capturedBy[pid]}
                 desertedPieces={game.bgioState?.G.lostToDesert?.filter((p: any) => p.player === pid) || []}
@@ -302,8 +362,11 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
                 maxPlacement={pMaxPlacement}
                 unitsPlaced={pUnitsPlaced}
                 maxUnits={totalUnitCount}
+                currentPower={teamPowerStats[pid].current}
+                maxPower={teamPowerStats[pid].max}
                 onResetTerrain={game.resetTerrain}
                 onResetUnits={game.resetUnits}
+                onForfeit={() => game.forfeit(pid)}
                 onReady={() => game.ready(pid)}
                 capturedPieces={game.capturedBy[pid]}
                 desertedPieces={game.bgioState?.G.lostToDesert?.filter((p: any) => p.player === pid) || []}

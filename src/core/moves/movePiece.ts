@@ -138,6 +138,10 @@ const handleCapture = (
     const victimId = capturedPiece.player;
     eliminatePlayer(gameState, victimId);
     convertVictimArmy(gameState, victimId, playerId);
+    if (gameState.activePlayers.length === 1) {
+      gameState.winner = gameState.activePlayers[0];
+      gameState.winnerReason = "checkmate";
+    }
   }
 };
 

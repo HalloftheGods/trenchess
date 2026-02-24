@@ -99,12 +99,17 @@ export function useGameState(): GameStateHook {
   const winner = isEngineActive
     ? (bgioState!.ctx.gameover?.winner ?? null)
     : turnState.winner;
+  const winnerReason = isEngineActive
+    ? (bgioState!.ctx.gameover?.reason ?? null)
+    : turnState.winnerReason;
 
   const gameState = isEngineActive
     ? (bgioState!.ctx.phase as "setup" | "play")
     : isStarted
       ? configState.gameState
       : "menu";
+
+  const lastMove = isEngineActive ? bgioState!.G.lastMove : null;
 
   // 5. Lifecycle Orchestrator
   const core = useGameLifecycle(
@@ -169,8 +174,15 @@ export function useGameState(): GameStateHook {
     ...boardState,
     ...turnState,
     ...configState,
+    ...core,
+    ...placementManager,
+    ...moveExecution,
+    ...boardInteraction,
+    ...zenGardenInteraction,
+    ...setupActions,
+    bgioState,
 
-    // Authority Overrides
+    // Authority Overrides (MUST be last to ensure engine truth wins)
     board,
     terrain,
     inventory,
@@ -180,15 +192,9 @@ export function useGameState(): GameStateHook {
     activePlayers,
     readyPlayers,
     winner,
+    winnerReason,
     gameState,
-
-    ...core,
-    ...placementManager,
-    ...moveExecution,
-    ...boardInteraction,
-    ...zenGardenInteraction,
-    ...setupActions,
-    bgioState,
+    lastMove,
 
     ready: (pid?: string) => {
       if (multiplayer.roomId) {
@@ -233,6 +239,19 @@ export function useGameState(): GameStateHook {
       }
     },
     startGame: () => setIsStarted(true),
+    forfeit: (pid?: string) => {
+      if (clientRef.current) {
+        clientRef.current.moves.forfeit(pid);
+      } else {
+        const pId = pid || turn;
+        turnState.setActivePlayers((prev) => prev.filter((p) => p !== pId));
+        if (activePlayers.length === 2) {
+          const winnerId = activePlayers.find((p) => p !== pId)!;
+          turnState.setWinner(winnerId);
+          turnState.setWinnerReason("forfeit");
+        }
+      }
+    },
     multiplayer: {
       ...multiplayer,
       readyPlayers,
