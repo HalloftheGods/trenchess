@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from "@/core/primitives/game";
+import { BOARD_SIZE } from "@/constants";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
 import { isPlayerInCheck } from "@/core/mechanics/gameState";

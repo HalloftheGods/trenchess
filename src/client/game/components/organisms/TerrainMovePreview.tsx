@@ -6,8 +6,8 @@
  */
 import React from "react";
 import { Trees, Waves, Mountain, ShieldPlus, X } from "lucide-react";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
-import { PIECES } from "@/client/game/theme";
+import { TERRAIN_TYPES } from "@/constants";
+import { PIECES } from "@/constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import type { TerrainType } from "@/shared/types/game";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";

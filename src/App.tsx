@@ -57,6 +57,7 @@ const App = () => {
     multiplayer,
     initFromSeed,
     initGameWithPreset,
+    startGame,
     setGameState,
     mode,
     setMode,
@@ -100,6 +101,7 @@ const App = () => {
         } else {
           initGameWithPreset("2p-ns", null);
         }
+        startGame();
       }
       return;
     }
@@ -107,7 +109,7 @@ const App = () => {
       initGameWithPreset("2p-ns", "zen-garden");
       return;
     }
-  }, [gameState, location.pathname, initFromSeed, initGameWithPreset]);
+  }, [gameState, location.pathname, initFromSeed, initGameWithPreset, startGame]);
 
   useEffect(() => {
     if (
@@ -178,6 +180,7 @@ const App = () => {
           playerTypesConfig,
           seed || "",
         );
+        startGame();
         const target = multiplayer?.roomId
           ? `${ROUTES.GAME}/${multiplayer.roomId}`
           : ROUTES.GAME_MMO;
@@ -220,6 +223,7 @@ const App = () => {
     setGameState,
     navigate,
     initGameWithPreset,
+    startGame,
     mode,
     setMode,
     selectedPreset,
@@ -288,9 +292,13 @@ const App = () => {
     },
     { path: "learn/chess", element: <LazyRoutes.learn.chess.main /> },
     {
-      path: "learn/chess/:unitType",
+      path: "learn/chess/chessmen",
+      element: <LazyRoutes.learn.chess.chessmen />,
+    },
+    {
+      path: "learn/chess/chessmen/:unitType",
       element: (
-        <ChessGuideWrapper onBack={() => navigate(ROUTES.LEARN_CHESS)} />
+        <ChessGuideWrapper onBack={() => navigate(ROUTES.LEARN_CHESSMEN)} />
       ),
     },
     { path: "learn/math", element: <LazyRoutes.learn.math.main /> },

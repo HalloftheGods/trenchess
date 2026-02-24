@@ -36,6 +36,7 @@ export default defineConfig({
       "@assets": path.resolve(__dirname, "./src/shared/assets"),
 
       "@game": path.resolve(__dirname, "./src/client/game"),
+      "@gameUtils": path.resolve(__dirname, "./src/client/game/utils"),
       "@constants": path.resolve(__dirname, "./src/constants"),
       "@client": path.resolve(__dirname, "./src/client"),
     },

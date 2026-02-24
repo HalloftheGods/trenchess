@@ -1,11 +1,11 @@
 import React from "react";
 import { Box } from "@atoms";
-import { getQuadrantBaseStyle } from "@/core/setup/boardLayouts";
+import { getQuadrantBaseStyle } from "@gameUtils/boardStyles";
 import { TerrainOverlay } from "../atoms/TerrainOverlay";
 import { CellUnitRenderer } from "../atoms/CellUnitRenderer";
 import { CellHighlight } from "../atoms/CellHighlight";
 import { CellPlacementPreview } from "../atoms/CellPlacementPreview";
-import { getSetupHighlightArea } from "../../utils/boardCellHelpers";
+import { getSetupHighlightArea } from "@gameUtils/boardCellHelpers";
 import type {
   BoardPiece,
   TerrainType,
@@ -97,7 +97,7 @@ const BoardCell: React.FC<BoardCellProps> = ({
     >
       <TerrainOverlay
         terrainType={terrainType}
-        hasUnit={hasInhabitant}
+        hasUnit={!!hasInhabitant}
         rotationStyle={rotationStyle}
         fogged={fogged}
       />
@@ -106,7 +106,7 @@ const BoardCell: React.FC<BoardCellProps> = ({
         isSelected={isSelected}
         isValid={isValid}
         isPreviewMove={isPreviewMove}
-        isHovered={isHovered}
+        isHovered={!!isHovered}
         setupHighlightArea={setupHighlight}
       />
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Trees as TreeIcon, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { TERRAIN_TYPES } from "@/constants";
 import { Flex } from "@atoms";
 import type { TerrainType } from "@/shared/types/game";
 

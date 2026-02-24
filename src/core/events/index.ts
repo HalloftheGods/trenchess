@@ -1,6 +1,6 @@
-import { BOARD_SIZE } from "@/core/primitives/game";
-import { PIECES } from "@/core/primitives/pieces";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { BOARD_SIZE } from "@/constants";
+import { PIECES } from "@/constants";
+import { TERRAIN_TYPES } from "@/constants";
 import type { TrenchessState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
 

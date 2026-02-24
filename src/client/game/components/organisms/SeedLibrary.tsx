@@ -14,9 +14,9 @@ import {
   Bomb,
 } from "lucide-react";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
-import { PLAYER_CONFIGS } from "@/client/game/theme";
-import { INITIAL_ARMY } from "@/client/game/theme";
-import { getQuadrantBaseStyle } from "@/client/game/theme/board";
+import { PLAYER_CONFIGS } from "@constants";
+import { INITIAL_ARMY } from "@constants";
+import { getQuadrantBaseStyle } from "@gameUtils/boardStyles";
 import type { GameMode } from "@/shared/types/game";
 
 interface SeedItem {

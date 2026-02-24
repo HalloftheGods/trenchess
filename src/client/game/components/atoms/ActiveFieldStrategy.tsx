@@ -1,5 +1,5 @@
 import React from "react";
-import { PLAYER_CONFIGS } from "@/client/game/theme";
+import { PLAYER_CONFIGS } from "@/constants";
 
 interface ActiveFieldStrategyProps {
   turn: string;

@@ -3,8 +3,8 @@ import React, { useMemo, useState } from "react";
 import InteractiveGuide, {
   type Slide,
 } from "@/shared/components/templates/InteractiveGuide";
-import { PIECES, INITIAL_ARMY } from "@/client/game/theme";
-import { UNIT_DETAILS, unitColorMap } from "@/client/game/theme";
+import { PIECES, INITIAL_ARMY } from "@/constants";
+import { UNIT_DETAILS, unitColorMap } from "@/constants";
 import type {
   PieceType,
   TerrainType,
@@ -224,7 +224,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
                   containerClassName="border-2 border-indigo-500/40 shadow-lg shadow-indigo-500/10"
                 />
                 <div className="text-center font-bold text-[9px] tracking-widest text-indigo-600 dark:text-indigo-400 uppercase w-full">
-                  The {details.levelUp?.title || details.title}
+                  {details.title}
                 </div>
               </div>
             </div>
@@ -243,7 +243,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
       onBack={onBack}
       labelColor="blue"
       onSlideChange={(id) => {
-        window.history.replaceState(null, "", `/learn/chess/${id}`);
+        window.history.replaceState(null, "", `/learn/chess/chessmen/${id}`);
         setSelectedTerrain(null); // Reset terrain preview on slide change
       }}
     />

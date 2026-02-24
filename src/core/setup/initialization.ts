@@ -1,9 +1,9 @@
-import { BOARD_SIZE } from "@/core/primitives/game";
+import { BOARD_SIZE } from "@/constants";
 import {
   MAX_TERRAIN_PER_PLAYER,
   TERRAIN_TYPES,
-} from "@/core/primitives/terrain";
-import { INITIAL_ARMY } from "@/core/primitives/pieces";
+} from "@/constants";
+import { INITIAL_ARMY } from "@/constants";
 import type {
   GameMode,
   BoardPiece,

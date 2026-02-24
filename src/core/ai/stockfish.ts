@@ -1,7 +1,7 @@
 import Stockfish from "fairy-stockfish-nnue.wasm/stockfish.js";
 import type { BoardPiece } from "@/shared/types/game";
-import { BOARD_SIZE } from "@/core/primitives/game";
-import { PIECES } from "@/core/primitives/pieces";
+import { BOARD_SIZE } from "@/constants";
+import { PIECES } from "@/constants";
 
 interface StockfishInstance {
   addMessageListener: (cb: (line: string) => void) => void;

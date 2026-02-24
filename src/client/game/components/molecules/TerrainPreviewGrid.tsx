@@ -1,6 +1,6 @@
 import React from "react";
-import { PIECES } from "@/client/game/theme";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { PIECES } from "@/constants";
+import { TERRAIN_TYPES } from "@/constants";
 import { getValidMoves } from "@/core/mechanics/gameLogic";
 import type { PieceType } from "@/shared/types/game";
 import type { TerrainIntelPanelEntry } from "@/shared/types/guide";

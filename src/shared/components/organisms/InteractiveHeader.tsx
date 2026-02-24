@@ -6,7 +6,7 @@
  */
 import React from "react";
 import { ArrowLeft } from "lucide-react";
-import { INITIAL_ARMY } from "@/client/game/theme";
+import { INITIAL_ARMY } from "@/constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import {
@@ -14,7 +14,7 @@ import {
   UNIT_NAMES,
   ALL_UNITS,
   TERRAIN_LIST,
-} from "@/client/game/theme";
+} from "@/constants";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 
 interface InteractiveHeaderProps {

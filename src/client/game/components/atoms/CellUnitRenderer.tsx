@@ -1,6 +1,6 @@
 import React from "react";
 import { Flex } from "@atoms";
-import { PLAYER_CONFIGS, INITIAL_ARMY } from "@/client/game/theme";
+import { PLAYER_CONFIGS, INITIAL_ARMY } from "@/constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import type { BoardPiece, TerrainType, ArmyUnit } from "@/shared/types/game";
 

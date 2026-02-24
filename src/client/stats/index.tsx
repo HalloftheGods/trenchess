@@ -8,11 +8,11 @@ import {
   UNIT_DETAILS,
   INITIAL_ARMY,
   TERRAIN_DETAILS,
-} from "@/client/game/theme";
+} from "@/constants";
 import type { TerrainType } from "@/shared/types/game";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { TERRAIN_TYPES } from "@/constants";
 import { useRouteContext } from "@/route.context";
-import type { PieceStyle } from "@/client/game/theme";
+import type { PieceStyle } from "@/constants";
 
 // Cast the imported JSON to our type
 const statsData = statsDataObj as unknown as Record<

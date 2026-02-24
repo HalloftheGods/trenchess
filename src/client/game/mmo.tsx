@@ -6,10 +6,10 @@ import GameStateDebug from "./components/molecules/GameStateDebug";
 
 import { useRouteContext } from "@/route.context";
 import { useDeployment } from "@hooks/useDeployment";
-import { INITIAL_ARMY } from "@/client/game/theme";
-import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/core/primitives/terrain";
+import { INITIAL_ARMY } from "@/constants";
+import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/constants";
 import { getPlayerCells } from "@/core/setup/setupLogic";
-import { MAX_TERRAIN_PER_PLAYER } from "@/core/primitives/terrain";
+import { MAX_TERRAIN_PER_PLAYER } from "@/constants";
 import { getServerUrl } from "@hooks/useMultiplayer";
 import type {
   GameStateHook,

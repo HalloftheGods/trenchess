@@ -1,5 +1,5 @@
-import { BOARD_SIZE } from "@/core/primitives/game";
-import { PIECES } from "@/core/primitives/pieces";
+import { BOARD_SIZE } from "@/constants";
+import { PIECES } from "@/constants";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 
 const { KING } = PIECES;

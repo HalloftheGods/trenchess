@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
-import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER } from "@/core/primitives/terrain";
+import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER } from "@/constants";
 import type {
   BoardInteraction,
   MultiplayerState,

@@ -1,4 +1,4 @@
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { TERRAIN_TYPES } from "@/constants";
 import { buildBoard, buildTerrain, serializeGame } from "./utils";
 
 export const createGreatDivide = () => {

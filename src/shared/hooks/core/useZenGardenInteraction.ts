@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { canPlaceUnit } from "@/core/setup/setupLogic";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { TERRAIN_TYPES } from "@/constants";
 import type {
   ZenGardenInteraction,
   GameCore,

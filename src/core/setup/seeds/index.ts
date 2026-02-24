@@ -1,6 +1,6 @@
 import * as Gardens from "./gardens";
 import * as Strategic from "./strategic";
-import { PIECES } from "@/core/primitives/pieces";
+import { PIECES } from "@/constants";
 
 export const INITIAL_ARMY = [
   { type: PIECES.KING, count: 1 },

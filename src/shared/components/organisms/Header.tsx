@@ -3,10 +3,10 @@ import type { GameMode } from "@/shared/types/game";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 import { SegmentedControl } from "@/shared/components/molecules/SegmentedControl";
 import { PlayerBadge } from "@/client/game/components/atoms/PlayerBadge";
-import { PLAYER_CONFIGS } from "@/client/game/theme";
+import { PLAYER_CONFIGS } from "@/constants";
 import GameLogo from "@/shared/components/molecules/GameLogo";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
-import type { PieceStyle } from "@/client/game/theme";
+import type { PieceStyle } from "@/constants";
 
 interface HeaderProps {
   onMenuClick: () => void;

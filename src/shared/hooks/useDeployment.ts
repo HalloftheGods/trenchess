@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { serializeGame } from "@utils/gameUrl";
-import { INITIAL_ARMY } from "@/client/game/theme";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { INITIAL_ARMY } from "@/constants";
+import { TERRAIN_TYPES } from "@/constants";
 import { getPlayerCells } from "@/core/setup/setupLogic";
-import { MAX_TERRAIN_PER_PLAYER } from "@/core/primitives/terrain";
+import { MAX_TERRAIN_PER_PLAYER } from "@/constants";
 import type {
   GameMode,
   GameState,

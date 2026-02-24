@@ -1,5 +1,5 @@
 import { Trophy } from "lucide-react";
-import { PLAYER_CONFIGS } from "@/client/game/theme";
+import { PLAYER_CONFIGS } from "@/constants";
 
 interface VictoryOverlayProps {
   winner: string;

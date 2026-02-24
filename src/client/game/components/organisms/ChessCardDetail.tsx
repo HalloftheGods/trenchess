@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ShieldPlus, UserPlus } from "lucide-react";
-import { PIECES, INITIAL_ARMY, UNIT_DETAILS, unitColorMap, TERRAIN_DETAILS } from "@/client/game/theme";
+import { PIECES, INITIAL_ARMY, UNIT_DETAILS, unitColorMap, TERRAIN_DETAILS } from "@/constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import type { PieceType, TerrainType } from "@/shared/types/game";

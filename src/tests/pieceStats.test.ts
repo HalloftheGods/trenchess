@@ -1,11 +1,9 @@
 import { describe, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
-import { PIECES } from "@/core/primitives/pieces";
+import { PIECES, TERRAIN_TYPES, BOARD_SIZE } from "@constants";
 import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
-import { BOARD_SIZE } from "@/core/primitives/game";
-import type { BoardPiece, TerrainType, PieceType } from "@/shared/types";
+import type { BoardPiece, TerrainType, PieceType } from "@/shared/types/game";
 
 const ITERATIONS_PER_MATCHUP = 500_000;
 const MAX_TURNS = 10;
@@ -21,9 +19,14 @@ const NON_FLAT_TERRAIN_KEYS = [
 ];
 
 const pickRandomNonFlat = (): TerrainType =>
-  NON_FLAT_TERRAIN_KEYS[
-    Math.floor(Math.random() * NON_FLAT_TERRAIN_KEYS.length)
-  ];
+  NON_FLAT_TERRAIN_KEYS[Math.floor(Math.random() * NON_FLAT_TERRAIN_KEYS.length)] as TerrainType;
+
+const shuffle = (array: [number, number][]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+};
 
 const generateTerrainWithDensity = (): TerrainType[][] => {
   const terrain: TerrainType[][] = Array.from({ length: BOARD_SIZE }, () =>
@@ -35,20 +38,13 @@ const generateTerrainWithDensity = (): TerrainType[][] => {
 
   for (let r = 0; r < BOARD_SIZE; r++) {
     for (let c = 0; c < BOARD_SIZE; c++) {
-      const isTopHalf = r < BOARD_MIDPOINT;
-      if (isTopHalf) topHalf.push([r, c]);
+      if (r < BOARD_MIDPOINT) topHalf.push([r, c]);
       else bottomHalf.push([r, c]);
     }
   }
 
-  for (let i = topHalf.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [topHalf[i], topHalf[j]] = [topHalf[j], topHalf[i]];
-  }
-  for (let i = bottomHalf.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [bottomHalf[i], bottomHalf[j]] = [bottomHalf[j], bottomHalf[i]];
-  }
+  shuffle(topHalf);
+  shuffle(bottomHalf);
 
   for (let i = 0; i < TERRAIN_PER_HALF; i++) {
     const [rT, cT] = topHalf[i];
@@ -66,36 +62,26 @@ interface TerrainStat {
   rate: number;
 }
 
+const createInitialTerrainStats = () => ({
+  [TERRAIN_TYPES.FLAT]: { total: 0, captures: 0, rate: 0 },
+  [TERRAIN_TYPES.TREES]: { total: 0, captures: 0, rate: 0 },
+  [TERRAIN_TYPES.PONDS]: { total: 0, captures: 0, rate: 0 },
+  [TERRAIN_TYPES.RUBBLE]: { total: 0, captures: 0, rate: 0 },
+  [TERRAIN_TYPES.DESERT]: { total: 0, captures: 0, rate: 0 },
+});
+
 describe("Piece Statistics Generator", () => {
   it("generates piece capture threat surface statistics", () => {
-    const pieceKeys = Object.values(PIECES);
-    const stats: Record<
-      string,
-      Record<
-        string,
-        {
-          total: number;
-          captures: number;
-          rate: number;
-          terrainStats: Record<string, TerrainStat>;
-        }
-      >
-    > = {};
+    const pieceKeys = Object.values(PIECES) as PieceType[];
+    const stats: Record<string, any> = {};
 
-    for (const attacker of pieceKeys as PieceType[]) {
+    pieceKeys.forEach((attacker) => {
       stats[attacker] = {};
 
-      for (const defender of pieceKeys as PieceType[]) {
+      pieceKeys.forEach((defender) => {
         let totalPlacements = 0;
         let captures = 0;
-
-        const terrainStats: Record<string, TerrainStat> = {
-          [TERRAIN_TYPES.FLAT]: { total: 0, captures: 0, rate: 0 },
-          [TERRAIN_TYPES.TREES]: { total: 0, captures: 0, rate: 0 },
-          [TERRAIN_TYPES.PONDS]: { total: 0, captures: 0, rate: 0 },
-          [TERRAIN_TYPES.RUBBLE]: { total: 0, captures: 0, rate: 0 },
-          [TERRAIN_TYPES.DESERT]: { total: 0, captures: 0, rate: 0 },
-        };
+        const terrainStats: Record<string, TerrainStat> = createInitialTerrainStats();
 
         for (let i = 0; i < ITERATIONS_PER_MATCHUP; i++) {
           const rA = Math.floor(Math.random() * BOARD_SIZE);
@@ -114,9 +100,8 @@ describe("Piece Statistics Generator", () => {
           totalPlacements++;
           terrainStats[startTerrain].total++;
 
-          const boardState: (BoardPiece | null)[][] = Array.from(
-            { length: BOARD_SIZE },
-            () => Array(BOARD_SIZE).fill(null),
+          const boardState: (BoardPiece | null)[][] = Array.from({ length: BOARD_SIZE }, () =>
+            Array(BOARD_SIZE).fill(null),
           );
 
           const p1: BoardPiece = { type: attacker, player: "red" };
@@ -124,34 +109,22 @@ describe("Piece Statistics Generator", () => {
           boardState[rA][cA] = p1;
           boardState[rB][cB] = p2;
 
-          let pA: number[] = [rA, cA];
-          let pB: number[] = [rB, cB];
-          const gameOver = false;
+          let pA = [rA, cA];
+          let pB = [rB, cB];
           let turn = 0;
 
-          while (!gameOver && turn < MAX_TURNS) {
+          while (turn < MAX_TURNS) {
             const isAttackerTurn = turn % 2 === 0;
             const actingPlayer = isAttackerTurn ? "red" : "yellow";
             const pos = isAttackerTurn ? pA : pB;
             const piece = isAttackerTurn ? p1 : p2;
             const targetPos = isAttackerTurn ? pB : pA;
 
-            const moves = getValidMoves(
-              pos[0],
-              pos[1],
-              piece,
-              actingPlayer,
-              boardState,
-              terrain,
-              "2p-ns",
-              1,
-            );
-
+            const moves = getValidMoves(pos[0], pos[1], piece, actingPlayer, boardState, terrain, "2p-ns", 1);
             if (moves.length === 0) break;
 
-            const captureMove = moves.find(
-              (m: number[]) => m[0] === targetPos[0] && m[1] === targetPos[1],
-            );
+            const isCapture = (m: number[]) => m[0] === targetPos[0] && m[1] === targetPos[1];
+            const captureMove = moves.find(isCapture);
 
             if (captureMove) {
               if (isAttackerTurn) {
@@ -161,15 +134,11 @@ describe("Piece Statistics Generator", () => {
               break;
             }
 
-            const bestMove = moves.reduce((best: number[], curr: number[]) => {
-              const bestDist =
-                Math.abs(best[0] - targetPos[0]) +
-                Math.abs(best[1] - targetPos[1]);
-              const currDist =
-                Math.abs(curr[0] - targetPos[0]) +
-                Math.abs(curr[1] - targetPos[1]);
-              return currDist < bestDist ? curr : best;
-            }, moves[0]);
+            const getDistance = (m: number[]) => Math.abs(m[0] - targetPos[0]) + Math.abs(m[1] - targetPos[1]);
+            const bestMove = moves.reduce(
+              (best, curr) => (getDistance(curr) < getDistance(best) ? curr : best),
+              moves[0],
+            );
 
             boardState[pos[0]][pos[1]] = null;
             boardState[bestMove[0]][bestMove[1]] = piece;
@@ -180,11 +149,9 @@ describe("Piece Statistics Generator", () => {
           }
         }
 
-        // Calculate rates
-        for (const tKey in terrainStats) {
-          const t = terrainStats[tKey];
+        Object.values(terrainStats).forEach((t) => {
           t.rate = t.total > 0 ? (t.captures / t.total) * 100 : 0;
-        }
+        });
 
         stats[attacker][defender] = {
           total: totalPlacements,
@@ -192,16 +159,11 @@ describe("Piece Statistics Generator", () => {
           rate: (captures / totalPlacements) * 100,
           terrainStats,
         };
-      }
-    }
+      });
+    });
 
-    const outputPath = path.resolve(
-      __dirname,
-      "../shared/assets/statistics.json",
-    );
+    const outputPath = path.resolve(__dirname, "../shared/assets/statistics.json");
     fs.writeFileSync(outputPath, JSON.stringify(stats, null, 2), "utf8");
-    console.log(
-      `Statistics generated with per-terrain data: ${ITERATIONS_PER_MATCHUP.toLocaleString()} per matchup`,
-    );
+    console.log(`Statistics generated: ${ITERATIONS_PER_MATCHUP.toLocaleString()} per matchup`);
   }, 900000);
 });

@@ -1,4 +1,4 @@
-import { PIECES } from "@/core/primitives/pieces";
+import { PIECES } from "@/constants";
 import type { PieceType } from "@/shared/types/game";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;

@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Waves, Crosshair, ShieldPlus, Zap } from "lucide-react";
 import { useRouteContext } from "@/route.context";
-import { PIECES, INITIAL_ARMY } from "@/client/game/theme";
+import { PIECES, INITIAL_ARMY } from "@/constants";
 import { DesertIcon } from "@/client/game/components/atoms/UnitIcons";
-import { UNIT_DETAILS, unitColorMap } from "@/client/game/theme";
-import type { PieceStyle } from "@/client/game/theme";
+import { UNIT_DETAILS, unitColorMap } from "@/constants";
+import type { PieceStyle } from "@/constants";
 import type { TerrainType } from "@/shared/types/game";
 
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";

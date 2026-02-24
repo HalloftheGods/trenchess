@@ -23,7 +23,8 @@ export const ROUTES = {
   LEARN_TRENCH: "/learn/trench",
   LEARN_TRENCH_DETAIL: "/learn/trench/:terrain",
   LEARN_CHESS: "/learn/chess",
-  LEARN_CHESS_DETAIL: "/learn/chess/:unitType",
+  LEARN_CHESSMEN: "/learn/chess/chessmen",
+  LEARN_CHESSMEN_DETAIL: "/learn/chess/chessmen/:unitType",
   LEARN_MATH: "/learn/math",
 
   SCOREBOARD: "/scoreboard",
@@ -77,6 +78,7 @@ export const LazyRoutes = {
     },
     chess: {
       main: lazy(() => import("@/client/learn/chess/index")),
+      chessmen: lazy(() => import("@/client/learn/chess/chessmen")),
       detail: lazy(() => import("@/client/learn/chess/detail")),
     },
     math: {

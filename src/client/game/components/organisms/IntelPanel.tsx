@@ -28,8 +28,8 @@ import {
   UNIT_INTEL,
   CHESS_NAME,
   TERRAIN_INTEL,
-} from "@/client/game/theme";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+} from "@/constants";
+import { TERRAIN_TYPES } from "@/constants";
 import {
   isUnitProtected,
   getTraversableTerrains,

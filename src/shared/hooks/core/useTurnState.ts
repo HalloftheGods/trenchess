@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { PLAYER_CONFIGS } from "@/client/game/theme";
+import { PLAYER_CONFIGS } from "@/constants";
 import type { TurnState } from "@/shared/types";
 
 export function useTurnState(): TurnState {

@@ -1,6 +1,6 @@
 import React from "react";
 import { Columns4 } from "lucide-react";
-import { UNIT_DETAILS, PIECES, INITIAL_ARMY, TERRAIN_DETAILS } from "@/client/game/theme";
+import { UNIT_DETAILS, PIECES, INITIAL_ARMY, TERRAIN_DETAILS } from "@/constants";
 
 interface UnitMovePreviewProps {
   unitType: string;

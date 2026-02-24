@@ -1,6 +1,6 @@
 import { INVALID_MOVE } from "boardgame.io/core";
-import { BOARD_SIZE } from "@/core/primitives/game";
-import { PIECES } from "@/core/primitives/pieces";
+import { BOARD_SIZE } from "@/constants";
+import { PIECES } from "@/constants";
 import type { TrenchessState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
 import { applyDesertRule } from "@/core/events";

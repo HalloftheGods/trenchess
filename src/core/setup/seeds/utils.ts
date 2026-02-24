@@ -1,5 +1,5 @@
-import { BOARD_SIZE } from "@/core/primitives/game";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { BOARD_SIZE } from "@/constants";
+import { TERRAIN_TYPES } from "@/constants";
 import type { TerrainType, BoardPiece } from "@/shared/types";
 
 export const buildBoard = (): (BoardPiece | null)[][] =>

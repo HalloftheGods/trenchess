@@ -1,12 +1,12 @@
 import React from "react";
 import { ShieldPlus, Ban, Zap, Sparkles } from "lucide-react";
-import { INITIAL_ARMY, PIECES } from "@/client/game/theme";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { INITIAL_ARMY, PIECES } from "@/constants";
+import { TERRAIN_TYPES } from "@/constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import { UNIT_DETAILS, unitColorMap, TERRAIN_DETAILS } from "@/client/game/theme";
+import { UNIT_DETAILS, unitColorMap, TERRAIN_DETAILS } from "@/constants";
 import type { TerrainType, PieceType } from "@/shared/types/game";
-import type { PieceStyle } from "@/client/game/theme";
+import type { PieceStyle } from "@/constants";
 
 interface TrenchCardDetailProps {
   terrainType: TerrainType;
@@ -16,7 +16,7 @@ interface TrenchCardDetailProps {
   onUnitSelect?: (unitType: string) => void;
 }
 
-import { CHESS_NAME } from "@/client/game/theme";
+import { CHESS_NAME } from "@/constants";
 
 const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
   terrainType,

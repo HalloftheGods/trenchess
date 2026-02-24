@@ -1,5 +1,5 @@
 import { INVALID_MOVE } from "boardgame.io/core";
-import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER } from "@/core/primitives/terrain";
+import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER } from "@/constants";
 import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
 import type { TerrainType, TrenchessState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";

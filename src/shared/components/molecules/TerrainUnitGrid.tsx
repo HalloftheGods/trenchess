@@ -1,7 +1,7 @@
 import React from "react";
-import { INITIAL_ARMY, unitColorMap } from "@/client/game/theme";
+import { INITIAL_ARMY, unitColorMap } from "@/constants";
 import { UnitMovePreview } from "@/shared/components/molecules/UnitMovePreview";
-import type { TerrainDetail } from "@/core/primitives/terrain";
+import type { TerrainDetail } from "@/shared/types/game";
 import type { PieceType } from "@/shared/types/game";
 
 interface TerrainUnitGridProps {

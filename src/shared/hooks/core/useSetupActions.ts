@@ -8,8 +8,8 @@ import type {
   BoardPiece,
   PieceType,
 } from "@/shared/types";
-import { INITIAL_ARMY } from "@/core/primitives/pieces";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { INITIAL_ARMY } from "@/constants";
+import { TERRAIN_TYPES } from "@/constants";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
 
 export function useSetupActions(

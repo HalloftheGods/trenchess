@@ -1,6 +1,6 @@
-import { BOARD_SIZE } from "@/core/primitives/game";
-import { PIECES } from "@/core/primitives/pieces";
-import { TERRAIN_TYPES, TERRAIN_DETAILS } from "@/core/primitives/terrain";
+import { BOARD_SIZE } from "@/constants";
+import { PIECES } from "@/constants";
+import { TERRAIN_TYPES, TERRAIN_DETAILS } from "@/constants";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 import { getValidMoves } from "@/core/mechanics/movement/movementLogic";
 

@@ -12,8 +12,8 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import { INITIAL_ARMY, TERRAIN_INTEL, unitColorMap } from "@/client/game/theme";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { INITIAL_ARMY, TERRAIN_INTEL, unitColorMap } from "@/constants";
+import { TERRAIN_TYPES } from "@/constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import type { PieceType, TerrainType } from "@/shared/types/game";

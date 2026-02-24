@@ -1,7 +1,7 @@
 import React from "react";
-import { INITIAL_ARMY, unitColorMap } from "@/client/game/theme";
-import { CHESS_NAME } from "@/client/game/theme";
-import type { TerrainDetail } from "@/core/primitives/terrain";
+import { INITIAL_ARMY, unitColorMap } from "@/constants";
+import { CHESS_NAME } from "@/constants";
+import type { TerrainDetail } from "@/shared/types/game";
 import type { ArmyUnit } from "@/shared/types/game";
 
 interface SanctuaryBadgeListProps {

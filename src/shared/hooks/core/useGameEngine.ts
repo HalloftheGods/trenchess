@@ -88,7 +88,8 @@ export function useGameEngine({
 
     if (
       shouldStart &&
-      (local.playerID !== playerID ||
+      (!clientRef.current ||
+        local.playerID !== playerID ||
         local.roomId !== multiplayer.roomId ||
         local.debug !== showBgDebug)
     ) {

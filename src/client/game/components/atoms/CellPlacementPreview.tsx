@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Flex } from "@atoms";
-import { PLAYER_CONFIGS, INITIAL_ARMY } from "@/client/game/theme";
-import { TERRAIN_TYPES } from "@/core/primitives/terrain";
+import { PLAYER_CONFIGS, INITIAL_ARMY } from "@/constants";
+import { TERRAIN_TYPES } from "@/constants";
 import type { ArmyUnit, PieceType, TerrainType } from "@/shared/types/game";
 
 interface CellPlacementPreviewProps {
