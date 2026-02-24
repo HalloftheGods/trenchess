@@ -13,12 +13,20 @@ import { deserializeGame, adaptSeedToMode } from "@/shared/utils/serialization";
 import type { TrenchessState, TerrainType } from "@/shared/types";
 import type { Ctx } from "boardgame.io";
 
+interface RandomAPI {
+  Number: () => number;
+  Die: (n: number) => number;
+  Shuffle: <T>(array: T[]) => T[];
+}
+
 export const randomizeTerrain = (
   { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
   explicitPid?: string,
 ) => {
   const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
   if (!playerId) return INVALID_MOVE;
+
+  const random = (ctx as unknown as { random: RandomAPI }).random;
 
   const result = randomizeTerrainLogic(
     G.terrain,
@@ -27,7 +35,7 @@ export const randomizeTerrain = (
     [playerId],
     G.mode,
     undefined,
-    (ctx as any).random,
+    random,
   );
   G.terrain = result.terrain;
   G.terrainInventory = result.terrainInventory;
@@ -40,8 +48,10 @@ export const randomizeUnits = (
   const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
   if (!playerId) return INVALID_MOVE;
 
+  const random = (ctx as unknown as { random: RandomAPI }).random;
+
   // Random Mode Logic: Choose between intelligent random placement OR a structured formation
-  const strategy = (ctx as any).random?.Number() || Math.random();
+  const strategy = random?.Number() || Math.random();
 
   if (strategy < 0.4) {
     // 40% chance: Pure intelligent randomization
@@ -51,7 +61,7 @@ export const randomizeUnits = (
       G.inventory,
       [playerId],
       G.mode,
-      (ctx as any).random,
+      random,
     );
     G.board = result.board;
     G.inventory = result.inventory;
@@ -65,9 +75,7 @@ export const randomizeUnits = (
     ];
     const formation =
       formations[
-        Math.floor(
-          ((ctx as any).random?.Number() || Math.random()) * formations.length,
-        )
+        Math.floor((random?.Number() || Math.random()) * formations.length)
       ];
 
     const result = applyClassicalFormationLogic(
@@ -91,6 +99,8 @@ export const setClassicalFormation = (
   const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
   if (!playerId) return INVALID_MOVE;
 
+  const random = (ctx as unknown as { random: RandomAPI }).random;
+
   // Pi Mode: Standard formation + ALWAYS 16 terrain tiles
   const terrainResult = randomizeTerrainLogic(
     G.terrain,
@@ -99,7 +109,7 @@ export const setClassicalFormation = (
     [playerId],
     G.mode,
     16,
-    (ctx as any).random,
+    random,
   );
   const result = applyClassicalFormationLogic(
     G.board,
@@ -123,9 +133,11 @@ export const applyChiGarden = (
   const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
   if (!playerId) return INVALID_MOVE;
 
+  const random = (ctx as unknown as { random: RandomAPI }).random;
+
   // 1. Select a random layout from the library
   const modeSeeds = DEFAULT_SEEDS.filter((s) => s.mode === G.mode);
-  const randVal = (ctx as any).random?.Number() || Math.random();
+  const randVal = random?.Number() || Math.random();
   const seedToUse =
     modeSeeds.length > 0
       ? modeSeeds[Math.floor(randVal * modeSeeds.length)].seed

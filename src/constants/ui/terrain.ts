@@ -68,17 +68,20 @@ export const TERRAIN_THEME_DATA = {
   },
 };
 
-const mapToTerrainIntel = (acc: Record<string, any>, key: string) => {
+type TerrainIntelData = (typeof TERRAIN_THEME_DATA)[keyof typeof TERRAIN_THEME_DATA] &
+  (typeof CORE_TERRAIN_INTEL)[keyof typeof CORE_TERRAIN_INTEL];
+
+const mapToTerrainIntel = (acc: Record<string, TerrainIntelData>, key: string) => {
   acc[key] = {
     ...CORE_TERRAIN_INTEL[key],
     ...TERRAIN_THEME_DATA[key as keyof typeof TERRAIN_THEME_DATA],
-  };
+  } as TerrainIntelData;
   return acc;
 };
 
-export const TERRAIN_INTEL: Record<string, any> = Object.keys(
+export const TERRAIN_INTEL: Record<string, TerrainIntelData> = Object.keys(
   CORE_TERRAIN_INTEL,
-).reduce(mapToTerrainIntel, {} as Record<string, any>);
+).reduce(mapToTerrainIntel, {} as Record<string, TerrainIntelData>);
 
 const mapToTerrainDetail = (key: string): TerrainDetail => ({
   key,

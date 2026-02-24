@@ -130,7 +130,19 @@ export const UNIT_THEME_DATA = {
   },
 };
 
-export const UNIT_INTEL: Record<string, any> = {
+export interface UnitIntelEntry {
+  title: string;
+  subtitle: string;
+  role: string;
+  desc: string[];
+  levelUp: {
+    title: string;
+    stats: string[];
+    sanctuaryTerrain: string[];
+  };
+}
+
+export const UNIT_INTEL: Record<string, UnitIntelEntry> = {
   [KING]: {
     title: "Equinox King",
     subtitle: "The Sovereign",

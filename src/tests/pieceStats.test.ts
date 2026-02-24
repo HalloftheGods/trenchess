@@ -73,6 +73,7 @@ const createInitialTerrainStats = () => ({
 describe("Piece Statistics Generator", () => {
   it("generates piece capture threat surface statistics", () => {
     const pieceKeys = Object.values(PIECES) as PieceType[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const stats: Record<string, Record<string, any>> = {};
 
     pieceKeys.forEach((attacker) => {
