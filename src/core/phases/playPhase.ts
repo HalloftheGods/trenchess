@@ -1,4 +1,4 @@
-import { movePiece } from "@/core/moves";
+import { movePiece, forfeit } from "@/core/moves";
 import { onMove } from "@/core/events";
 import type { TrenchessState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
@@ -16,5 +16,6 @@ export const playPhase = {
   },
   moves: {
     movePiece,
+    forfeit,
   },
 };
