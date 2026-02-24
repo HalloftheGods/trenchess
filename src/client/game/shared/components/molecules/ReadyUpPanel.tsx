@@ -56,10 +56,13 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
   const terrainReady = placedCount >= maxPlacement;
   const cfg = PLAYER_CONFIGS[playerID];
 
-  // Calculate "Power Level" based on placed pieces
+  // Calculate "Power Level" based on placed pieces and terrain
   const powerLevel = useMemo(() => {
-    return Math.min(100, Math.floor((unitsPlaced / maxUnits) * 100));
-  }, [unitsPlaced, maxUnits]);
+    const totalPlaced = unitsPlaced + placedCount;
+    const totalMax = maxUnits + maxPlacement;
+    if (totalMax === 0) return 0;
+    return Math.min(100, Math.floor((totalPlaced / totalMax) * 100));
+  }, [unitsPlaced, maxUnits, placedCount, maxPlacement]);
 
   // Static border color mapping to ensure Tailwind picks up the classes
   const borderClass = {
