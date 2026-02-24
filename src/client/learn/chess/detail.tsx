@@ -149,41 +149,8 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
             </div>
           </div>
         ) : null,
-        description: (
-          <div className="flex flex-col gap-4">
-            {details.levelUp?.stats.map((stat: string, sIdx: number) => {
-              const colonIndex = stat.indexOf(":");
-              if (colonIndex === -1) {
-                if (stat.toLowerCase().includes("sanctuary")) return null;
-                return (
-                  <div key={sIdx} className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
-                    <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
-                      {stat}
-                    </p>
-                  </div>
-                );
-              }
-
-              const name = stat.substring(0, colonIndex);
-              const desc = stat.substring(colonIndex + 1).trim();
-              if (name.toLowerCase().includes("sanctuary")) return null;
-
-              return (
-                <div key={sIdx} className="flex flex-col gap-1">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-500">
-                    {name}
-                  </span>
-                  <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
-                    {desc}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        ),
         sideContent: (
-          <div className="flex flex-col items-center gap-3 w-full">
+          <div className="flex flex-col items-center gap-10 w-full max-w-5xl">
             <div className="flex flex-row items-center justify-center gap-2 w-full overflow-x-auto pb-4 scrollbar-hide">
               {/* Classic Move */}
               <div className="flex flex-col items-center gap-4 shrink-0">
@@ -230,7 +197,51 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
               </div>
             </div>
 
-            <MoveLegend />
+            <div className="flex flex-col md:flex-row gap-12 items-start justify-center w-full bg-slate-900/20 p-8 rounded-[2rem] border border-white/5 shadow-inner">
+              <div className="flex flex-col gap-4 min-w-[240px]">
+                <div className="flex items-center gap-3 mb-2 opacity-60">
+                  <div
+                    className={`w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]`}
+                  />
+                  <span className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
+                    Tactical Stats
+                  </span>
+                </div>
+                {details.levelUp?.stats.map((stat: string, sIdx: number) => {
+                  const colonIndex = stat.indexOf(":");
+                  if (colonIndex === -1) {
+                    if (stat.toLowerCase().includes("sanctuary")) return null;
+                    return (
+                      <div key={sIdx} className="flex items-start gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                          {stat}
+                        </p>
+                      </div>
+                    );
+                  }
+
+                  const name = stat.substring(0, colonIndex);
+                  const desc = stat.substring(colonIndex + 1).trim();
+                  if (name.toLowerCase().includes("sanctuary")) return null;
+
+                  return (
+                    <div key={sIdx} className="flex flex-col gap-1">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-500">
+                        {name}
+                      </span>
+                      <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                        {desc}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="flex-1 flex flex-col items-center">
+                <MoveLegend />
+              </div>
+            </div>
           </div>
         ),
       };

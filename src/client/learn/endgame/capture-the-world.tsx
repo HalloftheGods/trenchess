@@ -49,18 +49,21 @@ export const LearnEndgameCtwView: React.FC<CaptureTheWorldGuideProps> = ({
       topLabel: "Pregame Setup",
       icon: Crown,
       previewConfig: customPreviewConfig,
-      description: (
-        <ul className="space-y-4">
-          <GuideListItem color="amber">
-            The King is the only piece that has a strict starting location. All
-            Kings must begin in the absolute corner of their starting zone.
-          </GuideListItem>
-          <GuideListItem color="amber">
-            This forces a perilous journey across the world.
-          </GuideListItem>
-        </ul>
+      sideContent: (
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-12 items-center w-full max-w-5xl">
+          <CornerStartingPositionsGraphic />
+          <ul className="space-y-4">
+            <GuideListItem color="amber">
+              The King is the only piece that has a strict starting location.
+              All Kings must begin in the absolute corner of their starting
+              zone.
+            </GuideListItem>
+            <GuideListItem color="amber">
+              This forces a perilous journey across the world.
+            </GuideListItem>
+          </ul>
+        </div>
       ),
-      sideContent: <CornerStartingPositionsGraphic />,
     },
     {
       id: "win",
@@ -70,29 +73,31 @@ export const LearnEndgameCtwView: React.FC<CaptureTheWorldGuideProps> = ({
       topLabel: "Win Conditions",
       icon: Earth,
       previewConfig: customPreviewConfig,
-      description: (
-        <ul className="space-y-6">
-          <GuideListItem color="emerald">
-            <strong className="text-slate-800 dark:text-slate-100 block mb-1 uppercase tracking-widest text-xs font-black">
-              The Objective
-            </strong>
-            <p>
-              Make it to the square opposite your king's starting tile color.
-              Landing there achieves world domination.
-            </p>
-          </GuideListItem>
-          <GuideListItem color="emerald">
-            <strong className="text-slate-800 dark:text-slate-100 block mb-1 uppercase tracking-widest text-xs font-black">
-              2v2 Protocol
-            </strong>
-            <p>
-              In a team match, BOTH kings must make it to their respective
-              opposing corners to secure the victory.
-            </p>
-          </GuideListItem>
-        </ul>
+      sideContent: (
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-12 items-center w-full max-w-5xl">
+          <TransContinentalGraphic />
+          <ul className="space-y-6">
+            <GuideListItem color="emerald">
+              <strong className="text-slate-800 dark:text-slate-100 block mb-1 uppercase tracking-widest text-xs font-black">
+                The Objective
+              </strong>
+              <p>
+                Make it to the square opposite your king's starting tile color.
+                Landing there achieves world domination.
+              </p>
+            </GuideListItem>
+            <GuideListItem color="emerald">
+              <strong className="text-slate-800 dark:text-slate-100 block mb-1 uppercase tracking-widest text-xs font-black">
+                2v2 Protocol
+              </strong>
+              <p>
+                In a team match, BOTH kings must make it to their respective
+                opposing corners to secure the victory.
+              </p>
+            </GuideListItem>
+          </ul>
+        </div>
       ),
-      sideContent: <TransContinentalGraphic />,
     },
     {
       id: "threat",
@@ -102,18 +107,20 @@ export const LearnEndgameCtwView: React.FC<CaptureTheWorldGuideProps> = ({
       topLabel: "Army Assimilation",
       icon: Replace,
       previewConfig: customPreviewConfig,
-      description: (
-        <ul className="space-y-4">
-          <GuideListItem color="indigo">
-            Just like in Capture the Army, avoiding checkmate is crucial.
-          </GuideListItem>
-          <GuideListItem color="indigo">
-            If your king is cornered, the victorious player inherits your entire
-            remaining army. The world is cruel.
-          </GuideListItem>
-        </ul>
+      sideContent: (
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-12 items-center w-full max-w-5xl">
+          <TroopConversionGraphic />
+          <ul className="space-y-4">
+            <GuideListItem color="indigo">
+              Just like in Capture the Army, avoiding checkmate is crucial.
+            </GuideListItem>
+            <GuideListItem color="indigo">
+              If your king is cornered, the victorious player inherits your
+              entire remaining army. The world is cruel.
+            </GuideListItem>
+          </ul>
+        </div>
       ),
-      sideContent: <TroopConversionGraphic />,
     },
   ];
 

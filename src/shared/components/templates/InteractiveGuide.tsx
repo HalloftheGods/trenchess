@@ -181,14 +181,21 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
           }
           className="absolute left-4 lg:left-8 z-30 p-4 rounded-full bg-slate-900/40 hover:bg-slate-900/60 text-white/50 hover:text-white border border-white/5 hover:border-white/20 transition-all duration-300 backdrop-blur-md shadow-2xl group/btn"
         >
-          <ChevronLeft size={32} className="group-hover/btn:-translate-x-1 transition-transform" />
+          <ChevronLeft
+            size={32}
+            className="group-hover/btn:-translate-x-1 transition-transform"
+          />
         </button>
 
-        <div className="flex-1 max-w-5xl mx-auto z-10">
-          <div className={`guide-card group ${cardBg} ${cmap.border} relative overflow-hidden`}>
+        <div className="flex-1 w-full mx-auto z-10">
+          <div
+            className={`guide-card group ${cardBg} ${cmap.border} relative overflow-hidden`}
+          >
             {/* Background Glow */}
-            <div className={`absolute -right-32 -top-32 w-96 h-96 rounded-full ${cmap.iconBg} blur-[120px] opacity-30 pointer-events-none`} />
-            
+            <div
+              className={`absolute -right-32 -top-32 w-96 h-96 rounded-full ${cmap.iconBg} blur-[120px] opacity-30 pointer-events-none`}
+            />
+
             <div className="flex flex-col w-full gap-8 mt-0 relative z-10">
               {/* Row 1: Header */}
               <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 pb-10 border-b border-slate-200/10">
@@ -223,7 +230,9 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
                       {currentSlide.subtitle && (
                         <>
                           <div className="w-1.5 h-1.5 rounded-full bg-amber-500/40" />
-                          <p className={`text-xs lg:text-sm font-black text-amber-500/80 uppercase tracking-[0.2em]`}>
+                          <p
+                            className={`text-xs lg:text-sm font-black text-amber-500/80 uppercase tracking-[0.2em]`}
+                          >
                             {currentSlide.subtitle}
                           </p>
                         </>
@@ -237,25 +246,10 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
                 )}
               </div>
 
-              {/* Row 2: Visuals & Description */}
-              <div className="flex flex-col lg:flex-row items-start justify-between gap-12 w-full pt-4">
-                {/* Description (Simple List) */}
-                {currentSlide.description && (
-                  <div
-                    className={`flex flex-col justify-start text-left max-w-sm`}
-                  >
-                    <div className="flex items-center gap-3 mb-8 opacity-60">
-                      <div className={`w-2 h-2 rounded-full ${cmap.indicatorOn}`} />
-                      <span className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Tactical Intel</span>
-                    </div>
-                    {currentSlide.description}
-                  </div>
-                )}
-
+              {/* Row 2: Visuals & Side Content */}
+              <div className="flex flex-col lg:flex-row items-center justify-center gap-12 w-full pt-4">
                 {currentSlide.sideContent && (
-                  <div
-                    className={`flex flex-col items-center justify-center flex-1`}
-                  >
+                  <div className="flex flex-col items-center justify-center w-full">
                     {currentSlide.sideContent}
                   </div>
                 )}
@@ -277,7 +271,10 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
           }
           className="absolute right-4 lg:right-8 z-30 p-4 rounded-full bg-slate-900/40 hover:bg-slate-900/60 text-white/50 hover:text-white border border-white/5 hover:border-white/20 transition-all duration-300 backdrop-blur-md shadow-2xl group/btn"
         >
-          <ChevronRight size={32} className="group-hover/btn:translate-x-1 transition-transform" />
+          <ChevronRight
+            size={32}
+            className="group-hover/btn:translate-x-1 transition-transform"
+          />
         </button>
       </div>
 

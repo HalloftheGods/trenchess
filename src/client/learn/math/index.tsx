@@ -1,6 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Zap, RouteOff, RouteIcon, Sword, ShieldPlus } from "lucide-react";
+import {
+  RouteOff,
+  RouteIcon,
+  Sword,
+  ShieldPlus,
+  Waves,
+} from "lucide-react";
 import { useRouteContext } from "@/route.context";
 
 // Shared Route Components
@@ -62,8 +68,8 @@ export const LearnMathMainView: React.FC = () => {
 
       <RoutePageFooter
         onBackClick={() => navigate("/learn/chess")}
-        backLabel="Claim the Chess"
-        backIcon={Zap}
+        backLabel="Face the Chess"
+        backIcon={Waves}
       />
     </RoutePageLayout>
   );

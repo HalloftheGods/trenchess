@@ -1,11 +1,10 @@
 import React from "react";
-import { ShieldPlus, X } from "lucide-react";
-import { PIECES, TERRAIN_LIST } from "@/constants";
+import { ShieldPlus, X, Columns4, Shield } from "lucide-react";
+import { PIECES, TERRAIN_LIST, INITIAL_ARMY } from "@/constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import type { TerrainType, PieceType } from "@/shared/types";
 import { useRouteContext } from "@/route.context";
-import { INITIAL_ARMY } from "@/constants";
 
 // ── Move‑pattern definitions ─────────────────────────────────────────
 
@@ -128,51 +127,31 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
 }) => {
   const { getIcon } = useRouteContext();
   const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";
+  const hasSelection = selectedUnit && selectedTerrainIdx >= 0;
 
-  if (!selectedUnit || selectedTerrainIdx < 0) {
-    return (
-      <div
-        className={`h-full relative transition-all flex flex-col items-center justify-center group/card ${
-          className || ""
-        }`}
-      >
-        <div className="flex flex-col items-center justify-center gap-6 opacity-60">
-          <div
-            className={`p-6 rounded-full ${darkMode ? "bg-slate-800" : "bg-slate-100"}`}
-          >
-            <ShieldPlus size={48} className={subtextColor} />
-          </div>
-          <div className="text-center">
-            <h3
-              className={`text-xl font-black uppercase ${darkMode ? "text-slate-200" : "text-slate-800"}`}
-            >
-              Live Simulation
-            </h3>
-            <p
-              className={`text-sm font-bold ${subtextColor} max-w-[200px] mt-2`}
-            >
-              Select a unit and a terrain to simulate interaction.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const terrain = TERRAIN_LIST[selectedTerrainIdx];
+  const terrain =
+    selectedTerrainIdx >= 0 ? TERRAIN_LIST[selectedTerrainIdx] : null;
 
   // ── Compatibility result ──────────────────────────────────────────
-  const isTraversable = canUnitTraverseTerrain(
-    selectedUnit as PieceType,
-    terrain.terrainTypeKey as TerrainType,
-  );
+  const isTraversable =
+    hasSelection && terrain
+      ? canUnitTraverseTerrain(
+          selectedUnit as PieceType,
+          terrain.terrainTypeKey as TerrainType,
+        )
+      : false;
   const isDesertTank =
-    terrain.terrainTypeKey === "desert" && selectedUnit === PIECES.ROOK;
+    hasSelection && terrain
+      ? terrain.terrainTypeKey === "desert" && selectedUnit === PIECES.ROOK
+      : false;
   const isCompatible = isTraversable || isDesertTank;
-  const isProtected = isUnitProtected(
-    selectedUnit,
-    terrain.terrainTypeKey as TerrainType,
-  );
+  const isProtected =
+    hasSelection && terrain
+      ? isUnitProtected(
+          selectedUnit as PieceType,
+          terrain.terrainTypeKey as TerrainType,
+        )
+      : false;
 
   // ── Move preview grid computation ─────────────────────────────────
   const previewGridSize = 12;
@@ -180,10 +159,11 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
   const centerCol = 6;
   const isTerrainCell = (r: number, c: number) => {
     if (terrainPositions) return terrainPositions.has(`${r},${c}`);
+    if (selectedTerrainIdx < 0) return false;
     return Math.abs(r - centerRow) === 1;
   };
 
-  const pattern = MOVE_PATTERNS[selectedUnit];
+  const pattern = selectedUnit ? MOVE_PATTERNS[selectedUnit] : null;
   const allMoves = [
     ...(pattern?.move(centerRow, centerCol) || []),
     ...(pattern?.newMove ? pattern.newMove(centerRow, centerCol) : []),
@@ -193,51 +173,54 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
   const validMoves: number[][] = [];
   const blockedMoves: number[][] = [];
 
-  allMoves.forEach(([r, c]) => {
-    const dr = r - centerRow;
-    const dc = c - centerCol;
-    const dist = Math.max(Math.abs(dr), Math.abs(dc));
-    const steps = dist;
-    const isLeap =
-      Math.abs(dr) * Math.abs(dc) === 2 ||
-      (selectedUnit === PIECES.PAWN && dist === 2);
+  if (hasSelection && terrain) {
+    allMoves.forEach(([r, c]) => {
+      const dr = r - centerRow;
+      const dc = c - centerCol;
+      const dist = Math.max(Math.abs(dr), Math.abs(dc));
+      const steps = dist;
+      const isLeap =
+        Math.abs(dr) * Math.abs(dc) === 2 ||
+        (selectedUnit === PIECES.PAWN && dist === 2);
 
-    let blocked = false;
+      let blocked = false;
 
-    for (let i = 1; i <= steps; i++) {
-      const stepR = centerRow + Math.round((dr / steps) * i);
-      const stepC = centerCol + Math.round((dc / steps) * i);
-      const inTerrain = isTerrainCell(stepR, stepC);
-      const isLanding = i === steps;
+      for (let i = 1; i <= steps; i++) {
+        const stepR = centerRow + Math.round((dr / steps) * i);
+        const stepC = centerCol + Math.round((dc / steps) * i);
+        const inTerrain = isTerrainCell(stepR, stepC);
+        const isLanding = i === steps;
 
-      if (inTerrain) {
-        if (terrain.terrainTypeKey === "desert") {
-          if (isLanding) {
-            if (!isDesertTank) blocked = true;
+        if (inTerrain) {
+          if (terrain.terrainTypeKey === "desert") {
+            if (isLanding) {
+              if (!isDesertTank) blocked = true;
+            } else {
+              if (!isLeap) blocked = true;
+            }
           } else {
-            if (!isLeap) blocked = true;
+            if (!isTraversable && !isLeap) blocked = true;
+            if (isLeap && isLanding && !isTraversable) blocked = true;
           }
-        } else {
-          if (!isTraversable && !isLeap) blocked = true;
-          if (isLeap && isLanding && !isTraversable) blocked = true;
         }
+        if (blocked) break;
       }
-      if (blocked) break;
-    }
 
-    if (blocked) blockedMoves.push([r, c]);
-    else validMoves.push([r, c]);
-  });
+      if (blocked) blockedMoves.push([r, c]);
+      else validMoves.push([r, c]);
+    });
+  }
 
   // ── Terrain cell colour helper ────────────────────────────────────
   const getTerrainCellBg = (isEven: boolean) => {
+    if (!terrain)
+      return isEven
+        ? "bg-slate-100/60 dark:bg-white/10"
+        : "bg-slate-200/60 dark:bg-white/[0.04]";
     const bg = terrain.bg || "bg-slate-200/10";
-    return isEven ? `${bg.replace("/10", "/60")}` : `${bg.replace("/10", "/40")}`;
-  };
-
-  const getTerrainMoveShadow = () => {
-    const solid = terrain.headerBg || "bg-amber-500";
-    return `${solid} z-20 shadow-[0_0_15px_rgba(0,0,0,0.5)]`;
+    return isEven
+      ? `${bg.replace("/10", "/60")}`
+      : `${bg.replace("/10", "/40")}`;
   };
 
   return (
@@ -246,20 +229,25 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
         className || ""
       }`}
     >
-      {/* ── Preview Grid column ─────────────────────────────── */}
       <div className="sticky top-1/2 -translate-y-1/2 flex flex-col items-center gap-6 pointer-events-none">
         <div className="flex flex-col items-center gap-1">
           <span
             className={`text-xs font-black uppercase tracking-widest ${subtextColor} flex items-center gap-2`}
           >
             <div
-              className={`w-2.5 h-2.5 rounded-full ${isCompatible ? "bg-emerald-500" : "bg-brand-red"}`}
+              className={`w-2.5 h-2.5 rounded-full ${
+                !hasSelection
+                  ? "bg-slate-400"
+                  : isCompatible
+                    ? "bg-emerald-500"
+                    : "bg-brand-red"
+              }`}
             />
-            Preview
+            {hasSelection ? "Live Simulation" : "Simulation Inactive"}
           </span>
         </div>
 
-        <div className="bg-slate-100 dark:bg-white/5 rounded-2xl p-4 border border-slate-200 dark:border-white/5 w-fit shadow-inner pointer-events-auto">
+        <div className="bg-slate-100 dark:bg-white/5 rounded-2xl p-4 border border-slate-200 dark:border-white/5 w-fit shadow-inner pointer-events-auto relative">
           <div
             className="grid gap-[1px] w-56 h-56 lg:w-64 lg:h-64"
             style={{
@@ -292,8 +280,10 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
                 if (inTerrain) cellBg = getTerrainCellBg(isEven);
 
                 // Center cell (unit position)
-                if (isCenter) {
-                  const unit = INITIAL_ARMY.find((u) => u.type === selectedUnit);
+                if (isCenter && hasSelection) {
+                  const unit = INITIAL_ARMY.find(
+                    (u) => u.type === selectedUnit,
+                  );
                   return (
                     <div
                       key={i}
@@ -315,19 +305,45 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
                   >
                     {/* Move Indicators - Square-y style */}
                     {(isMove || isBlocked) && (
-                      <div className={`absolute inset-[1px] z-10 rounded-sm shadow-sm flex items-center justify-center transition-all ${
-                        isBlocked ? "bg-brand-red/40" :
-                        isAttack ? "bg-brand-red shadow-[0_0_10px_rgba(239,68,68,0.4)]" :
-                        validMoves.some(([mr, mc]) => mr === r && mc === c && pattern?.newMove?.(centerRow, centerCol).some(([nr, nc]) => nr === r && nc === c)) ? "bg-amber-500 animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.4)]" :
-                        inTerrain ? (terrain.color?.headerBg || "bg-emerald-500") :
-                        "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
-                      }`}>
-                        {isBlocked && <X size={12} strokeWidth={4} className="text-white" />}
-                        {isAttack && !isBlocked && <Columns4 size={12} strokeWidth={3} className="text-white/90" />}
-                        
+                      <div
+                        className={`absolute inset-[1px] z-10 rounded-sm shadow-sm flex items-center justify-center transition-all ${
+                          isBlocked
+                            ? "bg-brand-red/40"
+                            : isAttack
+                              ? "bg-brand-red shadow-[0_0_10px_rgba(239,68,68,0.4)]"
+                              : validMoves.some(
+                                    ([mr, mc]) =>
+                                      mr === r &&
+                                      mc === c &&
+                                      pattern
+                                        ?.newMove?.(centerRow, centerCol)
+                                        .some(
+                                          ([nr, nc]) => nr === r && nc === c,
+                                        ),
+                                  )
+                                ? "bg-amber-500 animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.4)]"
+                                : inTerrain
+                                  ? terrain?.color?.headerBg || "bg-emerald-500"
+                                  : "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                        }`}
+                      >
+                        {isBlocked && (
+                          <X size={12} strokeWidth={4} className="text-white" />
+                        )}
+                        {isAttack && !isBlocked && (
+                          <Columns4
+                            size={12}
+                            strokeWidth={3}
+                            className="text-white/90"
+                          />
+                        )}
+
                         {/* Shield inside move square if on terrain and protected */}
                         {isMove && inTerrain && isProtected && (
-                          <Shield size={12} className="text-white fill-white/20" />
+                          <Shield
+                            size={12}
+                            className="text-white fill-white/20"
+                          />
                         )}
                       </div>
                     )}
@@ -335,7 +351,12 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
                     {/* Terrain Icons (only if no move indicator) */}
                     {inTerrain && !isCenter && !isMove && !isBlocked && (
                       <div className="absolute inset-0 flex items-center justify-center z-0 opacity-20">
-                        {terrain.icon && <terrain.icon size={12} className={terrain.color?.text} />}
+                        {terrain?.icon && (
+                          <terrain.icon
+                            size={12}
+                            className={terrain.color?.text}
+                          />
+                        )}
                       </div>
                     )}
                   </div>
@@ -343,6 +364,31 @@ const TerrainMovePreview: React.FC<TerrainMovePreviewProps> = ({
               },
             )}
           </div>
+
+          {/* Overlay Message when no selection */}
+          {!hasSelection && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-50 pointer-events-none rounded-2xl overflow-hidden bg-slate-900/10 dark:bg-black/20 backdrop-blur-[2px]">
+              <div className="flex flex-col items-center justify-center gap-4 opacity-80 scale-90 lg:scale-100">
+                <div
+                  className={`p-4 rounded-full ${darkMode ? "bg-slate-800" : "bg-slate-100"} shadow-xl`}
+                >
+                  <ShieldPlus size={32} className={subtextColor} />
+                </div>
+                <div className="text-center px-6">
+                  <h3
+                    className={`text-lg font-black uppercase ${darkMode ? "text-slate-200" : "text-slate-800"}`}
+                  >
+                    Live Simulation
+                  </h3>
+                  <p
+                    className={`text-xs font-bold ${subtextColor} max-w-[160px] mx-auto mt-1`}
+                  >
+                    Select a unit and a terrain to simulate interaction.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

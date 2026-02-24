@@ -8,6 +8,8 @@ import {
   Castle,
   SunMoon,
   TreePine,
+  Flashlight,
+  Orbit,
 } from "lucide-react";
 
 import { useRouteContext } from "@/route.context";
@@ -81,7 +83,7 @@ export const LearnChessmenView: React.FC = () => {
             HoverIconComponent = VenetianMask;
           } else if (type === PIECES.BISHOP) {
             cardColor = "emerald";
-            HoverIconComponent = TreePine;
+            HoverIconComponent = Flashlight;
           } else if (type === PIECES.ROOK) {
             cardColor = "amber";
             HoverIconComponent = Castle;
@@ -90,7 +92,8 @@ export const LearnChessmenView: React.FC = () => {
             HoverIconComponent = SunMoon;
           } else if (type === PIECES.KING) {
             cardColor = "red";
-            HoverIconComponent = DualToneSwordsFlipped;
+            // HoverIconComponent = DualToneSwordsFlipped;
+            HoverIconComponent = Orbit;
           }
 
           return (

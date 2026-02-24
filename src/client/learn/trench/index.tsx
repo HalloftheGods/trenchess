@@ -14,12 +14,8 @@ import RouteCard from "@/shared/components/molecules/RouteCard";
 
 export const LearnTrenchMainView: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    setHoveredMenu,
-    setHoveredTerrain,
-    setTerrainSeed,
-    darkMode,
-  } = useRouteContext();
+  const { setHoveredMenu, setHoveredTerrain, setTerrainSeed, darkMode } =
+    useRouteContext();
 
   const handleTrenchClick = (t: TerrainType) => {
     navigate(`/learn/trench/${t}`);
@@ -141,7 +137,7 @@ export const LearnTrenchMainView: React.FC = () => {
 
       <RoutePageFooter
         onForwardClick={() => navigate("/learn/chess")}
-        forwardLabel="Claim the Chess"
+        forwardLabel="Face the Chess"
         forwardIcon={Waves}
       />
     </RoutePageLayout>

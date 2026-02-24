@@ -25,18 +25,20 @@ export const LearnEndgameCtaView: React.FC<CtaGuideProps> = ({ onBack }) => {
       topLabel: "Multi-Commander",
       icon: Users,
       previewConfig: { mode: "4p" },
-      description: (
-        <ul className="space-y-4">
-          <GuideListItem color="blue">
-            Capture the Army is designed for games with more than 2 players,
-            creating a dynamic web of alliances and betrayals.
-          </GuideListItem>
-          <GuideListItem color="blue">
-            It shines brightest when 4 commanders take the field.
-          </GuideListItem>
-        </ul>
+      sideContent: (
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-12 items-center w-full max-w-5xl">
+          <MultiPlayerZonesGraphic />
+          <ul className="space-y-4">
+            <GuideListItem color="blue">
+              Capture the Army is designed for games with more than 2 players,
+              creating a dynamic web of alliances and betrayals.
+            </GuideListItem>
+            <GuideListItem color="blue">
+              It shines brightest when 4 commanders take the field.
+            </GuideListItem>
+          </ul>
+        </div>
       ),
-      sideContent: <MultiPlayerZonesGraphic />,
     },
     {
       id: "inheritance",
@@ -46,19 +48,21 @@ export const LearnEndgameCtaView: React.FC<CtaGuideProps> = ({ onBack }) => {
       topLabel: "Inheritance",
       icon: RefreshCcw,
       previewConfig: { mode: "4p" },
-      description: (
-        <ul className="space-y-4">
-          <GuideListItem color="indigo">
-            When a player is checkmated, they are not simply eliminated from the
-            board.
-          </GuideListItem>
-          <GuideListItem color="indigo">
-            The player who delivered the final blow inherits all remaining
-            pieces of the defeated army.
-          </GuideListItem>
-        </ul>
+      sideContent: (
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-12 items-center w-full max-w-5xl">
+          <CtaTroopConversionGraphic />
+          <ul className="space-y-4">
+            <GuideListItem color="indigo">
+              When a player is checkmated, they are not simply eliminated from
+              the board.
+            </GuideListItem>
+            <GuideListItem color="indigo">
+              The player who delivered the final blow inherits all remaining
+              pieces of the defeated army.
+            </GuideListItem>
+          </ul>
+        </div>
       ),
-      sideContent: <CtaTroopConversionGraphic />,
     },
   ];
 

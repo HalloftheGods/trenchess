@@ -28,16 +28,18 @@ export const LearnEndgameCtkView: React.FC<CtkGuideProps> = ({ onBack }) => {
         highlightOuterSquares: true,
         label: "Capture the King",
       },
-      description: (
-        <ul className="space-y-2">
-          <GuideListItem color="red">
-            Trenchess is played on a 12x12 grid vs classic 8x8.
-          </GuideListItem>
-          <GuideListItem color="red">
-            This provides more room for tactical maneuvering, unit deployments,
-            and terrain integration.
-          </GuideListItem>
-        </ul>
+      sideContent: (
+        <div className="flex flex-col items-center w-full max-w-2xl">
+          <ul className="space-y-4">
+            <GuideListItem color="red">
+              Trenchess is played on a 12x12 grid vs classic 8x8.
+            </GuideListItem>
+            <GuideListItem color="red">
+              This provides more room for tactical maneuvering, unit
+              deployments, and terrain integration.
+            </GuideListItem>
+          </ul>
+        </div>
       ),
     },
     {
@@ -53,27 +55,29 @@ export const LearnEndgameCtkView: React.FC<CtkGuideProps> = ({ onBack }) => {
         hideUnits: false,
         label: "Capture the King",
       },
-      description: (
-        <ul className="space-y-6">
-          <GuideListItem color="slate">
-            <strong className="text-slate-800 dark:text-slate-100 block mb-1 uppercase tracking-widest text-xs font-black">
-              Custom Formations
-            </strong>
-            <p>
-              Classic formation is encouraged for beginners, but advanced
-              players can set up their board however they like pregame.
-            </p>
-          </GuideListItem>
-          <GuideListItem color="slate">
-            <strong className="text-slate-800 dark:text-slate-100 block mb-1 uppercase tracking-widest text-xs font-black">
-              Fog of War Prep
-            </strong>
-            <p>
-              Similar to Battleship, you cannot see the opposing player's
-              strategy or deployment before the game officially commences.
-            </p>
-          </GuideListItem>
-        </ul>
+      sideContent: (
+        <div className="flex flex-col items-center w-full max-w-2xl">
+          <ul className="space-y-6">
+            <GuideListItem color="slate">
+              <strong className="text-slate-800 dark:text-slate-100 block mb-1 uppercase tracking-widest text-xs font-black">
+                Custom Formations
+              </strong>
+              <p>
+                Classic formation is encouraged for beginners, but advanced
+                players can set up their board however they like pregame.
+              </p>
+            </GuideListItem>
+            <GuideListItem color="slate">
+              <strong className="text-slate-800 dark:text-slate-100 block mb-1 uppercase tracking-widest text-xs font-black">
+                Fog of War Prep
+              </strong>
+              <p>
+                Similar to Battleship, you cannot see the opposing player's
+                strategy or deployment before the game officially commences.
+              </p>
+            </GuideListItem>
+          </ul>
+        </div>
       ),
     },
     {
@@ -89,17 +93,19 @@ export const LearnEndgameCtkView: React.FC<CtkGuideProps> = ({ onBack }) => {
         hideUnits: false,
         label: "Capture the King",
       },
-      description: (
-        <ul className="space-y-2">
-          <GuideListItem color="amber">
-            At its core, all games of 'Capture the King' rely on the base rules
-            of Checkmate.
-          </GuideListItem>
-          <GuideListItem color="amber">
-            Trap the opposing player's King so that it has no valid moves left
-            to escape an attack.
-          </GuideListItem>
-        </ul>
+      sideContent: (
+        <div className="flex flex-col items-center w-full max-w-2xl">
+          <ul className="space-y-4">
+            <GuideListItem color="amber">
+              At its core, all games of 'Capture the King' rely on the base
+              rules of Checkmate.
+            </GuideListItem>
+            <GuideListItem color="amber">
+              Trap the opposing player's King so that it has no valid moves
+              left to escape an attack.
+            </GuideListItem>
+          </ul>
+        </div>
       ),
     },
   ];

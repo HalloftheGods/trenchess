@@ -7,7 +7,6 @@ import { TERRAIN_DETAILS } from "@/constants";
 import type { PreviewConfig } from "@/shared/types/game";
 
 // Shared Route Components
-import { GuideListItem } from "@/shared/components/molecules/GuideListItem";
 import { TerrainUnitGrid } from "@/shared/components/molecules/TerrainUnitGrid";
 interface TrenchGuideProps {
   onBack: () => void;
@@ -55,17 +54,6 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
             forcedTerrain: terrain.key,
             useDefaultFormation: true,
           } as PreviewConfig,
-          description: (
-            <div className="space-y-4">
-              <ul className="space-y-6">
-                {terrain.flavorStats?.map((stat: string, i: number) => (
-                  <GuideListItem key={i} color="amber" size="sm">
-                    {stat}
-                  </GuideListItem>
-                ))}
-              </ul>
-            </div>
-          ),
           sideContent: <TerrainUnitGrid terrain={terrain} />,
           leftContent: null,
         };
@@ -86,8 +74,8 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
         hideUnits: false,
         useDefaultFormation: true,
       } as PreviewConfig,
-      description: (
-        <div className="space-y-6 mt-4">
+      sideContent: (
+        <div className="space-y-6 mt-4 max-w-2xl">
           <div className="flex gap-4">
             <div className="flex items-center justify-center w-8 h-8 rounded-full border shrink-0 border-amber-500/30 bg-amber-500/10 text-amber-500 font-bold">
               1
