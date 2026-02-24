@@ -17,7 +17,12 @@ import {
 import { PIECES, CORE_INITIAL_ARMY } from "../pieces";
 import { TERRAIN_TYPES } from "../terrain";
 import { UNIT_BLUEPRINTS } from "@/core/blueprints/units";
-import type { UnitColors, ArmyUnit, UnitDetails } from "@/shared/types";
+import type {
+  UnitColors,
+  ArmyUnit,
+  UnitDetails,
+  TerrainType,
+} from "@/shared/types";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 const { FORESTS, MOUNTAINS, SWAMPS } = TERRAIN_TYPES;
@@ -231,6 +236,12 @@ const mapToUnitDetails = (acc: Record<string, UnitDetails>, key: string) => {
     movePattern: blueprint.movePattern,
     newMovePattern: blueprint.newMovePattern,
     attackPattern: blueprint.attackPattern,
+    levelUp: intel.levelUp
+      ? {
+          ...intel.levelUp,
+          sanctuaryTerrain: intel.levelUp.sanctuaryTerrain as TerrainType[],
+        }
+      : undefined,
   };
   return acc;
 };

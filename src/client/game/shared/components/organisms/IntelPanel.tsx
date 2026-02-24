@@ -44,42 +44,42 @@ const UNIT_INTEL_PANEL: Record<string, UnitIntelPanelEntry> = {
     role: CHESS_NAME[KING]?.role || "Leader",
     points: "∞",
     movePattern: UNIT_DETAILS[KING]?.movePattern,
-    desc: UNIT_INTEL[KING]?.desc || "",
+    desc: UNIT_INTEL[KING]?.desc?.join(" ") || "",
   },
   [QUEEN]: {
     title: UNIT_DETAILS[QUEEN]?.title || "Queen",
     role: CHESS_NAME[QUEEN]?.role || "Elite",
     points: 9,
     movePattern: UNIT_DETAILS[QUEEN]?.movePattern,
-    desc: UNIT_INTEL[QUEEN]?.desc || "",
+    desc: UNIT_INTEL[QUEEN]?.desc?.join(" ") || "",
   },
   [ROOK]: {
     title: UNIT_DETAILS[ROOK]?.title || "Rook",
     role: CHESS_NAME[ROOK]?.role || "Heavy Armor",
     points: 5,
     movePattern: UNIT_DETAILS[ROOK]?.movePattern,
-    desc: UNIT_INTEL[ROOK]?.desc || "",
+    desc: UNIT_INTEL[ROOK]?.desc?.join(" ") || "",
   },
   [BISHOP]: {
     title: UNIT_DETAILS[BISHOP]?.title || "Bishop",
     role: CHESS_NAME[BISHOP]?.role || "Ranged",
     points: 3,
     movePattern: UNIT_DETAILS[BISHOP]?.movePattern,
-    desc: UNIT_INTEL[BISHOP]?.desc || "",
+    desc: UNIT_INTEL[BISHOP]?.desc?.join(" ") || "",
   },
   [KNIGHT]: {
     title: UNIT_DETAILS[KNIGHT]?.title || "Knight",
     role: CHESS_NAME[KNIGHT]?.role || "Cavalry",
     points: 3,
     movePattern: UNIT_DETAILS[KNIGHT]?.movePattern,
-    desc: UNIT_INTEL[KNIGHT]?.desc || "",
+    desc: UNIT_INTEL[KNIGHT]?.desc?.join(" ") || "",
   },
   [PAWN]: {
     title: UNIT_DETAILS[PAWN]?.title || "Pawn",
     role: CHESS_NAME[PAWN]?.role || "Infantry",
     points: 1,
     movePattern: UNIT_DETAILS[PAWN]?.movePattern,
-    desc: UNIT_INTEL[PAWN]?.desc || "",
+    desc: UNIT_INTEL[PAWN]?.desc?.join(" ") || "",
   },
 };
 
@@ -390,7 +390,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
                         const canTraverse = traversable.includes(
                           t as TerrainType,
                         );
-                        const colorClass = intel.color;
+                        const colorClass = intel.color.text;
                         return (
                           <div
                             key={t}
