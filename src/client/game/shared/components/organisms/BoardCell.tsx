@@ -6,6 +6,7 @@ import { CellUnitRenderer } from "../atoms/CellUnitRenderer";
 import { CellHighlight } from "../atoms/CellHighlight";
 import { CellPlacementPreview } from "../atoms/CellPlacementPreview";
 import { getSetupHighlightArea } from "@/client/game/shared/utils/boardCellHelpers";
+import { PLAYER_CONFIGS, INITIAL_ARMY } from "@/constants";
 import type {
   BoardPiece,
   TerrainType,
@@ -37,6 +38,7 @@ interface BoardCellProps {
   getIcon: (
     unit: ArmyUnit,
     className?: string,
+    size?: number | string,
     filled?: boolean,
   ) => React.ReactNode;
   handleCellClick: (r: number, c: number) => void;
@@ -135,7 +137,7 @@ const BoardCell: React.FC<BoardCellProps> = ({
       {isOrigin && !piece && !isSetupActive && lastMove && (
         <div className="absolute inset-0 z-20 flex items-center justify-center animate-spin-shrink pointer-events-none opacity-50">
           <div className={`w-full h-full p-1.5 grayscale blur-[1px] flex items-center justify-center ${PLAYER_CONFIGS[lastMove.player]?.text || ""}`}>
-            {getIcon(INITIAL_ARMY.find(u => u.type === lastMove.type)!, "w-full h-full", true)}
+            {getIcon(INITIAL_ARMY.find(u => u.type === lastMove.type)!, "w-full h-full", undefined, true)}
           </div>
         </div>
       )}

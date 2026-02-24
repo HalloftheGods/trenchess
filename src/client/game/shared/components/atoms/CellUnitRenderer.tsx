@@ -13,6 +13,7 @@ interface CellUnitRendererProps {
   getIcon: (
     unit: ArmyUnit,
     className?: string,
+    size?: number | string,
     filled?: boolean,
   ) => React.ReactNode;
   row: number;
@@ -105,7 +106,7 @@ export const CellUnitRenderer: React.FC<CellUnitRendererProps> = ({
             ${checkClass}
           `}
         >
-          {getIcon(unitTheme, "w-full h-full", !isMyTurn)}
+          {getIcon(unitTheme, "w-full h-full", undefined, !isMyTurn)}
         </Flex>
       </div>
     </Flex>

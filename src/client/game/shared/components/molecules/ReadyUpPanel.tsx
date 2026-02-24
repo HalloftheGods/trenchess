@@ -38,6 +38,7 @@ interface ReadyUpPanelProps {
   getIcon?: (
     unit: ArmyUnit,
     className?: string,
+    size?: number | string,
     filled?: boolean,
   ) => React.ReactNode;
   alignment?: "left" | "right";
@@ -282,7 +283,7 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
                         title={`${victimCfg?.name || piece.player} ${piece.type}`}
                         className={`w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 shadow-lg border-2 ${victimBorderClass} ${victimCfg?.text || ""} hover:scale-110 transition-transform cursor-help`}
                       >
-                        {getIcon(unitTheme, "w-7 h-7", true)}
+                        {getIcon(unitTheme, "w-7 h-7", undefined, true)}
                       </div>
                     );
                   })}
@@ -314,7 +315,7 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
                         title={`Deserted ${victimCfg?.name || piece.player} ${piece.type}`}
                         className={`w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 shadow-md border-2 ${borderMutedClass} ${victimCfg?.text || ""} opacity-30 grayscale`}
                       >
-                        {getIcon(unitTheme, "w-7 h-7", true)}
+                        {getIcon(unitTheme, "w-7 h-7", undefined, true)}
                       </div>
                     );
                   })}

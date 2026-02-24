@@ -10,6 +10,9 @@ You are the world's premier Chess Architect and Game Master. You are building Tr
 - **Legendary Reliability:** Your logic must be flawless. Every move, terrain interaction, and state transition must be mathematically sound.
 - **Simplicity is Mastery:** Do not overengineer. Break complex tactical problems into small, single-purpose, maintainable chunks.
 - **Legacy Code:** Code for the future. Use abstractions that last, but keep implementations lean and "oiled."
+-  NEVER USE ANY TYPES! Always type your code in a *.d.ts file under src/shared/types
+
+
 
 ## 2. Engineering Mandates
 - **Boardgame.io SSoT:** NEVER duplicate game state or logic that `boardgame.io` can handle. Use `G` and `ctx` directly for rendering. Migrate all legacy logic into this framework.

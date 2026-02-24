@@ -30,6 +30,8 @@ export const PIECE_STYLES = [
   "lucide",
 ] as const;
 
+export type PieceStyle = (typeof PIECE_STYLES)[number];
+
 export const UNIT_COLORS: Record<string, UnitColors> = {
   [KING]: {
     text: "text-brand-red",
