@@ -92,7 +92,7 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
               ? "bg-slate-100/60 dark:bg-white/10"
               : "bg-slate-200/60 dark:bg-white/[0.04]";
 
-            const terrainBg = terrainInfo?.color.bg || "";
+            const terrainBg = terrainInfo?.color?.bg || "";
 
             return (
               <div
@@ -132,7 +132,7 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
                 {isTerrainCell && TerrainIcon && terrainInfo && (
                   <TerrainIcon
                     size={12}
-                    className={`${terrainInfo.color.text} opacity-60`}
+                    className={`${terrainInfo.color?.text || ""} opacity-60`}
                   />
                 )}
               </div>

@@ -22,7 +22,9 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
     const terrainSlides = TERRAIN_DETAILS.map(
       (terrain: (typeof TERRAIN_DETAILS)[number]) => {
         const IconComp = terrain.icon;
-        const colorMatch = terrain.color.text.match(/text-(?:brand-)?([a-z]+)/);
+        const colorMatch = terrain.color?.text.match(
+          /text-(?:brand-)?([a-z]+)/,
+        );
         const colorName = colorMatch ? colorMatch[1] : "amber";
         const validColors = [
           "red",
@@ -56,7 +58,7 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
           description: (
             <div className="space-y-4">
               <ul className="space-y-3">
-                {terrain.flavorStats.map((stat: string, i: number) => (
+                {terrain.flavorStats?.map((stat: string, i: number) => (
                   <GuideListItem key={i} color="amber">
                     {stat}
                   </GuideListItem>

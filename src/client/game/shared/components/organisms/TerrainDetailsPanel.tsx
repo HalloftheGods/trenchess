@@ -27,8 +27,8 @@ interface TerrainDetailsPanelProps {
   onPrev?: () => void;
   prevTerrainIcon?: React.ElementType;
   nextTerrainIcon?: React.ElementType;
-  prevTerrainColors?: { bg: string; text: string; border: string };
-  nextTerrainColors?: { bg: string; text: string; border: string };
+  prevTerrainColors?: { bg?: string; text?: string; border?: string };
+  nextTerrainColors?: { bg?: string; text?: string; border?: string };
 }
 
 const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
@@ -245,7 +245,7 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
                   onClick={onPrev}
                   className={`absolute -left-5 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 rounded-xl shadow-lg border opacity-40 grayscale hover:opacity-100 hover:grayscale-0 hover:scale-110 active:scale-95 transition-all flex items-center justify-center ${
                     prevTerrainColors
-                      ? `${prevTerrainColors.bg} ${prevTerrainColors.border} ${prevTerrainColors.text}`
+                      ? `${prevTerrainColors.bg || ""} ${prevTerrainColors.border || ""} ${prevTerrainColors.text || ""}`
                       : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-800/60 dark:text-white/60"
                   }`}
                 >
@@ -259,7 +259,7 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
                   onClick={onNext}
                   className={`absolute -right-5 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 rounded-xl shadow-lg border opacity-40 grayscale hover:opacity-100 hover:grayscale-0 hover:scale-110 active:scale-95 transition-all flex items-center justify-center ${
                     nextTerrainColors
-                      ? `${nextTerrainColors.bg} ${nextTerrainColors.border} ${nextTerrainColors.text}`
+                      ? `${nextTerrainColors.bg || ""} ${nextTerrainColors.border || ""} ${nextTerrainColors.text || ""}`
                       : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-800/60 dark:text-white/60"
                   }`}
                 >

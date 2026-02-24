@@ -36,7 +36,12 @@ interface MmoActionBarProps {
   pieceStyle: PieceStyle;
   toggleTheme: () => void;
   togglePieceStyle: () => void;
-  getIcon: (unit: ArmyUnit, className?: string) => React.ReactNode;
+  getIcon: (
+    unit: ArmyUnit,
+    className?: string,
+    size?: number | string,
+    filled?: boolean,
+  ) => React.ReactNode;
   // Setup state
   turn: string;
   activePlayers: string[];

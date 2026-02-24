@@ -73,7 +73,7 @@ const createInitialTerrainStats = () => ({
 describe("Piece Statistics Generator", () => {
   it("generates piece capture threat surface statistics", () => {
     const pieceKeys = Object.values(PIECES) as PieceType[];
-    const stats: Record<string, unknown> = {};
+    const stats: Record<string, Record<string, any>> = {};
 
     pieceKeys.forEach((attacker) => {
       stats[attacker] = {};

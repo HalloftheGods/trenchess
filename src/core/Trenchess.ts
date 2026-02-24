@@ -1,4 +1,4 @@
-import type { Game, Ctx } from "boardgame.io";
+import type { Game } from "boardgame.io";
 import { createInitialState } from "@/core/setup/setupLogic";
 import type {
   GameMode,

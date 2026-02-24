@@ -54,7 +54,9 @@ const isTerrainSanctuary = (
   const terrainIntel = CORE_TERRAIN_INTEL[terrainType];
   const hasIntel = !!terrainIntel;
   if (!hasIntel) return false;
-  const isSanctuaryPiece = terrainIntel.sanctuaryUnits.includes(pieceType);
+  const isSanctuaryPiece = terrainIntel.sanctuaryUnits.includes(
+    pieceType as any,
+  );
   return isSanctuaryPiece;
 };
 
@@ -67,7 +69,7 @@ const isTerrainBlocking = (
   if (!hasIntel) return false;
   const hasBlockedUnits = !!terrainIntel.blockedUnits;
   if (!hasBlockedUnits) return false;
-  const isPieceBlocked = terrainIntel.blockedUnits!.includes(pieceType);
+  const isPieceBlocked = terrainIntel.blockedUnits!.includes(pieceType as any);
   return isPieceBlocked;
 };
 

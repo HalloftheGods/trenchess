@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import MmoActionBar from "@/client/game/shared/components/organisms/MmoActionBar";
 import { PIECES } from "@/constants";
 import type { GameState, PieceStyle } from "@/shared/types";
-import React from "react";
 
 describe("MmoActionBar", () => {
   const mockProps = {

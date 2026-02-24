@@ -189,7 +189,7 @@ export const LearnTrenchMainView: React.FC = () => {
                 label: prevTerrain.label,
                 onClick: () =>
                   handleTrenchClick(prevTerrain.key as TerrainType),
-                className: prevTerrain.color.text,
+                className: prevTerrain.color?.text || "",
               }
             : undefined
         }
@@ -200,7 +200,7 @@ export const LearnTrenchMainView: React.FC = () => {
                 label: nextTerrain.label,
                 onClick: () =>
                   handleTrenchClick(nextTerrain.key as TerrainType),
-                className: nextTerrain.color.text,
+                className: nextTerrain.color?.text || "",
               }
             : undefined
         }

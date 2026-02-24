@@ -1,16 +1,13 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  ChessKnight,
-  Swords,
   Tornado,
   Rabbit,
   ChessKing,
   VenetianMask,
   Castle,
-  Lightbulb,
-  Crown,
-  Shell,
+  SunMoon,
+  TreePine,
 } from "lucide-react";
 import type { PieceType } from "@/shared/types/game";
 
@@ -25,7 +22,7 @@ import RouteCard from "@/shared/components/molecules/RouteCard";
 import RouteDetailModal from "@/shared/components/organisms/RouteDetailModal";
 import ChessCardDetail from "@/client/game/shared/components/organisms/ChessCardDetail";
 import { INITIAL_ARMY, PIECES, UNIT_DETAILS, unitColorMap } from "@/constants";
-import { DualToneSwords, DualToneSwordsFlipped } from "@/shared/components";
+import { DualToneSwordsFlipped } from "@/shared/components";
 
 export const LearnChessmenView: React.FC = () => {
   const navigate = useNavigate();
@@ -104,13 +101,13 @@ export const LearnChessmenView: React.FC = () => {
             HoverIconComponent = VenetianMask;
           } else if (type === PIECES.BISHOP) {
             cardColor = "emerald";
-            HoverIconComponent = Lightbulb;
+            HoverIconComponent = TreePine;
           } else if (type === PIECES.ROOK) {
             cardColor = "amber";
             HoverIconComponent = Castle;
           } else if (type === PIECES.QUEEN) {
             cardColor = "purple";
-            HoverIconComponent = Shell;
+            HoverIconComponent = SunMoon;
           } else if (type === PIECES.KING) {
             cardColor = "red";
             HoverIconComponent = DualToneSwordsFlipped;

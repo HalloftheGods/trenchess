@@ -4,11 +4,11 @@ import { SectionLabel } from "../atoms/Typography";
 
 export interface TerrainAffinityItem {
   name: string;
-  icon: React.ElementType;
-  bg: string;
-  text: string;
-  border: string;
-  ring: string;
+  icon?: React.ElementType;
+  bg?: string;
+  text?: string;
+  border?: string;
+  ring?: string;
   isProtected: boolean;
   canTraverse: boolean;
 }

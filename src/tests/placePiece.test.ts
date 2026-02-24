@@ -38,10 +38,14 @@ describe("placePiece", () => {
       inventory: { red: [PIECES.PAWN, PIECES.ROOK] },
       terrainInventory: {},
       capturedBy: {},
+      lostToDesert: [],
+      lastMove: null,
       mode: "2p-ns",
       activePlayers: ["red", "blue"],
       readyPlayers: {},
       playerMap: { "0": "red", "1": "blue" },
+      winner: null,
+      winnerReason: null,
     };
 
     ctx = {

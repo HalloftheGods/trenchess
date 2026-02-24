@@ -206,8 +206,6 @@ const GameBoard: React.FC<GameBoardProps> = ({
                 getIcon={getIcon}
                 handleCellClick={handleCellClick}
                 handleCellHover={handleCellHover}
-                setHoveredCell={setHoveredCell}
-                setPreviewMoves={setPreviewMoves}
                 isFlipped={isFlipped}
               />
             )),

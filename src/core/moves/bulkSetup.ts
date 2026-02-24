@@ -99,7 +99,7 @@ export const setClassicalFormation = (
     [playerId],
     G.mode,
     16,
-    ctx.random,
+    (ctx as any).random,
   );
   const result = applyClassicalFormationLogic(
     G.board,
