@@ -1,11 +1,12 @@
 import { BOARD_SIZE } from "@/constants";
 import { PIECES } from "@/constants";
+import { TERRAIN_TYPES, CORE_TERRAIN_INTEL } from "@/constants/terrain";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 import { isPlayerInCheck } from "@/core/mechanics/gameLogic";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
+const { FLAT, DESERT } = TERRAIN_TYPES;
 
-// --- Heuristic Weights ---
 export const SCORES: Record<string, number> = {
   [KING]: 100000,
   [QUEEN]: 900,
@@ -17,8 +18,11 @@ export const SCORES: Record<string, number> = {
 
 const CENTER_WEIGHT = 10;
 const KING_HUNT_WEIGHT = 20;
+const SANCTUARY_BONUS = 30;
+const DESERT_STRAND_PENALTY = 60;
+const TERRAIN_SAFETY_BONUS = 15;
+const DESERT_ENEMY_STRAND_BONUS = 25;
 
-// Helper: Calculate Manhattan Distance
 export const manhattanDistance = (
   r1: number,
   c1: number,
@@ -28,7 +32,6 @@ export const manhattanDistance = (
   return Math.abs(r1 - r2) + Math.abs(c1 - c2);
 };
 
-// Helper: Check if game is essentially won/lost
 export const hasCommander = (
   board: (BoardPiece | null)[][],
   player: string,
@@ -44,7 +47,114 @@ export const hasCommander = (
   return null;
 };
 
-// Evaluate board for the maximizing player
+const isTerrainSanctuary = (
+  pieceType: string,
+  terrainType: TerrainType,
+): boolean => {
+  const terrainIntel = CORE_TERRAIN_INTEL[terrainType];
+  const hasIntel = !!terrainIntel;
+  if (!hasIntel) return false;
+  const isSanctuaryPiece = terrainIntel.sanctuaryUnits.includes(pieceType);
+  return isSanctuaryPiece;
+};
+
+const isTerrainBlocking = (
+  pieceType: string,
+  terrainType: TerrainType,
+): boolean => {
+  const terrainIntel = CORE_TERRAIN_INTEL[terrainType];
+  const hasIntel = !!terrainIntel;
+  if (!hasIntel) return false;
+  const hasBlockedUnits = !!terrainIntel.blockedUnits;
+  if (!hasBlockedUnits) return false;
+  const isPieceBlocked = terrainIntel.blockedUnits!.includes(pieceType);
+  return isPieceBlocked;
+};
+
+const scoreTerrainPosition = (
+  board: (BoardPiece | null)[][],
+  terrain: TerrainType[][],
+  maximizingPlayer: string,
+): number => {
+  let terrainScore = 0;
+
+  for (let r = 0; r < BOARD_SIZE; r++) {
+    for (let c = 0; c < BOARD_SIZE; c++) {
+      const piece = board[r][c];
+      if (!piece) continue;
+
+      const cellTerrain = terrain[r][c];
+      const isFlat = cellTerrain === FLAT;
+      if (isFlat) continue;
+
+      const isOwnPiece = piece.player === maximizingPlayer;
+      const isDesertTile = cellTerrain === DESERT;
+      const pieceValue = SCORES[piece.type] || 100;
+      const valueScale = pieceValue / 100;
+
+      if (isOwnPiece) {
+        if (isDesertTile) {
+          terrainScore -= DESERT_STRAND_PENALTY * valueScale;
+        }
+
+        const hasSanctuary = isTerrainSanctuary(piece.type, cellTerrain);
+        if (hasSanctuary) {
+          terrainScore += SANCTUARY_BONUS * valueScale;
+        }
+
+        const hasNearbyProtection = hasTerrainShield(r, c, piece, terrain);
+        if (hasNearbyProtection) {
+          terrainScore += TERRAIN_SAFETY_BONUS;
+        }
+      } else {
+        if (isDesertTile) {
+          terrainScore += DESERT_ENEMY_STRAND_BONUS * valueScale;
+        }
+
+        const hasEnemySanctuary = isTerrainSanctuary(piece.type, cellTerrain);
+        if (hasEnemySanctuary) {
+          terrainScore -= SANCTUARY_BONUS * valueScale;
+        }
+      }
+    }
+  }
+
+  return terrainScore;
+};
+
+const hasTerrainShield = (
+  row: number,
+  col: number,
+  piece: BoardPiece,
+  terrain: TerrainType[][],
+): boolean => {
+  const adjacentOffsets = [
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1],
+  ];
+
+  const hasShieldingTerrain = adjacentOffsets.some(([dr, dc]) => {
+    const adjRow = row + dr;
+    const adjCol = col + dc;
+
+    const isRowInBounds = adjRow >= 0 && adjRow < BOARD_SIZE;
+    const isColInBounds = adjCol >= 0 && adjCol < BOARD_SIZE;
+    const isInBounds = isRowInBounds && isColInBounds;
+    if (!isInBounds) return false;
+
+    const adjTerrain = terrain[adjRow][adjCol];
+    const isFlat = adjTerrain === FLAT;
+    if (isFlat) return false;
+
+    const blocksAttackers = isTerrainBlocking(piece.type, adjTerrain);
+    return !blocksAttackers;
+  });
+
+  return hasShieldingTerrain;
+};
+
 export const evaluateBoard = (
   board: (BoardPiece | null)[][],
   terrain: TerrainType[][],
@@ -53,10 +163,7 @@ export const evaluateBoard = (
 ): number => {
   let score = 0;
 
-  // Identify kings for king hunting heuristics
   const myKingPos = hasCommander(board, maximizingPlayer);
-
-  // Find enemy king (assume 2p mode for simplicity in heuristic)
   let enemyKingPos: { r: number; c: number } | null = null;
 
   let myMaterial = 0;
@@ -75,7 +182,6 @@ export const evaluateBoard = (
         myMaterial += value;
         myPieces.push({ r, c, piece });
 
-        // Center control
         const distToCenter =
           Math.abs(r - (BOARD_SIZE / 2 - 0.5)) +
           Math.abs(c - (BOARD_SIZE / 2 - 0.5));
@@ -89,41 +195,40 @@ export const evaluateBoard = (
     }
   }
 
-  // Base material difference
   score += myMaterial - enemyMaterial;
 
-  // Win/Loss overrides
-  if (!myKingPos) return -999999; // Lost
-  if (!enemyKingPos) return 999999; // Won
+  if (!myKingPos) return -999999;
+  if (!enemyKingPos) return 999999;
 
-  // King Hunting Heuristic
+  score += scoreTerrainPosition(board, terrain, maximizingPlayer);
+
   const endgameWeight = Math.min(
     1.0,
     Math.max(0, (2000 - enemyMaterial) / 2000),
   );
 
-  if (myMaterial > enemyMaterial + 200 && enemyKingPos) {
-    // 1. Force enemy king to edge/corner
+  const hasMaterialAdvantage = myMaterial > enemyMaterial + 200;
+  if (hasMaterialAdvantage && enemyKingPos) {
     const enemyKingDistToCenter =
       Math.abs(enemyKingPos.r - (BOARD_SIZE / 2 - 0.5)) +
       Math.abs(enemyKingPos.c - (BOARD_SIZE / 2 - 0.5));
     score += enemyKingDistToCenter * KING_HUNT_WEIGHT * 2 * endgameWeight;
 
-    // 2. Bring our pieces closer to enemy king
     let distanceSum = 0;
-    for (const p of myPieces) {
+    const addPieceDistance = (p: { r: number; c: number }) => {
       distanceSum += manhattanDistance(
         p.r,
         p.c,
-        enemyKingPos.r,
-        enemyKingPos.c,
+        enemyKingPos!.r,
+        enemyKingPos!.c,
       );
-    }
+    };
+    myPieces.forEach(addPieceDistance);
     score -= distanceSum * KING_HUNT_WEIGHT * endgameWeight;
   }
 
-  // Check penalty
-  if (isPlayerInCheck(maximizingPlayer, board, terrain, mode)) {
+  const isInCheck = isPlayerInCheck(maximizingPlayer, board, terrain, mode);
+  if (isInCheck) {
     score -= 50;
   }
 

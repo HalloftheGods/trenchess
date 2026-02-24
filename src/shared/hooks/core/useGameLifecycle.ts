@@ -45,7 +45,6 @@ export function useGameLifecycle(
     setActivePlayers,
     setInCheck,
     setLocalPlayerName,
-    readyPlayers,
     setReadyPlayers,
   } = turnState;
   const {
@@ -64,9 +63,9 @@ export function useGameLifecycle(
     [inventory, terrain, mode],
   );
 
-  // Derived state for placement (requires explicit ready-up from all players)
+  // Derived state for placement (checks if everyone has finished deploying their inventory)
   const isAllPlaced =
-    activePlayers.length > 0 && activePlayers.every((p) => readyPlayers[p]);
+    activePlayers.length > 0 && activePlayers.every((p) => isPlayerReady(p));
 
   // In-Check and Auto-flip (UI only)
   useEffect(() => {

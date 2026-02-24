@@ -8,6 +8,7 @@ import {
 import { applyClassicalFormation as applyClassicalFormationLogic } from "@/core/setup/formations";
 import { createInitialState } from "@/core/setup/initialization";
 import { getPlayerCells } from "@/core/setup/territory";
+import { canPlaceUnit } from "@/core/setup/validation";
 import { TERRAIN_TYPES } from "@/constants/terrain";
 import { DEFAULT_SEEDS } from "@/core/setup/seeds";
 import { deserializeGame, adaptSeedToMode } from "@/shared/utils/serialization";
@@ -105,48 +106,29 @@ export const applyChiGarden = (
       }
     }
 
-    // 2. Apply Terrain + Units (only if units are present in the 'Garden' build)
+    // 2. Apply Terrain + Units (Units only if present in build)
     for (const [r, c] of myCells) {
-      G.terrain[r][c] = adapted.terrain[r][c];
+      const newTerrain = adapted.terrain[r][c];
+      const existingPiece = G.board[r][c];
+
+      // If seed has units, we overwrite everything in our territory
       if (seedHasUnits) {
+        G.terrain[r][c] = newTerrain;
         G.board[r][c] = adapted.board[r][c];
       } else {
-        // Clear board if it's a pure garden so user can deploy
-        G.board[r][c] = null;
+        // Garden Logic: Preserve existing pieces if compatible, otherwise clear tile
+        if (existingPiece && !canPlaceUnit(existingPiece.type, newTerrain)) {
+          G.terrain[r][c] = TERRAIN_TYPES.FLAT as any;
+        } else {
+          G.terrain[r][c] = newTerrain;
+        }
       }
     }
     
     if (seedHasUnits) {
       G.inventory[playerId] = [];
-    } else {
-      // Re-populate inventory for manual deployment in the new garden
-      const { INITIAL_ARMY: army } = require("@/core/setup/seeds");
-      const fullArmy: string[] = [];
-      army.forEach((u: any) => {
-        for(let i=0; i<u.count; i++) fullArmy.push(u.type);
-      });
-      G.inventory[playerId] = fullArmy;
     }
     G.terrainInventory[playerId] = [];
   }
 };
 
-export const resetToOmega = (
-  { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
-  explicitPid?: string,
-) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
-  if (!playerId) return INVALID_MOVE;
-
-  // We only reset the player's own area
-  const emptyState = createInitialState(G.mode, [playerId]);
-  const myCells = getPlayerCells(playerId, G.mode);
-  
-  for (const [r, c] of myCells) {
-    G.board[r][c] = null;
-    G.terrain[r][c] = TERRAIN_TYPES.FLAT as any;
-  }
-  
-  G.inventory[playerId] = [...emptyState.inventory[playerId]];
-  G.terrainInventory[playerId] = [...emptyState.terrainInventory[playerId]];
-};

@@ -381,32 +381,20 @@ export function useSetupActions(
         const adapted = adaptSeedToMode(decoded, mode);
         const myCells = SetupLogic.getPlayerCells(turn, mode);
         const nextTerrain = currentTerrain.map((r) => [...r]);
-        const nextBoard = currentBoard.map((r) => [...r]);
 
-        let seedHasUnits = false;
+        // Garden Logic: Only apply terrain, respect existing pieces
         for (const [r, c] of myCells) {
-          if (adapted.board[r][c]) {
-            seedHasUnits = true;
-            break;
-          }
-        }
-
-        for (const [r, c] of myCells) {
-          nextTerrain[r][c] = adapted.terrain[r][c];
-          if (seedHasUnits) {
-            nextBoard[r][c] = adapted.board[r][c];
+          const newTerrain = adapted.terrain[r][c];
+          const existingPiece = currentBoard[r][c];
+          
+          if (existingPiece && !SetupLogic.canPlaceUnit(existingPiece.type, newTerrain)) {
+            nextTerrain[r][c] = "flat" as TerrainType;
+          } else {
+            nextTerrain[r][c] = newTerrain;
           }
         }
 
         setTerrain(nextTerrain);
-
-        if (seedHasUnits) {
-          setBoard(nextBoard);
-          const newInventory = { ...inventory };
-          newInventory[turn] = [];
-          setInventory(newInventory);
-        }
-
         const newTerrainInventory = { ...terrainInventory };
         newTerrainInventory[turn] = [];
         setTerrainInventory(newTerrainInventory);
@@ -418,14 +406,11 @@ export function useSetupActions(
   }, [
     bgioClientRef,
     mode,
-    setBoard,
-    setInventory,
     setPlacementPiece,
     setPlacementTerrain,
     setPreviewMoves,
     setTerrain,
     setTerrainInventory,
-    inventory,
     terrainInventory,
     turn,
     currentBoard,
@@ -460,6 +445,68 @@ export function useSetupActions(
     setPreviewMoves,
     setTerrain,
     setTerrainInventory,
+    turn,
+  ]);
+
+  const resetTerrain = useCallback(() => {
+    const bgioClient = bgioClientRef?.current;
+    if (bgioClient) {
+      bgioClient.moves.resetTerrain(turn);
+    } else {
+      const nextTerrain = currentTerrain.map((row) => [...row]);
+      const nextTInv = { ...terrainInventory };
+      const myCells = SetupLogic.getPlayerCells(turn, mode);
+      const reclaimed: TerrainType[] = [];
+      for (const [r, c] of myCells) {
+        if (nextTerrain[r][c] !== "flat") {
+          reclaimed.push(nextTerrain[r][c]);
+          nextTerrain[r][c] = "flat" as TerrainType;
+        }
+      }
+      nextTInv[turn] = [...(nextTInv[turn] || []), ...reclaimed];
+      setTerrain(nextTerrain);
+      setTerrainInventory(nextTInv);
+    }
+    setPlacementTerrain(null);
+  }, [
+    bgioClientRef,
+    currentTerrain,
+    mode,
+    setPlacementTerrain,
+    setTerrain,
+    setTerrainInventory,
+    terrainInventory,
+    turn,
+  ]);
+
+  const resetUnits = useCallback(() => {
+    const bgioClient = bgioClientRef?.current;
+    if (bgioClient) {
+      bgioClient.moves.resetUnits(turn);
+    } else {
+      const nextBoard = currentBoard.map((row) => [...row]);
+      const nextInv = { ...inventory };
+      const myCells = SetupLogic.getPlayerCells(turn, mode);
+      const reclaimed: PieceType[] = [];
+      for (const [r, c] of myCells) {
+        if (nextBoard[r][c] && nextBoard[r][c]?.player === turn) {
+          reclaimed.push(nextBoard[r][c]!.type);
+          nextBoard[r][c] = null;
+        }
+      }
+      nextInv[turn] = [...(inventory[turn] || []), ...reclaimed];
+      setBoard(nextBoard);
+      setInventory(nextInv);
+    }
+    setPlacementPiece(null);
+  }, [
+    bgioClientRef,
+    currentBoard,
+    inventory,
+    mode,
+    setBoard,
+    setInventory,
+    setPlacementPiece,
     turn,
   ]);
 
@@ -536,48 +583,6 @@ export function useSetupActions(
     setTerrain,
     turn,
   ]);
-
-  const resetTerrain = useCallback(() => {
-    const nextTerrain = currentTerrain.map((row) => [...row]);
-    const nextTInv = { ...terrainInventory };
-    const myCells = SetupLogic.getPlayerCells(turn, mode);
-    const reclaimed: TerrainType[] = [];
-    for (const [r, c] of myCells) {
-      if (nextTerrain[r][c] !== "flat") {
-        reclaimed.push(nextTerrain[r][c]);
-        nextTerrain[r][c] = "flat" as TerrainType;
-      }
-    }
-    nextTInv[turn] = [...(nextTInv[turn] || []), ...reclaimed];
-    setTerrain(nextTerrain);
-    setTerrainInventory(nextTInv);
-    setPlacementTerrain(null);
-  }, [
-    currentTerrain,
-    mode,
-    setPlacementTerrain,
-    setTerrain,
-    setTerrainInventory,
-    terrainInventory,
-    turn,
-  ]);
-
-  const resetUnits = useCallback(() => {
-    const nextBoard = currentBoard.map((row) => [...row]);
-    const nextInv = { ...inventory };
-    const myCells = SetupLogic.getPlayerCells(turn, mode);
-    const reclaimed: PieceType[] = [];
-    for (const [r, c] of myCells) {
-      if (nextBoard[r][c] && nextBoard[r][c]?.player === turn) {
-        reclaimed.push(nextBoard[r][c]!.type);
-        nextBoard[r][c] = null;
-      }
-    }
-    nextInv[turn] = [...(inventory[turn] || []), ...reclaimed];
-    setBoard(nextBoard);
-    setInventory(nextInv);
-    setPlacementPiece(null);
-  }, [currentBoard, inventory, mode, setBoard, setInventory, setPlacementPiece, turn]);
 
   return {
     initGame,

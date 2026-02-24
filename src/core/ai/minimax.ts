@@ -1,10 +1,17 @@
 import { BOARD_SIZE } from "@/constants";
+import { TERRAIN_TYPES, CORE_TERRAIN_INTEL } from "@/constants/terrain";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 import { getValidMoves } from "@/core/mechanics/gameLogic";
 import { isPlayerInCheck } from "@/core/mechanics/gameLogic";
 import { SCORES, hasCommander, evaluateBoard } from "@/core/ai/evaluation";
 
-// Generate all possible moves for a player, sorted by likelihood of being good (captures first)
+const { DESERT } = TERRAIN_TYPES;
+
+const DESERT_MOVE_PENALTY = -30;
+const SANCTUARY_MOVE_BONUS = 20;
+const DESERT_CAPTURE_BONUS = 40;
+const ESCAPE_DESERT_BONUS = 25;
+
 export const getAllMoves = (
   board: (BoardPiece | null)[][],
   terrain: TerrainType[][],
@@ -29,12 +36,41 @@ export const getAllMoves = (
         );
         for (const [tr, tc] of moves) {
           let moveScore = 0;
-          // Primary heuristic for move ordering: captures are good
+
           const targetPiece = board[tr][tc];
-          if (targetPiece) {
+          const isCapture = !!targetPiece;
+          if (isCapture) {
             moveScore =
-              10 * (SCORES[targetPiece.type] || 0) - (SCORES[piece.type] || 0); // MVV-LVA approx
+              10 * (SCORES[targetPiece!.type] || 0) - (SCORES[piece.type] || 0);
           }
+
+          const destinationTerrain = terrain[tr][tc];
+          const originTerrain = terrain[r][c];
+
+          const isMovingToDesert = destinationTerrain === DESERT;
+          if (isMovingToDesert) {
+            moveScore += DESERT_MOVE_PENALTY;
+          }
+
+          const isCapturingOnDesert = isCapture && isMovingToDesert;
+          if (isCapturingOnDesert) {
+            moveScore += DESERT_CAPTURE_BONUS;
+          }
+
+          const isEscapingDesert =
+            originTerrain === DESERT && destinationTerrain !== DESERT;
+          if (isEscapingDesert) {
+            moveScore += ESCAPE_DESERT_BONUS;
+          }
+
+          const terrainIntel = CORE_TERRAIN_INTEL[destinationTerrain];
+          const hasSanctuary = !!terrainIntel?.sanctuaryUnits?.includes(
+            piece.type,
+          );
+          if (hasSanctuary) {
+            moveScore += SANCTUARY_MOVE_BONUS;
+          }
+
           allMoves.push({
             from: [r, c] as [number, number],
             to: [tr, tc] as [number, number],
@@ -45,8 +81,9 @@ export const getAllMoves = (
     }
   }
 
-  // Sort moves: highest score first
-  allMoves.sort((a, b) => b.score + Math.random() - (a.score + Math.random()));
+  const sortByScore = (a: { score: number }, b: { score: number }) =>
+    b.score + Math.random() - (a.score + Math.random());
+  allMoves.sort(sortByScore);
 
   return allMoves;
 };

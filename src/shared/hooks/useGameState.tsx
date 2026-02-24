@@ -211,12 +211,31 @@ export function useGameState(): GameStateHook {
               clientRef.current!.moves.ready(p);
             });
           }
+        } else {
+          // Fallback: update local state if no client exists (pre-engine setup)
+          if (pid) {
+            turnState.setReadyPlayers((prev) => ({ ...prev, [pid]: true }));
+
+            const nextNonReadyPlayer = activePlayers.find(
+              (p) => p !== pid && !readyPlayers[p],
+            );
+            if (nextNonReadyPlayer) {
+              turnState.setTurn(nextNonReadyPlayer);
+            }
+          } else {
+            const allReady: Record<string, boolean> = {};
+            activePlayers.forEach((p) => {
+              allReady[p] = true;
+            });
+            turnState.setReadyPlayers(allReady);
+          }
         }
       }
     },
     startGame: () => setIsStarted(true),
     multiplayer: {
       ...multiplayer,
+      readyPlayers,
       toggleReady: (_isReady: boolean) => {
         if (clientRef.current) clientRef.current.moves.ready();
       },

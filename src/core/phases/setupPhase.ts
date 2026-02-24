@@ -7,6 +7,8 @@ import {
   setClassicalFormation,
   applyChiGarden,
   resetToOmega,
+  resetTerrain,
+  resetUnits,
 } from "@/core/moves";
 import type { TrenchessState } from "@/shared/types/game";
 
@@ -25,6 +27,8 @@ export const setupPhase = {
     setClassicalFormation,
     applyChiGarden,
     resetToOmega,
+    resetTerrain,
+    resetUnits,
   },
   endIf: ({ G }: { G: TrenchessState }) => {
     return G.activePlayers.every((p: string) => G.readyPlayers[p]);
