@@ -1,5 +1,5 @@
 import { TERRAIN_TYPES } from "@/constants";
-import { buildBoard, buildClassicalBoard, buildTerrain, serializeGame } from "./utils";
+import { buildClassicalBoard, buildTerrain, serializeGame } from "./utils";
 
 export const createGreatDivide = () => {
   const terrain = buildTerrain();
@@ -10,7 +10,12 @@ export const createGreatDivide = () => {
     terrain[r][4] = TERRAIN_TYPES.TREES;
     terrain[r][7] = TERRAIN_TYPES.TREES;
   });
-  return serializeGame("2p-ew", buildClassicalBoard("2p-ew"), terrain, "The Great Divide");
+  return serializeGame(
+    "2p-ew",
+    buildClassicalBoard("2p-ew"),
+    terrain,
+    "The Great Divide",
+  );
 };
 
 export const createSherwood = () => {
@@ -50,7 +55,12 @@ export const createSherwood = () => {
     [6, 6],
   ];
   trees.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.TREES));
-  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Sherwood Forest");
+  return serializeGame(
+    "2p-ns",
+    buildClassicalBoard("2p-ns"),
+    terrain,
+    "Sherwood Forest",
+  );
 };
 
 export const createOasis = () => {
@@ -122,7 +132,12 @@ export const createSwampFever = () => {
     [10, 10],
   ];
   corners.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.PONDS));
-  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Swamp Fever");
+  return serializeGame(
+    "2p-ns",
+    buildClassicalBoard("2p-ns"),
+    terrain,
+    "Swamp Fever",
+  );
 };
 
 export const createTwinRivers = () => {
@@ -139,7 +154,12 @@ export const createTwinRivers = () => {
     terrain[r][1] = TERRAIN_TYPES.RUBBLE;
     terrain[r][10] = TERRAIN_TYPES.RUBBLE;
   }
-  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Twin Rivers");
+  return serializeGame(
+    "2p-ns",
+    buildClassicalBoard("2p-ns"),
+    terrain,
+    "Twin Rivers",
+  );
 };
 
 export const createSnakeRiver = () => {
@@ -168,7 +188,12 @@ export const createSnakeRiver = () => {
   [...wavy, ...fixed].forEach(
     ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.PONDS),
   );
-  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Snake River");
+  return serializeGame(
+    "2p-ns",
+    buildClassicalBoard("2p-ns"),
+    terrain,
+    "Snake River",
+  );
 };
 
 export const createForestTrails = () => {
@@ -208,7 +233,12 @@ export const createForestTrails = () => {
     [11, 6],
   ];
   points.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.TREES));
-  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Forest Trails");
+  return serializeGame(
+    "2p-ns",
+    buildClassicalBoard("2p-ns"),
+    terrain,
+    "Forest Trails",
+  );
 };
 
 export const createArchipelago = () => {
@@ -221,7 +251,12 @@ export const createArchipelago = () => {
       terrain[r][c + 1] = TERRAIN_TYPES.TREES;
     });
   });
-  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Archipelago");
+  return serializeGame(
+    "2p-ns",
+    buildClassicalBoard("2p-ns"),
+    terrain,
+    "Archipelago",
+  );
 };
 
 export const createMirageLake = () => {
@@ -245,7 +280,12 @@ export const createMirageLake = () => {
     [10, 6],
   ];
   fixed.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.DESERT));
-  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Mirage Lake");
+  return serializeGame(
+    "2p-ns",
+    buildClassicalBoard("2p-ns"),
+    terrain,
+    "Mirage Lake",
+  );
 };
 
 export const createIslandHopping = () => {
@@ -294,7 +334,12 @@ export const createIslandHopping = () => {
   ponds.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.PONDS));
   desert.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.DESERT));
   rubble.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE));
-  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Island Hopping");
+  return serializeGame(
+    "2p-ns",
+    buildClassicalBoard("2p-ns"),
+    terrain,
+    "Island Hopping",
+  );
 };
 
 export const createForestVsSwamp = () => {
@@ -320,7 +365,12 @@ export const createForestVsSwamp = () => {
   const southPonds = northTrees.map(([r, c]) => [11 - r, c]);
   northTrees.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.TREES));
   southPonds.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.PONDS));
-  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Forest vs Swamp");
+  return serializeGame(
+    "2p-ns",
+    buildClassicalBoard("2p-ns"),
+    terrain,
+    "Forest vs Swamp",
+  );
 };
 
 export const createMountainVsRiver = () => {
@@ -356,7 +406,12 @@ export const createMountainVsRiver = () => {
     [10, 8],
   ];
   river.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.PONDS));
-  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "Mountain vs River");
+  return serializeGame(
+    "2p-ns",
+    buildClassicalBoard("2p-ns"),
+    terrain,
+    "Mountain vs River",
+  );
 };
 
 export const createSiegeOfTheNorth = () => {
@@ -404,5 +459,10 @@ export const createTheGauntlet = () => {
     terrain[r][8] = TERRAIN_TYPES.PONDS;
     terrain[r][9] = TERRAIN_TYPES.TREES;
   }
-  return serializeGame("2p-ns", buildClassicalBoard("2p-ns"), terrain, "The Gauntlet");
+  return serializeGame(
+    "2p-ns",
+    buildClassicalBoard("2p-ns"),
+    terrain,
+    "The Gauntlet",
+  );
 };

@@ -24,11 +24,12 @@ describe("placePiece", () => {
   beforeEach(() => {
     vi.resetAllMocks();
 
-    const board: (BoardPiece | null)[][] = Array.from({ length: BOARD_SIZE }, () =>
-      Array(BOARD_SIZE).fill(null)
+    const board: (BoardPiece | null)[][] = Array.from(
+      { length: BOARD_SIZE },
+      () => Array(BOARD_SIZE).fill(null),
     );
     const terrain: TerrainType[][] = Array.from({ length: BOARD_SIZE }, () =>
-      Array(BOARD_SIZE).fill(TERRAIN_TYPES.FLAT)
+      Array(BOARD_SIZE).fill(TERRAIN_TYPES.FLAT),
     );
 
     G = {
@@ -48,14 +49,17 @@ describe("placePiece", () => {
     } as unknown as Ctx;
 
     // Default mock behaviors
-    (coreHelpers.resolvePlayerId as any).mockReturnValue("red");
-    (setupLogic.getPlayerCells as any).mockReturnValue([[0, 0], [0, 1]]);
-    (setupLogic.canPlaceUnit as any).mockReturnValue(true);
+    vi.mocked(coreHelpers.resolvePlayerId).mockReturnValue("red");
+    vi.mocked(setupLogic.getPlayerCells).mockReturnValue([
+      [0, 0],
+      [0, 1],
+    ]);
+    vi.mocked(setupLogic.canPlaceUnit).mockReturnValue(true);
   });
 
   it("should fail if player ID cannot be resolved", () => {
-    (coreHelpers.resolvePlayerId as any).mockReturnValue(null);
-    
+    vi.mocked(coreHelpers.resolvePlayerId).mockReturnValue(null);
+
     const result = placePiece({ G, ctx, playerID: "0" }, 0, 0, PIECES.PAWN);
     expect(result).toBe(INVALID_MOVE);
   });
@@ -69,18 +73,18 @@ describe("placePiece", () => {
   describe("Removing a piece (type === null)", () => {
     it("should remove the piece and add it back to inventory if it belongs to the player", () => {
       G.board[0][0] = { type: PIECES.QUEEN, player: "red" };
-      
+
       placePiece({ G, ctx, playerID: "0" }, 0, 0, null);
-      
+
       expect(G.board[0][0]).toBeNull();
       expect(G.inventory["red"]).toContain(PIECES.QUEEN);
     });
 
     it("should do nothing when trying to remove an empty square", () => {
       const initialInventorySize = G.inventory["red"].length;
-      
+
       placePiece({ G, ctx, playerID: "0" }, 0, 0, null);
-      
+
       expect(G.board[0][0]).toBeNull();
       expect(G.inventory["red"].length).toBe(initialInventorySize);
     });
@@ -88,9 +92,9 @@ describe("placePiece", () => {
     it("should do nothing when trying to remove an enemy piece", () => {
       G.board[0][0] = { type: PIECES.QUEEN, player: "blue" };
       const initialInventorySize = G.inventory["red"].length;
-      
+
       placePiece({ G, ctx, playerID: "0" }, 0, 0, null);
-      
+
       expect(G.board[0][0]).toEqual({ type: PIECES.QUEEN, player: "blue" });
       expect(G.inventory["red"].length).toBe(initialInventorySize);
     });
@@ -98,8 +102,8 @@ describe("placePiece", () => {
 
   describe("Placing a piece", () => {
     it("should fail if unit is not compatible with terrain", () => {
-      (setupLogic.canPlaceUnit as any).mockReturnValue(false);
-      
+      vi.mocked(setupLogic.canPlaceUnit).mockReturnValue(false);
+
       const result = placePiece({ G, ctx, playerID: "0" }, 0, 0, PIECES.PAWN);
       expect(result).toBe(INVALID_MOVE);
     });
@@ -111,7 +115,7 @@ describe("placePiece", () => {
 
     it("should place the piece and remove it from inventory", () => {
       placePiece({ G, ctx, playerID: "0" }, 0, 0, PIECES.PAWN);
-      
+
       expect(G.board[0][0]).toEqual({ type: PIECES.PAWN, player: "red" });
       expect(G.inventory["red"]).not.toContain(PIECES.PAWN);
       expect(G.inventory["red"]).toContain(PIECES.ROOK);
@@ -119,9 +123,9 @@ describe("placePiece", () => {
 
     it("should swap with an existing allied piece, placing it back in inventory", () => {
       G.board[0][0] = { type: PIECES.KNIGHT, player: "red" };
-      
+
       placePiece({ G, ctx, playerID: "0" }, 0, 0, PIECES.PAWN);
-      
+
       expect(G.board[0][0]).toEqual({ type: PIECES.PAWN, player: "red" });
       expect(G.inventory["red"]).toContain(PIECES.KNIGHT); // Old piece returned
       expect(G.inventory["red"]).not.toContain(PIECES.PAWN); // New piece placed

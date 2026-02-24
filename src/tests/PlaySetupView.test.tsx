@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { PlaySetupView } from "@/client/play/setup";
+import type { GameMode } from "@/shared/types";
 
 // Mocks
 const mockNavigate = vi.fn();
@@ -42,7 +43,9 @@ vi.mock("@/route.context", async () => {
 });
 
 vi.mock("@/shared/components/templates/RoutePageLayout", () => ({
-  default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  default: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
 }));
 
 describe("PlaySetupView", () => {
@@ -57,7 +60,7 @@ describe("PlaySetupView", () => {
     return render(
       <MemoryRouter>
         <PlaySetupView />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   };
 
@@ -71,7 +74,7 @@ describe("PlaySetupView", () => {
     renderSetup();
     const nsCard = screen.getByText(/North/i).closest("button")!;
     fireEvent.click(nsCard);
-    
+
     expect(mockRouteContext.setSelectedBoard).toHaveBeenCalledWith("2p-ns");
     expect(mockSetSearchParams).toHaveBeenCalled();
     const calledParams = mockSetSearchParams.mock.calls[0][0];
@@ -81,7 +84,7 @@ describe("PlaySetupView", () => {
   it("should render Step 2 (Preset Selection) when step=2 in search params", () => {
     currentSearchParams.set("step", "2");
     renderSetup();
-    
+
     expect(screen.getByText(/Omega/i)).toBeInTheDocument();
     expect(screen.getByText(/Pi/i)).toBeInTheDocument();
     expect(screen.getByText(/Chi/i)).toBeInTheDocument();
@@ -90,18 +93,18 @@ describe("PlaySetupView", () => {
 
   it("should call onStartGame when a preset is selected in step 2", () => {
     currentSearchParams.set("step", "2");
-    mockRouteContext.selectedBoard = "2p-ns" as any;
+    mockRouteContext.selectedBoard = "2p-ns" as GameMode;
     renderSetup();
-    
+
     const omegaCard = screen.getByText(/Omega/i).closest("button")!;
     fireEvent.click(omegaCard);
-    
+
     expect(mockRouteContext.setSelectedPreset).toHaveBeenCalledWith("custom");
     expect(mockRouteContext.onStartGame).toHaveBeenCalledWith(
       "2p-ns",
       "custom",
       expect.any(Object),
-      undefined
+      undefined,
     );
   });
 });

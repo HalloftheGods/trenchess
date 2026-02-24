@@ -8,6 +8,7 @@ export interface GameTheme {
   getIcon: (
     unit: ArmyUnit,
     className?: string,
+    size?: number | string,
     filled?: boolean,
   ) => React.ReactNode;
 }

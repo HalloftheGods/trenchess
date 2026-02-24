@@ -2,11 +2,12 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { HomeView } from "@/client/home";
-import { RouteProvider } from "@/route.context";
 
 // Mock the components that might cause issues due to missing context or complex structure
 vi.mock("@/shared/components/templates/RoutePageLayout", () => ({
-  default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  default: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
 }));
 
 vi.mock("@/shared/components/organisms/RoutePageHeader", () => ({
@@ -46,7 +47,7 @@ describe("HomeView", () => {
     return render(
       <MemoryRouter>
         <HomeView />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   };
 

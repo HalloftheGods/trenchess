@@ -12,7 +12,7 @@ import { getPlayerCells } from "@/core/setup/setupLogic";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { MAX_TERRAIN_PER_PLAYER } from "@/constants";
 import { getServerUrl } from "@hooks/useMultiplayer";
-import type { GameStateHook } from "@/shared/types";
+import type { GameStateHook, BoardPiece } from "@/shared/types";
 import { GameStartOverlay, ReadyUpPanel } from "../shared/components";
 
 interface MmoViewProps {
@@ -304,7 +304,11 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
                 onForfeit={() => game.forfeit(pid)}
                 onReady={() => game.ready(pid)}
                 capturedPieces={game.capturedBy[pid]}
-                desertedPieces={game.bgioState?.G.lostToDesert?.filter((p: any) => p.player === pid) || []}
+                desertedPieces={
+                  game.bgioState?.G.lostToDesert?.filter(
+                    (p: BoardPiece) => p.player === pid,
+                  ) || []
+                }
                 getIcon={game.getIcon}
                 alignment="left"
                 inCheck={game.inCheck && game.turn === pid}
@@ -370,7 +374,11 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
                 onForfeit={() => game.forfeit(pid)}
                 onReady={() => game.ready(pid)}
                 capturedPieces={game.capturedBy[pid]}
-                desertedPieces={game.bgioState?.G.lostToDesert?.filter((p: any) => p.player === pid) || []}
+                desertedPieces={
+                  game.bgioState?.G.lostToDesert?.filter(
+                    (p: BoardPiece) => p.player === pid,
+                  ) || []
+                }
                 getIcon={game.getIcon}
                 alignment="right"
                 inCheck={game.inCheck && game.turn === pid}

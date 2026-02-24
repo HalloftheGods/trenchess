@@ -2,8 +2,7 @@ import { INVALID_MOVE } from "boardgame.io/core";
 import { resolvePlayerId } from "@/core/setup/coreHelpers";
 import { getPlayerCells } from "@/core/setup/territory";
 import { TERRAIN_TYPES } from "@/constants/terrain";
-import { createInitialState } from "@/core/setup/initialization";
-import type { TrenchessState } from "@/shared/types";
+import type { TrenchessState, TerrainType, PieceType } from "@/shared/types";
 import type { Ctx } from "boardgame.io";
 
 /**
@@ -18,12 +17,12 @@ export const resetTerrain = (
   if (!playerId) return INVALID_MOVE;
 
   const myCells = getPlayerCells(playerId, G.mode);
-  const reclaimed: any[] = [];
+  const reclaimed: TerrainType[] = [];
 
   for (const [r, c] of myCells) {
     if (G.terrain[r][c] !== TERRAIN_TYPES.FLAT) {
       reclaimed.push(G.terrain[r][c]);
-      G.terrain[r][c] = TERRAIN_TYPES.FLAT as any;
+      G.terrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
     }
   }
 
@@ -45,7 +44,7 @@ export const resetUnits = (
   if (!playerId) return INVALID_MOVE;
 
   const myCells = getPlayerCells(playerId, G.mode);
-  const reclaimed: any[] = [];
+  const reclaimed: PieceType[] = [];
 
   for (const [r, c] of myCells) {
     const piece = G.board[r][c];
@@ -71,7 +70,7 @@ export const resetToOmega = (
 
   // 1. Reset Terrain
   resetTerrain({ G, playerID, ctx }, explicitPid);
-  
+
   // 2. Reset Units
   resetUnits({ G, playerID, ctx }, explicitPid);
 };

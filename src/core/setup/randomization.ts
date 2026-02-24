@@ -15,8 +15,11 @@ import { UNIT_BLUEPRINTS } from "../blueprints/units";
  * shuffle (Atom)
  * Standard Fisher-Yates shuffle implementation.
  */
-export const shuffle = <T>(array: T[], randomSource?: { Number: () => number }) => {
-  const getRand = () => randomSource ? randomSource.Number() : Math.random();
+export const shuffle = <T>(
+  array: T[],
+  randomSource?: { Number: () => number },
+) => {
+  const getRand = () => (randomSource ? randomSource.Number() : Math.random());
   for (let index = array.length - 1; index > 0; index--) {
     const randomIndex = Math.floor(getRand() * (index + 1));
     [array[index], array[randomIndex]] = [array[randomIndex], array[index]];
@@ -35,14 +38,14 @@ export const generateElementalTerrain = (
   mode: GameMode,
   randomSource?: { Number: () => number },
 ) => {
-  const getRand = () => randomSource ? randomSource.Number() : Math.random();
-  
+  const getRand = () => (randomSource ? randomSource.Number() : Math.random());
+
   const nextTerrainMap = TerraForm.generate({
     mode,
     seed: getRand(),
     symmetry: "rotational",
   });
-// ... (rest of the function using nextTerrainMap and players)
+  // ... (rest of the function using nextTerrainMap and players)
 
   const nextTerrainInventory: Record<string, TerrainType[]> = {};
   players.forEach((player) => {
@@ -53,14 +56,15 @@ export const generateElementalTerrain = (
     for (let col = 0; col < BOARD_SIZE; col++) {
       const pieceAtCell = currentBoard[row][col];
       const hasPieceAtCell = !!pieceAtCell;
-      
+
       if (hasPieceAtCell) {
         const pieceType = pieceAtCell!.type;
         const terrainAtCell = nextTerrainMap[row][col];
-        
+
         const isTerrainFlat = terrainAtCell === TERRAIN_TYPES.FLAT;
-        const isTerrainIncompatible = !isTerrainFlat && !canPlaceUnit(pieceType, terrainAtCell);
-        
+        const isTerrainIncompatible =
+          !isTerrainFlat && !canPlaceUnit(pieceType, terrainAtCell);
+
         if (isTerrainIncompatible) {
           nextTerrainMap[row][col] = TERRAIN_TYPES.FLAT as TerrainType;
         }
@@ -84,20 +88,21 @@ export const randomizeTerrain = (
   forceQuota?: number,
   randomSource?: { Number: () => number },
 ) => {
-  const getRand = () => randomSource ? randomSource.Number() : Math.random();
+  const getRand = () => (randomSource ? randomSource.Number() : Math.random());
   const nextTerrainMap = currentTerrain.map((row) => [...row]);
   const nextTerrainInventory = { ...terrainInventory };
 
   const isTwoPlayerMode = mode === "2p-ns" || mode === "2p-ew";
-  const terrainQuota = forceQuota !== undefined 
-    ? forceQuota 
-    : (isTwoPlayerMode
+  const terrainQuota =
+    forceQuota !== undefined
+      ? forceQuota
+      : isTwoPlayerMode
         ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-        : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER);
+        : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
 
   players.forEach((player) => {
     const myTerritoryCells = getPlayerCells(player, mode);
-    let playerTerrainPool = [...(nextTerrainInventory[player] || [])];
+    const playerTerrainPool = [...(nextTerrainInventory[player] || [])];
 
     // 1. Ensure pool can meet quota (fallback generation)
     if (playerTerrainPool.length < terrainQuota) {
@@ -137,7 +142,7 @@ export const randomizeTerrain = (
       // 3. Intelligent Terrain Placement
       const cellScores = availableCells.map(([r, c]) => {
         const piece = currentBoard[r][c];
-        
+
         // Block if piece is incompatible
         if (piece && !canPlaceUnit(piece.type, terrainTypeToPlace)) {
           return { r, c, score: -1000 };
@@ -155,9 +160,14 @@ export const randomizeTerrain = (
 
         // Distance from units (Synergy search)
         // Check neighbors for units that like this terrain
-        const neighbors = [[r-1,c], [r+1,c], [r,c-1], [r,c+1]];
+        const neighbors = [
+          [r - 1, c],
+          [r + 1, c],
+          [r, c - 1],
+          [r, c + 1],
+        ];
         neighbors.forEach(([nr, nc]) => {
-          if (nr>=0 && nr<12 && nc>=0 && nc<12) {
+          if (nr >= 0 && nr < 12 && nc >= 0 && nc < 12) {
             const neighborPiece = currentBoard[nr][nc];
             if (neighborPiece && neighborPiece.player === player) {
               const blueprint = UNIT_BLUEPRINTS[neighborPiece.type];
@@ -173,11 +183,13 @@ export const randomizeTerrain = (
       });
 
       cellScores.sort((a, b) => b.score - a.score);
-      const bestCell = cellScores.find(cell => cell.score > -500);
+      const bestCell = cellScores.find((cell) => cell.score > -500);
 
       if (bestCell) {
         nextTerrainMap[bestCell.r][bestCell.c] = terrainTypeToPlace;
-        const idx = availableCells.findIndex(([r, c]) => r === bestCell.r && c === bestCell.c);
+        const idx = availableCells.findIndex(
+          ([r, c]) => r === bestCell.r && c === bestCell.c,
+        );
         if (idx !== -1) availableCells.splice(idx, 1);
         currentPlacedCount++;
       } else {
@@ -203,7 +215,7 @@ export const randomizeUnits = (
   mode: GameMode,
   randomSource?: { Number: () => number },
 ) => {
-  const getRand = () => randomSource ? randomSource.Number() : Math.random();
+  const getRand = () => (randomSource ? randomSource.Number() : Math.random());
   const nextBoardState = currentBoard.map((row) => [...row]);
   const nextUnitInventory = { ...unitInventory };
 
@@ -215,7 +227,7 @@ export const randomizeUnits = (
     for (const [row, col] of myTerritoryCells) {
       const pieceAtCell = nextBoardState[row][col];
       const isOwnPieceAtCell = pieceAtCell && pieceAtCell.player === player;
-      
+
       if (isOwnPieceAtCell) {
         playerUnitPool.push(pieceAtCell!.type);
         nextBoardState[row][col] = null;
@@ -231,7 +243,7 @@ export const randomizeUnits = (
     });
 
     const remainingInventory: PieceType[] = [];
-    
+
     for (const unitTypeToPlace of playerUnitPool) {
       // Score every cell for this unit
       const cellScores = availableCells.map(([r, c]) => {
@@ -240,7 +252,7 @@ export const randomizeUnits = (
         if (!isCompatible) return { r, c, score: -1000 };
 
         let score = 0;
-        
+
         // Sanctuary / Blueprint Advantages
         const blueprint = UNIT_BLUEPRINTS[unitTypeToPlace];
         if (blueprint?.sanctuaryTerrain?.includes(terrain)) {
@@ -250,7 +262,7 @@ export const randomizeUnits = (
         // Row positioning (Pawns forward, Kings back)
         const isNorthPlayer = player === "red" || player === "yellow";
         const rank = isNorthPlayer ? r : 11 - r;
-        
+
         if (unitTypeToPlace === "pawn") score += rank * 5; // Pawns like the front
         if (unitTypeToPlace === "king") score -= rank * 10; // Kings stay back
         if (unitTypeToPlace === "rook") score -= rank * 2; // Rooks like back ranks
@@ -268,12 +280,17 @@ export const randomizeUnits = (
       // Sort by score descending
       cellScores.sort((a, b) => b.score - a.score);
 
-      const bestCell = cellScores.find(cell => cell.score > -500);
-      
+      const bestCell = cellScores.find((cell) => cell.score > -500);
+
       if (bestCell) {
-        nextBoardState[bestCell.r][bestCell.c] = { type: unitTypeToPlace, player: player };
+        nextBoardState[bestCell.r][bestCell.c] = {
+          type: unitTypeToPlace,
+          player: player,
+        };
         // Remove from available
-        const idx = availableCells.findIndex(([r, c]) => r === bestCell.r && c === bestCell.c);
+        const idx = availableCells.findIndex(
+          ([r, c]) => r === bestCell.r && c === bestCell.c,
+        );
         if (idx !== -1) availableCells.splice(idx, 1);
       } else {
         remainingInventory.push(unitTypeToPlace);

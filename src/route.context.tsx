@@ -5,9 +5,10 @@ import type {
   PreviewConfig,
   SeedItem,
   MultiplayerState,
+  ArmyUnit,
 } from "@/shared/types";
 
-interface RouteContextType {
+export interface RouteContextType {
   hoveredMenu: string | null;
   setHoveredMenu: (menu: string | null) => void;
   darkMode: boolean;

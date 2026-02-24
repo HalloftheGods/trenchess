@@ -1,11 +1,10 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { PIECES, BOARD_SIZE, TERRAIN_TYPES } from "@/constants";
-import type { TrenchessState, BoardPiece, TerrainType } from "@/shared/types";
-import { 
-  randomizeTerrain, 
-  randomizeUnits, 
-  setClassicalFormation, 
-  applyChiGarden 
+import type { TrenchessState } from "@/shared/types";
+import {
+  randomizeTerrain,
+  randomizeUnits,
+  setClassicalFormation,
+  applyChiGarden,
 } from "@/core/moves/bulkSetup";
 import { createInitialState } from "@/core/setup/initialization";
 import type { Ctx } from "boardgame.io";
@@ -35,36 +34,38 @@ describe("Bulk Setup Reroll Logic", () => {
     } as unknown as Ctx;
   });
 
-  const getBoardSnapshot = (state: TrenchessState) => JSON.stringify(state.board);
-  const getTerrainSnapshot = (state: TrenchessState) => JSON.stringify(state.terrain);
+  const getBoardSnapshot = (state: TrenchessState) =>
+    JSON.stringify(state.board);
+  const getTerrainSnapshot = (state: TrenchessState) =>
+    JSON.stringify(state.terrain);
 
   it("should regenerate terrain on repeated randomizeTerrain calls", () => {
     randomizeTerrain({ G, ctx });
     const firstTerrain = getTerrainSnapshot(G);
-    
+
     randomizeTerrain({ G, ctx });
     const secondTerrain = getTerrainSnapshot(G);
-    
+
     expect(firstTerrain).not.toBe(secondTerrain);
   });
 
   it("should regenerate units on repeated randomizeUnits calls", () => {
     randomizeUnits({ G, ctx });
     const firstBoard = getBoardSnapshot(G);
-    
+
     randomizeUnits({ G, ctx });
     const secondBoard = getBoardSnapshot(G);
-    
+
     expect(firstBoard).not.toBe(secondBoard);
   });
 
   it("should regenerate layout on repeated setClassicalFormation (Pi) calls", () => {
     setClassicalFormation({ G, ctx });
     const firstTerrain = getTerrainSnapshot(G);
-    
+
     setClassicalFormation({ G, ctx });
     const secondTerrain = getTerrainSnapshot(G);
-    
+
     // Pi always uses Classical units, but terrain should be different
     expect(firstTerrain).not.toBe(secondTerrain);
   });
@@ -72,18 +73,18 @@ describe("Bulk Setup Reroll Logic", () => {
   it("should cycle through library layouts on repeated applyChiGarden calls", () => {
     applyChiGarden({ G, ctx });
     const firstTerrain = getTerrainSnapshot(G);
-    
+
     // Call multiple times to increase chance of getting a different one
     // (since library might be small or we might get same one by chance)
     let different = false;
-    for(let i=0; i<5; i++) {
-        applyChiGarden({ G, ctx });
-        if (getTerrainSnapshot(G) !== firstTerrain) {
-            different = true;
-            break;
-        }
+    for (let i = 0; i < 5; i++) {
+      applyChiGarden({ G, ctx });
+      if (getTerrainSnapshot(G) !== firstTerrain) {
+        different = true;
+        break;
+      }
     }
-    
+
     expect(different).toBe(true);
   });
 });

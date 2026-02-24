@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useMultiplayer } from "@/shared/hooks/useMultiplayer";
-import { LobbyClient } from "boardgame.io/client";
 
 // Mock boardgame.io LobbyClient
 const mockLobbyMethods = {
@@ -13,7 +12,7 @@ const mockLobbyMethods = {
 };
 
 vi.mock("boardgame.io/client", () => ({
-  LobbyClient: function() {
+  LobbyClient: function () {
     return mockLobbyMethods;
   },
 }));
@@ -34,7 +33,9 @@ describe("useMultiplayer", () => {
 
     mockLobbyMethods.listMatches.mockResolvedValue({ matches: mockMatches });
     mockLobbyMethods.createMatch.mockResolvedValue({ matchID: "new-room" });
-    mockLobbyMethods.joinMatch.mockResolvedValue({ playerCredentials: "test-creds" });
+    mockLobbyMethods.joinMatch.mockResolvedValue({
+      playerCredentials: "test-creds",
+    });
     mockLobbyMethods.getMatch.mockResolvedValue(mockMatches[0]);
   });
 
