@@ -188,6 +188,7 @@ const ZenGardenView: React.FC<ZenGardenViewProps> = ({
           placementTerrain={game.placementTerrain}
           setupMode={game.setupMode}
           winner={game.winner}
+          winnerReason={game.winnerReason}
           inCheck={game.inCheck}
           lastMove={game.lastMove}
           getIcon={game.getIcon}

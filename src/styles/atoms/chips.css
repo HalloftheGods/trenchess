@@ -44,3 +44,43 @@
   transform: translate(calc((0.7071 - 1)*100%), -100%) rotate(-45deg);
   transform-origin: 100% 100%;
 }
+
+@utility ribbon-pennant-right {
+  --f: .5em;
+  --r: .8em;
+  position: absolute;
+  top: calc(-1 * var(--f));
+  right: 20px;
+  padding: .2em;
+  padding-bottom: calc(var(--f) + 1.2em);
+  border-right: var(--f) solid rgba(0,0,0,0.3);
+  clip-path: polygon(
+    calc(100% - var(--f)) 0,
+    0 0,
+    0 100%,
+    calc(50% - var(--f)/2) calc(100% - var(--r)),
+    calc(100% - var(--f)) 100%,
+    calc(100% - var(--f)) var(--f),
+    100% var(--f)
+  );
+}
+
+@utility ribbon-pennant-left {
+  --f: .5em;
+  --r: .8em;
+  position: absolute;
+  top: calc(-1 * var(--f));
+  left: 20px;
+  padding: .2em;
+  padding-bottom: calc(var(--f) + 1.2em);
+  border-left: var(--f) solid rgba(0,0,0,0.3);
+  clip-path: polygon(
+    var(--f) 0,
+    100% 0,
+    100% 100%,
+    calc(50% + var(--f)/2) calc(100% - var(--r)),
+    var(--f) 100%,
+    var(--f) var(--f),
+    0 var(--f)
+  );
+}

@@ -240,6 +240,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
           <VictoryOverlay
             winner={winner}
             reason={winnerReason || undefined}
+            localPlayerName={localPlayerName}
+            board={board}
             getPlayerDisplayName={getPlayerDisplayName}
             setGameState={setGameState}
           />

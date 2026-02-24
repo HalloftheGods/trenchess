@@ -369,6 +369,9 @@ const App = () => {
     { path: ROUTES.DEBUG_LOADING, element: <LoadingFallback /> },
     { path: ROUTES.DEBUG_404, element: <LazyRoutes.home.notFound /> },
     { path: ROUTES.DEBUG_500, element: <DebugErrorThrower /> },
+    { path: ROUTES.DEBUG_START, element: <LazyRoutes.debug.start /> },
+    { path: ROUTES.DEBUG_WIN, element: <LazyRoutes.debug.win /> },
+    { path: ROUTES.DEBUG_LOSE, element: <LazyRoutes.debug.lose /> },
     { path: "*", element: <LazyRoutes.home.notFound /> },
   ];
 

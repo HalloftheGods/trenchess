@@ -3,5 +3,9 @@
 }
 
 @utility modal-container {
-  @apply text-center p-20 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-[5rem];
+  @apply text-center 
+  p-20 
+  bg-white dark:bg-slate-900 
+  border border-slate-200 dark:border-white/10 
+  rounded-[2rem];
 }

@@ -37,6 +37,9 @@ export const ROUTES = {
   DEBUG_LOADING: "/debug/loading",
   DEBUG_404: "/debug/404",
   DEBUG_500: "/debug/500",
+  DEBUG_START: "/debug/start",
+  DEBUG_WIN: "/debug/win",
+  DEBUG_LOSE: "/debug/lose",
 } as const;
 
 /** Shorthand for lazy-loading a route component. */
@@ -96,5 +99,10 @@ export const LazyRoutes = {
   },
   tutorial: {
     view: lazy(() => import("@/client/tutorial")),
+  },
+  debug: {
+    start: lazy(() => import("@/client/debug/StartDebug")),
+    win: lazy(() => import("@/client/debug/WinDebug")),
+    lose: lazy(() => import("@/client/debug/LoseDebug")),
   },
 };
