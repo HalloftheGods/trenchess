@@ -128,7 +128,7 @@ export const UNIT_THEME_DATA = {
   },
 };
 
-export const UNIT_INTEL: Record<string, Record<string, unknown>> = {
+export const UNIT_INTEL: Record<string, any> = {
   [KING]: {
     title: "Equinox King",
     subtitle: "The Sovereign",

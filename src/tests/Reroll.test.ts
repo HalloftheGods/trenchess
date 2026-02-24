@@ -27,6 +27,8 @@ describe("Bulk Setup Reroll Logic", () => {
       activePlayers: players,
       readyPlayers: {},
       playerMap: { "0": "red", "1": "blue" },
+      winner: null,
+      winnerReason: null,
     };
 
     ctx = {

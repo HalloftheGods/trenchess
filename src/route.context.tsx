@@ -25,6 +25,7 @@ export interface RouteContextType {
   onTutorial?: () => void;
   onLogoClick?: () => void;
   onZenGarden?: () => void;
+  setPlayerTypes: (types: Record<string, "human" | "computer">) => void;
   onStartGame: (
     mode: GameMode,
     preset: string | null,

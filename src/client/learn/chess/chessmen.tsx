@@ -27,7 +27,7 @@ import { INITIAL_ARMY, PIECES, UNIT_DETAILS, unitColorMap } from "@/constants";
 export const LearnChessmenView: React.FC = () => {
   const navigate = useNavigate();
   const { unitType } = useParams<{ unitType: string }>();
-  const { setHoveredMenu, darkMode } = useRouteContext();
+  const { setHoveredMenu, darkMode, getIcon } = useRouteContext();
 
   // Define piece groups
   const CHESS_PIECES = [
