@@ -24,8 +24,8 @@ export const TerrainIconBadge: React.FC<TerrainIconBadgeProps> = ({
   if (terrainInfo) {
     const Icon = terrainInfo.icon;
     let badgeType = "terrain-badge-blue";
-    if (terrainKey === TERRAIN_TYPES.RUBBLE) badgeType = "terrain-badge-red";
-    if (terrainKey === TERRAIN_TYPES.TREES) badgeType = "terrain-badge-green";
+    if (terrainKey === TERRAIN_TYPES.MOUNTAINS) badgeType = "terrain-badge-red";
+    if (terrainKey === TERRAIN_TYPES.FORESTS) badgeType = "terrain-badge-green";
     if (terrainKey === TERRAIN_TYPES.DESERT) badgeType = "terrain-badge-amber";
 
     return (
@@ -43,10 +43,10 @@ export const TerrainIconBadge: React.FC<TerrainIconBadgeProps> = ({
   let badgeType = "terrain-badge-blue";
   let IconComp: React.ElementType = Waves;
 
-  if (terrainKey === TERRAIN_TYPES.RUBBLE) {
+  if (terrainKey === TERRAIN_TYPES.MOUNTAINS) {
     badgeType = "terrain-badge-red";
     IconComp = Mountain;
-  } else if (terrainKey === TERRAIN_TYPES.TREES) {
+  } else if (terrainKey === TERRAIN_TYPES.FORESTS) {
     badgeType = "terrain-badge-green";
     IconComp = Trees;
   } else if (terrainKey === TERRAIN_TYPES.DESERT) {

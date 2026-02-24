@@ -21,10 +21,7 @@ export type TerrainType =
   | "forests"
   | "swamps"
   | "mountains"
-  | "desert"
-  | "trees"
-  | "ponds"
-  | "rubble";
+  | "desert";
 
 export type PieceType =
   | "pawn"

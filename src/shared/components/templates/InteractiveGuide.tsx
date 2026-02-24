@@ -5,7 +5,6 @@ import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
 import ForwardButton from "@molecules/ForwardButton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { UNIT_INTEL } from "@/constants";
 
 import type { PreviewConfig } from "@/shared/types/game";
 

@@ -118,17 +118,17 @@ export function useBoardPreview({
       if (pieceAt && !hideUnits) {
         if (
           pieceAt.pieceType === PIECES.ROOK &&
-          (t === TERRAIN_TYPES.RUBBLE || t === TERRAIN_TYPES.TREES)
+          (t === TERRAIN_TYPES.MOUNTAINS || t === TERRAIN_TYPES.FORESTS)
         )
           return null;
         if (
           pieceAt.pieceType === PIECES.BISHOP &&
-          (t === TERRAIN_TYPES.PONDS || t === TERRAIN_TYPES.RUBBLE)
+          (t === TERRAIN_TYPES.SWAMPS || t === TERRAIN_TYPES.MOUNTAINS)
         )
           return null;
         if (
           pieceAt.pieceType === PIECES.KNIGHT &&
-          (t === TERRAIN_TYPES.TREES || t === TERRAIN_TYPES.PONDS)
+          (t === TERRAIN_TYPES.FORESTS || t === TERRAIN_TYPES.SWAMPS)
         )
           return null;
         if (pieceAt.pieceType === PIECES.PAWN) return t;

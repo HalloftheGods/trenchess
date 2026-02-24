@@ -121,9 +121,9 @@ export class TerraForm {
     };
 
     const allTypes = [
-      TERRAIN_TYPES.TREES,
-      TERRAIN_TYPES.PONDS,
-      TERRAIN_TYPES.RUBBLE,
+      TERRAIN_TYPES.FORESTS,
+      TERRAIN_TYPES.SWAMPS,
+      TERRAIN_TYPES.MOUNTAINS,
       TERRAIN_TYPES.DESERT,
     ];
 
@@ -151,9 +151,9 @@ export class TerraForm {
 
       // Start a new cluster
       let baseSize = 4;
-      if (featureType === TERRAIN_TYPES.TREES) baseSize = 6; // Forests are larger
-      if (featureType === TERRAIN_TYPES.PONDS) baseSize = 3; // Swamps are smaller/scattered
-      if (featureType === TERRAIN_TYPES.RUBBLE) baseSize = 5; // Mountains are medium/long
+      if (featureType === TERRAIN_TYPES.FORESTS) baseSize = 6; // Forests are larger
+      if (featureType === TERRAIN_TYPES.SWAMPS) baseSize = 3; // Swamps are smaller/scattered
+      if (featureType === TERRAIN_TYPES.MOUNTAINS) baseSize = 5; // Mountains are medium/long
       if (featureType === TERRAIN_TYPES.DESERT) baseSize = 7; // Deserts sprawl
 
       const clusterSize = Math.min(

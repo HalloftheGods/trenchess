@@ -2,18 +2,11 @@ import type { TerrainType, TerrainIntel } from "@/shared/types";
 import { PIECES } from "./pieces";
 
 export const TERRAIN_TYPES: Record<string, TerrainType> = {
-  FLAT: "flat", // Plains - Welcome to all
-
-  // Legacy
-  DESERT: "desert", // Desert - One turn only
-  FORESTS: "forests", // Forests - Bishop Sanctuary
-  SWAMPS: "swamps", // Swamps - Rook Sanctuary
-  MOUNTAINS: "mountains", // Mountains - Knight Sanctuary
-
-  // Deprecated
-  TREES: "forests",
-  PONDS: "swamps",
-  RUBBLE: "mountains",
+  FLAT: "flat",
+  FORESTS: "forests",
+  SWAMPS: "swamps",
+  MOUNTAINS: "mountains",
+  DESERT: "desert",
 } as const;
 
 const { FORESTS, SWAMPS, MOUNTAINS, DESERT } = TERRAIN_TYPES;

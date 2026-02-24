@@ -36,7 +36,7 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
       [r, c - 2],
       [r, c + 2],
     ],
-    sanctuaryTerrain: ["rubble", "trees", "ponds"],
+    sanctuaryTerrain: ["mountains", "forests", "swamps"],
   },
   [QUEEN]: {
     type: QUEEN,
@@ -64,7 +64,7 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
         [2, -1],
         [2, 1],
       ].map(([dr, dc]) => [r + dr, c + dc]) as [number, number][],
-    sanctuaryTerrain: ["rubble", "trees", "ponds"],
+    sanctuaryTerrain: ["mountains", "forests", "swamps"],
   },
   [ROOK]: {
     type: ROOK,
@@ -81,7 +81,7 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
       [r + 1, c + 1],
       [r - 1, c + 1],
     ],
-    sanctuaryTerrain: ["ponds"],
+    sanctuaryTerrain: ["swamps"],
   },
   [BISHOP]: {
     type: BISHOP,
@@ -103,7 +103,7 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
       [r, c - 2],
       [r, c + 2],
     ],
-    sanctuaryTerrain: ["trees"],
+    sanctuaryTerrain: ["forests"],
   },
   [KNIGHT]: {
     type: KNIGHT,
@@ -123,7 +123,7 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
       [r, c - 3],
       [r, c + 3],
     ],
-    sanctuaryTerrain: ["rubble"],
+    sanctuaryTerrain: ["mountains"],
   },
   [PAWN]: {
     type: PAWN,
@@ -139,6 +139,6 @@ export const UNIT_BLUEPRINTS: Record<string, UnitBlueprint> = {
       [r + 2, c - 1],
       [r + 2, c + 1],
     ],
-    sanctuaryTerrain: ["rubble", "trees", "ponds"],
+    sanctuaryTerrain: ["mountains", "forests", "swamps"],
   },
 };

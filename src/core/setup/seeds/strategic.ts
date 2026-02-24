@@ -7,7 +7,7 @@ export const createMountainPass = () => {
   const rows = [4, 5, 6, 7];
   rows.forEach((r) => {
     cols.forEach((c) => {
-      terrain[r][c] = TERRAIN_TYPES.RUBBLE;
+      terrain[r][c] = TERRAIN_TYPES.MOUNTAINS;
     });
   });
   return serializeGame(
@@ -111,7 +111,7 @@ export const createTheRockies = () => {
     [9, 9],
   ];
   [...xShape, ...mountainForts].forEach(
-    ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE),
+    ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.MOUNTAINS),
   );
   return serializeGame(
     "2p-ns",
@@ -160,7 +160,7 @@ export const createCrossfire = () => {
     [10, 10],
   ];
   [...walls, ...bunkers].forEach(
-    ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE),
+    ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.MOUNTAINS),
   );
   return serializeGame(
     "2p-ns",
@@ -209,7 +209,7 @@ export const createTheCage = () => {
     [6, 6],
   ];
   [...diagonals, ...box].forEach(
-    ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE),
+    ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.MOUNTAINS),
   );
   return serializeGame(
     "2p-ns",
@@ -262,7 +262,7 @@ export const createTheArena = () => {
     [11, 6],
   ];
   [...ring, ...inner, ...corners, ...edges].forEach(
-    ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE),
+    ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.MOUNTAINS),
   );
   return serializeGame(
     "2p-ns",
@@ -283,7 +283,7 @@ export const createCrossroads = () => {
     for (let c = 2; c <= 5; c++) blocks.push([r, c]);
     for (let c = 6; c <= 9; c++) blocks.push([r, c]);
   }
-  blocks.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.TREES));
+  blocks.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.FORESTS));
   return serializeGame(
     "2p-ns",
     buildClassicalBoard("2p-ns"),
@@ -346,17 +346,17 @@ export const createTargetPractice = () => {
 export const createTheWall = () => {
   const terrain = buildTerrain();
   for (let c = 0; c < 12; c++) {
-    terrain[2][c] = TERRAIN_TYPES.RUBBLE;
-    terrain[9][c] = TERRAIN_TYPES.RUBBLE;
+    terrain[2][c] = TERRAIN_TYPES.MOUNTAINS;
+    terrain[9][c] = TERRAIN_TYPES.MOUNTAINS;
   }
-  terrain[5][0] = TERRAIN_TYPES.RUBBLE;
-  terrain[6][0] = TERRAIN_TYPES.RUBBLE;
-  terrain[5][11] = TERRAIN_TYPES.RUBBLE;
-  terrain[6][11] = TERRAIN_TYPES.RUBBLE;
-  terrain[5][5] = TERRAIN_TYPES.RUBBLE;
-  terrain[5][6] = TERRAIN_TYPES.RUBBLE;
-  terrain[6][5] = TERRAIN_TYPES.RUBBLE;
-  terrain[6][6] = TERRAIN_TYPES.RUBBLE;
+  terrain[5][0] = TERRAIN_TYPES.MOUNTAINS;
+  terrain[6][0] = TERRAIN_TYPES.MOUNTAINS;
+  terrain[5][11] = TERRAIN_TYPES.MOUNTAINS;
+  terrain[6][11] = TERRAIN_TYPES.MOUNTAINS;
+  terrain[5][5] = TERRAIN_TYPES.MOUNTAINS;
+  terrain[5][6] = TERRAIN_TYPES.MOUNTAINS;
+  terrain[6][5] = TERRAIN_TYPES.MOUNTAINS;
+  terrain[6][6] = TERRAIN_TYPES.MOUNTAINS;
   return serializeGame(
     "2p-ns",
     buildClassicalBoard("2p-ns"),
@@ -368,13 +368,13 @@ export const createTheWall = () => {
 export const createTheFortress = () => {
   const terrain = buildTerrain();
   for (let c = 4; c <= 7; c++) {
-    terrain[4][c] = TERRAIN_TYPES.RUBBLE;
-    terrain[7][c] = TERRAIN_TYPES.RUBBLE;
+    terrain[4][c] = TERRAIN_TYPES.MOUNTAINS;
+    terrain[7][c] = TERRAIN_TYPES.MOUNTAINS;
   }
-  terrain[5][4] = TERRAIN_TYPES.RUBBLE;
-  terrain[6][4] = TERRAIN_TYPES.RUBBLE;
-  terrain[5][7] = TERRAIN_TYPES.RUBBLE;
-  terrain[6][7] = TERRAIN_TYPES.RUBBLE;
+  terrain[5][4] = TERRAIN_TYPES.MOUNTAINS;
+  terrain[6][4] = TERRAIN_TYPES.MOUNTAINS;
+  terrain[5][7] = TERRAIN_TYPES.MOUNTAINS;
+  terrain[6][7] = TERRAIN_TYPES.MOUNTAINS;
   const center = [
     [5, 5],
     [5, 6],
@@ -382,10 +382,10 @@ export const createTheFortress = () => {
     [6, 6],
   ];
   for (let c = 2; c <= 9; c++) {
-    terrain[2][c] = TERRAIN_TYPES.RUBBLE;
-    terrain[9][c] = TERRAIN_TYPES.RUBBLE;
+    terrain[2][c] = TERRAIN_TYPES.MOUNTAINS;
+    terrain[9][c] = TERRAIN_TYPES.MOUNTAINS;
   }
-  center.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE));
+  center.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.MOUNTAINS));
   return serializeGame(
     "2p-ns",
     buildClassicalBoard("2p-ns"),
@@ -398,7 +398,7 @@ export const createCheckeredPast = () => {
   const terrain = buildTerrain();
   for (const r of [3, 4, 7, 8]) {
     for (let c = 0; c < 12; c++) {
-      if ((r + c) % 2 !== 0) terrain[r][c] = TERRAIN_TYPES.PONDS;
+      if ((r + c) % 2 !== 0) terrain[r][c] = TERRAIN_TYPES.SWAMPS;
     }
   }
   const corners = [
@@ -414,7 +414,7 @@ export const createCheckeredPast = () => {
     [6, 6],
   ];
   [...corners, ...guards].forEach(
-    ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.PONDS),
+    ([r, c]) => (terrain[r][c] = TERRAIN_TYPES.SWAMPS),
   );
   return serializeGame(
     "2p-ns",
@@ -430,7 +430,7 @@ export const createTheGrid = () => {
   const cols = [1, 2, 4, 5, 6, 7, 9, 10];
   rows.forEach((r) => {
     cols.forEach((c) => {
-      terrain[r][c] = TERRAIN_TYPES.RUBBLE;
+      terrain[r][c] = TERRAIN_TYPES.MOUNTAINS;
     });
   });
   return serializeGame(
@@ -444,14 +444,14 @@ export const createTheGrid = () => {
 export const createCornerConflicts = () => {
   const terrain = buildTerrain();
   for (let r = 0; r <= 3; r++) {
-    terrain[r][0] = TERRAIN_TYPES.RUBBLE;
-    terrain[r][1] = TERRAIN_TYPES.TREES;
-    terrain[11 - r][0] = TERRAIN_TYPES.RUBBLE;
-    terrain[11 - r][1] = TERRAIN_TYPES.TREES;
-    terrain[r][11] = TERRAIN_TYPES.RUBBLE;
-    terrain[r][10] = TERRAIN_TYPES.TREES;
-    terrain[11 - r][11] = TERRAIN_TYPES.RUBBLE;
-    terrain[11 - r][10] = TERRAIN_TYPES.TREES;
+    terrain[r][0] = TERRAIN_TYPES.MOUNTAINS;
+    terrain[r][1] = TERRAIN_TYPES.FORESTS;
+    terrain[11 - r][0] = TERRAIN_TYPES.MOUNTAINS;
+    terrain[11 - r][1] = TERRAIN_TYPES.FORESTS;
+    terrain[r][11] = TERRAIN_TYPES.MOUNTAINS;
+    terrain[r][10] = TERRAIN_TYPES.FORESTS;
+    terrain[11 - r][11] = TERRAIN_TYPES.MOUNTAINS;
+    terrain[11 - r][10] = TERRAIN_TYPES.FORESTS;
   }
   return serializeGame(
     "2p-ns",
@@ -464,12 +464,12 @@ export const createCornerConflicts = () => {
 export const createTheVoid = () => {
   const terrain = buildTerrain();
   for (let c = 2; c <= 9; c++) {
-    terrain[2][c] = TERRAIN_TYPES.RUBBLE;
-    terrain[9][c] = TERRAIN_TYPES.RUBBLE;
+    terrain[2][c] = TERRAIN_TYPES.MOUNTAINS;
+    terrain[9][c] = TERRAIN_TYPES.MOUNTAINS;
   }
   for (let r = 3; r <= 8; r++) {
-    terrain[r][2] = TERRAIN_TYPES.RUBBLE;
-    terrain[r][9] = TERRAIN_TYPES.RUBBLE;
+    terrain[r][2] = TERRAIN_TYPES.MOUNTAINS;
+    terrain[r][9] = TERRAIN_TYPES.MOUNTAINS;
   }
   const center = [
     [5, 5],
@@ -477,7 +477,7 @@ export const createTheVoid = () => {
     [6, 5],
     [6, 6],
   ];
-  center.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE));
+  center.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.MOUNTAINS));
   return serializeGame(
     "2p-ns",
     buildClassicalBoard("2p-ns"),
@@ -522,7 +522,7 @@ export const createTheMaze = () => {
     [4, 5],
     [7, 6],
   ];
-  walls.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.RUBBLE));
+  walls.forEach(([r, c]) => (terrain[r][c] = TERRAIN_TYPES.MOUNTAINS));
   return serializeGame(
     "2p-ns",
     buildClassicalBoard("2p-ns"),

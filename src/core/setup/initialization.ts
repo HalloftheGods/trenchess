@@ -47,9 +47,9 @@ export const createInitialState = (
     inventory[player] = playerUnitList;
 
     const playerTerrainList = [
-      ...Array(terrainQuota).fill(TERRAIN_TYPES.TREES),
-      ...Array(terrainQuota).fill(TERRAIN_TYPES.PONDS),
-      ...Array(terrainQuota).fill(TERRAIN_TYPES.RUBBLE),
+      ...Array(terrainQuota).fill(TERRAIN_TYPES.FORESTS),
+      ...Array(terrainQuota).fill(TERRAIN_TYPES.SWAMPS),
+      ...Array(terrainQuota).fill(TERRAIN_TYPES.MOUNTAINS),
       ...Array(terrainQuota).fill(TERRAIN_TYPES.DESERT),
     ] as TerrainType[];
     

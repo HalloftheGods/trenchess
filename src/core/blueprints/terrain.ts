@@ -12,12 +12,12 @@ export const TERRAIN_BLUEPRINTS: Record<string, TerrainBlueprint> = {
     allowedUnits: [...COMMON_UNITS, BISHOP],
     blockedUnits: [ROOK, KNIGHT],
   },
-  [TERRAIN_TYPES.PONDS]: {
+  [TERRAIN_TYPES.SWAMPS]: {
     sanctuaryUnits: [...COMMON_UNITS, ROOK],
     allowedUnits: [...COMMON_UNITS, ROOK],
     blockedUnits: [BISHOP, KNIGHT],
   },
-  [TERRAIN_TYPES.RUBBLE]: {
+  [TERRAIN_TYPES.MOUNTAINS]: {
     sanctuaryUnits: [...COMMON_UNITS, KNIGHT],
     allowedUnits: [...COMMON_UNITS, KNIGHT],
     blockedUnits: [ROOK, BISHOP],

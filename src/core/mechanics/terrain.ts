@@ -84,9 +84,9 @@ export function canUnitTraverseTerrain(
  */
 export function getTraversableTerrains(unitType: PieceType): TerrainType[] {
   const allTerrainTypes: TerrainType[] = [
-    TERRAIN_TYPES.TREES as TerrainType,
-    TERRAIN_TYPES.PONDS as TerrainType,
-    TERRAIN_TYPES.RUBBLE as TerrainType,
+    TERRAIN_TYPES.FORESTS as TerrainType,
+    TERRAIN_TYPES.SWAMPS as TerrainType,
+    TERRAIN_TYPES.MOUNTAINS as TerrainType,
     TERRAIN_TYPES.DESERT as TerrainType,
   ];
 

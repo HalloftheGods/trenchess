@@ -136,9 +136,9 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
         if (terrainCount < quota) {
           allReady = false;
           newTerrainInventory[p] = [
-            ...Array(quota).fill(TERRAIN_TYPES.TREES),
-            ...Array(quota).fill(TERRAIN_TYPES.PONDS),
-            ...Array(quota).fill(TERRAIN_TYPES.RUBBLE),
+            ...Array(quota).fill(TERRAIN_TYPES.FORESTS),
+            ...Array(quota).fill(TERRAIN_TYPES.SWAMPS),
+            ...Array(quota).fill(TERRAIN_TYPES.MOUNTAINS),
             ...Array(quota).fill(TERRAIN_TYPES.DESERT),
           ] as TerrainType[];
         } else {

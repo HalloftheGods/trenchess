@@ -81,19 +81,24 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
               ([ar, ac]) => ar === r && ac === c,
             );
 
-            // In standard chess, only Pawns have distinct attack capture patterns.
-            const isClassicAttack =
-              isAttackFound && !isNewMoveFound && unitType === PIECES.PAWN;
-            const isNewAttack = isAttackFound && !isClassicAttack;
+            // Distinguish between classic and new attack patterns
+            // For Pawns, classic is r-1, new is r+2. For others, we use move patterns as a guide.
+            const isPawn = unitType === PIECES.PAWN;
+            const isNewAttackFound = isPawn
+              ? isAttackFound && r !== centerRow - 1
+              : isAttackFound && isNewMoveFound;
+            const isClassicAttackFound = isAttackFound && !isNewAttackFound;
 
             const isMove = mode !== "new" && isMoveFound;
             const isNewMove = mode !== "classic" && isNewMoveFound;
+
+            // A square is shown as an 'Attack' (red) only if it's NOT a primary move square in the current mode
             const isAttack =
               mode === "both"
-                ? isAttackFound
+                ? isAttackFound && !isMoveFound && !isNewMoveFound
                 : mode === "classic"
-                  ? isClassicAttack
-                  : isNewAttack;
+                  ? isClassicAttackFound && !isMoveFound
+                  : isNewAttackFound && !isNewMoveFound;
 
             const isPromotionRow = unitType === PIECES.PAWN && r === 0;
 
@@ -120,7 +125,7 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500/40" />
                   </div>
                 )}
-                
+
                 {/* Center Piece */}
                 {isCenter && unit && (
                   getIcon(unit, "dark:text-slate-900 text-white", 18)
@@ -128,13 +133,24 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
 
                 {/* Move Indicators - Square-y style */}
                 {(isMove || isNewMove || isAttack) && (
-                  <div className={`absolute inset-[1px] z-10 rounded-sm shadow-sm flex items-center justify-center transition-all ${
-                    isAttack ? "bg-brand-red" :
-                    isNewMove ? "bg-amber-500 animate-pulse" :
-                    isTerrainCell ? (terrainInfo?.color?.headerBg || "bg-emerald-500") :
-                    "bg-emerald-500"
-                  }`}>
-                    {isAttack && <Columns4 size={12} strokeWidth={3} className="text-white/90" />}
+                  <div
+                    className={`absolute inset-[1px] z-10 rounded-sm shadow-sm flex items-center justify-center transition-all ${
+                      isNewMove
+                        ? "bg-amber-500 animate-pulse"
+                        : isAttack
+                          ? "bg-brand-red"
+                          : isTerrainCell
+                            ? terrainInfo?.color?.headerBg || "bg-emerald-500"
+                            : "bg-emerald-500"
+                    }`}
+                  >
+                    {isAttack && (
+                      <Columns4
+                        size={12}
+                        strokeWidth={3}
+                        className="text-white/90"
+                      />
+                    )}
                     {isTerrainCell && isProtected && (
                       <Shield size={12} className="text-white fill-white/20" />
                     )}
@@ -157,7 +173,6 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
                   </div>
                 )}
               </div>
-            );
             );
           },
         )}
