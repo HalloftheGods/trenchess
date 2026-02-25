@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { canPlaceUnit } from "@/core/setup/setupLogic";
+import { canPlaceUnit, getCellOwner } from "@/core/setup/setupLogic";
 import { TERRAIN_TYPES } from "@/constants";
 import type {
   ZenGardenInteraction,
@@ -7,6 +7,7 @@ import type {
   PlacementManager,
   TerrainType,
   PieceType,
+  BgioClient,
 } from "@/shared/types";
 import type { TrenchessState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
@@ -15,6 +16,7 @@ export function useZenGardenInteraction(
   bgioState: { G: TrenchessState; ctx: Ctx } | null,
   core: GameCore,
   placementManager: PlacementManager,
+  clientRef?: React.MutableRefObject<BgioClient | undefined>,
 ): ZenGardenInteraction {
   const { boardState, turnState } = core;
   const { setBoard, setTerrain, setInventory, setTerrainInventory } =
@@ -94,8 +96,36 @@ export function useZenGardenInteraction(
 
   const handleZenGardenClick = useCallback(
     (r: number, c: number, overrideTurn?: string) => {
+      const isEngineActive = !!bgioState && !!clientRef?.current;
       const startTurn = overrideTurn || turn;
+      const isGamemaster = core.configState.gameState === "gamemaster";
 
+      if (isEngineActive) {
+        const client = clientRef!.current!;
+        if (placementPiece === ("TRASH" as unknown as PieceType)) {
+          if (board[r][c]) {
+            client.moves.placePiece(r, c, null, board[r][c]!.player, isGamemaster);
+          }
+          return;
+        }
+        if (placementTerrain === TERRAIN_TYPES.FLAT) {
+          if (terrain[r][c] !== TERRAIN_TYPES.FLAT) {
+            client.moves.placeTerrain(r, c, TERRAIN_TYPES.FLAT, undefined, isGamemaster);
+          }
+          return;
+        }
+        if (placementPiece) {
+          client.moves.placePiece(r, c, placementPiece, startTurn, isGamemaster);
+          return;
+        }
+        if (placementTerrain) {
+          client.moves.placeTerrain(r, c, placementTerrain, startTurn, isGamemaster);
+          return;
+        }
+        return;
+      }
+
+      // Fallback to local state (legacy Zen Garden behavior)
       if (placementPiece === ("TRASH" as unknown as PieceType)) {
         if (board[r][c]) {
           const removed = board[r][c]!;

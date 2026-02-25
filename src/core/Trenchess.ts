@@ -7,7 +7,19 @@ import type {
 } from "@/shared/types/game";
 import { setupPhase } from "@/core/phases/setupPhase";
 import { playPhase } from "@/core/phases/playPhase";
-import { forfeit } from "@/core/moves/forfeit";
+import {
+  placePiece,
+  placeTerrain,
+  ready,
+  randomizeTerrain,
+  randomizeUnits,
+  setClassicalFormation,
+  applyChiGarden,
+  resetToOmega,
+  resetTerrain,
+  resetUnits,
+  forfeit,
+} from "@/core/moves";
 
 export const Trenchess: Game<
   TrenchessState,
@@ -82,14 +94,41 @@ export const Trenchess: Game<
       playerMap,
       winner: null,
       winnerReason: null,
+      isGamemaster: data?.isGamemaster || false,
+      isGamemasterFinished: false,
     };
   },
 
   moves: {
     forfeit,
+    finishGamemaster: ({ G }) => {
+      G.isGamemasterFinished = true;
+    },
   },
 
   phases: {
+    gamemaster: {
+      next: "setup",
+      turn: { activePlayers: { all: "setup" } },
+      moves: {
+        placePiece,
+        placeTerrain,
+        ready,
+        randomizeTerrain,
+        randomizeUnits,
+        setClassicalFormation,
+        applyChiGarden,
+        resetToOmega,
+        resetTerrain,
+        resetUnits,
+        forfeit,
+        finishGamemaster: ({ G }) => {
+          G.isGamemasterFinished = true;
+        },
+      },
+      // Skip by default unless isGamemaster is true
+      endIf: ({ G }) => !G.isGamemaster || G.isGamemasterFinished,
+    },
     setup: setupPhase,
     play: playPhase,
   },

@@ -14,7 +14,6 @@ import {
 import type { TrenchessState } from "@/shared/types/game";
 
 export const setupPhase = {
-  start: true,
   next: "play",
   turn: {
     activePlayers: { all: "setup" },

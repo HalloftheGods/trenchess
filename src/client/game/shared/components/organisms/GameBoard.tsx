@@ -83,8 +83,10 @@ const GameBoard: React.FC<GameBoardProps> = ({
     height: string;
     label: string;
   }[] = [];
-  if (gameState === "setup") {
-    if (mode === "2p-ns") {
+  if (gameState === "setup" || gameState === "gamemaster") {
+    if (gameState === "gamemaster") {
+      // Architect sees all - no fog
+    } else if (mode === "2p-ns") {
       // Fog the half that ISN'T the current player's
       if (perspectiveTurn === "red") {
         fogRegions.push({
@@ -151,7 +153,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
 
   // Helper: determine if a specific cell is in opponent territory during setup
   const isCellFogged = (r: number, c: number): boolean => {
-    if (gameState !== "setup") return false;
+    if (gameState !== "setup" && gameState !== "gamemaster") return false;
+    if (gameState === "gamemaster") return false;
     if (mode === "2p-ns") {
       return perspectiveTurn === "red" ? r >= 6 : r < 6;
     } else if (mode === "2p-ew") {

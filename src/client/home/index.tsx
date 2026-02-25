@@ -1,6 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Baby, BookOpen, Shell, Trees } from "lucide-react";
+import {
+  Baby,
+  BookOpen,
+  Shell,
+  Trees,
+  Wand2,
+  ShieldCheck,
+  BrickWallShield,
+  Wand,
+  Pencil,
+  Medal,
+  Shovel,
+} from "lucide-react";
 import { useRouteContext } from "@/route.context";
 import {
   DualToneSwords,
@@ -16,8 +28,13 @@ import TrenchessText from "@/shared/components/atoms/TrenchessText";
 
 export const HomeView: React.FC = () => {
   const navigate = useNavigate();
-  const { darkMode, setHoveredMenu, setTerrainSeed, onZenGarden } =
-    useRouteContext();
+  const {
+    darkMode,
+    setHoveredMenu,
+    setTerrainSeed,
+    onZenGarden,
+    onGamemaster,
+  } = useRouteContext();
 
   return (
     <RoutePageLayout>
@@ -73,23 +90,17 @@ export const HomeView: React.FC = () => {
           onMouseEnter={() => setHoveredMenu("create")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
-            mode: null,
-            protocol: "terrainiffic",
+            mode: "4p",
+            protocol: "zen-garden",
             showIcons: true,
             hideUnits: true,
           }}
           isSelected={false}
           darkMode={darkMode}
           title="Lay Trenchess"
-          // titleNode={
-          //   <>
-          //     The <TrenchessText />
-          //     &nbsp; <span className="text-emerald-500">Gardens</span>
-          //   </>
-          // }
-          description="Add to the Community Labrynth"
-          Icon={Trees}
-          HoverIcon={Shell}
+          description="Contribute to the Labyrinth Gardens"
+          Icon={Shovel}
+          HoverIcon={BrickWallShield}
           color="emerald"
           className="h-full w-full"
         />

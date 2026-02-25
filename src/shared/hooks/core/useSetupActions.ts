@@ -229,8 +229,8 @@ export function useSetupActions(
           row.map(() => "flat" as TerrainType),
         );
         matchState.board = matchState.board.map((row) => row.map(() => null));
-        matchState.terrainInventory = {};
-        setGameState("zen-garden");
+        // Keep terrainInventory from createInitialState
+        setGameState("gamemaster");
       } else {
         setGameState("setup");
       }

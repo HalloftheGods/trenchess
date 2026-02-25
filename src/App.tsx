@@ -170,15 +170,14 @@ const App = () => {
         navigate(ROUTES.HOME);
       },
       onZenGarden: () => {
-        initGameWithPreset("2p-ns", "terrainiffic", {
-          red: "human",
-          blue: "human",
-        });
+        initGameWithPreset("4p", "zen-garden");
         startGame();
-        const target = multiplayer?.roomId
-          ? `${ROUTES.GAME}/${multiplayer.roomId}`
-          : ROUTES.GAME_MMO;
-        navigate(target);
+        navigate(ROUTES.GAMEMASTER);
+      },
+      onGamemaster: () => {
+        initGameWithPreset("4p", "zen-garden");
+        startGame();
+        navigate(ROUTES.GAMEMASTER);
       },
       onStartGame: (
         startGameMode: GameMode,
@@ -337,6 +336,10 @@ const App = () => {
     {
       path: ROUTES.GAME_MMO,
       element: <LazyRoutes.game.mmo game={game} />,
+    },
+    {
+      path: ROUTES.GAMEMASTER,
+      element: <LazyRoutes.game.gamemaster game={game} />,
     },
     {
       path: ROUTES.GAME,

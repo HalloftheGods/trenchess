@@ -1,5 +1,5 @@
 import { INVALID_MOVE } from "boardgame.io/core";
-import { canPlaceUnit, getPlayerCells } from "@/core/setup/setupLogic";
+import { canPlaceUnit, getPlayerCells, getCellOwner } from "@/core/setup/setupLogic";
 import { resolvePlayerId } from "@/core/setup/coreHelpers";
 import type { PieceType, TrenchessState, GameMode } from "@/shared/types";
 import type { Ctx } from "boardgame.io";
@@ -84,8 +84,17 @@ export const placePiece = (
   col: number,
   type: PieceType | null,
   explicitPid?: string,
+  isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(gameState, context, playerID, explicitPid);
+  let playerId = resolvePlayerId(gameState, context, playerID, explicitPid);
+
+  if (isGM) {
+    const cellOwner = getCellOwner(row, col, gameState.mode);
+    if (cellOwner) {
+      playerId = cellOwner;
+    }
+  }
+
   const hasPlayerId = !!playerId;
   if (!hasPlayerId) return INVALID_MOVE;
 
@@ -95,7 +104,8 @@ export const placePiece = (
     row,
     col,
   );
-  if (!isPlayerPlacingInOwnTerritory) return INVALID_MOVE;
+  
+  if (!isGM && !isPlayerPlacingInOwnTerritory) return INVALID_MOVE;
 
   const isRemovingPiece = type === null;
   if (isRemovingPiece) {

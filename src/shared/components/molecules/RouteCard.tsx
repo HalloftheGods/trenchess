@@ -11,6 +11,7 @@ type ColorVariant =
   | "amber"
   | "fuchsia"
   | "purple"
+  | "indigo"
   | "slate";
 
 interface MenuCardProps {
@@ -135,6 +136,17 @@ const COLOR_STYLES: Record<
       "bg-purple-50/50 hover:bg-purple-100/50 dark:bg-purple-500/[0.08] dark:hover:bg-purple-500/[0.15]",
     solidBg:
       "bg-purple-100 hover:bg-purple-200 dark:bg-purple-900/50 dark:hover:bg-purple-900/80",
+  },
+  indigo: {
+    border: "border-indigo-500/20 hover:border-indigo-500/50",
+    shadow: "hover:shadow-indigo-500/20",
+    gradient:
+      "from-indigo-500/0 to-indigo-500/0 group-hover:from-indigo-500/10 group-hover:to-indigo-500/20",
+    iconColor: "text-indigo-500",
+    tintedBg:
+      "bg-indigo-50/50 hover:bg-indigo-100/50 dark:bg-indigo-500/[0.08] dark:hover:bg-indigo-500/[0.15]",
+    solidBg:
+      "bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900/50 dark:hover:bg-indigo-900/80",
   },
   slate: {
     border: "border-slate-500/20 hover:border-slate-500/50",

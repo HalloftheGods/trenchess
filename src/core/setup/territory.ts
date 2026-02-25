@@ -55,3 +55,34 @@ export const getPlayerCells = (
   
   return cells;
 };
+
+/**
+ * getCellOwner
+ * Returns the player ID who owns a specific cell based on the game mode.
+ */
+export const getCellOwner = (
+  row: number,
+  col: number,
+  mode: GameMode,
+): string | null => {
+  const isTopHalf = row < 6;
+  const isBottomHalf = row >= 6;
+  const isLeftHalf = col < 6;
+  const isRightHalf = col >= 6;
+
+  if (mode === "2p-ns") {
+    return isTopHalf ? "red" : "blue";
+  }
+
+  if (mode === "2p-ew") {
+    return isLeftHalf ? "green" : "yellow";
+  }
+
+  // 4p mode
+  if (isTopHalf && isLeftHalf) return "red";
+  if (isTopHalf && isRightHalf) return "yellow";
+  if (isBottomHalf && isLeftHalf) return "green";
+  if (isBottomHalf && isRightHalf) return "blue";
+
+  return null;
+};

@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 import {
+  DualToneNS,
+  DualToneEW,
+  QuadTone,
+  AllianceTone,
+} from "@/shared/components/atoms/RouteIcons";
+import {
   Lock,
   LockOpen,
   Dices,
@@ -10,6 +16,7 @@ import {
   ShieldQuestion,
   Omega,
   Eye,
+  ShieldAlert,
 } from "lucide-react";
 import { ActionBarPalette } from "../molecules/ActionBarPalette";
 import { ActionBarSlot } from "../atoms/ActionBarSlot";
@@ -63,12 +70,18 @@ interface MmoActionBarProps {
   applyChiGarden: () => void;
   // Omega Reset
   resetToOmega: () => void;
+
+  // Gamemaster Controls
+  perspective?: string;
+  onPerspectiveChange?: (pid: string) => void;
+  side?: string;
+  onSideChange?: (side: string) => void;
+  mode?: string;
+  setMode?: (mode: string) => void;
 }
 
 /**
  * MmoActionBar — MMO-style sticky top bar.
- * Glassmorphism backdrop with Trench (terrain) + Chess (units) palettes,
- * lock toggles, randomizer, and theme controls.
  */
 const MmoActionBar: React.FC<MmoActionBarProps> = ({
   gameState,
@@ -92,6 +105,12 @@ const MmoActionBar: React.FC<MmoActionBarProps> = ({
   setClassicalFormation,
   applyChiGarden,
   resetToOmega,
+  perspective,
+  onPerspectiveChange,
+  side,
+  onSideChange,
+  mode,
+  setMode,
 }) => {
   const [trenchLocked, setTrenchLocked] = useState(false);
   const [chessLocked, setChessLocked] = useState(false);
@@ -344,6 +363,105 @@ const MmoActionBar: React.FC<MmoActionBarProps> = ({
             Theme
           </span>
         </div>
+
+        {gameState === "gamemaster" && (
+          <>
+            <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/10 to-transparent mx-2" />
+            
+            <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-2">
+                    {setMode && (
+                        <>
+                            <ActionBarSlot 
+                                label="North/South" 
+                                active={mode === "2p-ns"} 
+                                onClick={() => setMode("2p-ns")}
+                            >
+                                <DualToneNS size={20} />
+                            </ActionBarSlot>
+                            <ActionBarSlot 
+                                label="East/West" 
+                                active={mode === "2p-ew"} 
+                                onClick={() => setMode("2p-ew")}
+                            >
+                                <DualToneEW size={20} />
+                            </ActionBarSlot>
+                            <ActionBarSlot 
+                                label="4-Player" 
+                                active={mode === "4p"} 
+                                onClick={() => setMode("4p")}
+                            >
+                                <QuadTone size={20} />
+                            </ActionBarSlot>
+                            <ActionBarSlot 
+                                label="Alliance" 
+                                active={mode === "2v2"} 
+                                onClick={() => setMode("2v2")}
+                            >
+                                <AllianceTone size={20} />
+                            </ActionBarSlot>
+                        </>
+                    )}
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                    Active Board
+                </span>
+            </div>
+
+            <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/10 to-transparent mx-2" />
+
+            <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-2">
+                    <ActionBarSlot 
+                        label="North" 
+                        active={perspective === "north"} 
+                        onClick={() => onPerspectiveChange?.("north")}
+                    >
+                        <div className={`w-3 h-3 rounded-full bg-red-600 ${perspective === "north" ? "animate-pulse" : "opacity-40"}`} />
+                    </ActionBarSlot>
+                    <ActionBarSlot 
+                        label="South" 
+                        active={perspective === "south"} 
+                        onClick={() => onPerspectiveChange?.("south")}
+                    >
+                        <div className={`w-3 h-3 rounded-full bg-blue-600 ${perspective === "south" ? "animate-pulse" : "opacity-40"}`} />
+                    </ActionBarSlot>
+                    <div className="w-px h-6 bg-white/10 mx-1" />
+                    <ActionBarSlot 
+                        label="Red" 
+                        active={side === "red"} 
+                        onClick={() => onSideChange?.("red")}
+                    >
+                        <div className={`w-3 h-3 rounded-full bg-red-600 ${side === "red" ? "animate-pulse" : "opacity-40"}`} />
+                    </ActionBarSlot>
+                    <ActionBarSlot 
+                        label="Blue" 
+                        active={side === "blue"} 
+                        onClick={() => onSideChange?.("blue")}
+                    >
+                        <div className={`w-3 h-3 rounded-full bg-blue-600 ${side === "blue" ? "animate-pulse" : "opacity-40"}`} />
+                    </ActionBarSlot>
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                    POV
+                </span>
+            </div>
+
+            <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/10 to-transparent mx-2" />
+
+            <div className="flex flex-col items-center gap-1 px-4">
+                <div className="flex items-center gap-2">
+                    <ShieldAlert size={14} className="text-indigo-500 animate-pulse" />
+                    <span className="text-indigo-600 dark:text-indigo-400 font-black text-[10px] uppercase tracking-[0.3em]">
+                        GM PROTOCOL
+                    </span>
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                    Status
+                </span>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -31,6 +31,7 @@ export const ROUTES = {
   RULES: "/rules",
   STATS: "/stats",
   ZEN: "/zen",
+  GAMEMASTER: "/game/gamemaster",
   TUTORIAL: "/tutorial",
   LIBRARY: "/library",
 
@@ -56,6 +57,7 @@ export const LazyRoutes = {
   game: {
     screen: lazy(() => import("@/client/game/index")),
     mmo: lazy(() => import("@/client/game/mmo")),
+    gamemaster: lazy(() => import("@/client/game/gamemaster/index")),
     library: lazy(
       () => import("@/client/game/shared/components/organisms/SeedLibrary"),
     ),

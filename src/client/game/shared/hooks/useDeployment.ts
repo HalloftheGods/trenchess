@@ -62,7 +62,7 @@ export function useDeployment({
     }
   }
 
-  const isZen = gameState === "zen-garden";
+  const isZen = gameState === "zen-garden" || gameState === "gamemaster";
 
   const handleSave = () => {
     if (!board || !terrain) return;

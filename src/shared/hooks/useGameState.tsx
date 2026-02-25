@@ -51,6 +51,7 @@ export function useGameState(): GameStateHook {
       terrain: fallbackTerrain,
       inventory: fallbackInventory,
       terrainInventory: fallbackTerrainInventory,
+      isGamemaster: configState.gameState === "gamemaster",
     }),
     [
       mode,
@@ -58,6 +59,7 @@ export function useGameState(): GameStateHook {
       fallbackTerrain,
       fallbackInventory,
       fallbackTerrainInventory,
+      configState.gameState,
     ],
   );
 
@@ -104,7 +106,7 @@ export function useGameState(): GameStateHook {
     : turnState.winnerReason;
 
   const gameState = isEngineActive
-    ? (bgioState!.ctx.phase as "setup" | "play")
+    ? (bgioState!.ctx.phase as "setup" | "play" | "gamemaster")
     : isStarted
       ? configState.gameState
       : "menu";
@@ -144,6 +146,7 @@ export function useGameState(): GameStateHook {
     bgioState,
     core,
     placementManager,
+    clientRef,
   );
 
   const setupActions = useSetupActions(
@@ -239,6 +242,9 @@ export function useGameState(): GameStateHook {
       }
     },
     startGame: () => setIsStarted(true),
+    finishGamemaster: () => {
+      if (clientRef.current) clientRef.current.moves.finishGamemaster();
+    },
     forfeit: (pid?: string) => {
       if (clientRef.current) {
         clientRef.current.moves.forfeit(pid);

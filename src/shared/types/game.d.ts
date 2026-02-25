@@ -4,10 +4,12 @@ export type GameMode = "2p-ns" | "2p-ew" | "4p" | "2v2";
 export type GameState =
   | "menu"
   | "how-to-play"
+  | "gamemaster"
   | "setup"
   | "play"
   | "finished"
   | "zen-garden"
+  | "gamemaster"
   | "library"
   | "tutorial"
   | "ctf-guide"
@@ -57,6 +59,8 @@ export interface TrenchessState {
   playerMap: Record<string, string>;
   winner: string | null;
   winnerReason: GameOverReason;
+  isGamemaster?: boolean;
+  isGamemasterFinished?: boolean;
 }
 
 export interface TrenchessSetupData {
@@ -65,6 +69,8 @@ export interface TrenchessSetupData {
   terrain?: TerrainType[][];
   inventory?: Record<string, PieceType[]>;
   terrainInventory?: Record<string, TerrainType[]>;
+  isGamemaster?: boolean;
+  isGamemasterFinished?: boolean;
 }
 
 export interface PlayerConfig {

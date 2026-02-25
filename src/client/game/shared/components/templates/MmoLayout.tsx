@@ -11,6 +11,7 @@ interface MmoLayoutProps {
   debugPanel?: ReactNode;
   leftPanel?: ReactNode;
   rightPanel?: ReactNode;
+  centerHeader?: ReactNode;
   children?: ReactNode;
 }
 
@@ -25,19 +26,29 @@ export const MmoLayout: React.FC<MmoLayoutProps> = ({
   debugPanel,
   leftPanel,
   rightPanel,
+  centerHeader,
   children,
 }) => {
   return (
     <div
       className={`min-h-screen bg-slate-50 dark:bg-[#050b15] text-slate-800 dark:text-slate-100 flex flex-col items-center justify-center overflow-hidden relative ${darkMode ? "dark" : ""}`}
     >
-      {/* Brand Logo */}
+      {/* Brand Logo - Top Left */}
       <div
         onClick={onLogoClick}
-        className="absolute top-6 left-8 z-[120] cursor-pointer group select-none active:scale-95 transition-transform"
+        className="absolute top-6 left-8 z-[120] cursor-pointer group select-none active:scale-95 transition-transform pointer-events-auto"
       >
         <TrenchessText className="text-2xl drop-shadow-[0_4px_12px_rgba(0,0,0,0.2)] dark:drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] opacity-80 group-hover:opacity-100 transition-opacity" />
       </div>
+
+      {/* Center Header */}
+      {centerHeader && (
+        <div className="absolute top-6 left-0 right-0 z-[120] flex flex-col items-center pointer-events-none">
+          <div className="pointer-events-auto">
+            {centerHeader}
+          </div>
+        </div>
+      )}
 
       {children}
       {/* Sticky top bar */}

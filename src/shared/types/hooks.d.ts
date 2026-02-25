@@ -121,8 +121,20 @@ export interface GameConfigState {
 export interface BgioClient {
   moves: {
     ready: (pid?: string) => void;
-    placePiece: (r: number, c: number, type: PieceType | null) => void;
-    placeTerrain: (r: number, c: number, type: TerrainType) => void;
+    placePiece: (
+      r: number,
+      c: number,
+      type: PieceType | null,
+      explicitPid?: string,
+      isGM?: boolean,
+    ) => void;
+    placeTerrain: (
+      r: number,
+      c: number,
+      type: TerrainType,
+      explicitPid?: string,
+      isGM?: boolean,
+    ) => void;
     movePiece: (from: [number, number], to: [number, number]) => void;
     forfeit: (pid?: string) => void;
     randomizeTerrain: (pid?: string) => void;
@@ -132,6 +144,7 @@ export interface BgioClient {
     resetToOmega: (pid?: string) => void;
     resetTerrain: (pid?: string) => void;
     resetUnits: (pid?: string) => void;
+    finishGamemaster: () => void;
   };
   stop: () => void;
   start: () => void;
@@ -234,6 +247,7 @@ export interface GameStateHook
   bgioState: { G: TrenchessState; ctx: Ctx } | null;
   lastMove: TrenchessState["lastMove"];
   ready: (pid?: string) => void;
+  finishGamemaster: () => void;
   forfeit: (pid?: string) => void;
   startGame: () => void;
   multiplayer: MultiplayerState;
