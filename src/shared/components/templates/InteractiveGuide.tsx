@@ -12,7 +12,7 @@ export interface Slide {
   id: string;
   title: string;
   subtitle?: string;
-  description: React.ReactNode;
+  description?: React.ReactNode;
   leftContent?: React.ReactNode;
   icon: React.ReactNode | React.ElementType;
   sideContent?: React.ReactNode;

@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import type { RouteConfig } from "@/constants/routes";
-import type { GameStateHook, GameMode } from "@/shared/types";
+import type { GameStateHook, GameMode, GameState } from "@/shared/types";
 
 export const GAME_PATHS = {
   GAME: "/game",
@@ -29,7 +29,7 @@ export const getGameRoutes = (
   },
   handleBackToMenu: () => void,
   mode: GameMode,
-  initFromSeed: (seed: string, targetState?: string | null) => boolean,
+  initFromSeed: (seed: string, targetState?: GameState) => boolean,
 ): RouteConfig[] => [
   { path: GAME_PATHS.GAME_MMO, element: <GameLazyRoutes.mmo game={game} /> },
   {

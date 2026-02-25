@@ -1,0 +1,22 @@
+
+> battle-chess@v26.02.24.rc02 lint /home/xopher/www/x/battle-chess
+> eslint .
+
+
+/home/xopher/www/x/battle-chess/src/client/game/shared/components/molecules/GamemasterPanel.tsx
+  3:10  error  'PLAYER_CONFIGS' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/xopher/www/x/battle-chess/src/shared/hooks/useRouteContextValue.ts
+   66:9  warning  The 'onTutorial' function makes the dependencies of useMemo Hook (at line 169) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'onTutorial' in its own useCallback() Hook        react-hooks/exhaustive-deps
+   71:9  warning  The 'onLogoClick' function makes the dependencies of useMemo Hook (at line 169) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'onLogoClick' in its own useCallback() Hook      react-hooks/exhaustive-deps
+   76:9  warning  The 'onZenGarden' function makes the dependencies of useMemo Hook (at line 169) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'onZenGarden' in its own useCallback() Hook      react-hooks/exhaustive-deps
+   86:9  warning  The 'onGamemaster' function makes the dependencies of useMemo Hook (at line 169) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'onGamemaster' in its own useCallback() Hook    react-hooks/exhaustive-deps
+   96:9  warning  The 'onStartGame' function makes the dependencies of useMemo Hook (at line 169) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'onStartGame' in its own useCallback() Hook      react-hooks/exhaustive-deps
+  127:9  warning  The 'onCtwGuide' function makes the dependencies of useMemo Hook (at line 169) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'onCtwGuide' in its own useCallback() Hook        react-hooks/exhaustive-deps
+  128:9  warning  The 'onChessGuide' function makes the dependencies of useMemo Hook (at line 169) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'onChessGuide' in its own useCallback() Hook    react-hooks/exhaustive-deps
+  129:9  warning  The 'onTrenchGuide' function makes the dependencies of useMemo Hook (at line 169) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'onTrenchGuide' in its own useCallback() Hook  react-hooks/exhaustive-deps
+  131:9  warning  The 'onOpenLibrary' function makes the dependencies of useMemo Hook (at line 169) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'onOpenLibrary' in its own useCallback() Hook  react-hooks/exhaustive-deps
+
+✖ 10 problems (1 error, 9 warnings)
+
+ ELIFECYCLE  Command failed with exit code 1.

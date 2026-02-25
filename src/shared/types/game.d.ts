@@ -9,7 +9,6 @@ export type GameState =
   | "play"
   | "finished"
   | "zen-garden"
-  | "gamemaster"
   | "library"
   | "tutorial"
   | "ctf-guide"

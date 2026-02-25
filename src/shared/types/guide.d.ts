@@ -4,13 +4,21 @@ export interface Slide {
   id: string;
   title: string;
   subtitle?: string;
-  description: React.ReactNode;
+  description?: React.ReactNode;
   leftContent?: React.ReactNode;
-  icon: React.ElementType;
+  icon: React.ReactNode | React.ElementType;
   sideContent?: React.ReactNode;
   infoContent?: React.ReactNode;
   previewConfig: unknown;
-  color: "red" | "blue" | "emerald" | "amber" | "slate" | "indigo";
+  color:
+    | "red"
+    | "blue"
+    | "emerald"
+    | "amber"
+    | "slate"
+    | "indigo"
+    | "purple"
+    | "orange";
   topLabel?: string;
 }
 

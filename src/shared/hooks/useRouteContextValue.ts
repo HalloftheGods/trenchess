@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import type {
@@ -21,9 +21,10 @@ export const useRouteContextValue = ({
   seeds,
   previewSeedIndex,
   setPreviewSeedIndex,
-}: UseRouteContextValueProps): Partial<RouteContextType> => {
+}: UseRouteContextValueProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isStarting, setIsStarting] = useState(false);
 
   const {
     darkMode,
@@ -43,14 +44,17 @@ export const useRouteContextValue = ({
     activePlayers,
   } = game;
 
-  const getIconWrapper: RouteContextType["getIcon"] = (
-    unit: ArmyUnit,
-    className?: string,
-    size?: number | string,
-    filled?: boolean,
-  ) => {
-    return getIcon(unit, className, size, filled);
-  };
+  const getIconWrapper: RouteContextType["getIcon"] = useCallback(
+    (
+      unit: ArmyUnit,
+      className?: string,
+      size?: number | string,
+      filled?: boolean,
+    ) => {
+      return getIcon(unit, className, size, filled);
+    },
+    [getIcon],
+  );
 
   const isOnline = !!multiplayer?.roomId;
   const playMode = isOnline
@@ -59,49 +63,94 @@ export const useRouteContextValue = ({
       ? "local"
       : "practice";
 
-  const onTutorial = () => {
+  const onTutorial = useCallback(() => {
     setGameState("tutorial");
     navigate(ROUTES.TUTORIAL);
-  };
+  }, [setGameState, navigate]);
 
-  const onLogoClick = () => {
+  const onLogoClick = useCallback(() => {
     setGameState("menu");
     navigate(ROUTES.HOME);
-  };
+  }, [setGameState, navigate]);
 
-  const onZenGarden = () => {
-    initGameWithPreset("4p", "zen-garden");
-    startGame();
+  const onZenGarden = useCallback(() => {
+    setIsStarting(true);
     navigate(ROUTES.GAMEMASTER);
-  };
+    setTimeout(() => {
+      initGameWithPreset("4p", "zen-garden");
+      startGame();
+      setTimeout(() => setIsStarting(false), 500);
+    }, 1000);
+  }, [navigate, initGameWithPreset, startGame]);
 
-  const onGamemaster = () => {
-    initGameWithPreset("4p", "zen-garden");
-    startGame();
+  const onGamemaster = useCallback(() => {
+    setIsStarting(true);
     navigate(ROUTES.GAMEMASTER);
-  };
+    setTimeout(() => {
+      initGameWithPreset("4p", "zen-garden");
+      startGame();
+      setTimeout(() => setIsStarting(false), 500);
+    }, 1000);
+  }, [navigate, initGameWithPreset, startGame]);
 
-  const onStartGame = (
-    startGameMode: GameMode,
-    preset: string | null,
-    playerTypesConfig: Record<string, "human" | "computer">,
-    seed?: string,
-  ) => {
-    initGameWithPreset(startGameMode, preset, playerTypesConfig, seed || "");
-    startGame();
-    const target = multiplayer?.roomId
-      ? `${ROUTES.GAME}/${multiplayer.roomId}`
-      : ROUTES.GAME_MMO;
-    navigate(target);
-  };
+  const onStartGame = useCallback(
+    (
+      startGameMode: GameMode,
+      preset: string | null,
+      playerTypesConfig: Record<string, "human" | "computer">,
+      seed?: string,
+    ) => {
+      setIsStarting(true);
 
-  const onCtwGuide = () => navigate(ROUTES.LEARN_ENDGAME_WORLD);
-  const onChessGuide = () => navigate(ROUTES.LEARN_CHESS);
-  const onTrenchGuide = (t?: string) =>
-    navigate(t ? `${ROUTES.LEARN_TRENCH}/${t}` : ROUTES.LEARN_TRENCH);
-  const onOpenLibrary = () => navigate(ROUTES.LIBRARY);
+      // Navigate immediately to the game route, where the LoadingScreen will be shown
+      const target = multiplayer?.roomId
+        ? `${ROUTES.GAME}/${multiplayer.roomId}`
+        : ROUTES.GAME_MMO;
 
-  const setSelectedBoard = (m: GameMode | null) => m && setMode(m);
+      // Set board mode first to ensure preview is correct if needed
+      setMode(startGameMode);
+
+      // We use a longer timeout to ensure the LoadingScreen is visible
+      // and the navigation has stabilized before the heavy lifting happens
+      navigate(target);
+
+      setTimeout(() => {
+        initGameWithPreset(
+          startGameMode,
+          preset,
+          playerTypesConfig,
+          seed || "",
+        );
+        startGame();
+
+        // We keep isStarting true for a bit longer to cover engine init
+        setTimeout(() => {
+          setIsStarting(false);
+        }, 500);
+      }, 1000);
+    },
+    [multiplayer, setMode, navigate, initGameWithPreset, startGame],
+  );
+
+  const onCtwGuide = useCallback(
+    () => navigate(ROUTES.LEARN_ENDGAME_WORLD),
+    [navigate],
+  );
+  const onChessGuide = useCallback(
+    () => navigate(ROUTES.LEARN_CHESS),
+    [navigate],
+  );
+  const onTrenchGuide = useCallback(
+    (t?: string) =>
+      navigate(t ? `${ROUTES.LEARN_TRENCH}/${t}` : ROUTES.LEARN_TRENCH),
+    [navigate],
+  );
+  const onOpenLibrary = useCallback(() => navigate(ROUTES.LIBRARY), [navigate]);
+
+  const setSelectedBoard = useCallback(
+    (m: GameMode | null) => m && setMode(m),
+    [setMode],
+  );
 
   return useMemo(
     () => ({
@@ -116,6 +165,7 @@ export const useRouteContextValue = ({
       onZenGarden,
       onGamemaster,
       onStartGame,
+      isStarting,
       onCtwGuide,
       onChessGuide,
       onTrenchGuide,
@@ -145,12 +195,15 @@ export const useRouteContextValue = ({
       onZenGarden,
       onGamemaster,
       onStartGame,
+      isStarting,
       onCtwGuide,
       onChessGuide,
       onTrenchGuide,
       onOpenLibrary,
       mode,
+      setSelectedBoard,
       selectedPreset,
+      setSelectedPreset,
       playerTypes,
       activePlayers,
       playMode,

@@ -1,0 +1,136 @@
+
+> battle-chess@v26.02.24.rc02 lint /home/xopher/www/x/battle-chess
+> eslint .
+
+
+/home/xopher/www/x/battle-chess/src/client/game/shared/components/molecules/GamemasterPanel.tsx
+  3:10  error  'PLAYER_CONFIGS' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/xopher/www/x/battle-chess/src/shared/hooks/core/useZenGardenInteraction.ts
+   99:5  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `bgioState`, but the source dependencies were [board, placementPiece, placementTerrain, setBoard, setInventory, setTerrain, setTerrainInventory, terrain, turn]. Inferred different dependency than source.
+
+/home/xopher/www/x/battle-chess/src/shared/hooks/core/useZenGardenInteraction.ts:99:5
+   97 |
+   98 |   const handleZenGardenClick = useCallback(
+>  99 |     (r: number, c: number, overrideTurn?: string) => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 100 |       const isEngineActive = !!bgioState && !!clientRef?.current;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 101 |       const startTurn = overrideTurn || turn;
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 187 |       }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 188 |     },
+      | ^^^^^^ Could not preserve existing manual memoization
+  189 |     [
+  190 |       board,
+  191 |       placementPiece,         react-hooks/preserve-manual-memoization
+   99:5  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `clientRef`, but the source dependencies were [board, placementPiece, placementTerrain, setBoard, setInventory, setTerrain, setTerrainInventory, terrain, turn]. Inferred different dependency than source.
+
+/home/xopher/www/x/battle-chess/src/shared/hooks/core/useZenGardenInteraction.ts:99:5
+   97 |
+   98 |   const handleZenGardenClick = useCallback(
+>  99 |     (r: number, c: number, overrideTurn?: string) => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 100 |       const isEngineActive = !!bgioState && !!clientRef?.current;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 101 |       const startTurn = overrideTurn || turn;
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 187 |       }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 188 |     },
+      | ^^^^^^ Could not preserve existing manual memoization
+  189 |     [
+  190 |       board,
+  191 |       placementPiece,         react-hooks/preserve-manual-memoization
+   99:5  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `core.configState`, but the source dependencies were [board, placementPiece, placementTerrain, setBoard, setInventory, setTerrain, setTerrainInventory, terrain, turn]. Inferred different dependency than source.
+
+/home/xopher/www/x/battle-chess/src/shared/hooks/core/useZenGardenInteraction.ts:99:5
+   97 |
+   98 |   const handleZenGardenClick = useCallback(
+>  99 |     (r: number, c: number, overrideTurn?: string) => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 100 |       const isEngineActive = !!bgioState && !!clientRef?.current;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 101 |       const startTurn = overrideTurn || turn;
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 187 |       }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 188 |     },
+      | ^^^^^^ Could not preserve existing manual memoization
+  189 |     [
+  190 |       board,
+  191 |       placementPiece,  react-hooks/preserve-manual-memoization
+  189:5  warning  React Hook useCallback has missing dependencies: 'bgioState', 'clientRef', and 'core.configState.gameState'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/exhaustive-deps
+
+/home/xopher/www/x/battle-chess/src/shared/hooks/useGameTheme.tsx
+  72:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/xopher/www/x/battle-chess/src/shared/hooks/useRouteContextValue.ts
+  133:5  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setSelectedBoard`, but the source dependencies were [darkMode, multiplayer, pieceStyle, getIconWrapper, toggleTheme, togglePieceStyle, onTutorial, onLogoClick, onZenGarden, onGamemaster, onStartGame, isStarting, onCtwGuide, onChessGuide, onTrenchGuide, onOpenLibrary, mode, selectedPreset, playerTypes, activePlayers, playMode, seeds, previewSeedIndex, setPreviewSeedIndex]. Inferred different dependency than source.
+
+/home/xopher/www/x/battle-chess/src/shared/hooks/useRouteContextValue.ts:133:5
+  131 |
+  132 |   return useMemo(
+> 133 |     () => ({
+      |     ^^^^^^^^
+> 134 |       darkMode,
+      | ^^^^^^^^^^^^^^^
+> 135 |       multiplayer,
+      …
+      | ^^^^^^^^^^^^^^^
+> 161 |       setPreviewSeedIndex,
+      | ^^^^^^^^^^^^^^^
+> 162 |     }),
+      | ^^^^^^^ Could not preserve existing manual memoization
+  163 |     [
+  164 |       darkMode,
+  165 |       multiplayer,   react-hooks/preserve-manual-memoization
+  133:5  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setSelectedPreset`, but the source dependencies were [darkMode, multiplayer, pieceStyle, getIconWrapper, toggleTheme, togglePieceStyle, onTutorial, onLogoClick, onZenGarden, onGamemaster, onStartGame, isStarting, onCtwGuide, onChessGuide, onTrenchGuide, onOpenLibrary, mode, selectedPreset, playerTypes, activePlayers, playMode, seeds, previewSeedIndex, setPreviewSeedIndex]. Inferred different dependency than source.
+
+/home/xopher/www/x/battle-chess/src/shared/hooks/useRouteContextValue.ts:133:5
+  131 |
+  132 |   return useMemo(
+> 133 |     () => ({
+      |     ^^^^^^^^
+> 134 |       darkMode,
+      | ^^^^^^^^^^^^^^^
+> 135 |       multiplayer,
+      …
+      | ^^^^^^^^^^^^^^^
+> 161 |       setPreviewSeedIndex,
+      | ^^^^^^^^^^^^^^^
+> 162 |     }),
+      | ^^^^^^^ Could not preserve existing manual memoization
+  163 |     [
+  164 |       darkMode,
+  165 |       multiplayer,  react-hooks/preserve-manual-memoization
+  163:5  warning  React Hook useMemo has missing dependencies: 'setSelectedBoard' and 'setSelectedPreset'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         react-hooks/exhaustive-deps
+
+/home/xopher/www/x/battle-chess/src/tests/Gamemaster.test.tsx
+    4:10  error  'RouteProvider' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   48:39  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+   52:36  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  119:42  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  129:42  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  139:42  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  149:42  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  159:42  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  169:42  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+
+✖ 18 problems (16 errors, 2 warnings)
+
+ ELIFECYCLE  Command failed with exit code 1.

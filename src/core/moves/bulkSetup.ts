@@ -1,13 +1,21 @@
 import { getPlayerCells, getPlayersForMode } from "@/core/setup/territory";
 import { canPlaceUnit } from "@/core/setup/validation";
-import { TERRAIN_TYPES, PIECES, INITIAL_ARMY } from "@/constants";
+import { TERRAIN_TYPES, INITIAL_ARMY } from "@/constants";
 import { DEFAULT_SEEDS } from "@/core/setup/seeds";
 import { deserializeGame, adaptSeedToMode } from "@/shared/utils/serialization";
-import type { TrenchessState, TerrainType, BoardPiece, PieceType, GameMode } from "@/shared/types";
+import type {
+  TrenchessState,
+  TerrainType,
+  PieceType,
+  GameMode,
+} from "@/shared/types";
 import type { Ctx } from "boardgame.io";
 import { resolvePlayerId } from "@/core/setup/coreHelpers";
 import { INVALID_MOVE } from "boardgame.io/core";
-import { randomizeTerrain as randomizeTerrainLogic, randomizeUnits as randomizeUnitsLogic } from "@/core/setup/randomization";
+import {
+  randomizeTerrain as randomizeTerrainLogic,
+  randomizeUnits as randomizeUnitsLogic,
+} from "@/core/setup/randomization";
 import { applyClassicalFormation as applyClassicalFormationLogic } from "@/core/setup/formations";
 
 interface RandomAPI {
@@ -16,10 +24,7 @@ interface RandomAPI {
   Shuffle: <T>(array: T[]) => T[];
 }
 
-export const setMode = (
-  { G }: { G: TrenchessState },
-  mode: GameMode,
-) => {
+export const setMode = ({ G }: { G: TrenchessState }, mode: GameMode) => {
   G.mode = mode;
   G.activePlayers = getPlayersForMode(mode);
 };

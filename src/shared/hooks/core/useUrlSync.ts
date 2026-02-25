@@ -108,7 +108,6 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
       const newInventory: Record<string, PieceType[]> = {};
       const newTerrainInventory: Record<string, TerrainType[]> = {};
       const quota = getQuota(data.mode);
-      let allReady = true;
 
       players.forEach((p) => {
         const placedUnits: Record<string, number> = {};
@@ -126,7 +125,6 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
           for (let i = 0; i < missing; i++) missingUnits.push(u.type);
         });
         newInventory[p] = missingUnits;
-        if (missingUnits.length > 0) allReady = false;
 
         const myCells = getPlayerCells(p, data.mode);
         let terrainCount = 0;
@@ -134,7 +132,6 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
           if (data.terrain[r][c] !== TERRAIN_TYPES.FLAT) terrainCount++;
         }
         if (terrainCount < quota) {
-          allReady = false;
           newTerrainInventory[p] = [
             ...Array(quota).fill(TERRAIN_TYPES.FORESTS),
             ...Array(quota).fill(TERRAIN_TYPES.SWAMPS),
@@ -150,7 +147,7 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
       setTerrainInventory(newTerrainInventory);
       setReadyPlayers({});
       setCapturedBy({ red: [], yellow: [], green: [], blue: [] });
-      setGameState(targetState || (allReady ? "play" : "setup"));
+      setGameState(targetState || "setup");
       return true;
     },
     [

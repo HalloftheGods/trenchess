@@ -141,10 +141,9 @@ export function useSetupActions(
           activePlayersForMatch,
           selectedMode,
         );
-        matchState.board = unitsResult.board;
         matchState.inventory = unitsResult.inventory;
 
-        setGameState("play");
+        setGameState("setup");
       } else if (isPiMode) {
         let layoutSeed = seed;
         const isNoSeedProvided = !layoutSeed;
@@ -169,12 +168,10 @@ export function useSetupActions(
           activePlayersForMatch,
           selectedMode,
         );
-        matchState.board = formationResult.board;
-        matchState.terrain = formationResult.terrain;
         matchState.inventory = formationResult.inventory;
         matchState.terrainInventory = formationResult.terrainInventory;
 
-        setGameState("play");
+        setGameState("setup");
       } else if (isChiMode) {
         let layoutSeed = seed;
         const isNoSeedProvided = !layoutSeed;
@@ -185,7 +182,7 @@ export function useSetupActions(
           layoutSeed = modeSeeds[randomIndex]?.seed || DEFAULT_SEEDS[0].seed;
         }
 
-        const decodedLayout = deserializeGame(layoutSeed);
+        const decodedLayout = deserializeGame(layoutSeed!);
         if (decodedLayout) {
           const adaptedLayout = adaptSeedToMode(decodedLayout, selectedMode);
           matchState.terrain = adaptedLayout.terrain;
@@ -218,13 +215,10 @@ export function useSetupActions(
               selectedMode,
               "classical",
             );
-            matchState.board = formationResult.board;
-            matchState.terrain = formationResult.terrain;
-            matchState.inventory = formationResult.inventory;
             matchState.terrainInventory = formationResult.terrainInventory;
           }
         }
-        setGameState("play");
+        setGameState("setup");
       } else if (isZenGardenMode) {
         matchState.terrain = matchState.terrain.map((row) =>
           row.map(() => "flat" as TerrainType),

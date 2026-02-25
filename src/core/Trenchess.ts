@@ -62,22 +62,7 @@ export const Trenchess: Game<
     } = createInitialState(mode, players);
 
     const initialReadyPlayers: Record<string, boolean> = {};
-    let allPlaced = true;
-
-    // Check if the game is already fully placed via setupData
-    if (data?.inventory) {
-      players.forEach((p) => {
-        const remainingUnits = (data.inventory![p] || []).length;
-        if (remainingUnits === 0) {
-          initialReadyPlayers[p] = true;
-        } else {
-          allPlaced = false;
-        }
-      });
-    } else {
-      allPlaced = false;
-    }
-
+    
     return {
       board: data?.board || initialBoard,
       terrain: data?.terrain || initialTerrain,
@@ -88,7 +73,7 @@ export const Trenchess: Game<
       lastMove: null,
       mode,
       activePlayers: players,
-      readyPlayers: allPlaced ? initialReadyPlayers : {},
+      readyPlayers: initialReadyPlayers,
       playerMap,
       winner: null,
       winnerReason: null,

@@ -5,6 +5,7 @@ import ZenGardenView from "./zen";
 
 interface GameScreenProps {
   game: ReturnType<typeof useGameState>;
+  isStarting?: boolean;
   onMenuClick: () => void;
   onHowToPlayClick: () => void;
   onLibraryClick: () => void;

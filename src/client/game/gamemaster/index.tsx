@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo } from "react";
 import { GamemasterLayout } from "../shared/components/templates/GamemasterLayout";
 import GameBoard from "../shared/components/organisms/GameBoard";
 import MmoActionBar from "../shared/components/organisms/MmoActionBar";
@@ -6,7 +6,7 @@ import { ReadyUpPanel } from "../shared/components/molecules/ReadyUpPanel";
 import { useRouteContext } from "@context";
 import { useDeployment } from "@/client/game/shared/hooks/useDeployment";
 import { INITIAL_ARMY, UNIT_POINTS, MAX_TERRAIN_PER_PLAYER } from "@/constants";
-import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/constants";
+import { TERRAIN_TYPES } from "@/constants";
 import { getPlayerCells } from "@/core/setup/setupLogic";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import type { GameStateHook, BoardPiece } from "@/shared/types";
@@ -21,8 +21,6 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
   const pieceStyle = ctx.pieceStyle;
   const toggleTheme = ctx.toggleTheme ?? (() => {});
   const togglePieceStyle = ctx.togglePieceStyle ?? (() => {});
-
-  const perspectivePlayerId = game.turn;
 
   const { placedCount, maxPlacement } = useDeployment({
     mode: game.mode,
@@ -107,7 +105,9 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
           ? expectedPid
           : undefined;
         if (!pid)
-          return <div key={`empty-${expectedPid}`} className="h-40 invisible" />;
+          return (
+            <div key={`empty-${expectedPid}`} className="h-40 invisible" />
+          );
 
         const myCells = getPlayerCells(pid, game.mode);
         let pPlacedCount = 0;

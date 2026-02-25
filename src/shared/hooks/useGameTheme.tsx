@@ -69,7 +69,7 @@ export function useGameTheme(): GameTheme {
     return (
       <span
         className={baseStyles}
-        style={{ fontSize: iconSize as any, width: iconSize, height: iconSize }}
+        style={{ fontSize: iconSize, width: iconSize, height: iconSize }}
       >
         {unit[pieceStyle as "emoji" | "bold" | "outlined"]}
       </span>

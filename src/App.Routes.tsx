@@ -2,6 +2,7 @@ import { Suspense, useMemo } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { ROUTES, LazyRoutes } from "@/constants/routes.ts";
 import { LoadingFallback } from "@/shared/components/molecules/LoadingFallback";
+import { LoadingScreen } from "@/shared/components/atoms";
 
 import { getPlayRoutes } from "./client/play/routes.tsx";
 import { getLearnRoutes } from "./client/learn/routes.tsx";
@@ -37,11 +38,12 @@ export const AppRoutes = ({
   const gameScreenProps = useMemo(
     () => ({
       game,
+      isStarting: routeContextValue.isStarting,
       onMenuClick: handleBackToMenu,
       onHowToPlayClick: () => navigate(ROUTES.LEARN_MANUAL),
       onLibraryClick: () => navigate(ROUTES.LIBRARY),
     }),
-    [game, handleBackToMenu, navigate],
+    [game, routeContextValue.isStarting, handleBackToMenu, navigate],
   );
 
   const menuRoutes = useMemo(
@@ -102,48 +104,54 @@ export const AppRoutes = ({
     />
   );
 
-  return (
-    <Suspense fallback={<LoadingFallback fullScreen={true} />}>
-      <Routes>
-        <Route
-          path={ROUTES.HOME}
-          element={
-            <LazyRoutes.shared.layout
-              darkMode={darkMode}
-              pieceStyle={pieceStyle}
-              toggleTheme={toggleTheme}
-              togglePieceStyle={togglePieceStyle}
-              onTutorial={routeContextValue.onTutorial}
-              onLogoClick={routeContextValue.onLogoClick}
-              onZenGarden={routeContextValue.onZenGarden}
-              multiplayer={multiplayer}
-              onStartGame={routeContextValue.onStartGame}
-              onCtwGuide={routeContextValue.onCtwGuide}
-              onChessGuide={routeContextValue.onChessGuide}
-              onTrenchGuide={routeContextValue.onTrenchGuide}
-              onOpenLibrary={routeContextValue.onOpenLibrary}
-              selectedBoard={mode}
-              setSelectedBoard={(m) => m && setMode(m)}
-              selectedPreset={selectedPreset}
-              setSelectedPreset={(
-                p:
-                  | "classic"
-                  | "quick"
-                  | "terrainiffic"
-                  | "custom"
-                  | "zen-garden"
-                  | null,
-              ) => setSelectedPreset(p)}
-              playerTypes={playerTypes}
-              activePlayers={activePlayers}
-            />
-          }
-        >
-          {menuRoutes.map(renderRoute)}
-        </Route>
+  const showGlobalLoader =
+    routeContextValue.isStarting || (game.isStarted && !game.bgioState);
 
-        {topLevelRoutes.map(renderRoute)}
-      </Routes>
-    </Suspense>
+  return (
+    <>
+      {showGlobalLoader && <LoadingScreen />}
+      <Suspense fallback={<LoadingFallback fullScreen={true} />}>
+        <Routes>
+          <Route
+            path={ROUTES.HOME}
+            element={
+              <LazyRoutes.shared.layout
+                darkMode={darkMode}
+                pieceStyle={pieceStyle}
+                toggleTheme={toggleTheme}
+                togglePieceStyle={togglePieceStyle}
+                onTutorial={routeContextValue.onTutorial}
+                onLogoClick={routeContextValue.onLogoClick}
+                onZenGarden={routeContextValue.onZenGarden}
+                multiplayer={multiplayer}
+                onStartGame={routeContextValue.onStartGame}
+                onCtwGuide={routeContextValue.onCtwGuide}
+                onChessGuide={routeContextValue.onChessGuide}
+                onTrenchGuide={routeContextValue.onTrenchGuide}
+                onOpenLibrary={routeContextValue.onOpenLibrary}
+                selectedBoard={mode}
+                setSelectedBoard={(m) => m && setMode(m)}
+                selectedPreset={selectedPreset}
+                setSelectedPreset={(
+                  p:
+                    | "classic"
+                    | "quick"
+                    | "terrainiffic"
+                    | "custom"
+                    | "zen-garden"
+                    | null,
+                ) => setSelectedPreset(p)}
+                playerTypes={playerTypes}
+                activePlayers={activePlayers}
+              />
+            }
+          >
+            {menuRoutes.map(renderRoute)}
+          </Route>
+
+          {topLevelRoutes.map(renderRoute)}
+        </Routes>
+      </Suspense>
+    </>
   );
 };

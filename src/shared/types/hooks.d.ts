@@ -11,8 +11,6 @@ import type { Ctx } from "boardgame.io";
 import type { MultiplayerState } from "./multiplayer";
 import type { GameTheme } from "./ui";
 
-import type { PieceStyle, TerrainType, BoardPiece, PieceType } from "./game";
-
 export interface UseDeploymentProps {
   mode: GameMode;
   gameState: GameState;
@@ -253,5 +251,6 @@ export interface GameStateHook
   finishGamemaster: () => void;
   forfeit: (pid?: string) => void;
   startGame: () => void;
+  isStarted: boolean;
   multiplayer: MultiplayerState;
 }

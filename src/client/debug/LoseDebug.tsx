@@ -1,5 +1,6 @@
 import React from "react";
 import VictoryOverlay from "@/client/game/shared/components/atoms/VictoryOverlay";
+import type { TerrainType, BoardPiece } from "@/shared/types/game";
 
 const LoseDebug: React.FC = () => {
   const getPlayerDisplayName = (pid: string) => {
@@ -12,8 +13,12 @@ const LoseDebug: React.FC = () => {
     return names[pid] || pid;
   };
 
-  const mockBoard = Array(12).fill(null).map(() => Array(12).fill(null));
-  const mockTerrain = Array(12).fill("flat").map(() => Array(12).fill("flat"));
+  const mockBoard: (BoardPiece | null)[][] = Array(12)
+    .fill(null)
+    .map(() => Array(12).fill(null));
+  const mockTerrain: TerrainType[][] = Array(12)
+    .fill(null)
+    .map(() => Array(12).fill("flat"));
 
   // Add some pieces for the winner (blue)
   mockBoard[0][0] = { type: "king", player: "blue" };
@@ -26,7 +31,7 @@ const LoseDebug: React.FC = () => {
         reason="checkmate"
         localPlayerName="red"
         board={mockBoard}
-        terrain={mockTerrain as any}
+        terrain={mockTerrain}
         mode="2p-ns"
         getPlayerDisplayName={getPlayerDisplayName}
         setGameState={(state) => console.log("Set game state to", state)}

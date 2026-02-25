@@ -280,6 +280,7 @@ export function useGameState(): GameStateHook {
           }
         },
         startGame: () => setIsStarted(true),
+        isStarted,
         finishGamemaster: () => {
           if (clientRef.current) clientRef.current.moves.finishGamemaster();
         },
@@ -332,6 +333,7 @@ export function useGameState(): GameStateHook {
       lastMove,
       multiplayer,
       clientRef,
+      isStarted,
     ],
   );
 }

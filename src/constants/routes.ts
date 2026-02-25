@@ -1,4 +1,6 @@
 import { lazy } from "react";
+import type { RouteConfig } from "@/shared/types";
+export type { RouteConfig };
 import { PLAY_PATHS, PlayLazyRoutes } from "../client/play/routes.tsx";
 import { LEARN_PATHS, LearnLazyRoutes } from "../client/learn/routes.tsx";
 import { GAME_PATHS, GameLazyRoutes } from "../client/game/routes.tsx";

@@ -7,7 +7,6 @@ import {
   VenetianMask,
   Castle,
   SunMoon,
-  TreePine,
   Flashlight,
   Orbit,
 } from "lucide-react";

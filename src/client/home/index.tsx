@@ -1,18 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Baby,
-  BookOpen,
-  Shell,
-  Trees,
-  Wand2,
-  ShieldCheck,
-  BrickWallShield,
-  Wand,
-  Pencil,
-  Medal,
-  Shovel,
-} from "lucide-react";
+import { Baby, BookOpen, BrickWallShield, Shovel } from "lucide-react";
 import { useRouteContext } from "@context";
 import {
   DualToneSwords,
@@ -28,13 +16,8 @@ import TrenchessText from "@/shared/components/atoms/TrenchessText";
 
 export const HomeView: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    darkMode,
-    setHoveredMenu,
-    setTerrainSeed,
-    onZenGarden,
-    onGamemaster,
-  } = useRouteContext();
+  const { darkMode, setHoveredMenu, setTerrainSeed, onZenGarden } =
+    useRouteContext();
 
   return (
     <RoutePageLayout>

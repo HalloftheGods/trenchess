@@ -40,6 +40,7 @@ export interface RouteContextType {
     playerConfig: Record<string, "human" | "computer">,
     seed?: string,
   ) => void;
+  isStarting: boolean;
   selectedBoard: GameMode | null;
   setSelectedBoard: (m: GameMode | null) => void;
   selectedPreset:

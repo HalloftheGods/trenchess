@@ -34,6 +34,7 @@ import type {
   SetupMode,
   TerrainType,
   GameState,
+  GameMode,
 } from "@/shared/types/game";
 import type { PieceStyle } from "@/constants";
 
@@ -76,8 +77,8 @@ interface MmoActionBarProps {
   onPerspectiveChange?: (pid: string) => void;
   side?: string;
   onSideChange?: (side: string) => void;
-  mode?: string;
-  setMode?: (mode: string) => void;
+  mode?: GameMode;
+  setMode?: (mode: GameMode) => void;
 }
 
 /**

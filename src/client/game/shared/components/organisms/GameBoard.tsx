@@ -10,12 +10,13 @@ import type {
   ArmyUnit,
   PieceType,
   TrenchessState,
+  GameMode,
 } from "@/shared/types/game";
 
 interface GameBoardProps {
   board: (BoardPiece | null)[][];
   terrain: TerrainType[][];
-  mode: string;
+  mode: GameMode;
   gameState: GameState;
   turn: string;
   pieceStyle: string;
@@ -246,7 +247,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
             localPlayerName={localPlayerName}
             board={board}
             terrain={terrain}
-            mode={mode as any}
+            mode={mode}
             getPlayerDisplayName={getPlayerDisplayName}
             setGameState={setGameState}
           />

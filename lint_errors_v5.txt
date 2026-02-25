@@ -1,0 +1,31 @@
+
+> battle-chess@v26.02.24.rc02 lint /home/xopher/www/x/battle-chess
+> eslint .
+
+
+/home/xopher/www/x/battle-chess/src/shared/hooks/useRouteContextValue.ts
+  97:5  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `multiplayer`, but the source dependencies were [multiplayer?.roomId, setMode, navigate, initGameWithPreset, startGame]. Inferred less specific property than source.
+
+/home/xopher/www/x/battle-chess/src/shared/hooks/useRouteContextValue.ts:97:5
+   95 |
+   96 |   const onStartGame = useCallback(
+>  97 |     (
+      |     ^
+>  98 |       startGameMode: GameMode,
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  99 |       preset: string | null,
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 130 |       }, 1000);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 131 |     },
+      | ^^^^^^ Could not preserve existing manual memoization
+  132 |     [multiplayer?.roomId, setMode, navigate, initGameWithPreset, startGame],
+  133 |   );
+  134 |  react-hooks/preserve-manual-memoization
+
+✖ 1 problem (1 error, 0 warnings)
+
+ ELIFECYCLE  Command failed with exit code 1.

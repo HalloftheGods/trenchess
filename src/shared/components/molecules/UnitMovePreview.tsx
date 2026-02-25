@@ -34,13 +34,11 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
   selectedTerrain,
 }) => {
   const { getIcon } = useRouteContext();
-  const details = UNIT_DETAILS[unitType];
-  if (!details) return null;
-
-  const unit = INITIAL_ARMY.find((u) => u.type === unitType);
 
   // Tactical logic simulation
   const tacticalMoves = useMemo(() => {
+    if (!UNIT_DETAILS[unitType]) return [];
+
     const simulationBoard: (BoardPiece | null)[][] = Array(BOARD_SIZE)
       .fill(null)
       .map(() => Array(BOARD_SIZE).fill(null));
@@ -49,7 +47,7 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
       .map(() => Array(BOARD_SIZE).fill("flat" as TerrainType));
 
     const boardCenter = Math.floor(BOARD_SIZE / 2);
-    
+
     // Fill with terrain if selected
     if (selectedTerrain) {
       for (let r = 0; r < BOARD_SIZE; r++) {
@@ -77,6 +75,11 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
       "2p-ns",
     );
   }, [unitType, selectedTerrain]);
+
+  const details = UNIT_DETAILS[unitType];
+  if (!details) return null;
+
+  const unit = INITIAL_ARMY.find((u) => u.type === unitType);
 
   const movePattern = details.movePattern;
   const moves = movePattern(centerRow, centerCol);
@@ -120,9 +123,9 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
             const boardCenter = Math.floor(BOARD_SIZE / 2);
             const simR = r + (boardCenter - centerRow);
             const simC = c + (boardCenter - centerCol);
-            
+
             const isTacticalValid = tacticalMoves.some(
-              ([tmR, tmC]) => tmR === simR && tmC === simC
+              ([tmR, tmC]) => tmR === simR && tmC === simC,
             );
 
             // Potential moves (geometric)
@@ -138,10 +141,23 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
             const isTerrainCell = selectedTerrain && !isCenter;
 
             // Logic for "Blocked" vs "Valid"
-            const isBlocked = (isMoveFound || isNewMoveFound || isAttackFound) && !isTacticalValid && selectedTerrain;
-            const isActualMove = (mode !== "new" && isMoveFound && (isTacticalValid || !selectedTerrain));
-            const isActualNewMove = (mode !== "classic" && isNewMoveFound && (isTacticalValid || !selectedTerrain));
-            const isActualAttack = (isAttackFound && (isTacticalValid || !selectedTerrain)) && !isActualMove && !isActualNewMove;
+            const isBlocked =
+              (isMoveFound || isNewMoveFound || isAttackFound) &&
+              !isTacticalValid &&
+              selectedTerrain;
+            const isActualMove =
+              mode !== "new" &&
+              isMoveFound &&
+              (isTacticalValid || !selectedTerrain);
+            const isActualNewMove =
+              mode !== "classic" &&
+              isNewMoveFound &&
+              (isTacticalValid || !selectedTerrain);
+            const isActualAttack =
+              isAttackFound &&
+              (isTacticalValid || !selectedTerrain) &&
+              !isActualMove &&
+              !isActualNewMove;
 
             const isPromotionRow = unitType === PIECES.PAWN && r === 0;
 
@@ -163,11 +179,14 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
                       : baseColor
                 }`}
               >
-                {isPromotionRow && !isActualMove && !isActualNewMove && !isActualAttack && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500/40" />
-                  </div>
-                )}
+                {isPromotionRow &&
+                  !isActualMove &&
+                  !isActualNewMove &&
+                  !isActualAttack && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500/40" />
+                    </div>
+                  )}
 
                 {/* Center Piece */}
                 {isCenter &&

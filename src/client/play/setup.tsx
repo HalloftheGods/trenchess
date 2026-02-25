@@ -44,9 +44,6 @@ export const PlaySetupView: React.FC = () => {
     previewConfig,
     playerCount,
     multiplayer,
-    seeds,
-    previewSeedIndex,
-    setPreviewSeedIndex,
   } = useRouteContext();
 
   const step = searchParams.get("step") === "2" ? 2 : 1;
@@ -132,7 +129,9 @@ export const PlaySetupView: React.FC = () => {
   };
 
   const playersParam = searchParams.get("players");
-  const urlPlayerCount = playersParam ? parseInt(playersParam, 10) : (playerCount ?? 2);
+  const urlPlayerCount = playersParam
+    ? parseInt(playersParam, 10)
+    : (playerCount ?? 2);
   const isFourPlayerRequested = urlPlayerCount >= 3;
 
   const isOnline = !!multiplayer?.roomId;
@@ -260,7 +259,7 @@ export const PlaySetupView: React.FC = () => {
               }}
               darkMode={darkMode}
               title="Ω Omega"
-              description='"Design the field. Deploy the army."'
+              description='"Design the board, Gamemaster."'
               Icon={Eye}
               color="red"
               badge="Setup Mode"
@@ -280,7 +279,7 @@ export const PlaySetupView: React.FC = () => {
               }}
               darkMode={darkMode}
               title="χ Chi"
-              description='"Select preconfigured terrain."'
+              description='"The Trench, done for you."'
               Icon={Shell}
               color="emerald"
               badge="Instant Play"
@@ -298,7 +297,7 @@ export const PlaySetupView: React.FC = () => {
               }}
               darkMode={darkMode}
               title="π Pi"
-              description='"Library layout. Standard formation."'
+              description='"Classic with random toppings."'
               Icon={Pizza}
               color="amber"
               badge="Instant Play"

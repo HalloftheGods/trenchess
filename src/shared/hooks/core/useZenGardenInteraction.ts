@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { canPlaceUnit } from "@/core/setup/setupLogic";
 import { TERRAIN_TYPES } from "@/constants";
 import { analytics } from "@/shared/utils/analytics";
@@ -105,24 +105,56 @@ export function useZenGardenInteraction(
         const client = clientRef!.current!;
         if (placementPiece === ("TRASH" as unknown as PieceType)) {
           if (board[r][c]) {
-            client.moves.placePiece(r, c, null, board[r][c]!.player, isGamemaster);
+            client.moves.placePiece(
+              r,
+              c,
+              null,
+              board[r][c]!.player,
+              isGamemaster,
+            );
           }
           return;
         }
         if (placementTerrain === TERRAIN_TYPES.FLAT) {
           if (terrain[r][c] !== TERRAIN_TYPES.FLAT) {
-            client.moves.placeTerrain(r, c, TERRAIN_TYPES.FLAT, undefined, isGamemaster);
+            client.moves.placeTerrain(
+              r,
+              c,
+              TERRAIN_TYPES.FLAT,
+              undefined,
+              isGamemaster,
+            );
           }
           return;
         }
         if (placementPiece) {
-          client.moves.placePiece(r, c, placementPiece, startTurn, isGamemaster);
-          analytics.trackEvent(isGamemaster ? "Gamemaster" : "ZenGarden", "Place Piece", placementPiece);
+          client.moves.placePiece(
+            r,
+            c,
+            placementPiece,
+            startTurn,
+            isGamemaster,
+          );
+          analytics.trackEvent(
+            isGamemaster ? "Gamemaster" : "ZenGarden",
+            "Place Piece",
+            placementPiece,
+          );
           return;
         }
         if (placementTerrain) {
-          client.moves.placeTerrain(r, c, placementTerrain, startTurn, isGamemaster);
-          analytics.trackEvent(isGamemaster ? "Gamemaster" : "ZenGarden", "Place Terrain", placementTerrain);
+          client.moves.placeTerrain(
+            r,
+            c,
+            placementTerrain,
+            startTurn,
+            isGamemaster,
+          );
+          analytics.trackEvent(
+            isGamemaster ? "Gamemaster" : "ZenGarden",
+            "Place Terrain",
+            placementTerrain,
+          );
           return;
         }
         return;
@@ -157,7 +189,11 @@ export function useZenGardenInteraction(
       }
       if (placementPiece) {
         if (!board[r][c] && canPlaceUnit(placementPiece, terrain[r][c])) {
-          analytics.trackEvent("ZenGarden", "Place Piece (Local)", placementPiece);
+          analytics.trackEvent(
+            "ZenGarden",
+            "Place Piece (Local)",
+            placementPiece,
+          );
           setBoard((prev) => {
             const nb = prev.map((row) => [...row]);
             nb[r][c] = { type: placementPiece, player: startTurn };
@@ -178,7 +214,11 @@ export function useZenGardenInteraction(
       }
       if (placementTerrain) {
         if (!board[r][c]) {
-          analytics.trackEvent("ZenGarden", "Place Terrain (Local)", placementTerrain);
+          analytics.trackEvent(
+            "ZenGarden",
+            "Place Terrain (Local)",
+            placementTerrain,
+          );
           const newTerrain = terrain.map((row) => [...row]);
           newTerrain[r][c] = placementTerrain;
           setTerrain(newTerrain);
@@ -196,6 +236,9 @@ export function useZenGardenInteraction(
       setTerrainInventory,
       terrain,
       turn,
+      bgioState,
+      clientRef,
+      core.configState.gameState,
     ],
   );
 

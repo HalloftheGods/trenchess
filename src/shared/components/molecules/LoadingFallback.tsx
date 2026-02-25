@@ -1,5 +1,4 @@
-import { Mountain, Trees, Waves } from "lucide-react";
-import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
+import { TERRAIN_INTEL } from "@/constants/ui/terrain";
 import TrenchessText from "@/shared/components/atoms/TrenchessText";
 
 const LOADING_MESSAGES = [
@@ -13,47 +12,74 @@ export const LoadingFallback = ({
 }: {
   fullScreen?: boolean;
 }) => {
+  const terrainKeys = Object.keys(TERRAIN_INTEL);
+
   return (
     <div
-      className={`min-h-[100vh] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 ${
+      className={`flex flex-col items-center justify-center bg-slate-950 text-white p-6 text-center ${
         fullScreen
-          ? "w-full h-full"
+          ? "fixed inset-0 z-[9999]"
           : "w-full h-full p-4 shadow-inner rounded-3xl"
       }`}
     >
-      <DesertIcon className="w-12 h-12" />
-      <div className="mt-4 text-center font-black uppercase tracking-widest text-slate-400">
-        <div className="flex justify-center items-center gap-4 mb-4">
-          <Mountain className="w-12 h-12 text-brand-red" />
-          <Trees className="w-12 h-12 text-emerald-500" />
-        </div>
-
-        <div className="flex flex-row justify-center mt-2">
-          {[0, 1, 2, 3, 4].map((index) => (
-            <Waves
-              key={index}
-              className="w-12 h-12 text-brand-blue animate-wave-pulse"
-              style={{ animationDelay: `${index * 200}ms` }}
-            />
-          ))}
-        </div>
-
-        <div>
-          Loading <TrenchessText />
-        </div>
-
-        <div className="mt-4 relative h-[1.5em] flex justify-center">
-          {LOADING_MESSAGES.map((message, index) => (
+      <div className="relative mb-8 flex gap-4">
+        {terrainKeys.map((key, index) => {
+          const terrain = TERRAIN_INTEL[key];
+          const Icon = terrain.icon;
+          return (
             <div
-              key={index}
-              className="absolute animate-message-sequence opacity-0"
-              style={{ animationDelay: `${index * 2.3}s` }}
+              key={key}
+              className={`animate-bounce ${terrain.text}`}
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
-              {message}
+              <Icon size={32} />
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
+
+      <h2 className="text-3xl font-black uppercase tracking-tighter mb-2 animate-pulse">
+        Loading <TrenchessText />
+      </h2>
+
+      <div className="mt-4 relative h-[1.5em] flex justify-center text-slate-400 font-medium h-6 overflow-hidden">
+        {LOADING_MESSAGES.map((message, index) => (
+          <div
+            key={index}
+            className="absolute animate-message-sequence opacity-0"
+            style={{ animationDelay: `${index * 2.3}s` }}
+          >
+            {message}
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-12 w-64 h-1 bg-slate-900 rounded-full overflow-hidden">
+        <div className="h-full bg-gradient-to-r from-brand-red via-amber-500 to-brand-blue animate-loading-bar" />
+      </div>
+
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+        @keyframes loading-bar {
+          0% { transform: translateX(-100%); }
+          50% { transform: translateX(0); }
+          100% { transform: translateX(100%); }
+        }
+        .animate-loading-bar {
+          animation: loading-bar 2s infinite ease-in-out;
+        }
+        @keyframes message-sequence {
+          0%, 5% { transform: translateY(10px); opacity: 0; }
+          10%, 90% { transform: translateY(0); opacity: 1; }
+          95%, 100% { transform: translateY(-10px); opacity: 0; }
+        }
+        .animate-message-sequence {
+          animation: message-sequence 2.3s infinite;
+        }
+      `,
+        }}
+      />
     </div>
   );
 };

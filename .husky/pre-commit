@@ -1,3 +1,12 @@
+#!/usr/bin/env sh
+# Load NVM and PNPM environment
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+nvm use 22 --silent || true
+
+# Add PNPM to path
+export PATH="$HOME/.local/share/pnpm:$PATH"
+
 pnpm lint
 node scripts/version_bump.mjs
 git add package.json

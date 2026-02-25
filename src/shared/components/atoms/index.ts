@@ -6,6 +6,7 @@ export * from './Grid';
 export * from './GuideBullet';
 export * from './Heading';
 export * from './IconButton';
+export * from './LoadingScreen';
 export * from './MathOperator';
 export * from './RouteIcons';
 export * from './TerrainIconBadge';
