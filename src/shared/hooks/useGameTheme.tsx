@@ -36,27 +36,31 @@ export function useGameTheme(): GameTheme {
     });
   };
 
-  const getIcon = (
+  const getIcon: GameTheme["getIcon"] = (
     unit: ArmyUnit,
-    className = "",
-    size: number | string = "100%",
-    filled = false,
-  ) => {
+    className?: string,
+    size?: number | string,
+    filled?: boolean,
+  ): React.ReactNode => {
     const isComponentStyle = pieceStyle === "custom" || pieceStyle === "lucide";
     const IconComponent =
-      pieceStyle === "custom" ? unit.custom : (unit.lucide as React.ElementType);
+      pieceStyle === "custom"
+        ? unit.custom
+        : (unit.lucide as React.ElementType);
 
-    const baseStyles = `${className} inline-flex items-center justify-center transition-all duration-700`;
+    const baseStyles = `${className || ""} inline-flex items-center justify-center transition-all duration-700`;
+    const iconSize = size || "100%";
+    const isFilled = filled || false;
 
     if (isComponentStyle) {
       return (
         <span
           className={baseStyles}
-          style={{ width: size, height: size }}
+          style={{ width: iconSize, height: iconSize }}
         >
           <IconComponent
             size="100%"
-            className={filled ? "fill-current" : ""}
+            className={isFilled ? "fill-current" : ""}
           />
         </span>
       );
@@ -65,7 +69,7 @@ export function useGameTheme(): GameTheme {
     return (
       <span
         className={baseStyles}
-        style={{ fontSize: size, width: size, height: size }}
+        style={{ fontSize: iconSize as any, width: iconSize, height: iconSize }}
       >
         {unit[pieceStyle as "emoji" | "bold" | "outlined"]}
       </span>
