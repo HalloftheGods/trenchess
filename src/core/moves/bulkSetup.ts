@@ -5,6 +5,10 @@ import { DEFAULT_SEEDS } from "@/core/setup/seeds";
 import { deserializeGame, adaptSeedToMode } from "@/shared/utils/serialization";
 import type { TrenchessState, TerrainType, BoardPiece, PieceType, GameMode } from "@/shared/types";
 import type { Ctx } from "boardgame.io";
+import { resolvePlayerId } from "@/core/setup/coreHelpers";
+import { INVALID_MOVE } from "boardgame.io/core";
+import { randomizeTerrain as randomizeTerrainLogic, randomizeUnits as randomizeUnitsLogic } from "@/core/setup/randomization";
+import { applyClassicalFormation as applyClassicalFormationLogic } from "@/core/setup/formations";
 
 interface RandomAPI {
   Number: () => number;

@@ -3,13 +3,6 @@ import type { GameMode, PieceType, TerrainType, TrenchessState } from "@/shared/
 import type { Ctx } from "boardgame.io";
 import { getPlayerCells } from "./territory";
 
-export const getPlayersForMode = (mode: GameMode) =>
-  mode === "2p-ns"
-    ? ["red", "blue"]
-    : mode === "2p-ew"
-      ? ["green", "yellow"]
-      : ["red", "yellow", "green", "blue"];
-
 export const getQuota = (mode: GameMode) => {
   const isTwoPlayer = mode === "2p-ns" || mode === "2p-ew";
   return isTwoPlayer

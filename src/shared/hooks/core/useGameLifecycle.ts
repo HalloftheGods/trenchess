@@ -10,10 +10,10 @@ import type {
   GameCore,
 } from "@/shared/types";
 import {
-  getPlayersForMode,
   getQuota,
   isPlayerReadyToPlay,
 } from "@/core/setup/coreHelpers";
+import { getPlayersForMode } from "@/core/setup/territory";
 import { useUrlSync } from "./useUrlSync";
 
 export function useGameLifecycle(
