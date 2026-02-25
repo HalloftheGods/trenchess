@@ -7,7 +7,7 @@
 import React from "react";
 import SectionDivider from "@/shared/components/molecules/SectionDivider";
 import GameLogo from "@/shared/components/molecules/GameLogo";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 
 interface RoutePageHeaderProps {
   label: string;

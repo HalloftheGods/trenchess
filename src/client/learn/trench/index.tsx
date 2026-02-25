@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Trees, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import type { TerrainType } from "@/shared/types/game";
 
 // Shared Route Components

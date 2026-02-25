@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import type { RouteConfig } from "@/App.routes.tsx";
+import type { RouteConfig } from "@/constants/routes";
 import type { GameStateHook, GameMode } from "@/shared/types";
 
 export const GAME_PATHS = {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import SectionDivider from "@molecules/SectionDivider";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";

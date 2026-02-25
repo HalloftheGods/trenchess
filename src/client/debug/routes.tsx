@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import type { RouteConfig } from "@/App.routes.tsx";
+import type { RouteConfig } from "@/constants/routes";
 import { LoadingFallback } from "@/shared/components/molecules/LoadingFallback";
 import { DebugErrorThrower } from "@/shared/components/atoms/DebugErrorThrower";
 

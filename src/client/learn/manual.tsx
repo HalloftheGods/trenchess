@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Waves, Crosshair, ShieldPlus, Zap } from "lucide-react";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import { PIECES, INITIAL_ARMY } from "@/constants";
 import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
 import { UNIT_DETAILS, unitColorMap } from "@/constants";

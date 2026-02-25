@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import type { NavigateFunction } from "react-router-dom";
-import type { RouteConfig } from "@/App.routes.tsx";
+import type { RouteConfig } from "@/constants/routes";
 
 export const OTHER_PATHS = {
   SCOREBOARD: "/scoreboard",

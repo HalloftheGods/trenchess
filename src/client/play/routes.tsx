@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import type { RouteConfig } from "@/App.routes.tsx";
+import type { RouteConfig } from "@/constants/routes";
 
 export const PLAY_PATHS = {
   PLAY: "/play",

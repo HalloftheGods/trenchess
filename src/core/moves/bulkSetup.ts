@@ -1,16 +1,9 @@
-import { INVALID_MOVE } from "boardgame.io/core";
-import { resolvePlayerId } from "@/core/setup/coreHelpers";
-import {
-  randomizeTerrain as randomizeTerrainLogic,
-  randomizeUnits as randomizeUnitsLogic,
-} from "@/core/setup/randomization";
-import { applyClassicalFormation as applyClassicalFormationLogic } from "@/core/setup/formations";
-import { getPlayerCells } from "@/core/setup/territory";
+import { getPlayerCells, getPlayersForMode } from "@/core/setup/territory";
 import { canPlaceUnit } from "@/core/setup/validation";
-import { TERRAIN_TYPES } from "@/constants/terrain";
+import { TERRAIN_TYPES, PIECES, INITIAL_ARMY } from "@/constants";
 import { DEFAULT_SEEDS } from "@/core/setup/seeds";
 import { deserializeGame, adaptSeedToMode } from "@/shared/utils/serialization";
-import type { TrenchessState, TerrainType } from "@/shared/types";
+import type { TrenchessState, TerrainType, BoardPiece, PieceType, GameMode } from "@/shared/types";
 import type { Ctx } from "boardgame.io";
 
 interface RandomAPI {
@@ -18,6 +11,79 @@ interface RandomAPI {
   Die: (n: number) => number;
   Shuffle: <T>(array: T[]) => T[];
 }
+
+export const setMode = (
+  { G }: { G: TrenchessState },
+  mode: GameMode,
+) => {
+  G.mode = mode;
+  G.activePlayers = getPlayersForMode(mode);
+};
+
+export const mirrorBoard = (
+  { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
+  explicitPid?: string,
+) => {
+  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
+  if (!playerId) return INVALID_MOVE;
+
+  const source = playerId;
+  let target = "";
+  if (G.mode === "2p-ns") target = source === "red" ? "blue" : "red";
+  else if (G.mode === "2p-ew") target = source === "green" ? "yellow" : "green";
+  else {
+    if (source === "red") target = "blue";
+    else if (source === "blue") target = "red";
+    else if (source === "yellow") target = "green";
+    else if (source === "green") target = "yellow";
+  }
+  if (!target) return INVALID_MOVE;
+
+  const sourceCells = getPlayerCells(source, G.mode);
+  const targetCells = getPlayerCells(target, G.mode);
+
+  // Clear target cells first
+  for (const [r, c] of targetCells) {
+    G.board[r][c] = null;
+    G.terrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+  }
+
+  // Mirror source to target
+  for (const [r, c] of sourceCells) {
+    const piece = G.board[r][c];
+    const terr = G.terrain[r][c];
+    const tr = 11 - r;
+    const tc = 11 - c;
+    if (tr >= 0 && tr < 12 && tc >= 0 && tc < 12) {
+      G.terrain[tr][tc] = terr;
+      if (piece) G.board[tr][tc] = { ...piece, player: target };
+    }
+  }
+
+  // Update inventories
+  const updateInventoryForPlayer = (p: string) => {
+    const placedUnits: Record<string, number> = {};
+    for (let r = 0; r < 12; r++) {
+      for (let c = 0; c < 12; c++) {
+        const piece = G.board[r][c];
+        if (piece && piece.player === p)
+          placedUnits[piece.type] = (placedUnits[piece.type] || 0) + 1;
+      }
+    }
+    const missingUnits: PieceType[] = [];
+    INITIAL_ARMY.forEach((u) => {
+      const count = placedUnits[u.type] || 0;
+      const missing = u.count - count;
+      if (missing > 0) {
+        for (let i = 0; i < missing; i++) missingUnits.push(u.type);
+      }
+    });
+    return missingUnits;
+  };
+
+  G.inventory[source] = updateInventoryForPlayer(source);
+  G.inventory[target] = updateInventoryForPlayer(target);
+};
 
 export const randomizeTerrain = (
   { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },

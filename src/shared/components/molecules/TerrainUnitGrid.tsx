@@ -1,7 +1,7 @@
 import React from "react";
 import { INITIAL_ARMY, unitColorMap } from "@/constants";
 import { UnitMovePreview } from "@/shared/components/molecules/UnitMovePreview";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import type { TerrainDetail } from "@/shared/types/game";
 import type { PieceType } from "@/shared/types/game";
 
@@ -35,7 +35,9 @@ const UnitPreviewCell: React.FC<UnitPreviewCellProps & { size?: number }> = ({
         centerRow={center}
         centerCol={center}
       />
-      <div className={`flex items-center gap-1.5 ${colors.text} bg-black/20 px-3 py-1 rounded-full border border-white/5`}>
+      <div
+        className={`flex items-center gap-1.5 ${colors.text} bg-black/20 px-3 py-1 rounded-full border border-white/5`}
+      >
         {getIcon(unit, "", 14)}
         <span className="text-[10px] font-black uppercase tracking-[0.1em]">
           {unit.type}
@@ -52,14 +54,14 @@ const SectionLabel: React.FC<{ label: string; dimmed?: boolean }> = ({
   <div className="flex items-center gap-4 w-full opacity-60">
     <span
       className={`text-[11px] font-black uppercase tracking-[0.3em] whitespace-nowrap ${
-        dimmed
-          ? "text-slate-500"
-          : "text-slate-400"
+        dimmed ? "text-slate-500" : "text-slate-400"
       }`}
     >
       {label}
     </span>
-    <div className={`h-px flex-1 ${dimmed ? "bg-slate-800" : "bg-slate-700"}`} />
+    <div
+      className={`h-px flex-1 ${dimmed ? "bg-slate-800" : "bg-slate-700"}`}
+    />
   </div>
 );
 
@@ -92,7 +94,10 @@ export const TerrainUnitGrid: React.FC<TerrainUnitGridProps> = ({
           <SectionLabel label="Refuses" dimmed />
           <div className="flex flex-row flex-wrap gap-10 justify-center lg:justify-start pl-4">
             {refusedUnits.map((pk) => (
-              <div key={`refuse-container-${pk}`} className="opacity-40 grayscale-[0.3] hover:opacity-100 hover:grayscale-0 transition-all duration-500">
+              <div
+                key={`refuse-container-${pk}`}
+                className="opacity-40 grayscale-[0.3] hover:opacity-100 hover:grayscale-0 transition-all duration-500"
+              >
                 <UnitPreviewCell
                   key={`refuse-${pk}`}
                   pieceKey={pk as string}

@@ -19,6 +19,8 @@ import {
   resetTerrain,
   resetUnits,
   forfeit,
+  setMode,
+  mirrorBoard,
 } from "@/core/moves";
 
 export const Trenchess: Game<
@@ -30,7 +32,7 @@ export const Trenchess: Game<
 
   setup: (_, setupData) => {
     const data = setupData as TrenchessSetupData;
-    const mode: GameMode = data?.mode || "2p-ns";
+    const mode: GameMode = data?.mode || "4p";
     let players: string[];
 
     const playerMap: Record<string, string> = {
@@ -101,9 +103,8 @@ export const Trenchess: Game<
 
   moves: {
     forfeit,
-    finishGamemaster: ({ G }) => {
-      G.isGamemasterFinished = true;
-    },
+    setMode,
+    mirrorBoard,
   },
 
   phases: {
@@ -122,6 +123,8 @@ export const Trenchess: Game<
         resetTerrain,
         resetUnits,
         forfeit,
+        setMode,
+        mirrorBoard,
         finishGamemaster: ({ G }) => {
           G.isGamemasterFinished = true;
         },

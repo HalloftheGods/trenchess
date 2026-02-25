@@ -145,6 +145,8 @@ export interface BgioClient {
     resetTerrain: (pid?: string) => void;
     resetUnits: (pid?: string) => void;
     finishGamemaster: () => void;
+    setMode: (mode: GameMode) => void;
+    mirrorBoard: (pid?: string) => void;
   };
   stop: () => void;
   start: () => void;
@@ -226,6 +228,7 @@ export interface SetupActions {
   mirrorBoard: () => void;
   resetTerrain: () => void;
   resetUnits: () => void;
+  setMode: (mode: GameMode) => void;
 }
 
 export interface BgioSync {

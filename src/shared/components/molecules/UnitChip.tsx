@@ -1,7 +1,7 @@
 import React from "react";
 import { Ban, ShieldPlus, Zap } from "lucide-react";
 import { INITIAL_ARMY, unitColorMap } from "@/constants";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 
 import { CHESS_NAME } from "@/constants";
 

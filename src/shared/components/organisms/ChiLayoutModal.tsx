@@ -5,7 +5,7 @@
 import React from "react";
 import { X, Map as MapIcon, ChevronRight } from "lucide-react";
 import BoardPreview from "@/client/game/shared/components/organisms/BoardPreview";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import type { GameMode, SeedItem } from "@/shared/types/game";
 
 interface ChiLayoutModalProps {
@@ -126,7 +126,9 @@ const ChiLayoutModal: React.FC<ChiLayoutModalProps> = ({
                     {item.name || "Unnamed Layout"}
                   </h3>
                   <div className="flex items-center gap-2 mt-1 opacity-60">
-                    <div className={`w-1 h-1 rounded-full ${selectedIndex === index ? "bg-emerald-500" : "bg-slate-400"}`} />
+                    <div
+                      className={`w-1 h-1 rounded-full ${selectedIndex === index ? "bg-emerald-500" : "bg-slate-400"}`}
+                    />
                     <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                       {item.id ? "Tactical Blueprint" : "Default Field"}
                     </p>

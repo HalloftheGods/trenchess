@@ -1,7 +1,7 @@
 import React from "react";
 import { INITIAL_ARMY, unitColorMap } from "@/constants";
 import { CHESS_NAME } from "@/constants";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import type { TerrainDetail } from "@/shared/types/game";
 import type { ArmyUnit } from "@/shared/types/game";
 
@@ -25,9 +25,7 @@ export const SanctuaryBadgeList: React.FC<SanctuaryBadgeListProps> = ({
             title={CHESS_NAME[pk]?.chess || pk}
             className={`tactical-badge ${colors.bg} ${colors.text} ${colors.border}`}
           >
-            <div className="w-6 h-6">
-              {getIcon(unit, "", 24)}
-            </div>
+            <div className="w-6 h-6">{getIcon(unit, "", 24)}</div>
           </div>
         );
       })}

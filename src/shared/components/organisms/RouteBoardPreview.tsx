@@ -5,7 +5,7 @@
  * Board preview wrapper for menu views.
  */
 import React from "react";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import BoardPreview from "@/client/game/shared/components/organisms/BoardPreview";
 
 interface MenuBoardPreviewProps {

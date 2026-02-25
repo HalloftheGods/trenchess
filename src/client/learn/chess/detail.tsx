@@ -5,7 +5,7 @@ import InteractiveGuide, {
 } from "@/shared/components/templates/InteractiveGuide";
 import { PIECES, INITIAL_ARMY } from "@/constants";
 import { UNIT_DETAILS, unitColorMap } from "@/constants";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import type {
   PieceType,
   TerrainType,

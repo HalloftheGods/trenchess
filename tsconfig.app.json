@@ -71,6 +71,12 @@
       "@hooks": [
         "src/shared/hooks"
       ],
+      "@context/*": [
+        "src/shared/context/*"
+      ],
+      "@context": [
+        "src/shared/context"
+      ],
       "@utils/*": [
         "src/shared/utils/*"
       ],

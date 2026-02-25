@@ -38,6 +38,7 @@ export default defineConfig({
         "./src/shared/components/templates",
       ),
       "@hooks": path.resolve(__dirname, "./src/shared/hooks"),
+      "@context": path.resolve(__dirname, "./src/shared/context"),
       "@utils": path.resolve(__dirname, "./src/shared/utils"),
       "@assets": path.resolve(__dirname, "./src/shared/assets"),
 

@@ -1,0 +1,55 @@
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useState } from "react";
+import type { RouteContextType, PreviewConfig } from "@/shared/types";
+
+const RouteContext = createContext<RouteContextType | undefined>(undefined);
+
+export const RouteProvider: React.FC<{
+  children: React.ReactNode;
+  value: Partial<RouteContextType>;
+}> = ({ children, value }) => {
+  const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
+  const [_hoveredTerrain, setHoveredTerrain] = useState<string | null>(null);
+  const [terrainSeed, setTerrainSeed] = useState<number | undefined>(
+    value?.terrainSeed,
+  );
+  const [previewSeedIndex, setPreviewSeedIndex] = useState<number>(
+    value?.previewSeedIndex || 0,
+  );
+  const [previewConfig, setPreviewConfig] = useState<PreviewConfig>(
+    value?.previewConfig || {},
+  );
+  const [backAction, setBackAction] = useState<{
+    label?: string;
+    onClick: () => void;
+  } | null>(null);
+
+  return (
+    <RouteContext.Provider
+      value={{
+        ...(value as RouteContextType),
+        hoveredMenu,
+        setHoveredMenu,
+        setHoveredTerrain,
+        terrainSeed: terrainSeed ?? value?.terrainSeed,
+        setTerrainSeed,
+        previewSeedIndex: previewSeedIndex ?? value?.previewSeedIndex ?? 0,
+        setPreviewSeedIndex,
+        previewConfig: previewConfig || value?.previewConfig || {},
+        setPreviewConfig,
+        backAction,
+        setBackAction,
+      }}
+    >
+      {children}
+    </RouteContext.Provider>
+  );
+};
+
+export const useRouteContext = () => {
+  const context = useContext(RouteContext);
+  if (!context) {
+    throw new Error("useRouteContext must be used within RouteProvider");
+  }
+  return context;
+};

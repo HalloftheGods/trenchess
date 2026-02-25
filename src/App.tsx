@@ -1,8 +1,9 @@
-import { RouteProvider } from "@/route.context";
+import { RouteProvider } from "@/shared/context";
 import { ScrollToTop } from "@/shared/components/atoms/ScrollToTop";
+import { AnalyticsTracker } from "@/shared/components/atoms/AnalyticsTracker";
 import { useAppInitialization } from "@/shared/hooks/useAppInitialization";
 import { useRouteContextValue } from "@/shared/hooks/useRouteContextValue";
-import { AppRoutes } from "./App.routes";
+import { AppRoutes } from "./App.Routes";
 
 const App = () => {
   const {
@@ -22,6 +23,7 @@ const App = () => {
 
   return (
     <RouteProvider value={routeContextValue}>
+      <AnalyticsTracker />
       <ScrollToTop />
       <AppRoutes
         game={game}

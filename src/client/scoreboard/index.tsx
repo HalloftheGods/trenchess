@@ -16,7 +16,7 @@ import ScoreboardLayout from "@/client/game/shared/components/templates/Scoreboa
 import { RouteBoardPreview } from "@/shared/components/organisms/RouteBoardPreview";
 import type { GameMode } from "@/shared/types/game";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 
 const getServerUrl = () => {
   if (typeof window === "undefined") return "http://localhost:3001";

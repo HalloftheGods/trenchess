@@ -4,7 +4,7 @@ import GameBoard from "../shared/components/organisms/GameBoard";
 import MmoActionBar from "../shared/components/organisms/MmoActionBar";
 import GameStateDebug from "../shared/components/molecules/GameStateDebug";
 
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import { useDeployment } from "@/client/game/shared/hooks/useDeployment";
 import { INITIAL_ARMY, UNIT_POINTS } from "@/constants";
 import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/constants";

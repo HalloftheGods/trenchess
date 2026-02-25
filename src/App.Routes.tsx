@@ -1,6 +1,6 @@
 import { Suspense, useMemo } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { ROUTES, LazyRoutes } from "@/App.routes";
+import { ROUTES, LazyRoutes } from "@/constants/routes.ts";
 import { LoadingFallback } from "@/shared/components/molecules/LoadingFallback";
 
 import { getPlayRoutes } from "./client/play/routes.tsx";
@@ -10,20 +10,7 @@ import { getGameRoutes } from "./client/game/routes.tsx";
 import { getDebugRoutes } from "./client/debug/routes.tsx";
 import { getOtherRoutes } from "./client/other/routes.tsx";
 
-import type { useGameState } from "@/shared/hooks/useGameState";
-import type { useRouteContextValue } from "@/shared/hooks/useRouteContextValue";
-
-interface AppRoutesProps {
-  game: ReturnType<typeof useGameState>;
-  routeContextValue: ReturnType<typeof useRouteContextValue>;
-  handleBackToMenu: () => void;
-}
-
-export interface RouteConfig {
-  path?: string;
-  index?: boolean;
-  element: React.ReactNode;
-}
+import type { AppRoutesProps, RouteConfig } from "@/shared/types";
 
 export const AppRoutes = ({
   game,
@@ -71,7 +58,13 @@ export const AppRoutes = ({
 
   const topLevelRoutes = useMemo(
     () => [
-      ...getGameRoutes(game, gameScreenProps, handleBackToMenu, mode, initFromSeed),
+      ...getGameRoutes(
+        game,
+        gameScreenProps,
+        handleBackToMenu,
+        mode,
+        initFromSeed,
+      ),
       ...getDebugRoutes(),
       ...getOtherRoutes(darkMode, handleBackToMenu, navigate).filter(
         (r) => r.path === "tutorial" || r.path === "learn/manual",

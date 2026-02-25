@@ -142,6 +142,10 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
       green: "text-green-600",
     }[playerID] || "text-slate-500";
 
+  const isGamemaster = gameState === "gamemaster";
+  const canSelect = !isReady && (!isLocalTurn || isGamemaster);
+  const isActiveCommander = isGamemaster && isLocalTurn;
+
   return (
     <div className="relative group">
       {/* Check Ripple Effect */}
@@ -153,18 +157,19 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
 
       <div
         onClick={() => {
-          if (!isReady && !isLocalTurn) onSelect?.();
+          if (canSelect) onSelect?.();
         }}
+        data-testid={`player-panel-${playerID}`}
         className={`
           relative overflow-visible z-10
           bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl rounded-xl p-5 pt-10 space-y-5 shadow-2xl
           transition-all duration-700 border-2
-          ${!isReady && !isLocalTurn ? "cursor-pointer hover:border-slate-300 dark:hover:border-white/20" : ""}
+          ${canSelect ? "cursor-pointer hover:border-slate-300 dark:hover:border-white/20" : ""}
           ${
             isReady
               ? `${borderClass} ring-1 ring-white/10 shadow-[0_0_40px_rgba(var(--${cfg.color.split("-")[0]}-rgb),0.3)]`
               : isLocalTurn
-                ? `${borderClass} shadow-slate-100 dark:shadow-white/5`
+                ? `${borderClass} shadow-slate-100 dark:shadow-white/5 ${isActiveCommander ? "ring-2 ring-offset-4 ring-offset-slate-900 ring-indigo-500/50 scale-[1.02] z-20" : ""}`
                 : `${borderMutedClass} opacity-60 grayscale-[0.5]`
           }
           ${inCheck ? "animate-pulse border-brand-red" : ""}

@@ -13,7 +13,7 @@ import {
   Medal,
   Shovel,
 } from "lucide-react";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import {
   DualToneSwords,
   DualToneSwordsFlipped,

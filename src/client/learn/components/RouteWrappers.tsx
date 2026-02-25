@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { LazyRoutes } from "@/App.routes";
+import { LazyRoutes } from "@/constants/routes";
 import type { TerrainType } from "@/shared/types";
 
 export const TrenchGuideWrapper = (props: { onBack?: () => void }) => {

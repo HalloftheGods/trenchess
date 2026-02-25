@@ -9,13 +9,8 @@ import { ArrowLeft } from "lucide-react";
 import { INITIAL_ARMY } from "@/constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import { useRouteContext } from "@/route.context";
-import {
-  UNIT_COLORS,
-  UNIT_NAMES,
-  ALL_UNITS,
-  TERRAIN_LIST,
-} from "@/constants";
+import { useRouteContext } from "@context";
+import { UNIT_COLORS, UNIT_NAMES, ALL_UNITS, TERRAIN_LIST } from "@/constants";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 
 interface InteractiveHeaderProps {

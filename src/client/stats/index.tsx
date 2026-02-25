@@ -11,7 +11,7 @@ import {
 } from "@/constants";
 import type { TerrainType } from "@/shared/types/game";
 import { TERRAIN_TYPES } from "@/constants";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import type { PieceStyle } from "@/shared/types/game";
 
 // Cast the imported JSON to our type

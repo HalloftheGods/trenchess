@@ -1,6 +1,6 @@
 import { type LucideIcon } from "lucide-react";
 import { type PreviewConfig, type ArmyUnit } from "@/shared/types";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 
 type ColorVariant =
   | "red"
@@ -18,7 +18,9 @@ interface MenuCardProps {
   onClick: () => void;
   title: string;
   description: string;
-  Icon?: LucideIcon | React.ComponentType<{ size?: number; className?: string }>;
+  Icon?:
+    | LucideIcon
+    | React.ComponentType<{ size?: number; className?: string }>;
   unit?: ArmyUnit;
   color: ColorVariant;
   badge?: string;
@@ -273,10 +275,7 @@ const RouteCard: React.FC<
         {unit ? (
           getIcon(unit, iconClasses, 80)
         ) : Icon ? (
-          <Icon
-            size={80}
-            className={iconClasses}
-          />
+          <Icon size={80} className={iconClasses} />
         ) : null}
         {hoverText && (
           <div

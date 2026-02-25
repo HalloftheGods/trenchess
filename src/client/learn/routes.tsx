@@ -4,7 +4,7 @@ import {
   TrenchGuideWrapper,
   ChessGuideWrapper,
 } from "./components/RouteWrappers";
-import type { RouteConfig } from "@/App.routes.tsx";
+import type { RouteConfig } from "@/constants/routes";
 
 export const LEARN_PATHS = {
   LEARN: "/learn",
@@ -75,7 +75,9 @@ export const getLearnRoutes = (navigate: NavigateFunction): RouteConfig[] => [
   { path: "learn/trench", element: <LearnLazyRoutes.trench.main /> },
   {
     path: "learn/trench/:terrain",
-    element: <TrenchGuideWrapper onBack={() => navigate(LEARN_PATHS.LEARN_TRENCH)} />,
+    element: (
+      <TrenchGuideWrapper onBack={() => navigate(LEARN_PATHS.LEARN_TRENCH)} />
+    ),
   },
   { path: "learn/chess", element: <LearnLazyRoutes.chess.main /> },
   {
@@ -85,7 +87,9 @@ export const getLearnRoutes = (navigate: NavigateFunction): RouteConfig[] => [
   {
     path: "learn/chess/chessmen/:unitType",
     element: (
-      <ChessGuideWrapper onBack={() => navigate(LEARN_PATHS.LEARN_CHESSMEN_MANUAL)} />
+      <ChessGuideWrapper
+        onBack={() => navigate(LEARN_PATHS.LEARN_CHESSMEN_MANUAL)}
+      />
     ),
   },
   { path: "learn/math", element: <LearnLazyRoutes.math.main /> },

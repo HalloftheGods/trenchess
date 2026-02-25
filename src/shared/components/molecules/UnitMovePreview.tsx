@@ -1,7 +1,12 @@
 import React from "react";
 import { Columns4, Shield, X } from "lucide-react";
-import { UNIT_DETAILS, PIECES, INITIAL_ARMY, TERRAIN_DETAILS } from "@/constants";
-import { useRouteContext } from "@/route.context";
+import {
+  UNIT_DETAILS,
+  PIECES,
+  INITIAL_ARMY,
+  TERRAIN_DETAILS,
+} from "@/constants";
+import { useRouteContext } from "@context";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import type { PieceType, TerrainType } from "@/shared/types";
@@ -47,11 +52,14 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
     : null;
   const TerrainIcon = terrainInfo?.icon;
 
-  const isProtected = selectedTerrain 
+  const isProtected = selectedTerrain
     ? isUnitProtected(unitType, selectedTerrain)
     : false;
   const canTraverse = selectedTerrain
-    ? canUnitTraverseTerrain(unitType as PieceType, selectedTerrain as TerrainType)
+    ? canUnitTraverseTerrain(
+        unitType as PieceType,
+        selectedTerrain as TerrainType,
+      )
     : true;
 
   return (
@@ -127,9 +135,9 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
                 )}
 
                 {/* Center Piece */}
-                {isCenter && unit && (
-                  getIcon(unit, "dark:text-slate-900 text-white", 18)
-                )}
+                {isCenter &&
+                  unit &&
+                  getIcon(unit, "dark:text-slate-900 text-white", 18)}
 
                 {/* Move Indicators - Square-y style */}
                 {(isMove || isNewMove || isAttack) && (
@@ -158,20 +166,27 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
                 )}
 
                 {/* Terrain Decor & Logic */}
-                {isTerrainCell && !isCenter && !isMove && !isNewMove && !isAttack && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    {!canTraverse ? (
-                      <X className="w-3 h-3 text-brand-red/60" strokeWidth={4} />
-                    ) : (
-                      TerrainIcon && (
-                        <TerrainIcon
-                          size={12}
-                          className={`${terrainInfo.color?.text || ""} opacity-20`}
+                {isTerrainCell &&
+                  !isCenter &&
+                  !isMove &&
+                  !isNewMove &&
+                  !isAttack && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      {!canTraverse ? (
+                        <X
+                          className="w-3 h-3 text-brand-red/60"
+                          strokeWidth={4}
                         />
-                      )
-                    )}
-                  </div>
-                )}
+                      ) : (
+                        TerrainIcon && (
+                          <TerrainIcon
+                            size={12}
+                            className={`${terrainInfo.color?.text || ""} opacity-20`}
+                          />
+                        )
+                      )}
+                    </div>
+                  )}
               </div>
             );
           },

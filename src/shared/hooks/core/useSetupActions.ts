@@ -539,70 +539,76 @@ export function useSetupActions(
     turn,
   ]);
 
-  const mirrorBoard = useCallback(() => {
-    const source = turn;
-    let target = "";
-    if (mode === "2p-ns") target = source === "red" ? "blue" : "red";
-    else if (mode === "2p-ew") target = source === "green" ? "yellow" : "green";
-    else {
-      if (source === "red") target = "blue";
-      else if (source === "blue") target = "red";
-      else if (source === "yellow") target = "green";
-      else if (source === "green") target = "yellow";
-    }
-    if (!target) return;
-
-    const nextBoard = currentBoard.map((row) => [...row]);
-    const nextTerrain = currentTerrain.map((row) => [...row]);
-    const sourceCells = SetupLogic.getPlayerCells(source, mode);
-    const targetCells = SetupLogic.getPlayerCells(target, mode);
-
-    for (const [r, c] of targetCells) {
-      nextBoard[r][c] = null;
-      nextTerrain[r][c] = "flat" as TerrainType;
-    }
-
-    for (const [r, c] of sourceCells) {
-      const piece = currentBoard[r][c];
-      const terr = currentTerrain[r][c];
-      const tr = 11 - r;
-      const tc = 11 - c;
-      if (tr >= 0 && tr < 12 && tc >= 0 && tc < 12) {
-        nextTerrain[tr][tc] = terr;
-        if (piece) nextBoard[tr][tc] = { ...piece, player: target };
+  const mirrorBoardAction = useCallback(() => {
+    const bgioClient = bgioClientRef?.current;
+    if (bgioClient) {
+      bgioClient.moves.mirrorBoard(turn);
+    } else {
+      const source = turn;
+      let target = "";
+      if (mode === "2p-ns") target = source === "red" ? "blue" : "red";
+      else if (mode === "2p-ew") target = source === "green" ? "yellow" : "green";
+      else {
+        if (source === "red") target = "blue";
+        else if (source === "blue") target = "red";
+        else if (source === "yellow") target = "green";
+        else if (source === "green") target = "yellow";
       }
-    }
+      if (!target) return;
 
-    const updateInventoryForPlayer = (
-      p: string,
-      cBoard: (BoardPiece | null)[][],
-    ) => {
-      const placedUnits: Record<string, number> = {};
-      for (let r = 0; r < 12; r++) {
-        for (let c = 0; c < 12; c++) {
-          const piece = cBoard[r][c];
-          if (piece && piece.player === p)
-            placedUnits[piece.type] = (placedUnits[piece.type] || 0) + 1;
+      const nextBoard = currentBoard.map((row) => [...row]);
+      const nextTerrain = currentTerrain.map((row) => [...row]);
+      const sourceCells = SetupLogic.getPlayerCells(source, mode);
+      const targetCells = SetupLogic.getPlayerCells(target, mode);
+
+      for (const [r, c] of targetCells) {
+        nextBoard[r][c] = null;
+        nextTerrain[r][c] = "flat" as TerrainType;
+      }
+
+      for (const [r, c] of sourceCells) {
+        const piece = currentBoard[r][c];
+        const terr = currentTerrain[r][c];
+        const tr = 11 - r;
+        const tc = 11 - c;
+        if (tr >= 0 && tr < 12 && tc >= 0 && tc < 12) {
+          nextTerrain[tr][tc] = terr;
+          if (piece) nextBoard[tr][tc] = { ...piece, player: target };
         }
       }
-      const missingUnits: PieceType[] = [];
-      INITIAL_ARMY.forEach((u) => {
-        const count = placedUnits[u.type] || 0;
-        const missing = u.count - count;
-        if (missing > 0) {
-          for (let i = 0; i < missing; i++) missingUnits.push(u.type);
-        }
-      });
-      return missingUnits;
-    };
 
-    setBoard(nextBoard);
-    setTerrain(nextTerrain);
-    const newInventory = { ...inventory };
-    newInventory[source] = updateInventoryForPlayer(source, nextBoard);
-    newInventory[target] = updateInventoryForPlayer(target, nextBoard);
-    setInventory(newInventory);
+      const updateInventoryForPlayer = (
+        p: string,
+        cBoard: (BoardPiece | null)[][],
+      ) => {
+        const placedUnits: Record<string, number> = {};
+        for (let r = 0; r < 12; r++) {
+          for (let c = 0; c < 12; c++) {
+            const piece = cBoard[r][c];
+            if (piece && piece.player === p)
+              placedUnits[piece.type] = (placedUnits[piece.type] || 0) + 1;
+          }
+        }
+        const missingUnits: PieceType[] = [];
+        INITIAL_ARMY.forEach((u) => {
+          const count = placedUnits[u.type] || 0;
+          const missing = u.count - count;
+          if (missing > 0) {
+            for (let i = 0; i < missing; i++) missingUnits.push(u.type);
+          }
+        });
+        return missingUnits;
+      };
+
+      setBoard(nextBoard);
+      setTerrain(nextTerrain);
+      const newInventory = { ...inventory };
+      newInventory[source] = updateInventoryForPlayer(source, nextBoard);
+      newInventory[target] = updateInventoryForPlayer(target, nextBoard);
+      setInventory(newInventory);
+    }
   }, [
+    bgioClientRef,
     currentBoard,
     currentTerrain,
     inventory,
@@ -613,6 +619,23 @@ export function useSetupActions(
     turn,
   ]);
 
+  const setModeAction = useCallback(
+    (newMode: GameMode) => {
+      const bgioClient = bgioClientRef?.current;
+      if (bgioClient) {
+        bgioClient.moves.setMode(newMode);
+      }
+      // Always update local state for UI responsiveness and non-engine states
+      setMode(newMode);
+      const players = SetupLogic.getPlayersForMode(newMode);
+      setActivePlayers(players);
+      if (!players.includes(turn)) {
+        turnState.setTurn(players[0]);
+      }
+    },
+    [bgioClientRef, setMode, setActivePlayers, turn, turnState],
+  );
+
   return {
     initGame,
     initGameWithPreset,
@@ -622,8 +645,9 @@ export function useSetupActions(
     setClassicalFormation,
     applyChiGarden,
     resetToOmega,
-    mirrorBoard,
+    mirrorBoard: mirrorBoardAction,
     resetTerrain,
     resetUnits,
+    setMode: setModeAction,
   };
 }

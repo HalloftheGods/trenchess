@@ -86,3 +86,18 @@ export const getCellOwner = (
 
   return null;
 };
+
+/**
+ * getPlayersForMode
+ * Returns the list of active players for a given mode.
+ */
+export const getPlayersForMode = (mode: GameMode): string[] => {
+  switch (mode) {
+    case "2p-ns":
+      return ["red", "blue"];
+    case "2p-ew":
+      return ["green", "yellow"];
+    default:
+      return ["red", "yellow", "green", "blue"];
+  }
+};

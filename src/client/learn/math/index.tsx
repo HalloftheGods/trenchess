@@ -1,13 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  RouteOff,
-  RouteIcon,
-  Sword,
-  ShieldPlus,
-  Waves,
-} from "lucide-react";
-import { useRouteContext } from "@/route.context";
+import { RouteOff, RouteIcon, Sword, ShieldPlus, Waves } from "lucide-react";
+import { useRouteContext } from "@context";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";

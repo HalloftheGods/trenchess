@@ -1,10 +1,10 @@
 import { lazy } from "react";
-import { PLAY_PATHS, PlayLazyRoutes } from "./client/play/routes.tsx";
-import { LEARN_PATHS, LearnLazyRoutes } from "./client/learn/routes.tsx";
-import { GAME_PATHS, GameLazyRoutes } from "./client/game/routes.tsx";
-import { HOME_PATHS, HomeLazyRoutes } from "./client/home/routes.tsx";
-import { DEBUG_PATHS, DebugLazyRoutes } from "./client/debug/routes.tsx";
-import { OTHER_PATHS, OtherLazyRoutes } from "./client/other/routes.tsx";
+import { PLAY_PATHS, PlayLazyRoutes } from "../client/play/routes.tsx";
+import { LEARN_PATHS, LearnLazyRoutes } from "../client/learn/routes.tsx";
+import { GAME_PATHS, GameLazyRoutes } from "../client/game/routes.tsx";
+import { HOME_PATHS, HomeLazyRoutes } from "../client/home/routes.tsx";
+import { DEBUG_PATHS, DebugLazyRoutes } from "../client/debug/routes.tsx";
+import { OTHER_PATHS, OtherLazyRoutes } from "../client/other/routes.tsx";
 
 // Aggregated Route Paths
 export const ROUTES = {

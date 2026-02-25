@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
 import { useGameState } from "@/shared/hooks/useGameState";
-import { RouteProvider } from "@/route.context";
+import { RouteProvider } from "@context";
 import React from "react";
 
 // Mock hooks that use external services or complex state

@@ -4,8 +4,11 @@ import { PIECES } from "./pieces";
 export const TERRAIN_TYPES: Record<string, TerrainType> = {
   FLAT: "flat",
   FORESTS: "forests",
+  TREES: "forests",
   SWAMPS: "swamps",
+  PONDS: "swamps",
   MOUNTAINS: "mountains",
+  RUBBLE: "mountains",
   DESERT: "desert",
 } as const;
 

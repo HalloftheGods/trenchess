@@ -111,6 +111,7 @@ const BoardCell: React.FC<BoardCellProps> = ({
     <Box
       onClick={() => handleCellClick(row, col)}
       onMouseEnter={() => handleCellHover(row, col)}
+      data-testid={`cell-${row}-${col}`}
       className={`relative aspect-square w-full h-full flex items-center justify-center cursor-pointer transition-all border-[0.5px] border-black/20 ${getQuadrantBaseStyle(row, col, mode)}`}
     >
       <TerrainOverlay

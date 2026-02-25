@@ -1,38 +1,72 @@
 import React from "react";
 import type { ReactNode } from "react";
-import CopyrightFooter from "@molecules/CopyrightFooter";
+import TrenchessText from "@atoms/TrenchessText";
 import { DebugSheet } from "../molecules/DebugSheet";
 
 interface GamemasterLayoutProps {
-  header: ReactNode;
-  deploymentPanel: ReactNode;
+  darkMode?: boolean;
   gameBoard: ReactNode;
+  actionBar: ReactNode;
+  onLogoClick?: () => void;
   debugPanel?: ReactNode;
+  leftPanel?: ReactNode;
+  rightPanel?: ReactNode;
 }
 
 /**
  * GamemasterLayout — specialized layout for the board editor.
- * Similar to ZenGarden but with a distinctive "Architect" aesthetic.
+ * 3-Column layout with Architect aesthetic.
  */
 export const GamemasterLayout: React.FC<GamemasterLayoutProps> = ({
-  header,
-  deploymentPanel,
+  darkMode = true,
   gameBoard,
+  actionBar,
+  onLogoClick,
   debugPanel,
+  leftPanel,
+  rightPanel,
 }) => {
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-[#020617] text-slate-900 dark:text-slate-50 p-4 md:p-8 flex flex-col items-center overflow-x-hidden transition-colors selection:bg-indigo-500/30">
-      {header}
-      <div className="w-full grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-        {deploymentPanel}
-        <div className="xl:col-span-9 flex flex-col items-center justify-center min-h-[600px] relative">
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-[120px]" />
-            </div>
+    <div
+      className={`min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 flex flex-col items-center overflow-x-hidden relative ${darkMode ? "dark" : ""}`}
+    >
+      {/* Brand Logo - Top Left */}
+      <div
+        onClick={onLogoClick}
+        className="absolute top-6 left-8 z-[120] cursor-pointer group select-none active:scale-95 transition-transform pointer-events-auto"
+      >
+        <TrenchessText className="text-2xl drop-shadow-[0_4px_12px_rgba(0,0,0,0.2)] dark:drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] opacity-80 group-hover:opacity-100 transition-opacity" />
+      </div>
+
+      {/* Sticky top bar */}
+      {actionBar}
+
+      {/* Subtle ambient glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-gradient-radial from-indigo-500/10 dark:from-indigo-500/5 via-transparent to-transparent rounded-full blur-3xl" />
+      </div>
+
+      {/* Main content area: 3-Column Layout */}
+      <div className="w-full max-w-[1700px] flex flex-col lg:flex-row items-start justify-center gap-8 px-6 pt-28 pb-12 relative z-10">
+        {/* Left Column */}
+        <div className="w-full lg:w-80 flex flex-col shrink-0 order-2 lg:order-1">
+          {leftPanel}
+        </div>
+
+        {/* Center: Board container */}
+        <div className="flex-1 flex justify-center w-full min-w-0 order-1 lg:order-2">
+          <div className="w-full max-w-[850px] aspect-square relative">
             {gameBoard}
+          </div>
+        </div>
+
+        {/* Right Column */}
+        <div className="w-full lg:w-80 flex flex-col shrink-0 order-3">
+          {rightPanel}
         </div>
       </div>
-      <CopyrightFooter />
+
+      {/* Debug Sheet & Tab */}
       <DebugSheet debugPanel={debugPanel} />
     </div>
   );

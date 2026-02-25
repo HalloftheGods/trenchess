@@ -1,9 +1,9 @@
 import React, { useMemo, useEffect } from "react";
-import { MmoLayout } from "../shared/components/templates/MmoLayout";
+import { GamemasterLayout } from "../shared/components/templates/GamemasterLayout";
 import GameBoard from "../shared/components/organisms/GameBoard";
 import MmoActionBar from "../shared/components/organisms/MmoActionBar";
 import { ReadyUpPanel } from "../shared/components/molecules/ReadyUpPanel";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 import { useDeployment } from "@/client/game/shared/hooks/useDeployment";
 import { INITIAL_ARMY, UNIT_POINTS, MAX_TERRAIN_PER_PLAYER } from "@/constants";
 import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/constants";
@@ -48,7 +48,12 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
   });
 
   const sanctuaryBonuses = useMemo(() => {
-    const bonuses: Record<string, number> = { red: 0, yellow: 0, green: 0, blue: 0 };
+    const bonuses: Record<string, number> = {
+      red: 0,
+      yellow: 0,
+      green: 0,
+      blue: 0,
+    };
     if (!game.board || !game.terrain) return bonuses;
     for (let r = 0; r < game.board.length; r++) {
       for (let c = 0; c < (game.board[r]?.length || 0); c++) {
@@ -71,7 +76,10 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
       green: { current: 0, max: 0 },
       blue: { current: 0, max: 0 },
     };
-    const initialTotalPower = INITIAL_ARMY.reduce((sum, unit) => sum + unit.count * (UNIT_POINTS[unit.type] || 0), 0);
+    const initialTotalPower = INITIAL_ARMY.reduce(
+      (sum, unit) => sum + unit.count * (UNIT_POINTS[unit.type] || 0),
+      0,
+    );
     game.activePlayers.forEach((pid) => {
       stats[pid].max = initialTotalPower;
       let currentMaterial = 0;
@@ -98,21 +106,35 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
     game.finishGamemaster();
   };
 
-  const renderSidePanel = (sidePlayers: string[], alignment: "left" | "right") => (
-    <div className="flex flex-col justify-between h-full">
+  const renderSidePanel = (
+    sidePlayers: string[],
+    alignment: "left" | "right",
+  ) => (
+    <div className="flex flex-col gap-4">
       {sidePlayers.map((expectedPid) => {
-        const pid = game.activePlayers.includes(expectedPid) ? expectedPid : undefined;
-        if (!pid) return <div key={`empty-${expectedPid}`} className="flex-1" />;
+        const pid = game.activePlayers.includes(expectedPid)
+          ? expectedPid
+          : undefined;
+        if (!pid)
+          return <div key={`empty-${expectedPid}`} className="h-40" />;
 
         const myCells = getPlayerCells(pid, game.mode);
         let pPlacedCount = 0;
         for (const [r, c] of myCells) {
-          if (game.terrain[r] && game.terrain[r][c] !== TERRAIN_TYPES.FLAT) pPlacedCount++;
+          if (game.terrain[r] && game.terrain[r][c] !== TERRAIN_TYPES.FLAT)
+            pPlacedCount++;
         }
 
-        const pMaxPlacement = game.activePlayers.length === 2 ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
-        const totalUnitCount = INITIAL_ARMY.reduce((sum, unit) => sum + unit.count, 0);
-        const pUnitsPlaced = totalUnitCount - (game.inventory[pid] || []).length;
+        const pMaxPlacement =
+          game.activePlayers.length === 2
+            ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+            : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+        const totalUnitCount = INITIAL_ARMY.reduce(
+          (sum, unit) => sum + unit.count,
+          0,
+        );
+        const pUnitsPlaced =
+          totalUnitCount - (game.inventory[pid] || []).length;
 
         return (
           <ReadyUpPanel
@@ -122,10 +144,12 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
             isReady={game.readyPlayers[pid]}
             playerType={game.playerTypes[pid] || "human"}
             setPlayerType={(type) =>
-              game.setPlayerTypes((prev: Record<string, "human" | "computer">) => ({
-                ...prev,
-                [pid]: type,
-              }))
+              game.setPlayerTypes(
+                (prev: Record<string, "human" | "computer">) => ({
+                  ...prev,
+                  [pid]: type,
+                }),
+              )
             }
             isOnline={false}
             isLocalTurn={game.turn === pid}
@@ -138,17 +162,16 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
             maxPower={teamPowerStats[pid].max}
             onResetTerrain={game.resetTerrain}
             onResetUnits={game.resetUnits}
-                            onForfeit={() => game.forfeit(pid)}
-                            onReady={() => game.ready(pid)}
-                            capturedPieces={game.capturedBy[pid]}
-                            desertedPieces={
-                              game.bgioState?.G.lostToDesert?.filter(
-                                (p: BoardPiece) => p.player === pid,
-                              ) || []
-                            }
-                            getIcon={game.getIcon}
-                            alignment={alignment}
-            
+            onForfeit={() => game.forfeit(pid)}
+            onReady={() => game.ready(pid)}
+            capturedPieces={game.capturedBy[pid]}
+            desertedPieces={
+              game.bgioState?.G.lostToDesert?.filter(
+                (p: BoardPiece) => p.player === pid,
+              ) || []
+            }
+            getIcon={game.getIcon}
+            alignment={alignment}
             onNextCommander={handleNextCommander}
             onFinishDeployment={handleFinishDeployment}
           />
@@ -158,7 +181,7 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
   );
 
   return (
-    <MmoLayout
+    <GamemasterLayout
       darkMode={darkMode}
       onLogoClick={ctx.onLogoClick}
       gameBoard={

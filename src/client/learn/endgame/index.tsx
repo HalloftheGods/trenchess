@@ -9,7 +9,7 @@ import {
   Tornado,
   VenetianMask,
 } from "lucide-react";
-import { useRouteContext } from "@/route.context";
+import { useRouteContext } from "@context";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
