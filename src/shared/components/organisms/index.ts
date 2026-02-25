@@ -7,3 +7,4 @@ export * from './RouteBreadcrumbs';
 export * from './RouteDetailModal';
 export * from './RoutePageFooter';
 export * from './RoutePageHeader';
+export * from './GlobalDebugPortal';

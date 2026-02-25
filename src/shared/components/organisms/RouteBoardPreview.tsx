@@ -6,7 +6,7 @@
  */
 import React from "react";
 import { useRouteContext } from "@context";
-import BoardPreview from "@/client/game/shared/components/organisms/BoardPreview";
+import BoardPreview from "@/client/console/components/organisms/BoardPreview";
 
 interface MenuBoardPreviewProps {
   className?: string;
@@ -23,15 +23,6 @@ export const RouteBoardPreview: React.FC<MenuBoardPreviewProps> = ({
     previewSeedIndex,
     terrainSeed,
   } = useRouteContext();
-
-  if (
-    !previewConfig?.mode &&
-    !previewConfig?.forcedTerrain &&
-    previewConfig?.protocol !== "terrainiffic" &&
-    !previewConfig?.label &&
-    !previewConfig?.highlightOuterSquares
-  )
-    return null;
 
   const currentSeed = seeds?.[previewSeedIndex];
   const activeCustomSeed = previewConfig.useDefaultFormation

@@ -1,5 +1,5 @@
 import React from "react";
-import { GameStartOverlay } from "@/client/game/shared/components/atoms/GameStartOverlay";
+import { GameStartOverlay } from "@/client/console/components/atoms/GameStartOverlay";
 
 const StartDebug: React.FC = () => {
   return (

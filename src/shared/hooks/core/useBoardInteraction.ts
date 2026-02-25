@@ -154,7 +154,7 @@ export function useBoardInteraction(
         if (configState.setupMode === "terrain") {
           const currentTerrain = terrain[row][col];
           if (currentTerrain !== TERRAIN_TYPES.FLAT) {
-            bgioClient.moves.placeTerrain(row, col, TERRAIN_TYPES.FLAT);
+            bgioClient.moves.placeTerrain(row, col, TERRAIN_TYPES.FLAT, localPlayerName);
           } else if (placementTerrain && !board[row][col]) {
             const maxQuota =
               bgioState?.G.activePlayers.length === 2
@@ -167,7 +167,7 @@ export function useBoardInteraction(
             }
 
             if (placedCount < maxQuota) {
-              bgioClient.moves.placeTerrain(row, col, placementTerrain);
+              bgioClient.moves.placeTerrain(row, col, placementTerrain, localPlayerName);
               analytics.trackEvent("Setup", "Place Terrain", placementTerrain);
 
               const remainingInInventory =
@@ -185,7 +185,7 @@ export function useBoardInteraction(
             !board[row][col] &&
             SetupLogic.canPlaceUnit(placementPiece, terrain[row][col])
           ) {
-            bgioClient.moves.placePiece(row, col, placementPiece);
+            bgioClient.moves.placePiece(row, col, placementPiece, localPlayerName);
             analytics.trackEvent("Setup", "Place Piece", placementPiece);
 
             const remainingInInventory =
@@ -198,7 +198,7 @@ export function useBoardInteraction(
           board[row][col] &&
           board[row][col]?.player === localPlayerName
         ) {
-          bgioClient.moves.placePiece(row, col, null);
+          bgioClient.moves.placePiece(row, col, null, localPlayerName);
         }
         return;
       }

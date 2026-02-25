@@ -39,7 +39,7 @@ const lazyRoute = (path: string): RouteComponent => {
     throw new Error(`Route component not found: ${fullPath}`);
   }
 
-  return lazy(importer as any);
+  return lazy(importer as () => Promise<{ default: RouteComponent }>);
 };
 
 export { defineRoutes, lazyRoute };

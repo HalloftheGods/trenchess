@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Eye,
   Pizza,
@@ -21,6 +21,7 @@ import {
   DualToneSwordsEw,
 } from "@/shared/components/atoms/RouteIcons";
 import type { GameMode } from "@/shared/types/game";
+import { ROUTES } from "@constants/routes";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
@@ -30,11 +31,16 @@ import RouteCard from "@/shared/components/molecules/RouteCard";
 
 export const PlaySetupView: React.FC = () => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    playMode,
+    players: playersParam,
+    step: stepParam,
+  } = useParams<{ playMode: string; players: string; step?: string }>();
 
   const {
     darkMode,
     onStartGame,
+    onZenGarden,
     selectedPreset,
     setSelectedPreset,
     selectedBoard,
@@ -46,11 +52,10 @@ export const PlaySetupView: React.FC = () => {
     multiplayer,
   } = useRouteContext();
 
-  const step = searchParams.get("step") === "2" ? 2 : 1;
+  const step = stepParam === "2" ? 2 : 1;
 
   // Initialize from URL parameters if needed
   React.useEffect(() => {
-    const playersParam = searchParams.get("players");
     if (playersParam && setPlayerTypes) {
       const count = parseInt(playersParam, 10);
       const defaultTypes = {
@@ -68,22 +73,48 @@ export const PlaySetupView: React.FC = () => {
         if (i < count) defaultTypes[pid] = "human";
       });
 
-      setPlayerTypes(defaultTypes);
+      // Avoid infinite loop by checking if different
+      let isDifferent = false;
+      for (const pid of ["red", "yellow", "green", "blue"]) {
+        if (playerConfig[pid] !== defaultTypes[pid]) {
+          isDifferent = true;
+          break;
+        }
+      }
+
+      if (isDifferent) {
+        setPlayerTypes(defaultTypes);
+      }
     }
 
     if (!selectedBoard) {
-      const modeParam = searchParams.get("mode");
-      if (modeParam === "couch" || modeParam === "practice") {
-        // Just a hint, wait for explicit board selection in step 1
+      if (playersParam) {
+        const count = parseInt(playersParam, 10);
+        if (count <= 2) {
+          setSelectedBoard("2p-ns");
+        } else {
+          setSelectedBoard("4p");
+        }
       }
     }
-  }, [searchParams, selectedBoard, setSelectedBoard, setPlayerTypes]);
+  }, [
+    playersParam,
+    playMode,
+    selectedBoard,
+    setSelectedBoard,
+    setPlayerTypes,
+    playerConfig,
+  ]);
 
   const handleBoardSelect = (mode: GameMode) => {
     setSelectedBoard(mode);
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set("step", "2");
-    setSearchParams(newParams);
+    navigate(
+      ROUTES.PLAY_SETUP.build({
+        playMode: playMode || "couch",
+        players: playersParam || "2",
+        step: "2",
+      }),
+    );
   };
 
   const handlePresetSelect = (
@@ -91,13 +122,18 @@ export const PlaySetupView: React.FC = () => {
     seed?: string,
   ) => {
     setSelectedPreset(preset);
+
+    if (preset === "zen-garden") {
+      onZenGarden?.();
+      return;
+    }
+
     if (selectedBoard) {
       // Auto-detect player configuration from URL
       let finalPlayerConfig = { ...playerConfig };
-      const playerCountParam = searchParams.get("players");
 
-      if (playerCountParam) {
-        const count = parseInt(playerCountParam, 10);
+      if (playersParam) {
+        const count = parseInt(playersParam, 10);
         // Find which players are active for this board
         const activePids =
           selectedBoard === "2p-ns"
@@ -128,7 +164,6 @@ export const PlaySetupView: React.FC = () => {
     }
   };
 
-  const playersParam = searchParams.get("players");
   const urlPlayerCount = playersParam
     ? parseInt(playersParam, 10)
     : (playerCount ?? 2);
@@ -141,8 +176,8 @@ export const PlaySetupView: React.FC = () => {
     isOnline && !isHost
       ? '"Observing the Host\'s Will"'
       : step === 1
-        ? `"A dance is chosen for ${urlPlayerCount} souls"`
-        : '"And the Stage is flung"';
+        ? `A dancefloor for ${urlPlayerCount} is chosen`
+        : "And we set the Stage";
 
   const backLabel =
     step === 2 ? "Choose Board" : isOnline ? "Lobby" : "Local Gathering";
@@ -156,11 +191,15 @@ export const PlaySetupView: React.FC = () => {
         onBackClick={() => {
           if (isOnline && !isHost) return;
           if (step === 2) {
-            const newParams = new URLSearchParams(searchParams);
-            newParams.set("step", "1");
-            setSearchParams(newParams);
+            navigate(
+              ROUTES.PLAY_SETUP.build({
+                playMode: playMode || "couch",
+                players: playersParam || "2",
+                step: "1",
+              }),
+            );
           } else {
-            navigate(isOnline ? "/play/lobby" : "/play/local");
+            navigate(isOnline ? ROUTES.PLAY_LOBBY.url : ROUTES.PLAY_LOCAL.url);
           }
         }}
         className={isOnline && !isHost ? "opacity-30 pointer-events-none" : ""}
@@ -259,10 +298,10 @@ export const PlaySetupView: React.FC = () => {
               }}
               darkMode={darkMode}
               title="Ω Omega"
-              description='"Design the board, Gamemaster."'
+              description='"Set the stage, Gamemaster."'
               Icon={Eye}
               color="red"
-              badge="Setup Mode"
+              badge="Gamemaster Mode"
               HoverIcon={Omega}
               className="w-full"
             />
@@ -279,7 +318,7 @@ export const PlaySetupView: React.FC = () => {
               }}
               darkMode={darkMode}
               title="χ Chi"
-              description='"The Trench, done for you."'
+              description='"The Trench part, done for you."'
               Icon={Shell}
               color="emerald"
               badge="Instant Play"
@@ -314,7 +353,7 @@ export const PlaySetupView: React.FC = () => {
               }}
               darkMode={darkMode}
               title="α Alpha"
-              description='"Entropy unleashed. Full random."'
+              description='"Entropy unleashed."'
               Icon={Dices}
               color="blue"
               badge="Chaos Mode"

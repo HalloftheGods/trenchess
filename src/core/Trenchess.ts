@@ -59,7 +59,8 @@ export const Trenchess: Game<
       terrain: initialTerrain,
       inventory: initialInventory,
       terrainInventory: initialTerrainInventory,
-    } = createInitialState(mode, players);
+      mercenaryPoints: initialMercenaryPoints,
+    } = createInitialState(mode, players, data?.isMercenary);
 
     const initialReadyPlayers: Record<string, boolean> = {};
     
@@ -68,6 +69,7 @@ export const Trenchess: Game<
       terrain: data?.terrain || initialTerrain,
       inventory: data?.inventory || initialInventory,
       terrainInventory: data?.terrainInventory || initialTerrainInventory,
+      mercenaryPoints: initialMercenaryPoints,
       capturedBy: { red: [], yellow: [], green: [], blue: [] },
       lostToDesert: [],
       lastMove: null,
@@ -79,6 +81,7 @@ export const Trenchess: Game<
       winnerReason: null,
       isGamemaster: data?.isGamemaster || false,
       isGamemasterFinished: false,
+      isMercenary: data?.isMercenary || false,
     };
   },
 

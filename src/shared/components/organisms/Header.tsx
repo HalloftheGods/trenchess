@@ -2,7 +2,7 @@ import { BookOpen, Database } from "lucide-react";
 import type { GameMode } from "@/shared/types/game";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 import { SegmentedControl } from "@/shared/components/molecules/SegmentedControl";
-import { PlayerBadge } from "@/client/game/shared/components/atoms/PlayerBadge";
+import { PlayerBadge } from "@/client/console/components/atoms/PlayerBadge";
 import { PLAYER_CONFIGS } from "@constants";
 import GameLogo from "@/shared/components/molecules/GameLogo";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";

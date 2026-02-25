@@ -4,6 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import { HomeView } from "@/client/home";
 import { RouteContext } from "@context";
 import React from "react";
+import type { RouteContextType } from "@/shared/types";
 
 // Mock the components that might cause issues due to missing context or complex structure
 vi.mock("@/shared/components/templates/RoutePageLayout", () => ({
@@ -40,7 +41,9 @@ describe("HomeView", () => {
   const renderHome = () => {
     return render(
       <MemoryRouter>
-        <RouteContext.Provider value={mockRouteContext as any}>
+        <RouteContext.Provider
+          value={mockRouteContext as unknown as RouteContextType}
+        >
           <HomeView />
         </RouteContext.Provider>
       </MemoryRouter>,

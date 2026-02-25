@@ -27,6 +27,7 @@ export const LearnView: React.FC = () => {
       <RoutePageHeader
         label='"There&apos;s a Prophecy on the wind..."'
         onBackClick={() => navigate(ROUTES.HOME.url)}
+        color="amber"
       />
       <RouteGrid cols={3}>
         <RouteCard

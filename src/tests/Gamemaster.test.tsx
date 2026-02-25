@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import GamemasterView from "@/client/game/gamemaster/index";
+import GamemasterView from "@/client/console/gamemaster";
 import React from "react";
 import { TERRAIN_TYPES } from "@constants";
 import type { GameStateHook, BoardPiece, PieceType } from "@/shared/types";
 
 // Mock dependencies
-vi.mock("@/client/game/shared/hooks/useDeployment", () => ({
+vi.mock("@/shared/hooks/core/useDeployment", () => ({
   useDeployment: vi.fn(() => ({
     placedCount: 0,
     maxPlacement: 10,

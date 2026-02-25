@@ -16,6 +16,7 @@ import type {
 export const createInitialState = (
   mode: GameMode,
   players: string[],
+  isMercenary?: boolean,
 ): SetupResult => {
   const board: (BoardPiece | null)[][] = Array(BOARD_SIZE)
     .fill(null)
@@ -27,6 +28,7 @@ export const createInitialState = (
 
   const inventory: Record<string, PieceType[]> = {};
   const terrainInventory: Record<string, TerrainType[]> = {};
+  const mercenaryPoints: Record<string, number> = {};
 
   const isTwoPlayerMode = mode === "2p-ns" || mode === "2p-ew";
   const terrainQuota = isTwoPlayerMode
@@ -35,13 +37,18 @@ export const createInitialState = (
 
   players.forEach((player) => {
     // Map initial army to flat list of types
-    const playerUnitList = INITIAL_ARMY.flatMap((unit) => {
-      const unitCount = unit.count;
-      const unitType = unit.type;
-      return Array(unitCount).fill(unitType);
-    });
+    const playerUnitList = isMercenary 
+      ? (["king"] as PieceType[]) 
+      : INITIAL_ARMY.flatMap((unit) => {
+          const unitCount = unit.count;
+          const unitType = unit.type;
+          return Array(unitCount).fill(unitType);
+        });
 
     inventory[player] = playerUnitList;
+    if (isMercenary) {
+      mercenaryPoints[player] = 39;
+    }
 
     const playerTerrainList = [
       ...Array(terrainQuota).fill(TERRAIN_TYPES.FORESTS),
@@ -53,5 +60,5 @@ export const createInitialState = (
     terrainInventory[player] = playerTerrainList;
   });
 
-  return { board, terrain, inventory, terrainInventory };
+  return { mode, board, terrain, inventory, terrainInventory, mercenaryPoints };
 };

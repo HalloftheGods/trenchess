@@ -8,8 +8,6 @@ import type {
   TrenchessState,
 } from "./game";
 import type { Ctx } from "boardgame.io";
-import type { MultiplayerState } from "./multiplayer";
-import type { GameTheme } from "./ui";
 
 export interface UseDeploymentProps {
   mode: GameMode;
@@ -216,6 +214,7 @@ export interface SetupActions {
     preset: string | null,
     newPlayerTypes?: Record<string, "human" | "computer">,
     seed?: string,
+    isMercenary?: boolean,
   ) => void;
   randomizeTerrain: () => void;
   generateElementalTerrain: () => void;

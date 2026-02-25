@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Bot, User, Users, UserPlus } from "lucide-react";
 import { useRouteContext } from "@context";
+import { ROUTES } from "@constants/routes";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
@@ -24,7 +25,7 @@ export const PlayLocalView: React.FC = () => {
 
       <RouteGrid cols={4}>
         <RouteCard
-          onClick={() => navigate("/play/setup?mode=practice&players=1")}
+          onClick={() => navigate(ROUTES.PLAY_SETUP.build({ playMode: "practice", players: "1", step: "1" }))}
           onMouseEnter={() => setHoveredMenu("practice")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
@@ -40,7 +41,7 @@ export const PlayLocalView: React.FC = () => {
           className="h-full w-full"
         />
         <RouteCard
-          onClick={() => navigate("/play/setup?mode=couch&players=2")}
+          onClick={() => navigate(ROUTES.PLAY_SETUP.build({ playMode: "couch", players: "2", step: "1" }))}
           onMouseEnter={() => setHoveredMenu("couch")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
@@ -56,7 +57,7 @@ export const PlayLocalView: React.FC = () => {
           className="h-full w-full"
         />
         <RouteCard
-          onClick={() => navigate("/play/setup?mode=couch&players=3")}
+          onClick={() => navigate(ROUTES.PLAY_SETUP.build({ playMode: "couch", players: "3", step: "1" }))}
           onMouseEnter={() => setHoveredMenu("couch")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
@@ -72,7 +73,7 @@ export const PlayLocalView: React.FC = () => {
           className="h-full w-full"
         />
         <RouteCard
-          onClick={() => navigate("/play/setup?mode=couch&players=4")}
+          onClick={() => navigate(ROUTES.PLAY_SETUP.build({ playMode: "couch", players: "4", step: "1" }))}
           onMouseEnter={() => setHoveredMenu("couch")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{

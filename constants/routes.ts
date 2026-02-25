@@ -10,11 +10,14 @@ export const ROUTES = {
   PLAY: route("/play"),
   PLAY_LOCAL: route("/play/local"),
   PLAY_LOBBY: route("/play/lobby"),
-  PLAY_SETUP: route("/play/setup"),
+  PLAY_SETUP: paramRoute<{ playMode: string; players: string; step?: string }>(
+    "/play/:playMode/players/:players/setup/:step?",
+  ),
 
   // Game
   GAME: route("/game"),
   GAME_MMO: route("/game/mmo"),
+  GAME_CONSOLE: paramRoute<{ style: string }>("/console/game/:style"),
   GAME_MODE: paramRoute<{ mode: string }>("/game/board/:mode"),
   GAME_DETAIL: paramRoute<{ roomId: string }>("/game/:roomId"),
   GAMEMASTER: route("/game/gamemaster"),
@@ -44,6 +47,8 @@ export const ROUTES = {
   RULES: route("/rules"),
   STATS: route("/stats"),
   TUTORIAL: route("/tutorial"),
+  DEV_CLI: route("/dev/cli"),
+  DEV_RULESET: route("/dev/ruleset"),
 } as const;
 
 export const ROUTE_NAME_MAP: Record<string, string> = {

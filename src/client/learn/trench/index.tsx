@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Trees, Waves, Mountain } from "lucide-react";
-import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
+import { DesertIcon } from "@/client/console/components/atoms/UnitIcons";
 import { useRouteContext } from "@context";
 import type { TerrainType } from "@/shared/types/game";
 import { analytics } from "@/shared/utils/analytics";
@@ -26,7 +26,7 @@ export const LearnTrenchMainView: React.FC = () => {
   return (
     <RoutePageLayout>
       <RoutePageHeader
-        label='"From Nowhere - Rains terror to terrains with never-ending tethers"'
+        label='"...From Nowhere, the Trench pours favored terrains..."'
         color="red"
         onBackClick={() => navigate("/learn")}
       />
@@ -52,7 +52,7 @@ export const LearnTrenchMainView: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Mountains"
-          description='"Knights shall ride Mountains"'
+          description='"Knights shall ride Mountains..."'
           Icon={Mountain}
           color="red"
           className="h-full w-full"
@@ -104,7 +104,7 @@ export const LearnTrenchMainView: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Forests"
-          description='"Bishops shall outlast Forests"'
+          description='"Bishops shall outlast Forests..."'
           Icon={Trees}
           color="emerald"
           className="h-full w-full"
@@ -130,7 +130,7 @@ export const LearnTrenchMainView: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Deserts"
-          description='"The Deserts shall test all"'
+          description='"The Deserts shall test all!"'
           Icon={DesertIcon}
           color="amber"
           className="h-full w-full"

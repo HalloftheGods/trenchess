@@ -90,19 +90,19 @@
         "src/shared/assets/*"
       ],
       "@game/*": [
-        "src/client/game/*"
+        "src/client/console/*"
       ],
       "@gameHooks/*": [
-        "src/client/game/shared/hooks/*"
+        "src/client/console/shared/hooks/*"
       ],
       "@gameHooks": [
-        "src/client/game/shared/hooks"
+        "src/client/console/shared/hooks"
       ],
       "@gameUtils/*": [
-        "src/client/game/shared/utils/*"
+        "src/client/console/shared/utils/*"
       ],
       "@gameUtils": [
-        "src/client/game/shared/utils"
+        "src/client/console/shared/utils"
       ],
       "@constants": [
         "constants"
@@ -142,7 +142,7 @@
   },
   "include": [
     "src",
-    "src/client/game/shared",
+    "src/client/console/shared",
     "constants"
   ]
 }

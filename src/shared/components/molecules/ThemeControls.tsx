@@ -1,6 +1,6 @@
 // Theme controls component
 import { Sun, Moon, ChessKnight, Shell } from "lucide-react";
-import { BattleKnightIcon } from "@/client/game/shared/components/atoms/UnitIcons";
+import { BattleKnightIcon } from "@/client/console/components/atoms/UnitIcons";
 import type { PieceStyle } from "@/shared/types/game";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 interface ThemeControlsProps {

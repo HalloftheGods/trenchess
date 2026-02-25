@@ -1,6 +1,6 @@
 import React from "react";
 
-export type GameMode = "2p-ns" | "2p-ew" | "4p" | "2v2" ;
+export type GameMode = "2p-ns" | "2p-ew" | "4p" | "2v2" | null;
 
 export interface TacticalConfig {
   id: GameMode;
@@ -70,6 +70,8 @@ export interface TrenchessState {
   winnerReason: GameOverReason;
   isGamemaster?: boolean;
   isGamemasterFinished?: boolean;
+  isMercenary?: boolean;
+  mercenaryPoints?: Record<string, number>;
 }
 
 export interface TrenchessSetupData {
@@ -80,6 +82,7 @@ export interface TrenchessSetupData {
   terrainInventory?: Record<string, TerrainType[]>;
   isGamemaster?: boolean;
   isGamemasterFinished?: boolean;
+  isMercenary?: boolean;
 }
 
 export interface PlayerConfig {

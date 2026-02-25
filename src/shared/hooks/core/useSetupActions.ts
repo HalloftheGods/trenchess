@@ -88,6 +88,7 @@ export function useSetupActions(
       preset: string | null,
       newPlayerTypes?: Record<string, "human" | "computer">,
       seed?: string,
+      isMercenary?: boolean,
     ) => {
       const isBrowser = typeof window !== "undefined";
       if (isBrowser) {
@@ -117,6 +118,7 @@ export function useSetupActions(
       const matchState = SetupLogic.createInitialState(
         selectedMode,
         activePlayersForMatch,
+        isMercenary,
       );
 
       const isAlphaMode = preset === "quick";

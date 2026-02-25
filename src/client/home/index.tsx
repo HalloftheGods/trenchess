@@ -6,10 +6,11 @@ import {
   BrickWallShield,
   Shovel,
   Trophy,
-  History,
   ScrollText,
   Gamepad2,
-  Table,
+  ChartArea,
+  ChartBar,
+  Apple,
 } from "lucide-react";
 import { useRouteContext } from "@context";
 import {
@@ -49,8 +50,8 @@ export const HomeView: React.FC = () => {
           }}
           isSelected={false}
           darkMode={darkMode}
-          title="The Academy"
-          description="Learn the Sacred Basics"
+          title="Hello Trenchess"
+          description="Understand the Fundementals and Prophecy."
           Icon={Baby}
           HoverIcon={BookOpen}
           color="slate"
@@ -72,7 +73,7 @@ export const HomeView: React.FC = () => {
               Play <TrenchessText />
             </>
           }
-          description="Master the Five Elements"
+          description="Master a whole new way to play chess."
           Icon={DualToneSwords}
           HoverIcon={DualToneSwordsFlipped}
           color="red"
@@ -91,13 +92,12 @@ export const HomeView: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Lay Trenchess"
-          description="Add your labyrinth to the community gardens."
+          description="Share your setup with the community."
           Icon={Shovel}
           HoverIcon={BrickWallShield}
           color="emerald"
           className="h-full w-full"
         />
-
         {/* New Links */}
         <RouteCard
           onClick={() => navigate("/scoreboard")}
@@ -109,8 +109,8 @@ export const HomeView: React.FC = () => {
           }}
           isSelected={false}
           darkMode={darkMode}
-          title="The Registry"
-          description="Observe the Great Leaders"
+          title="Lead Trenchess"
+          description="Get in the game!"
           Icon={Trophy}
           HoverIcon={Gamepad2}
           color="amber"
@@ -127,10 +127,10 @@ export const HomeView: React.FC = () => {
           }}
           isSelected={false}
           darkMode={darkMode}
-          title="The Archives"
-          description="Study the Laws of War"
+          title="Educate Trenchess"
+          description="Go! Spread the good word of Trenchess."
           Icon={ScrollText}
-          HoverIcon={Table}
+          HoverIcon={Apple}
           color="blue"
           className="h-full w-full"
         />
@@ -145,9 +145,10 @@ export const HomeView: React.FC = () => {
           }}
           isSelected={false}
           darkMode={darkMode}
-          title="The Memorial"
-          description="Honoring Past Legacies"
-          Icon={History}
+          title="Study Trenchess"
+          description="Numbers for the hungry nerds to crunch on."
+          Icon={ChartArea}
+          HoverIcon={ChartBar}
           color="purple"
           className="h-full w-full"
         />

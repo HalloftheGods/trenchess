@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Globe, Key, GlobeLock } from "lucide-react";
 import { useRouteContext } from "@context";
-import Shoutbox from "@/client/game/shared/components/organisms/Shoutbox";
+import { ROUTES } from "@constants/routes";
+import { Shoutbox } from "@/client/console/components/organisms/Shoutbox";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
@@ -207,7 +208,13 @@ export const PlayLobbyView: React.FC = () => {
         <button
           className="flex-1 py-3 rounded-xl font-bold text-white bg-brand-blue hover:bg-brand-blue/80 transition-all shadow-lg"
           onClick={() => {
-            navigate("/play/setup?mode=multiplayer");
+            navigate(
+              ROUTES.PLAY_SETUP.build({
+                playMode: "multiplayer",
+                players: "4",
+                step: "1",
+              }),
+            );
           }}
         >
           {multiplayer?.isHost ? "Setup Game" : "Ready"}

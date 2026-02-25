@@ -1,5 +1,5 @@
 import { Skull } from "lucide-react";
-import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
+import { DesertIcon } from "@/client/console/components/atoms/UnitIcons";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@constants/routes";
 

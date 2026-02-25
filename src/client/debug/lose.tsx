@@ -1,5 +1,5 @@
 import React from "react";
-import VictoryOverlay from "@/client/game/shared/components/atoms/VictoryOverlay";
+import VictoryOverlay from "@/client/console/components/atoms/VictoryOverlay";
 import type { TerrainType, BoardPiece } from "@/shared/types/game";
 
 const LoseDebug: React.FC = () => {

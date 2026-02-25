@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import { PlaySetupView } from "@/client/play/setup";
 import { RouteContext } from "@context";
 import React from "react";
-import type { GameMode } from "@/shared/types";
+import type { GameMode, RouteContextType } from "@/shared/types";
 
 // Mocks
 const mockNavigate = vi.fn();
@@ -53,7 +53,9 @@ describe("PlaySetupView", () => {
   const renderSetup = () => {
     return render(
       <MemoryRouter>
-        <RouteContext.Provider value={mockRouteContext as any}>
+        <RouteContext.Provider
+          value={mockRouteContext as unknown as RouteContextType}
+        >
           <PlaySetupView />
         </RouteContext.Provider>
       </MemoryRouter>,
@@ -81,10 +83,18 @@ describe("PlaySetupView", () => {
     currentSearchParams.set("step", "2");
     renderSetup();
 
-    expect(screen.getByText((_c, el) => el?.textContent === "Ω Omega")).toBeInTheDocument();
-    expect(screen.getByText((_c, el) => el?.textContent === "π Pi")).toBeInTheDocument();
-    expect(screen.getByText((_c, el) => el?.textContent === "χ Chi")).toBeInTheDocument();
-    expect(screen.getByText((_c, el) => el?.textContent === "α Alpha")).toBeInTheDocument();
+    expect(
+      screen.getByText((_c, el) => el?.textContent === "Ω Omega"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText((_c, el) => el?.textContent === "π Pi"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText((_c, el) => el?.textContent === "χ Chi"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText((_c, el) => el?.textContent === "α Alpha"),
+    ).toBeInTheDocument();
   });
 
   it("should call onStartGame when a preset is selected in step 2", () => {
@@ -92,7 +102,9 @@ describe("PlaySetupView", () => {
     mockRouteContext.selectedBoard = "2p-ns" as GameMode;
     renderSetup();
 
-    const omegaCard = screen.getByText((_c, el) => el?.textContent === "Ω Omega").closest("button")!;
+    const omegaCard = screen
+      .getByText((_c, el) => el?.textContent === "Ω Omega")
+      .closest("button")!;
     fireEvent.click(omegaCard);
 
     expect(mockRouteContext.setSelectedPreset).toHaveBeenCalledWith("custom");

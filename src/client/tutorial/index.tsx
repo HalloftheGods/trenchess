@@ -13,7 +13,7 @@ import { UNIT_DETAILS, unitColorMap, TERRAIN_LIST } from "@constants";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 import { deserializeGame } from "@/shared/utils/serialization";
 import { analytics } from "@/shared/utils/analytics";
-import TerrainDetailsPanel from "@/client/game/shared/components/organisms/TerrainDetailsPanel";
+import TerrainDetailsPanel from "@/client/console/components/organisms/TerrainDetailsPanel";
 import InteractiveHeader from "@/shared/components/organisms/InteractiveHeader";
 import CopyrightFooter from "@/shared/components/molecules/CopyrightFooter";
 import { UnitPortfolio } from "./components/organisms/UnitPortfolio";

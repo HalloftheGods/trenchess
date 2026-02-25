@@ -33,7 +33,10 @@ export class TypedRoute<P extends RouteParams = Record<string, never>> {
   /**
    * DSL-like helper to create a RouteConfig for this path.
    */
-  define(element: ReactNode, options: Omit<RouteConfig, "path" | "element"> = {}): RouteConfig {
+  define(
+    element: ReactNode,
+    options: Omit<RouteConfig, "path" | "element"> = {},
+  ): RouteConfig {
     return {
       ...options,
       path: this.path,
@@ -44,7 +47,9 @@ export class TypedRoute<P extends RouteParams = Record<string, never>> {
   /**
    * Helper to create a lazy-loaded component.
    */
-  component<T>(importer: () => Promise<{ default: ComponentType<T> }>): ComponentType<T> {
+  component<T>(
+    importer: () => Promise<{ default: ComponentType<T> }>,
+  ): ComponentType<T> {
     return lazy(importer);
   }
 
@@ -52,13 +57,13 @@ export class TypedRoute<P extends RouteParams = Record<string, never>> {
    * Helper to create a lazy-loaded RouteConfig.
    * Leverages React.lazy and createElement internally.
    */
-  lazy(
-    importer: () => Promise<{ default: ComponentType<any> }>,
-    props: any = {},
-    options: Omit<RouteConfig, "path" | "element"> = {}
+  lazy<T extends object>(
+    importer: () => Promise<{ default: ComponentType<T> }>,
+    props?: T,
+    options: Omit<RouteConfig, "path" | "element"> = {},
   ): RouteConfig {
     const LazyComponent = this.component(importer);
-    return this.define(createElement(LazyComponent, props), options);
+    return this.define(createElement(LazyComponent, props as T), options);
   }
 
   toString(): string {

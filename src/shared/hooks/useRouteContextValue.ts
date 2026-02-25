@@ -29,7 +29,7 @@ export const useRouteContextValue = ({
 
   // Additional UI states managed by context
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
-  const [previewConfig, setPreviewConfig] = useState<PreviewConfig>({ mode: game.mode });
+  const [previewConfig, setPreviewConfig] = useState<PreviewConfig>({ mode: game.mode || null });
   const [, setHoveredTerrain] = useState<string | null>(null);
   const [terrainSeed, setTerrainSeed] = useState<number | undefined>(undefined);
   const [backAction, setBackAction] = useState<{ label?: string; onClick: () => void } | null>(null);
@@ -84,7 +84,7 @@ export const useRouteContextValue = ({
 
   const onZenGarden = useCallback(() => {
     setIsStarting(true);
-    navigate(ROUTES.GAMEMASTER.url);
+    navigate(ROUTES.GAME_CONSOLE.build({ style: "zen" }));
     setTimeout(() => {
       initGameWithPreset("4p", "zen-garden");
       startGame();
@@ -94,13 +94,13 @@ export const useRouteContextValue = ({
 
   const onGamemaster = useCallback(() => {
     setIsStarting(true);
-    navigate(ROUTES.GAMEMASTER.url);
+    navigate(ROUTES.GAME_CONSOLE.build({ style: "omega" }));
     setTimeout(() => {
-      initGameWithPreset("4p", "zen-garden");
+      initGameWithPreset(mode || "4p", "zen-garden");
       startGame();
       setTimeout(() => setIsStarting(false), 500);
     }, 1000);
-  }, [navigate, initGameWithPreset, startGame]);
+  }, [navigate, initGameWithPreset, startGame, mode]);
 
   const onStartGame = useCallback(
     (
@@ -108,12 +108,20 @@ export const useRouteContextValue = ({
       preset: string | null,
       playerTypesConfig: Record<string, "human" | "computer">,
       seed?: string,
+      isMercenary?: boolean,
     ) => {
       setIsStarting(true);
 
+      let style = "mmo";
+      if (preset === "custom") style = "omega";
+      else if (preset === "classic") style = "pi";
+      else if (preset === "quick") style = "alpha";
+      else if (preset === "terrainiffic") style = "chi";
+      else if (preset) style = preset;
+
       const target = multiplayer?.roomId
         ? ROUTES.GAME_DETAIL.build({ roomId: multiplayer.roomId })
-        : ROUTES.GAME_MODE.build({ mode: startGameMode });
+        : ROUTES.GAME_CONSOLE.build({ style });
 
       setMode(startGameMode);
       setGameState("setup");
@@ -125,6 +133,7 @@ export const useRouteContextValue = ({
           preset,
           playerTypesConfig,
           seed || "",
+          isMercenary,
         );
         startGame();
         setTimeout(() => setIsStarting(false), 500);

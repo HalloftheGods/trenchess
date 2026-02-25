@@ -1,6 +1,6 @@
 import type { TerrainType, TerrainDetail } from "@/shared/types/game";
 import { Trees, Waves, Mountain } from "lucide-react";
-import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
+import { DesertIcon } from "@/client/console/components/atoms/UnitIcons";
 import { TERRAIN_TYPES, CORE_TERRAIN_INTEL } from "../terrain";
 
 const { FORESTS, SWAMPS, MOUNTAINS, DESERT } = TERRAIN_TYPES;
@@ -68,10 +68,14 @@ export const TERRAIN_THEME_DATA = {
   },
 };
 
-type TerrainIntelData = (typeof TERRAIN_THEME_DATA)[keyof typeof TERRAIN_THEME_DATA] &
-  (typeof CORE_TERRAIN_INTEL)[keyof typeof CORE_TERRAIN_INTEL];
+type TerrainIntelData =
+  (typeof TERRAIN_THEME_DATA)[keyof typeof TERRAIN_THEME_DATA] &
+    (typeof CORE_TERRAIN_INTEL)[keyof typeof CORE_TERRAIN_INTEL];
 
-const mapToTerrainIntel = (acc: Record<string, TerrainIntelData>, key: string) => {
+const mapToTerrainIntel = (
+  acc: Record<string, TerrainIntelData>,
+  key: string,
+) => {
   acc[key] = {
     ...CORE_TERRAIN_INTEL[key],
     ...TERRAIN_THEME_DATA[key as keyof typeof TERRAIN_THEME_DATA],

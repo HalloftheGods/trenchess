@@ -1,5 +1,6 @@
 import { Suspense, useMemo, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import type { RouteProps } from "react-router-dom";
 import { ROUTES } from "@constants/routes";
 import { LoadingFallback } from "@/shared/components/molecules/LoadingFallback";
 import { LoadingScreen } from "./shared/components";
@@ -7,13 +8,14 @@ import { LoadingScreen } from "./shared/components";
 import {
   playRoutes,
   debugRoutes,
+  devRoutes,
   getLearnRoutes,
   getHomeRoutes,
   getGameRoutes,
   getOtherRoutes,
 } from "./client/routes";
 
-import type { AppRoutesProps, RouteConfig } from "@/shared/types";
+import type { AppRoutesProps, RouteConfig, GameMode } from "@/shared/types";
 
 const LazyRouteLayout = lazy(() => import("@/shared/components/templates/RouteLayout"));
 const LearnManualLazy = ROUTES.LEARN_MANUAL.component(() => import("@/client/learn/manual"));
@@ -73,6 +75,7 @@ export const AppRoutes = ({
         initFromSeed,
       ),
       ...debugRoutes,
+      ...devRoutes,
       ...getOtherRoutes(darkMode, handleBackToMenu, navigate).filter(
         (r) =>
           r.path === ROUTES.TUTORIAL.path ||
@@ -95,14 +98,20 @@ export const AppRoutes = ({
     ],
   );
 
-  const renderRoute = (route: RouteConfig) => (
-    <Route
-      key={route.path || "index"}
-      index={route.index}
-      path={route.path}
-      element={route.element}
-    />
-  );
+  const renderRoute = (route: RouteConfig) => {
+    if (route.index) {
+      return <Route key="index" index element={route.element} />;
+    }
+    const routeProps: RouteProps = {
+      element: route.element,
+    };
+    
+    return (
+      <Route key={route.path || "wrapper"} path={route.path} {...routeProps}>
+        {route.children?.map(renderRoute)}
+      </Route>
+    );
+  };
 
   const showGlobalLoader =
     routeContextValue.isStarting || (game.isStarted && !game.bgioState);
@@ -130,9 +139,9 @@ export const AppRoutes = ({
                 onTrenchGuide={routeContextValue.onTrenchGuide}
                 onOpenLibrary={routeContextValue.onOpenLibrary}
                 selectedBoard={mode}
-                setSelectedBoard={(m: any) => m && setMode(m)}
+                setSelectedBoard={(m: GameMode | null) => m && setMode(m)}
                 selectedPreset={selectedPreset}
-                setSelectedPreset={(p: any) => setSelectedPreset(p)}
+                setSelectedPreset={(p: string | null) => setSelectedPreset(p)}
                 playerTypes={playerTypes}
                 activePlayers={activePlayers}
               />

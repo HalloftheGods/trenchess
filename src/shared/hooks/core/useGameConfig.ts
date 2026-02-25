@@ -39,7 +39,7 @@ export function useGameConfig(): GameConfigState {
     }
   }, [selectedPreset]);
 
-  const [mode, setMode] = useState<GameMode>("4p");
+  const [mode, setMode] = useState<GameMode>(null);
   const [gameState, setGameState] = useState<GameState>("menu");
 
   return useMemo(

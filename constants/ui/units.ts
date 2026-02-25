@@ -13,7 +13,7 @@ import {
   BishopIcon,
   KnightIcon,
   PawnIcon,
-} from "@/client/game/shared/components/atoms/UnitIcons";
+} from "@client/console/components/atoms/UnitIcons";
 import { PIECES, CORE_INITIAL_ARMY } from "../pieces";
 import { TERRAIN_TYPES } from "../terrain";
 import { UNIT_BLUEPRINTS } from "@/core/blueprints/units";

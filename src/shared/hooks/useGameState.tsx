@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useGameTheme } from "@hooks/useGameTheme";
 import { useMultiplayer } from "@hooks/useMultiplayer";
-import { useComputerOpponent } from "@/client/game/shared/hooks/useComputerOpponent";
+import { useComputerOpponent } from "./core/useComputerOpponent";
 
 // Core State Atoms (Fallback/Transient)
 import { useBoardState } from "./core/useBoardState";
@@ -93,7 +93,7 @@ export function useGameState(): GameStateHook {
 
   const activePlayers = useMemo(() => {
     if (isEngineActive) return bgioState!.G.activePlayers;
-    
+
     // Fallback: derive from mode to ensure tight coupling
     switch (mode) {
       case "2p-ns":
@@ -103,7 +103,7 @@ export function useGameState(): GameStateHook {
       default:
         return ["red", "yellow", "green", "blue"];
     }
-  }, [isEngineActive, bgioState?.G.activePlayers, mode]);
+  }, [isEngineActive, bgioState, mode]);
 
   const readyPlayers = isEngineActive
     ? bgioState!.G.readyPlayers
@@ -137,7 +137,7 @@ export function useGameState(): GameStateHook {
   const moveExecution = useMoveExecution(core, clientRef, (move) => {
     const attacker = board[move.from[0]]?.[move.from[1]];
     const victim = board[move.to[0]]?.[move.to[1]];
-    
+
     // Check for Joust Capture (King jumping 2 squares)
     let joustedPiece = null;
     if (attacker?.type === "king") {
@@ -151,12 +151,22 @@ export function useGameState(): GameStateHook {
     }
 
     if (joustedPiece) {
-      analytics.trackEvent("Game", "Joust Capture", `${attacker?.type} takes ${joustedPiece.type}`);
+      analytics.trackEvent(
+        "Game",
+        "Joust Capture",
+        `${attacker?.type} takes ${joustedPiece.type}`,
+      );
     } else if (victim) {
-      analytics.trackEvent("Game", "Capture", `${attacker?.type} takes ${victim.type}`);
+      analytics.trackEvent(
+        "Game",
+        "Capture",
+        `${attacker?.type} takes ${victim.type}`,
+      );
     }
 
-    const label = attacker ? `${attacker.type} to ${move.to}` : `${move.from} to ${move.to}`;
+    const label = attacker
+      ? `${attacker.type} to ${move.to}`
+      : `${move.from} to ${move.to}`;
     analytics.trackEvent("Game", "Move", label);
   });
 
@@ -246,6 +256,7 @@ export function useGameState(): GameStateHook {
         winner,
         winnerReason,
         gameState,
+        mode: isEngineActive ? bgioState!.G.mode : mode,
         lastMove,
 
         ready: (pid?: string) => {
@@ -345,6 +356,8 @@ export function useGameState(): GameStateHook {
       multiplayer,
       clientRef,
       isStarted,
+      isEngineActive,
+      mode,
     ],
   );
 }

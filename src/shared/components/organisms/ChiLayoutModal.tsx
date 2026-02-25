@@ -4,7 +4,7 @@
  */
 import React from "react";
 import { X, Map as MapIcon, ChevronRight } from "lucide-react";
-import BoardPreview from "@/client/game/shared/components/organisms/BoardPreview";
+import BoardPreview from "@/client/console/components/organisms/BoardPreview";
 import { useRouteContext } from "@context";
 import type { GameMode, SeedItem } from "@/shared/types/game";
 

@@ -28,6 +28,12 @@ CHANT THIS MOTO: Do it right the first time. Take the time to do it right now vs
 
 ## 3. Coding Standards
 - **Commentless Narrative:** Code must tell a story without comments. Use descriptive `Adjective-Noun` or `Verb-Noun` identifiers (e.g., `isValidMove`, `calculateCaptureRate`).
+- **TypeScript Sterility:** 
+  - **Zero `any` Policy:** Use of `any` or `unknown` is a failure of architecture. Find or create the correct type.
+  - **Unused Variable Cleanup:** Never leave unused variables, imports, or types. Prefix intentionally unused parameters with `_`.
+  - **Exported Types:** In `.d.ts` files, ensure types are exported and utilized.
+- **React Hook Integrity:** 
+  - **Exhaustive Dependencies:** `useEffect`, `useMemo`, and `useCallback` MUST include all referenced variables in their dependency arrays. No exceptions unless documented with a reason (and even then, prefer refactoring to avoid the need).
 - **Named Booleans:** Use named boolean variables for all conditionals to ensure readability.
 - **Name Anonymouse functions:** define the function as a const before passing what would have otherwise been a anonymous function. dont abbreviate the params to single letters, i.e. const mapPieces = (piece) => ...
 - **Readable Conditionals & Anonymous Functions:** Always name conditionals and anonymous functions into readable variables to minimize confusion. For example:
@@ -65,6 +71,7 @@ CHANT THIS MOTO: Do it right the first time. Take the time to do it right now vs
 - **Documentation First:** Document new features in `docs/` using `category_folder_file.md` immediately after implementation.
 
 ## 4. Operational Protocol
+- **Lint-First Completion:** A task is not complete until `pnpm lint` passes.
 - **Surgical Updates:** Fulfill directives thoroughly but avoid unrelated refactoring.
 - **Minimal Verification:** Conserve tokens by keeping verification plans focused on lint and TS errors.
 - **High Involvement:** Keep the Architect (user) involved in decision-making to ensure alignment.

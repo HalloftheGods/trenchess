@@ -8,14 +8,10 @@ export type * from "./state";
 export type * from "./core";
 export type * from "./route";
 
-import type {
-  GameMode,
-  PreviewConfig,
-  SeedItem,
-  ArmyUnit,
-} from "./game";
+import type { GameMode, PreviewConfig, SeedItem, ArmyUnit } from "./game";
 import type { MultiplayerState } from "./multiplayer";
 import type { GameStateHook } from "./state";
+export type { GameStateHook };
 
 export interface AppRoutesProps {
   game: GameStateHook;
@@ -47,6 +43,7 @@ export interface RouteContextType {
     preset: string | null,
     playerConfig: Record<string, "human" | "computer">,
     seed?: string,
+    isMercenary?: boolean,
   ) => void;
   isStarting: boolean;
   selectedBoard: GameMode | null;

@@ -3,6 +3,7 @@ import { ScrollToTop } from "@/shared/components/atoms/ScrollToTop";
 import { AnalyticsTracker } from "@/shared/components/atoms/AnalyticsTracker";
 import { useAppInitialization } from "@/shared/hooks/useAppInitialization";
 import { useRouteContextValue } from "@/shared/hooks/useRouteContextValue";
+import { GlobalDebugPortal } from "@/shared/components/organisms";
 import { AppRoutes } from "./App.Routes";
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
         routeContextValue={routeContextValue}
         handleBackToMenu={handleBackToMenu}
       />
+      <GlobalDebugPortal game={game} />
     </RouteProvider>
   );
 };

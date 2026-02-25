@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Sofa,
   GlobeLock,
@@ -23,12 +23,13 @@ import {
   AllianceTone,
   DualToneSwords,
 } from "../atoms/RouteIcons";
+import { ROUTES } from "@constants/routes";
 
 type BreadcrumbColor = "red" | "blue" | "emerald" | "amber" | "slate";
 
 export const RouteBreadcrumbs: React.FC = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const { playMode: urlMode, players: urlPlayers } = useParams<{ playMode: string; players: string; step?: string }>();
 
   const {
     playMode,
@@ -40,36 +41,15 @@ export const RouteBreadcrumbs: React.FC = () => {
     multiplayer,
   } = useRouteContext();
 
-  const urlPlayers = searchParams.get("players");
-  const urlMode = searchParams.get("mode");
-
-  // We should prefer URL params if we are in the setup flow,
-  // but if we are generally navigating around, we should rely on playerCount
-  // unless we're actually setting it.  The issue is clicking "1 Player" pushes ?mode=practice&players=1.
-  // Then the user clicks "Change Field" and it goes to /play/setup?step=1.
-  // Wait, if they click the player breadcrumb it goes to `/play/local` which drops all URL params, so it loses `effectivePlayerCount`.
-  // Actually, wait, let's just make it only use the global `playerCount` variable from context.
-
-  // Let's check what `useRouteContext` actually returns when we start the game.
-  // Oh, wait, the router might not immediately update `playerCount` when clicking from local play.
-  // Actually, wait over in `RouteBreadcrumbs` it was using just `playerCount` originally, and the user said:
-  // "ok its weird when i click it when in single play with only 1, it switches to 2 and updates the config to two players? it should have stayed one until i chose a new item"
-  // Hmm. When they click the 1 player card, it navigates to `/play/setup?mode=practice&players=1`.
-  // However, the `App.tsx` router wrapper doesn't parse that URL parameter and update `game.activePlayers`!
-  // It just sets the route. So `game.activePlayers.length` is still the default (which is 2).
-  // Therefore `playerCount` is 2.
-  // And with my previous change, `urlPlayers` would force it to 1 initially... but when clicking the breadcrumb to go back to `/play/local`, it drops params -> 2.
   const effectivePlayerCount =
-    urlPlayers &&
-    location.pathname.includes("/setup") &&
-    searchParams.get("step") === null
+    urlPlayers && location.pathname.includes("/setup")
       ? parseInt(urlPlayers, 10)
       : playerCount;
+      
   const effectivePlayMode =
-    urlMode === "online"
+    urlMode === "online" || urlMode === "multiplayer"
       ? "online"
-      : (urlMode === "practice" || urlMode === "couch") &&
-          searchParams.get("step") === null
+      : (urlMode === "practice" || urlMode === "couch")
         ? "local"
         : playMode;
 
@@ -125,6 +105,9 @@ export const RouteBreadcrumbs: React.FC = () => {
     }
   };
 
+  const currentPlayModeParam = urlMode || (effectivePlayMode === "online" ? "multiplayer" : effectivePlayerCount === 1 ? "practice" : "couch");
+  const currentPlayersParam = urlPlayers || effectivePlayerCount.toString();
+
   const items = [
     {
       icon: getPlayModeIcon(),
@@ -134,7 +117,7 @@ export const RouteBreadcrumbs: React.FC = () => {
         : effectivePlayMode
           ? "red"
           : "slate") as BreadcrumbColor,
-      path: "/play",
+      path: ROUTES.PLAY.url,
       value: effectivePlayMode,
     },
     ...(effectivePlayMode === "online"
@@ -143,7 +126,7 @@ export const RouteBreadcrumbs: React.FC = () => {
             icon: <Key size={18} />,
             label: `Lobby: ${multiplayer?.roomId?.toUpperCase() || "CODE"}`,
             color: (multiplayer?.roomId ? "blue" : "slate") as BreadcrumbColor,
-            path: "/play/lobby",
+            path: ROUTES.PLAY_LOBBY.url,
             value: multiplayer?.roomId,
           },
         ]
@@ -162,7 +145,7 @@ export const RouteBreadcrumbs: React.FC = () => {
             : effectivePlayerCount === 4
               ? "amber"
               : "slate") as BreadcrumbColor,
-      path: effectivePlayMode === "online" ? "/play/lobby" : "/play/local",
+      path: effectivePlayMode === "online" ? ROUTES.PLAY_LOBBY.url : ROUTES.PLAY_LOCAL.url,
       value: effectivePlayerCount,
       badge: effectivePlayerCount > 0 ? effectivePlayerCount : undefined,
     },
@@ -176,7 +159,7 @@ export const RouteBreadcrumbs: React.FC = () => {
           : selectedBoard
             ? "emerald"
             : "slate") as BreadcrumbColor,
-      path: "/play/setup?step=1",
+      path: ROUTES.PLAY_SETUP.build({ playMode: currentPlayModeParam, players: currentPlayersParam, step: "1" }),
       value: selectedBoard,
     },
     {
@@ -191,7 +174,7 @@ export const RouteBreadcrumbs: React.FC = () => {
             : selectedPreset
               ? "red"
               : "slate") as BreadcrumbColor,
-      path: "/play/setup?step=2",
+      path: ROUTES.PLAY_SETUP.build({ playMode: currentPlayModeParam, players: currentPlayersParam, step: "2" }),
       value: selectedPreset,
     },
   ];

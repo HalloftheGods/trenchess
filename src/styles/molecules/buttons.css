@@ -5,3 +5,7 @@
 @utility btn-base {
   @apply transition-all duration-200 active:scale-95;
 }
+
+button {
+ cursor: pointer;
+}

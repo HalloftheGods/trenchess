@@ -1,10 +1,12 @@
-import type { BoardPiece, TerrainType, PieceType } from "./game";
+import type { BoardPiece, TerrainType, PieceType, GameMode } from "./game";
 
 export interface SetupResult {
+  mode: GameMode;
   board: (BoardPiece | null)[][];
   terrain: TerrainType[][];
   inventory: Record<string, PieceType[]>;
   terrainInventory: Record<string, TerrainType[]>;
+  mercenaryPoints?: Record<string, number>;
 }
 
 export interface Move {

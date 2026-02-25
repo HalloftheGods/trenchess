@@ -1,4 +1,4 @@
-import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
+import { DesertIcon } from "@/client/console/components/atoms/UnitIcons";
 import LogoAsset from "@assets/trenchess.png";
 import { Waves, Trees, Mountain } from "lucide-react";
 import { Box, Flex, Text, Heading } from "@/shared/components/atoms";

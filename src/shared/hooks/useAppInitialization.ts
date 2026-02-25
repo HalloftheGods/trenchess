@@ -84,6 +84,7 @@ export const useAppInitialization = () => {
     initFromSeed,
     initGameWithPreset,
     startGame,
+    routeMode,
   ]);
 
   // Redirect from /game if no game is active

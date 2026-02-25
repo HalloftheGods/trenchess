@@ -47,9 +47,15 @@ export default defineConfig({
       "@context": path.resolve(__dirname, "./src/shared/context"),
       "@utils": path.resolve(__dirname, "./src/shared/utils"),
       "@assets": path.resolve(__dirname, "./src/shared/assets"),
-      "@game": path.resolve(__dirname, "./src/client/game"),
-      "@gameHooks": path.resolve(__dirname, "./src/client/game/shared/hooks"),
-      "@gameUtils": path.resolve(__dirname, "./src/client/game/shared/utils"),
+      "@game": path.resolve(__dirname, "./src/client/console"),
+      "@gameHooks": path.resolve(
+        __dirname,
+        "./src/client/console/shared/hooks",
+      ),
+      "@gameUtils": path.resolve(
+        __dirname,
+        "./src/client/console/shared/utils",
+      ),
       "@constants": path.resolve(__dirname, "./constants"),
       "@client": path.resolve(__dirname, "./src/client"),
     },

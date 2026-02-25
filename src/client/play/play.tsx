@@ -9,7 +9,7 @@ import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
-import HeaderLobby from "@/client/game/shared/components/organisms/HeaderLobby";
+import { HeaderLobby } from "@/client/console/components/organisms/HeaderLobby";
 
 export const PlayView: React.FC = () => {
   const navigate = useNavigate();
@@ -23,25 +23,6 @@ export const PlayView: React.FC = () => {
       />
 
       <RouteGrid cols={3} className="px-4">
-        <RouteCard
-          onClick={() =>
-            navigate(`${ROUTES.PLAY_SETUP.url}?mode=practice&players=1`)
-          }
-          onMouseEnter={() => setHoveredMenu("practice")}
-          onMouseLeave={() => setHoveredMenu(null)}
-          preview={{
-            mode: "4p",
-            protocol: "classic",
-          }}
-          isSelected={false}
-          darkMode={darkMode}
-          title="Master's Practice"
-          description='"Fools become Masters." (A.I. Play)'
-          Icon={Joystick}
-          HoverIcon={GamepadDirectional}
-          color="slate"
-          className="h-full w-full"
-        />
         <RouteCard
           onClick={() => navigate(ROUTES.PLAY_LOCAL.url)}
           onMouseEnter={() => setHoveredMenu("couch")}
@@ -64,6 +45,25 @@ export const PlayView: React.FC = () => {
           onClick={() => navigate(ROUTES.PLAY_LOBBY.url)}
           onMouseEnter={() => setHoveredMenu("worldwide")}
           onMouseLeave={() => setHoveredMenu(null)}
+        />
+        <RouteCard
+          onClick={() =>
+            navigate(`${ROUTES.PLAY_SETUP.url}?mode=practice&players=1`)
+          }
+          onMouseEnter={() => setHoveredMenu("practice")}
+          onMouseLeave={() => setHoveredMenu(null)}
+          preview={{
+            mode: "4p",
+            protocol: "classic",
+          }}
+          isSelected={false}
+          darkMode={darkMode}
+          title="Master's Practice"
+          description='"Fools become Masters." (A.I. Play)'
+          Icon={Joystick}
+          HoverIcon={GamepadDirectional}
+          color="slate"
+          className="h-full w-full"
         />
       </RouteGrid>
     </RoutePageLayout>
