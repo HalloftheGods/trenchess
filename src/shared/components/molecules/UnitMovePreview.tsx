@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Columns4, Shield, X } from "lucide-react";
 import {
   UNIT_DETAILS,
   PIECES,
   INITIAL_ARMY,
   TERRAIN_DETAILS,
+  BOARD_SIZE,
 } from "@/constants";
 import { useRouteContext } from "@context";
-import { isUnitProtected } from "@/core/mechanics/gameLogic";
+import { isUnitProtected, getValidMoves } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import type { PieceType, TerrainType } from "@/shared/types";
+import type { PieceType, TerrainType, BoardPiece } from "@/shared/types";
 
 interface UnitMovePreviewProps {
   unitType: string;
@@ -37,6 +38,45 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
   if (!details) return null;
 
   const unit = INITIAL_ARMY.find((u) => u.type === unitType);
+
+  // Tactical logic simulation
+  const tacticalMoves = useMemo(() => {
+    const simulationBoard: (BoardPiece | null)[][] = Array(BOARD_SIZE)
+      .fill(null)
+      .map(() => Array(BOARD_SIZE).fill(null));
+    const simulationTerrain: TerrainType[][] = Array(BOARD_SIZE)
+      .fill(null)
+      .map(() => Array(BOARD_SIZE).fill("flat" as TerrainType));
+
+    const boardCenter = Math.floor(BOARD_SIZE / 2);
+    
+    // Fill with terrain if selected
+    if (selectedTerrain) {
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
+          // Keep center flat or piece might not be able to "exist" there in some future logic
+          if (r !== boardCenter || c !== boardCenter) {
+            simulationTerrain[r][c] = selectedTerrain as TerrainType;
+          }
+        }
+      }
+    }
+
+    simulationBoard[boardCenter][boardCenter] = {
+      type: unitType as PieceType,
+      player: "red",
+    };
+
+    return getValidMoves(
+      boardCenter,
+      boardCenter,
+      simulationBoard[boardCenter][boardCenter]!,
+      "red",
+      simulationBoard,
+      simulationTerrain,
+      "2p-ns",
+    );
+  }, [unitType, selectedTerrain]);
 
   const movePattern = details.movePattern;
   const moves = movePattern(centerRow, centerCol);
@@ -76,11 +116,16 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
             const c = i % previewGridSize;
             const isCenter = r === centerRow && c === centerCol;
 
-            // Terrain area: front and back rows relative to center
-            const isFrontRow = r === centerRow - 1;
-            const isBackRow = r === centerRow + 1;
-            const isTerrainCell = selectedTerrain && (isFrontRow || isBackRow);
+            // Map preview cell to tactical simulation cell
+            const boardCenter = Math.floor(BOARD_SIZE / 2);
+            const simR = r + (boardCenter - centerRow);
+            const simC = c + (boardCenter - centerCol);
+            
+            const isTacticalValid = tacticalMoves.some(
+              ([tmR, tmC]) => tmR === simR && tmC === simC
+            );
 
+            // Potential moves (geometric)
             const isMoveFound = moves.some(([mr, mc]) => mr === r && mc === c);
             const isNewMoveFound = newMoves.some(
               ([nr, mc]) => nr === r && mc === c,
@@ -89,24 +134,14 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
               ([ar, ac]) => ar === r && ac === c,
             );
 
-            // Distinguish between classic and new attack patterns
-            // For Pawns, classic is r-1, new is r+2. For others, we use move patterns as a guide.
-            const isPawn = unitType === PIECES.PAWN;
-            const isNewAttackFound = isPawn
-              ? isAttackFound && r !== centerRow - 1
-              : isAttackFound && isNewMoveFound;
-            const isClassicAttackFound = isAttackFound && !isNewAttackFound;
+            // If selectedTerrain is set, show terrain everywhere except center
+            const isTerrainCell = selectedTerrain && !isCenter;
 
-            const isMove = mode !== "new" && isMoveFound;
-            const isNewMove = mode !== "classic" && isNewMoveFound;
-
-            // A square is shown as an 'Attack' (red) only if it's NOT a primary move square in the current mode
-            const isAttack =
-              mode === "both"
-                ? isAttackFound && !isMoveFound && !isNewMoveFound
-                : mode === "classic"
-                  ? isClassicAttackFound && !isMoveFound
-                  : isNewAttackFound && !isNewMoveFound;
+            // Logic for "Blocked" vs "Valid"
+            const isBlocked = (isMoveFound || isNewMoveFound || isAttackFound) && !isTacticalValid && selectedTerrain;
+            const isActualMove = (mode !== "new" && isMoveFound && (isTacticalValid || !selectedTerrain));
+            const isActualNewMove = (mode !== "classic" && isNewMoveFound && (isTacticalValid || !selectedTerrain));
+            const isActualAttack = (isAttackFound && (isTacticalValid || !selectedTerrain)) && !isActualMove && !isActualNewMove;
 
             const isPromotionRow = unitType === PIECES.PAWN && r === 0;
 
@@ -128,7 +163,7 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
                       : baseColor
                 }`}
               >
-                {isPromotionRow && !isMove && !isNewMove && !isAttack && (
+                {isPromotionRow && !isActualMove && !isActualNewMove && !isActualAttack && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500/40" />
                   </div>
@@ -139,20 +174,18 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
                   unit &&
                   getIcon(unit, "dark:text-slate-900 text-white", 18)}
 
-                {/* Move Indicators - Square-y style */}
-                {(isMove || isNewMove || isAttack) && (
+                {/* Tactical Move Indicators */}
+                {(isActualMove || isActualNewMove || isActualAttack) && (
                   <div
                     className={`absolute inset-[1px] z-10 rounded-sm shadow-sm flex items-center justify-center transition-all ${
-                      isNewMove
+                      isActualNewMove
                         ? "bg-amber-500 animate-pulse"
-                        : isAttack
+                        : isActualAttack
                           ? "bg-brand-red"
-                          : isTerrainCell
-                            ? terrainInfo?.color?.headerBg || "bg-emerald-500"
-                            : "bg-emerald-500"
+                          : "bg-emerald-500"
                     }`}
                   >
-                    {isAttack && (
+                    {isActualAttack && (
                       <Columns4
                         size={12}
                         strokeWidth={3}
@@ -165,16 +198,24 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
                   </div>
                 )}
 
-                {/* Terrain Decor & Logic */}
+                {/* Blocked Indicator - Red "X" */}
+                {isBlocked && (
+                  <div className="absolute inset-[1px] z-20 bg-brand-red/80 rounded-sm flex items-center justify-center shadow-lg border border-red-500/30">
+                    <X className="w-3 h-3 text-white" strokeWidth={4} />
+                  </div>
+                )}
+
+                {/* Terrain Decor Icons (only if not a move/blocked) */}
                 {isTerrainCell &&
                   !isCenter &&
-                  !isMove &&
-                  !isNewMove &&
-                  !isAttack && (
+                  !isActualMove &&
+                  !isActualNewMove &&
+                  !isActualAttack &&
+                  !isBlocked && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                       {!canTraverse ? (
                         <X
-                          className="w-3 h-3 text-brand-red/60"
+                          className="w-3 h-3 text-brand-red/40"
                           strokeWidth={4}
                         />
                       ) : (

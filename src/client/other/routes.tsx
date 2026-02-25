@@ -24,23 +24,23 @@ export const getOtherRoutes = (
 ): RouteConfig[] => [
   {
     path: "scoreboard",
-    element: <OtherLazyRoutes.scoreboard.view darkMode={darkMode} />,
+    element: <OtherLazyRoutes.scoreboard darkMode={darkMode} />,
   },
   {
     path: "rules",
     element: (
-      <OtherLazyRoutes.rules.view
+      <OtherLazyRoutes.rules
         onBack={() => navigate(-1)}
         darkMode={darkMode}
       />
     ),
   },
-  { path: "stats", element: <OtherLazyRoutes.stats.view /> },
+  { path: "stats", element: <OtherLazyRoutes.stats /> },
   { path: "zen", element: <div /> },
   {
     path: "tutorial",
     element: (
-      <OtherLazyRoutes.tutorial.view
+      <OtherLazyRoutes.tutorial
         onBack={handleBackToMenu}
         darkMode={darkMode}
       />

@@ -12,6 +12,9 @@ const CopyrightFooter: React.FC = () => {
       <p className="text-[10px] text-slate-400 dark:text-slate-700 mt-1 uppercase tracking-widest font-bold">
         Patent Pending
       </p>
+      <p className="text-[10px] text-slate-400 dark:text-slate-800 mt-4 uppercase tracking-[0.3em] font-black">
+        Version {APP_VERSION}
+      </p>
     </div>
   );
 };

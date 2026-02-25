@@ -1,0 +1,3 @@
+pnpm lint
+node scripts/version_bump.mjs
+git add package.json

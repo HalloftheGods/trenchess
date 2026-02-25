@@ -17,19 +17,23 @@ export const setupPhase = {
   next: "play",
   turn: {
     activePlayers: { all: "setup" },
-  },
-  moves: {
-    placePiece,
-    placeTerrain,
-    ready,
-    randomizeTerrain,
-    randomizeUnits,
-    setClassicalFormation,
-    applyChiGarden,
-    resetToOmega,
-    resetTerrain,
-    resetUnits,
-    forfeit,
+    stages: {
+      setup: {
+        moves: {
+          placePiece,
+          placeTerrain,
+          ready,
+          randomizeTerrain,
+          randomizeUnits,
+          setClassicalFormation,
+          applyChiGarden,
+          resetToOmega,
+          resetTerrain,
+          resetUnits,
+          forfeit,
+        },
+      },
+    },
   },
   endIf: ({ G }: { G: TrenchessState }) => {
     return G.activePlayers.every((p: string) => G.readyPlayers[p]);

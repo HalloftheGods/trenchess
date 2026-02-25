@@ -40,7 +40,7 @@ export const HomeView: React.FC = () => {
     <RoutePageLayout>
       <RoutePageHeader label="Main Menu" />
 
-      <RouteGrid cols={3} className="px-4">
+      <RouteGrid cols={2} className="px-0">
         <RouteCard
           onClick={() => navigate("/learn")}
           onMouseEnter={() => {
@@ -102,7 +102,7 @@ export const HomeView: React.FC = () => {
           Icon={Shovel}
           HoverIcon={BrickWallShield}
           color="emerald"
-          className="h-full w-full"
+          className="h-full w-full hidden"
         />
       </RouteGrid>
     </RoutePageLayout>

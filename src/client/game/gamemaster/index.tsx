@@ -24,15 +24,6 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
 
   const perspectivePlayerId = game.turn;
 
-  // Set Gamemaster state on mount
-  useEffect(() => {
-    const isNotGamemaster = game.gameState !== "gamemaster";
-    if (isNotGamemaster) {
-      game.setGameState("gamemaster");
-      game.setMode("4p");
-    }
-  }, [game.gameState, game.setGameState, game.setMode]);
-
   const { placedCount, maxPlacement } = useDeployment({
     mode: game.mode,
     gameState: game.gameState,
@@ -116,7 +107,7 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
           ? expectedPid
           : undefined;
         if (!pid)
-          return <div key={`empty-${expectedPid}`} className="h-40" />;
+          return <div key={`empty-${expectedPid}`} className="h-40 invisible" />;
 
         const myCells = getPlayerCells(pid, game.mode);
         let pPlacedCount = 0;

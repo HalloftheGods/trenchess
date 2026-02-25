@@ -8,6 +8,9 @@ import path from "path";
 export default defineConfig({
   base: "/",
   plugins: [react(), tailwindcss()],
+  define: {
+    APP_VERSION: JSON.stringify(process.env.npm_package_version),
+  },
   test: {
     environment: "jsdom",
     globals: true,

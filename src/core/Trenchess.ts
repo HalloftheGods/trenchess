@@ -35,28 +35,24 @@ export const Trenchess: Game<
     const mode: GameMode = data?.mode || "4p";
     let players: string[];
 
-    const playerMap: Record<string, string> = {
-      "0": "red",
-      "1": "yellow",
-      "2": "green",
-      "3": "blue",
-    };
+    const playerMap: Record<string, string> = {};
 
     switch (mode) {
       case "2p-ns":
         players = ["red", "blue"];
-        playerMap["0"] = "red";
-        playerMap["1"] = "blue";
         break;
       case "2p-ew":
         players = ["green", "yellow"];
-        playerMap["0"] = "green";
-        playerMap["1"] = "yellow";
         break;
       default:
         players = ["red", "yellow", "green", "blue"];
         break;
     }
+
+    // Map boardgame.io player indices to our color-based IDs
+    players.forEach((pid, index) => {
+      playerMap[index.toString()] = pid;
+    });
 
     const {
       board: initialBoard,
@@ -103,30 +99,36 @@ export const Trenchess: Game<
 
   moves: {
     forfeit,
-    setMode,
-    mirrorBoard,
   },
 
   phases: {
     gamemaster: {
       next: "setup",
-      turn: { activePlayers: { all: "setup" } },
-      moves: {
-        placePiece,
-        placeTerrain,
-        ready,
-        randomizeTerrain,
-        randomizeUnits,
-        setClassicalFormation,
-        applyChiGarden,
-        resetToOmega,
-        resetTerrain,
-        resetUnits,
-        forfeit,
-        setMode,
-        mirrorBoard,
-        finishGamemaster: ({ G }) => {
-          G.isGamemasterFinished = true;
+      turn: {
+        activePlayers: { all: "editing" },
+        stages: {
+          editing: {
+            moves: {
+              placePiece: (game, row, col, type, explicitPid) =>
+                placePiece(game, row, col, type, explicitPid, true),
+              placeTerrain: (game, row, col, type, explicitPid) =>
+                placeTerrain(game, row, col, type, explicitPid, true),
+              ready,
+              randomizeTerrain,
+              randomizeUnits,
+              setClassicalFormation,
+              applyChiGarden,
+              resetToOmega,
+              resetTerrain,
+              resetUnits,
+              forfeit,
+              setMode,
+              mirrorBoard,
+              finishGamemaster: ({ G }) => {
+                G.isGamemasterFinished = true;
+              },
+            },
+          },
         },
       },
       // Skip by default unless isGamemaster is true

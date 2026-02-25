@@ -254,7 +254,7 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
               ? expectedPid
               : undefined;
             if (!pid)
-              return <div key={`empty-${expectedPid}`} className="flex-1" />;
+              return <div key={`empty-${expectedPid}`} className="flex-1 invisible" />;
 
             const myCells = getPlayerCells(pid, game.mode);
             let pPlacedCount = 0;
@@ -324,7 +324,7 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
               ? expectedPid
               : undefined;
             if (!pid)
-              return <div key={`empty-${expectedPid}`} className="flex-1" />;
+              return <div key={`empty-${expectedPid}`} className="flex-1 invisible" />;
 
             const myCells = getPlayerCells(pid, game.mode);
             let pPlacedCount = 0;

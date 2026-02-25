@@ -131,7 +131,10 @@ export const PlaySetupView: React.FC = () => {
     }
   };
 
-  const isMultiplayerMode = (playerCount ?? 2) >= 3;
+  const playersParam = searchParams.get("players");
+  const urlPlayerCount = playersParam ? parseInt(playersParam, 10) : (playerCount ?? 2);
+  const isFourPlayerRequested = urlPlayerCount >= 3;
+
   const isOnline = !!multiplayer?.roomId;
   const isHost = multiplayer?.isHost || !isOnline;
 
@@ -139,7 +142,7 @@ export const PlaySetupView: React.FC = () => {
     isOnline && !isHost
       ? '"Observing the Host\'s Will"'
       : step === 1
-        ? '"A dance is chosen"'
+        ? `"A dance is chosen for ${urlPlayerCount} souls"`
         : '"And the Stage is flung"';
 
   const backLabel =
@@ -167,7 +170,7 @@ export const PlaySetupView: React.FC = () => {
       <RouteGrid cols={step === 2 ? 4 : 2}>
         {step === 1 ? (
           <>
-            {!isMultiplayerMode ? (
+            {!isFourPlayerRequested ? (
               <>
                 <RouteCard
                   onClick={() => isHost && handleBoardSelect("2p-ns")}

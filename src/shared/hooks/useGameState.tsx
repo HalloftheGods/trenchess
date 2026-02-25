@@ -88,9 +88,7 @@ export function useGameState(): GameStateHook {
 
   const turn =
     isEngineActive && bgioState!.G.playerMap && bgioState!.ctx
-      ? isOnline || bgioState!.ctx.phase !== "setup"
-        ? bgioState!.G.playerMap[bgioState!.ctx.currentPlayer] || turnState.turn
-        : turnState.turn
+      ? bgioState!.G.playerMap[bgioState!.ctx.currentPlayer] || turnState.turn
       : turnState.turn;
 
   const activePlayers = isEngineActive
