@@ -1,5 +1,5 @@
 import React from "react";
-import { Castle, ChessKnight, ChessRook, Zap } from "lucide-react";
+import { Castle } from "lucide-react";
 
 interface JumpInButtonProps {
   onClick: () => void;
