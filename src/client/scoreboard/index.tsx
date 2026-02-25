@@ -18,6 +18,7 @@ import type { GameMode } from "@/shared/types/game";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import { useRouteContext } from "@context";
 import { analytics } from "@/shared/utils/analytics";
+import { ROUTES } from "@constants/routes";
 
 const getServerUrl = () => {
   if (typeof window === "undefined") return "http://localhost:3001";
@@ -107,7 +108,7 @@ export const ScoreboardView = ({ darkMode }: ScoreboardProps) => {
 
   const handleSpectate = (roomId: string) => {
     analytics.trackEvent("Scoreboard", "Spectate", roomId);
-    navigate(`/play/lobby?join=${roomId}`);
+    navigate(`${ROUTES.PLAY_LOBBY.url}?join=${roomId}`);
   };
 
   const sidebar = useMemo(
@@ -157,7 +158,7 @@ export const ScoreboardView = ({ darkMode }: ScoreboardProps) => {
     <ScoreboardLayout darkMode={darkMode} sidebar={sidebar}>
       <RoutePageHeader
         label="Global Scoreboard"
-        onBackClick={() => navigate("/")}
+        onBackClick={() => navigate(ROUTES.HOME.url)}
       />
 
       <section className="flex flex-col gap-8 mt-4">

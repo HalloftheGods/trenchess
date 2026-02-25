@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { serializeGame } from "@utils/gameUrl";
-import { INITIAL_ARMY } from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
+import { INITIAL_ARMY } from "@constants";
+import { TERRAIN_TYPES } from "@constants";
 import { getPlayerCells } from "@/core/setup/setupLogic";
-import { MAX_TERRAIN_PER_PLAYER } from "@/constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@constants";
 import type {
   TerrainType,
   PieceType,

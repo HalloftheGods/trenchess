@@ -10,7 +10,8 @@ import type {
   PieceType,
   BgioClient,
 } from "@/shared/types";
-import { INITIAL_ARMY } from "@/constants";
+import { INITIAL_ARMY } from "@constants";
+import type { ArmyUnit } from "@/shared/types/game";
 import { DEFAULT_SEEDS } from "@/core/setup/seeds";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
 
@@ -177,7 +178,9 @@ export function useSetupActions(
         const isNoSeedProvided = !layoutSeed;
 
         if (isNoSeedProvided) {
-          const modeSeeds = DEFAULT_SEEDS.filter((s) => s.mode === selectedMode);
+          const modeSeeds = DEFAULT_SEEDS.filter(
+            (s) => s.mode === selectedMode,
+          );
           const randomIndex = Math.floor(Math.random() * modeSeeds.length);
           layoutSeed = modeSeeds[randomIndex]?.seed || DEFAULT_SEEDS[0].seed;
         }
@@ -417,8 +420,11 @@ export function useSetupActions(
         for (const [r, c] of myCells) {
           const newTerrain = adapted.terrain[r][c];
           const existingPiece = currentBoard[r][c];
-          
-          if (existingPiece && !SetupLogic.canPlaceUnit(existingPiece.type, newTerrain)) {
+
+          if (
+            existingPiece &&
+            !SetupLogic.canPlaceUnit(existingPiece.type, newTerrain)
+          ) {
             nextTerrain[r][c] = "flat" as TerrainType;
           } else {
             nextTerrain[r][c] = newTerrain;
@@ -550,7 +556,8 @@ export function useSetupActions(
       const source = turn;
       let target = "";
       if (mode === "2p-ns") target = source === "red" ? "blue" : "red";
-      else if (mode === "2p-ew") target = source === "green" ? "yellow" : "green";
+      else if (mode === "2p-ew")
+        target = source === "green" ? "yellow" : "green";
       else {
         if (source === "red") target = "blue";
         else if (source === "blue") target = "red";
@@ -593,11 +600,11 @@ export function useSetupActions(
           }
         }
         const missingUnits: PieceType[] = [];
-        INITIAL_ARMY.forEach((u) => {
-          const count = placedUnits[u.type] || 0;
-          const missing = u.count - count;
+        INITIAL_ARMY.forEach((unit: ArmyUnit) => {
+          const count = placedUnits[unit.type] || 0;
+          const missing = unit.count - count;
           if (missing > 0) {
-            for (let i = 0; i < missing; i++) missingUnits.push(u.type);
+            for (let i = 0; i < missing; i++) missingUnits.push(unit.type);
           }
         });
         return missingUnits;

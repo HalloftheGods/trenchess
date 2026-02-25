@@ -91,9 +91,20 @@ export function useGameState(): GameStateHook {
       ? bgioState!.G.playerMap[bgioState!.ctx.currentPlayer] || turnState.turn
       : turnState.turn;
 
-  const activePlayers = isEngineActive
-    ? bgioState!.G.activePlayers
-    : turnState.activePlayers;
+  const activePlayers = useMemo(() => {
+    if (isEngineActive) return bgioState!.G.activePlayers;
+    
+    // Fallback: derive from mode to ensure tight coupling
+    switch (mode) {
+      case "2p-ns":
+        return ["red", "blue"];
+      case "2p-ew":
+        return ["green", "yellow"];
+      default:
+        return ["red", "yellow", "green", "blue"];
+    }
+  }, [isEngineActive, bgioState?.G.activePlayers, mode]);
+
   const readyPlayers = isEngineActive
     ? bgioState!.G.readyPlayers
     : turnState.readyPlayers;

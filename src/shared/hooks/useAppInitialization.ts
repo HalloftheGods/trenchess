@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, matchPath } from "react-router-dom";
 import { useGameState } from "./useGameState";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@constants/routes";
 import { DEFAULT_SEEDS } from "@/core/setup/seeds";
-import type { SeedItem } from "@/shared/types";
+import type { SeedItem, GameMode } from "@/shared/types";
 
 export const useAppInitialization = () => {
   const game = useGameState();
@@ -19,12 +19,17 @@ export const useAppInitialization = () => {
     setGameState,
   } = game;
 
-  const match = matchPath(ROUTES.GAME_DETAIL, location.pathname);
+  const match = matchPath(ROUTES.GAME_DETAIL.path, location.pathname);
+  const modeMatch = matchPath(ROUTES.GAME_MODE.path, location.pathname);
   const routeRoomId = match?.params.roomId;
+  const routeMode = modeMatch?.params.mode as GameMode;
 
   // Handle Multiplayer joining from URL
   useEffect(() => {
-    const isSpecialMode = routeRoomId === "mmo" || routeRoomId === "gamemaster";
+    const isSpecialMode =
+      routeRoomId === "mmo" ||
+      routeRoomId === "gamemaster" ||
+      routeRoomId === "board";
     const shouldJoin =
       routeRoomId && !isSpecialMode && multiplayer.roomId !== routeRoomId;
 
@@ -36,10 +41,22 @@ export const useAppInitialization = () => {
 
   // Auto-start games for special routes
   useEffect(() => {
-    const isGameRoute = location.pathname.startsWith(ROUTES.GAME);
+    const isGameRoute = location.pathname.startsWith(ROUTES.GAME.path);
     if (!isGameRoute) return;
 
-    if (location.pathname === ROUTES.GAME_MMO) {
+    if (routeMode && gameState === "menu") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const seed = urlParams.get("seed");
+      if (seed) {
+        initFromSeed(seed);
+      } else {
+        initGameWithPreset(routeMode, null);
+      }
+      setTimeout(() => startGame(), 100);
+      return;
+    }
+
+    if (location.pathname === ROUTES.GAME_MMO.path) {
       if (gameState === "menu") {
         const urlParams = new URLSearchParams(window.location.search);
         const seed = urlParams.get("seed");
@@ -48,17 +65,18 @@ export const useAppInitialization = () => {
         } else {
           initGameWithPreset("2p-ns", null);
         }
-        startGame();
+        // Small delay to ensure state propagates before engine init
+        setTimeout(() => startGame(), 100);
       }
       return;
     }
 
     const isZenOrMaster =
-      location.pathname === ROUTES.ZEN ||
-      location.pathname === ROUTES.GAMEMASTER;
+      location.pathname === ROUTES.ZEN.path ||
+      location.pathname === ROUTES.GAMEMASTER.path;
     if (isZenOrMaster && gameState === "menu") {
       initGameWithPreset("4p", "zen-garden");
-      startGame();
+      setTimeout(() => startGame(), 100);
     }
   }, [
     gameState,
@@ -70,10 +88,10 @@ export const useAppInitialization = () => {
 
   // Redirect from /game if no game is active
   useEffect(() => {
-    const isBaseGameRoute = location.pathname === ROUTES.GAME;
-    const isNotMmo = !location.pathname.startsWith(ROUTES.GAME_MMO);
+    const isBaseGameRoute = location.pathname === ROUTES.GAME.path;
+    const isNotMmo = !location.pathname.startsWith(ROUTES.GAME_MMO.path);
     if (isBaseGameRoute && isNotMmo && gameState === "menu") {
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME.url);
     }
   }, [location.pathname, gameState, navigate]);
 
@@ -94,7 +112,7 @@ export const useAppInitialization = () => {
 
   const handleBackToMenu = () => {
     setGameState("menu");
-    navigate(ROUTES.HOME);
+    navigate(ROUTES.HOME.url);
   };
 
   return {

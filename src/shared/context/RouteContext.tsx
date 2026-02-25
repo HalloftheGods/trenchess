@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState } from "react";
 import type { RouteContextType, PreviewConfig } from "@/shared/types";
 
-const RouteContext = createContext<RouteContextType | undefined>(undefined);
+export const RouteContext = createContext<RouteContextType | undefined>(undefined);
 
 export const RouteProvider: React.FC<{
   children: React.ReactNode;

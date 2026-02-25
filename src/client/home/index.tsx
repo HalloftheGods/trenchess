@@ -1,6 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Baby, BookOpen, BrickWallShield, Shovel } from "lucide-react";
+import {
+  Baby,
+  BookOpen,
+  BrickWallShield,
+  Shovel,
+  Trophy,
+  History,
+  ScrollText,
+  Gamepad2,
+  Table,
+} from "lucide-react";
 import { useRouteContext } from "@context";
 import {
   DualToneSwords,
@@ -23,7 +33,7 @@ export const HomeView: React.FC = () => {
     <RoutePageLayout>
       <RoutePageHeader label="Main Menu" />
 
-      <RouteGrid cols={2} className="px-0">
+      <RouteGrid cols={3} className="px-0">
         <RouteCard
           onClick={() => navigate("/learn")}
           onMouseEnter={() => {
@@ -39,8 +49,8 @@ export const HomeView: React.FC = () => {
           }}
           isSelected={false}
           darkMode={darkMode}
-          title="How to Play"
-          description="Learn the Basics"
+          title="The Academy"
+          description="Learn the Sacred Basics"
           Icon={Baby}
           HoverIcon={BookOpen}
           color="slate"
@@ -56,13 +66,13 @@ export const HomeView: React.FC = () => {
           }}
           isSelected={false}
           darkMode={darkMode}
-          title="Play Trenchess"
+          title="The Battlefield"
           titleNode={
             <>
               Play <TrenchessText />
             </>
           }
-          description="Master the Elements"
+          description="Master the Five Elements"
           Icon={DualToneSwords}
           HoverIcon={DualToneSwordsFlipped}
           color="red"
@@ -81,11 +91,65 @@ export const HomeView: React.FC = () => {
           isSelected={false}
           darkMode={darkMode}
           title="Lay Trenchess"
-          description="Contribute to the Labyrinth Gardens"
+          description="Add your labyrinth to the community gardens."
           Icon={Shovel}
           HoverIcon={BrickWallShield}
           color="emerald"
-          className="h-full w-full hidden"
+          className="h-full w-full"
+        />
+
+        {/* New Links */}
+        <RouteCard
+          onClick={() => navigate("/scoreboard")}
+          onMouseEnter={() => setHoveredMenu("leaderboard")}
+          onMouseLeave={() => setHoveredMenu(null)}
+          preview={{
+            label: "LEADERBOARD",
+            highlightOuterSquares: true,
+          }}
+          isSelected={false}
+          darkMode={darkMode}
+          title="The Registry"
+          description="Observe the Great Leaders"
+          Icon={Trophy}
+          HoverIcon={Gamepad2}
+          color="amber"
+          className="h-full w-full"
+        />
+
+        <RouteCard
+          onClick={() => navigate("/rules")}
+          onMouseEnter={() => setHoveredMenu("rules")}
+          onMouseLeave={() => setHoveredMenu(null)}
+          preview={{
+            mode: "2v2",
+            hideUnits: false,
+          }}
+          isSelected={false}
+          darkMode={darkMode}
+          title="The Archives"
+          description="Study the Laws of War"
+          Icon={ScrollText}
+          HoverIcon={Table}
+          color="blue"
+          className="h-full w-full"
+        />
+
+        <RouteCard
+          onClick={() => navigate("/stats")}
+          onMouseEnter={() => setHoveredMenu("stats")}
+          onMouseLeave={() => setHoveredMenu(null)}
+          preview={{
+            mode: "4p",
+            hideUnits: false,
+          }}
+          isSelected={false}
+          darkMode={darkMode}
+          title="The Memorial"
+          description="Honoring Past Legacies"
+          Icon={History}
+          color="purple"
+          className="h-full w-full"
         />
       </RouteGrid>
     </RoutePageLayout>

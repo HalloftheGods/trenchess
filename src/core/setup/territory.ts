@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from "@/constants";
+import { BOARD_SIZE } from "@constants";
 import type { GameMode } from "@/shared/types";
 
 /**
@@ -10,14 +10,14 @@ export const getPlayerCells = (
   mode: GameMode,
 ): [number, number][] => {
   const cells: [number, number][] = [];
-  
+
   for (let row = 0; row < BOARD_SIZE; row++) {
     for (let col = 0; col < BOARD_SIZE; col++) {
       let isMyArea = false;
-      
+
       const isNorthSouthMode = mode === "2p-ns";
       const isEastWestMode = mode === "2p-ew";
-      
+
       const isTopHalf = row < 6;
       const isBottomHalf = row >= 6;
       const isLeftHalf = col < 6;
@@ -29,7 +29,7 @@ export const getPlayerCells = (
       } else if (isEastWestMode) {
         const isGreenPlayer = player === "green";
         const isYellowPlayer = player === "yellow";
-        
+
         if (isGreenPlayer) isMyArea = isLeftHalf;
         if (isYellowPlayer) isMyArea = isRightHalf;
       } else {
@@ -48,11 +48,11 @@ export const getPlayerCells = (
         if (isPlayerGreen) isMyArea = isBottomLeftQuadrant;
         if (isPlayerBlue) isMyArea = isBottomRightQuadrant;
       }
-      
+
       if (isMyArea) cells.push([row, col]);
     }
   }
-  
+
   return cells;
 };
 

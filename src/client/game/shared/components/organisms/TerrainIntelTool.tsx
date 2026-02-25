@@ -15,7 +15,7 @@ import {
   UNIT_DETAILS,
   TERRAIN_LIST,
   TERRAIN_INTEL,
-} from "@/constants";
+} from "@constants";
 import {
   canUnitTraverseTerrain,
   isUnitProtected,
@@ -239,7 +239,9 @@ const TerrainIntelTool: React.FC<TerrainIntelToolProps> = ({
           >
             {(() => {
               const Icon = terrain.icon;
-              return Icon ? <Icon className="w-12 h-12 sm:w-16 sm:h-16" /> : null;
+              return Icon ? (
+                <Icon className="w-12 h-12 sm:w-16 sm:h-16" />
+              ) : null;
             })()}
           </div>
 

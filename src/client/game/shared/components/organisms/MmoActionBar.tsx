@@ -20,13 +20,8 @@ import {
 } from "lucide-react";
 import { ActionBarPalette } from "../molecules/ActionBarPalette";
 import { ActionBarSlot } from "../atoms/ActionBarSlot";
-import { TERRAIN_TYPES } from "@/constants";
-import {
-  INITIAL_ARMY,
-  PIECES,
-  PLAYER_CONFIGS,
-  TERRAIN_INTEL,
-} from "@/constants";
+import { TERRAIN_TYPES } from "@constants";
+import { INITIAL_ARMY, PIECES, PLAYER_CONFIGS, TERRAIN_INTEL } from "@constants";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
 import type {
   ArmyUnit,
@@ -36,7 +31,7 @@ import type {
   GameState,
   GameMode,
 } from "@/shared/types/game";
-import type { PieceStyle } from "@/constants";
+import type { PieceStyle } from "@constants";
 
 interface MmoActionBarProps {
   gameState?: GameState;
@@ -411,56 +406,67 @@ const MmoActionBar: React.FC<MmoActionBarProps> = ({
         {(gameState === "gamemaster" || !!setMode) && (
           <>
             <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/10 to-transparent mx-2" />
-            
+
             <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center gap-2">
-                    <ActionBarSlot 
-                        label="North" 
-                        active={perspective === "north"} 
-                        onClick={() => onPerspectiveChange?.("north")}
-                    >
-                        <div className={`w-3 h-3 rounded-full bg-red-600 ${perspective === "north" ? "animate-pulse" : "opacity-40"}`} />
-                    </ActionBarSlot>
-                    <ActionBarSlot 
-                        label="South" 
-                        active={perspective === "south"} 
-                        onClick={() => onPerspectiveChange?.("south")}
-                    >
-                        <div className={`w-3 h-3 rounded-full bg-blue-600 ${perspective === "south" ? "animate-pulse" : "opacity-40"}`} />
-                    </ActionBarSlot>
-                    <div className="w-px h-6 bg-white/10 mx-1" />
-                    <ActionBarSlot 
-                        label="Red" 
-                        active={side === "red"} 
-                        onClick={() => onSideChange?.("red")}
-                    >
-                        <div className={`w-3 h-3 rounded-full bg-red-600 ${side === "red" ? "animate-pulse" : "opacity-40"}`} />
-                    </ActionBarSlot>
-                    <ActionBarSlot 
-                        label="Blue" 
-                        active={side === "blue"} 
-                        onClick={() => onSideChange?.("blue")}
-                    >
-                        <div className={`w-3 h-3 rounded-full bg-blue-600 ${side === "blue" ? "animate-pulse" : "opacity-40"}`} />
-                    </ActionBarSlot>
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                    POV
-                </span>
+              <div className="flex items-center gap-2">
+                <ActionBarSlot
+                  label="North"
+                  active={perspective === "north"}
+                  onClick={() => onPerspectiveChange?.("north")}
+                >
+                  <div
+                    className={`w-3 h-3 rounded-full bg-red-600 ${perspective === "north" ? "animate-pulse" : "opacity-40"}`}
+                  />
+                </ActionBarSlot>
+                <ActionBarSlot
+                  label="South"
+                  active={perspective === "south"}
+                  onClick={() => onPerspectiveChange?.("south")}
+                >
+                  <div
+                    className={`w-3 h-3 rounded-full bg-blue-600 ${perspective === "south" ? "animate-pulse" : "opacity-40"}`}
+                  />
+                </ActionBarSlot>
+                <div className="w-px h-6 bg-white/10 mx-1" />
+                <ActionBarSlot
+                  label="Red"
+                  active={side === "red"}
+                  onClick={() => onSideChange?.("red")}
+                >
+                  <div
+                    className={`w-3 h-3 rounded-full bg-red-600 ${side === "red" ? "animate-pulse" : "opacity-40"}`}
+                  />
+                </ActionBarSlot>
+                <ActionBarSlot
+                  label="Blue"
+                  active={side === "blue"}
+                  onClick={() => onSideChange?.("blue")}
+                >
+                  <div
+                    className={`w-3 h-3 rounded-full bg-blue-600 ${side === "blue" ? "animate-pulse" : "opacity-40"}`}
+                  />
+                </ActionBarSlot>
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                POV
+              </span>
             </div>
 
             <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/10 to-transparent mx-2" />
 
             <div className="flex flex-col items-center gap-1 px-4">
-                <div className="flex items-center gap-2">
-                    <ShieldAlert size={14} className="text-indigo-500 animate-pulse" />
-                    <span className="text-indigo-600 dark:text-indigo-400 font-black text-[10px] uppercase tracking-[0.3em]">
-                        GM PROTOCOL
-                    </span>
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                    Status
+              <div className="flex items-center gap-2">
+                <ShieldAlert
+                  size={14}
+                  className="text-indigo-500 animate-pulse"
+                />
+                <span className="text-indigo-600 dark:text-indigo-400 font-black text-[10px] uppercase tracking-[0.3em]">
+                  GM PROTOCOL
                 </span>
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                Status
+              </span>
             </div>
           </>
         )}

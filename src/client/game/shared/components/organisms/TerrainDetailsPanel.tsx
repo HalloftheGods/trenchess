@@ -12,8 +12,8 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import { INITIAL_ARMY, TERRAIN_INTEL, unitColorMap } from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
+import { INITIAL_ARMY, TERRAIN_INTEL, unitColorMap } from "@constants";
+import { TERRAIN_TYPES } from "@constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import type { PieceType, TerrainType } from "@/shared/types/game";
@@ -237,7 +237,9 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
             <div
               className={`relative w-36 h-36 rounded-[2.5rem] ${colors.bg} ${colors.text} flex items-center justify-center shadow-inner border border-white/5 transition-transform hover:scale-105 group/icon overflow-visible`}
             >
-              {Icon && <Icon className="w-20 h-20 transition-transform group-hover/icon:rotate-3" />}
+              {Icon && (
+                <Icon className="w-20 h-20 transition-transform group-hover/icon:rotate-3" />
+              )}
 
               {/* Prev Terrain Button — bleeds left */}
               {onPrev && (
@@ -249,7 +251,11 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
                       : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-800/60 dark:text-white/60"
                   }`}
                 >
-                  {PrevIcon ? <PrevIcon size={18} /> : <ChevronLeft size={18} />}
+                  {PrevIcon ? (
+                    <PrevIcon size={18} />
+                  ) : (
+                    <ChevronLeft size={18} />
+                  )}
                 </button>
               )}
 
@@ -263,7 +269,11 @@ const TerrainDetailsPanel: React.FC<TerrainDetailsPanelProps> = ({
                       : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-800/60 dark:text-white/60"
                   }`}
                 >
-                  {NextIcon ? <NextIcon size={18} /> : <ChevronRight size={18} />}
+                  {NextIcon ? (
+                    <NextIcon size={18} />
+                  ) : (
+                    <ChevronRight size={18} />
+                  )}
                 </button>
               )}
             </div>

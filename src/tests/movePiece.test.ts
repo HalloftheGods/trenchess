@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { movePiece } from "@/core/moves/movePiece";
-import { PIECES, BOARD_SIZE, TERRAIN_TYPES } from "@/constants";
+import { PIECES, BOARD_SIZE, TERRAIN_TYPES } from "@constants";
 import type { TrenchessState, BoardPiece, TerrainType } from "@/shared/types";
 import { INVALID_MOVE } from "boardgame.io/core";
 import type { Ctx } from "boardgame.io";

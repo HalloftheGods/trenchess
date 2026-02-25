@@ -1,4 +1,4 @@
-import { TERRAIN_TYPES } from "@/constants";
+import { TERRAIN_TYPES } from "@constants";
 import { buildClassicalBoard, buildTerrain, serializeGame } from "./utils";
 
 export const createMountainPass = () => {

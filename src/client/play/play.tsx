@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Sofa, GamepadDirectional, Joystick, PartyPopper } from "lucide-react";
 import { useRouteContext } from "@context";
+import { ROUTES } from "@constants/routes";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
@@ -18,12 +19,14 @@ export const PlayView: React.FC = () => {
     <RoutePageLayout>
       <RoutePageHeader
         label='"And so it begins..."'
-        onBackClick={() => navigate("/")}
+        onBackClick={() => navigate(ROUTES.HOME.url)}
       />
 
       <RouteGrid cols={3} className="px-4">
         <RouteCard
-          onClick={() => navigate("/play/setup?mode=practice&players=1")}
+          onClick={() =>
+            navigate(`${ROUTES.PLAY_SETUP.url}?mode=practice&players=1`)
+          }
           onMouseEnter={() => setHoveredMenu("practice")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
@@ -40,7 +43,7 @@ export const PlayView: React.FC = () => {
           className="h-full w-full"
         />
         <RouteCard
-          onClick={() => navigate("/play/local")}
+          onClick={() => navigate(ROUTES.PLAY_LOCAL.url)}
           onMouseEnter={() => setHoveredMenu("couch")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
@@ -58,7 +61,7 @@ export const PlayView: React.FC = () => {
         />
         <HeaderLobby
           multiplayer={multiplayer}
-          onClick={() => navigate("/play/lobby")}
+          onClick={() => navigate(ROUTES.PLAY_LOBBY.url)}
           onMouseEnter={() => setHoveredMenu("worldwide")}
           onMouseLeave={() => setHoveredMenu(null)}
         />

@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import { PLAYER_CONFIGS } from "@/constants";
+import { PLAYER_CONFIGS } from "@constants";
 import type { TurnState, GameOverReason } from "@/shared/types";
 
 export function useTurnState(): TurnState {

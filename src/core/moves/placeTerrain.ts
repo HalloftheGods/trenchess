@@ -1,6 +1,10 @@
 import { INVALID_MOVE } from "boardgame.io/core";
-import { TERRAIN_TYPES } from "@/constants";
-import { canPlaceUnit, getPlayerCells, getCellOwner } from "@/core/setup/setupLogic";
+import { TERRAIN_TYPES } from "@constants";
+import {
+  canPlaceUnit,
+  getPlayerCells,
+  getCellOwner,
+} from "@/core/setup/setupLogic";
 import { resolvePlayerId, getQuota } from "@/core/setup/coreHelpers";
 import type { TerrainType, TrenchessState, GameMode } from "@/shared/types";
 import type { Ctx } from "boardgame.io";
@@ -12,32 +16,33 @@ const isWithinTerritory = (
   col: number,
 ): boolean => {
   const myCells = getPlayerCells(playerId, mode);
-  
-  const isTargetCellInMyCells = myCells.some(
-    ([cellRow, cellCol]) => {
-      const isRowMatch = cellRow === row;
-      const isColMatch = cellCol === col;
-      return isRowMatch && isColMatch;
-    },
-  );
-  
+
+  const isTargetCellInMyCells = myCells.some(([cellRow, cellCol]) => {
+    const isRowMatch = cellRow === row;
+    const isColMatch = cellCol === col;
+    return isRowMatch && isColMatch;
+  });
+
   return isTargetCellInMyCells;
 };
 
-const countPlacedTerrain = (gameState: TrenchessState, playerId: string): number => {
+const countPlacedTerrain = (
+  gameState: TrenchessState,
+  playerId: string,
+): number => {
   const myCells = getPlayerCells(playerId, gameState.mode);
   let currentTerrainCount = 0;
-  
+
   for (const [row, col] of myCells) {
     const terrainAtCell = gameState.terrain[row][col];
     const isFlatTerrain = terrainAtCell === TERRAIN_TYPES.FLAT;
     const isSpecialTerrain = !isFlatTerrain;
-    
+
     if (isSpecialTerrain) {
       currentTerrainCount++;
     }
   }
-  
+
   return currentTerrainCount;
 };
 
@@ -49,7 +54,7 @@ const handleRemoval = (
 ) => {
   const currentTerrain = gameState.terrain[row][col];
   const isClearingExistingTerrain = currentTerrain !== TERRAIN_TYPES.FLAT;
-  
+
   if (!isClearingExistingTerrain) return;
 
   gameState.terrainInventory[playerId].push(currentTerrain);
@@ -65,19 +70,20 @@ const handlePlacement = (
 ) => {
   const unitAtCell = gameState.board[row][col];
   const isUnitAtCell = !!unitAtCell;
-  const isCompatibleWithUnit = isUnitAtCell && canPlaceUnit(unitAtCell!.type, type);
+  const isCompatibleWithUnit =
+    isUnitAtCell && canPlaceUnit(unitAtCell!.type, type);
   const isCellEmpty = !isUnitAtCell;
-  
+
   const isPlacementAllowedByUnit = isCellEmpty || isCompatibleWithUnit;
   if (!isPlacementAllowedByUnit) return INVALID_MOVE;
 
   const playerTerrainInventory = gameState.terrainInventory[playerId];
   const terrainIndex = playerTerrainInventory?.indexOf(type);
-  
+
   const isIndexValid = terrainIndex !== -1;
   const isInventoryExists = terrainIndex !== undefined;
   const isTerrainInInventory = isIndexValid && isInventoryExists;
-  
+
   if (!isTerrainInInventory) return INVALID_MOVE;
 
   const quota = getQuota(gameState.mode);
@@ -86,7 +92,7 @@ const handlePlacement = (
 
   const currentTerrainAtCell = gameState.terrain[row][col];
   const isReplacingFlatTerrain = currentTerrainAtCell === TERRAIN_TYPES.FLAT;
-  
+
   const isPlacementBlockedByQuota = isQuotaReached && isReplacingFlatTerrain;
   if (isPlacementBlockedByQuota) {
     return INVALID_MOVE;
@@ -114,7 +120,7 @@ export const placeTerrain = (
   isGM?: boolean,
 ) => {
   let playerId = resolvePlayerId(gameState, context, playerID, explicitPid);
-  
+
   if (isGM) {
     const cellOwner = getCellOwner(row, col, gameState.mode);
     if (cellOwner) {
@@ -131,7 +137,7 @@ export const placeTerrain = (
     row,
     col,
   );
-  
+
   if (!isGM && !isPlayerPlacingInOwnTerritory) return INVALID_MOVE;
 
   const isClearingTerrain = type === TERRAIN_TYPES.FLAT;

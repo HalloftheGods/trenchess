@@ -1,5 +1,5 @@
 import React from "react";
-import { Castle } from "lucide-react";
+import { ChessRook } from "lucide-react";
 
 interface JumpInButtonProps {
   onClick: () => void;
@@ -22,8 +22,9 @@ const JumpInButton: React.FC<JumpInButtonProps> = ({
       className={`flex items-center gap-1.5 p-2 pl-3 pr-4 text-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-950/30 cursor-pointer font-bold text-sm uppercase tracking-wider animate-pulse-subtle ${className}`}
       title={label}
     >
-      <Castle size={36} />
+      <ChessRook size={36} color="red" />
       <span>{label}</span>
+      <ChessRook size={36} color="blue" />
     </button>
   );
 };

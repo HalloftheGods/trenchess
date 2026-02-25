@@ -1,7 +1,7 @@
 import { Skull } from "lucide-react";
 import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@constants/routes";
 
 const NotFoundView = ({ fullScreen = true }: { fullScreen?: boolean }) => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const NotFoundView = ({ fullScreen = true }: { fullScreen?: boolean }) => {
         </div>
 
         <button
-          onClick={() => navigate(ROUTES.HOME)}
+          onClick={() => navigate(ROUTES.HOME.url)}
           className="px-6 py-3 bg-brand-red text-white rounded-xl font-bold uppercase tracking-wider hover:bg-red-700 transition-colors"
         >
           Return to HQ

@@ -1,5 +1,5 @@
 import React from "react";
-import { INITIAL_ARMY, unitColorMap, PIECES } from "@/constants";
+import { INITIAL_ARMY, unitColorMap, PIECES } from "@constants";
 import { UnitMovePreview } from "@/shared/components/molecules/UnitMovePreview";
 import { useRouteContext } from "@context";
 import type { TerrainDetail } from "@/shared/types/game";
@@ -39,7 +39,9 @@ const UnitPreviewCell: React.FC<UnitPreviewCellProps & { size?: number }> = ({
   return (
     <div
       className={`flex flex-col items-center gap-3 p-4 rounded-2xl transition-all duration-500 group border border-transparent hover:border-white/5 ${
-        isBlocked ? "opacity-40 grayscale-[0.8] hover:opacity-100 hover:grayscale-0" : "opacity-100"
+        isBlocked
+          ? "opacity-40 grayscale-[0.8] hover:opacity-100 hover:grayscale-0"
+          : "opacity-100"
       }`}
     >
       <div className="relative">
@@ -91,20 +93,27 @@ export const TerrainUnitGrid: React.FC<TerrainUnitGridProps> = ({
 
   // Grid layout: 3x3
   const pieceLayout: (PieceType | null)[] = [
-    KING, QUEEN, PAWN,
-    ROOK, BISHOP, KNIGHT,
-    null, null, null
+    KING,
+    QUEEN,
+    PAWN,
+    ROOK,
+    BISHOP,
+    KNIGHT,
+    null,
+    null,
+    null,
   ];
 
   return (
     <div className="w-full max-w-5xl mx-auto py-8">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8">
         {pieceLayout.map((pk, idx) => {
-          if (!pk) return <div key={`empty-${idx}`} className="hidden md:block" />;
-          
+          if (!pk)
+            return <div key={`empty-${idx}`} className="hidden md:block" />;
+
           const isSanctuary = welcomedUnits.includes(pk);
           const isBlocked = refusedUnits.includes(pk);
-          
+
           return (
             <UnitPreviewCell
               key={`unit-${pk}`}

@@ -3,7 +3,7 @@ import { ShieldPlus } from "lucide-react";
 import InteractiveGuide, {
   type Slide,
 } from "@/shared/components/templates/InteractiveGuide";
-import { TERRAIN_DETAILS } from "@/constants";
+import { TERRAIN_DETAILS } from "@constants";
 import type { PreviewConfig } from "@/shared/types/game";
 
 // Shared Route Components

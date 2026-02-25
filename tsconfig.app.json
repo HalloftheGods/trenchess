@@ -105,10 +105,10 @@
         "src/client/game/shared/utils"
       ],
       "@constants": [
-        "src/constants"
+        "constants"
       ],
       "@constants/*": [
-        "src/constants/*"
+        "constants/*"
       ],
       "@client/*": [
         "src/client/*"
@@ -142,6 +142,7 @@
   },
   "include": [
     "src",
-    "src/client/game/shared"
+    "src/client/game/shared",
+    "constants"
   ]
 }

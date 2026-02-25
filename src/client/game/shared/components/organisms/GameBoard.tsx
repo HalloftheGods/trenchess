@@ -2,7 +2,7 @@ import BoardCell from "@/client/game/shared/components/organisms/BoardCell";
 import VictoryOverlay from "@/client/game/shared/components/atoms/VictoryOverlay";
 import { CheckAlert } from "@/client/game/shared/components/atoms/CheckAlert";
 import { EyeOff } from "lucide-react";
-import { PLAYER_CONFIGS } from "@/constants";
+import { PLAYER_CONFIGS } from "@constants";
 import type {
   BoardPiece,
   TerrainType,

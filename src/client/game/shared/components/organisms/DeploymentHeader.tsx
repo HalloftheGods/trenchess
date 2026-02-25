@@ -1,6 +1,6 @@
 import React from "react";
 import { Sparkles, Sword } from "lucide-react";
-import { PLAYER_CONFIGS } from "@/constants";
+import { PLAYER_CONFIGS } from "@constants";
 import { PlayerTypeToggle } from "../atoms/PlayerTypeToggle";
 
 import type { MultiplayerState } from "@/shared/types/multiplayer";

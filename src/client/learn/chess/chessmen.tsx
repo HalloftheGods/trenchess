@@ -19,7 +19,7 @@ import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import RoutePageFooter from "@/shared/components/organisms/RoutePageFooter";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
-import { INITIAL_ARMY, PIECES, UNIT_DETAILS } from "@/constants";
+import { INITIAL_ARMY, PIECES, UNIT_DETAILS } from "@constants";
 import { analytics } from "@/shared/utils/analytics";
 
 export const LearnChessmenView: React.FC = () => {

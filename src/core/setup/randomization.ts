@@ -1,5 +1,5 @@
-import { BOARD_SIZE } from "@/constants";
-import { MAX_TERRAIN_PER_PLAYER, TERRAIN_TYPES } from "@/constants";
+import { BOARD_SIZE } from "@constants";
+import { MAX_TERRAIN_PER_PLAYER, TERRAIN_TYPES } from "@constants";
 import type {
   GameMode,
   BoardPiece,

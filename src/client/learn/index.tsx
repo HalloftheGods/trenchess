@@ -9,6 +9,7 @@ import {
   Wind,
 } from "lucide-react";
 import { useRouteContext } from "@context";
+import { ROUTES } from "@constants/routes";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
@@ -25,11 +26,11 @@ export const LearnView: React.FC = () => {
     <RoutePageLayout>
       <RoutePageHeader
         label='"There&apos;s a Prophecy on the wind..."'
-        onBackClick={() => navigate("/")}
+        onBackClick={() => navigate(ROUTES.HOME.url)}
       />
       <RouteGrid cols={3}>
         <RouteCard
-          onClick={() => navigate("/learn/trench")}
+          onClick={() => navigate(ROUTES.LEARN_TRENCH.url)}
           onMouseEnter={() => {
             setHoveredMenu("how-to-play");
             setTerrainSeed(Math.random());
@@ -51,7 +52,7 @@ export const LearnView: React.FC = () => {
           className="h-full w-full"
         />
         <RouteCard
-          onClick={() => navigate("/learn/chess")}
+          onClick={() => navigate(ROUTES.LEARN_CHESS.url)}
           onMouseEnter={() => setHoveredMenu("chess")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
@@ -71,7 +72,7 @@ export const LearnView: React.FC = () => {
 
         {/* Do the math */}
         <RouteCard
-          onClick={() => navigate("/learn/math")}
+          onClick={() => navigate(ROUTES.LEARN_MATH.url)}
           onMouseEnter={() => setHoveredMenu("chess")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
@@ -90,7 +91,7 @@ export const LearnView: React.FC = () => {
         />
       </RouteGrid>
       <RoutePageFooter
-        onForwardClick={() => navigate("/learn/trench")}
+        onForwardClick={() => navigate(ROUTES.LEARN_TRENCH.url)}
         forwardLabel="Open the Trench"
         forwardIcon={Wind}
       />

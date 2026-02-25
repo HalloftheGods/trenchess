@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { canPlaceUnit } from "@/core/setup/setupLogic";
-import { TERRAIN_TYPES } from "@/constants";
+import { TERRAIN_TYPES } from "@constants";
 import { analytics } from "@/shared/utils/analytics";
 import type {
   ZenGardenInteraction,

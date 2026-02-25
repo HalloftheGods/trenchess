@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import GamemasterView from "@/client/game/gamemaster/index";
 import React from "react";
-import { TERRAIN_TYPES } from "@/constants";
+import { TERRAIN_TYPES } from "@constants";
 import type { GameStateHook, BoardPiece, PieceType } from "@/shared/types";
 
 // Mock dependencies

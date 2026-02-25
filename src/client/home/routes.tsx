@@ -1,16 +1,16 @@
-import { lazy } from "react";
-import type { RouteConfig } from "@/constants/routes";
+import { ROUTES } from "@constants/routes";
+import type { RouteConfig } from "@/shared/types/route";
 
-export const HOME_PATHS = {
-  HOME: "/",
-} as const;
-
-export const HomeLazyRoutes = {
-  view: lazy(() => import("./index")),
-  notFound: lazy(() => import("./components/views/NotFoundView")),
-};
+const HomeIndexLazy = ROUTES.HOME.component(() => import("./index"));
+const NotFoundLazy = ROUTES.HOME.component(() => import("./components/views/NotFoundView"));
 
 export const getHomeRoutes = (): RouteConfig[] => [
-  { index: true, element: <HomeLazyRoutes.view /> },
-  { path: "*", element: <HomeLazyRoutes.notFound /> },
+  // Using the new helper
+  ROUTES.HOME.define(<HomeIndexLazy />, { index: true }),
+  
+  // Custom catch-all
+  { 
+    path: "*", 
+    element: <NotFoundLazy />
+  },
 ];

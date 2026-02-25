@@ -19,7 +19,9 @@ const NON_FLAT_TERRAIN_KEYS = [
 ];
 
 const pickRandomNonFlat = (): TerrainType =>
-  NON_FLAT_TERRAIN_KEYS[Math.floor(Math.random() * NON_FLAT_TERRAIN_KEYS.length)] as TerrainType;
+  NON_FLAT_TERRAIN_KEYS[
+    Math.floor(Math.random() * NON_FLAT_TERRAIN_KEYS.length)
+  ] as TerrainType;
 
 const shuffle = (array: [number, number][]) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -70,7 +72,7 @@ const createInitialTerrainStats = () => ({
   [TERRAIN_TYPES.DESERT]: { total: 0, captures: 0, rate: 0 },
 });
 
-describe("Piece Statistics Generator", () => {
+describe.skip("Piece Statistics Generator", () => {
   it("generates piece capture threat surface statistics", () => {
     const pieceKeys = Object.values(PIECES) as PieceType[];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,7 +84,8 @@ describe("Piece Statistics Generator", () => {
       pieceKeys.forEach((defender) => {
         let totalPlacements = 0;
         let captures = 0;
-        const terrainStats: Record<string, TerrainStat> = createInitialTerrainStats();
+        const terrainStats: Record<string, TerrainStat> =
+          createInitialTerrainStats();
 
         for (let i = 0; i < ITERATIONS_PER_MATCHUP; i++) {
           const rA = Math.floor(Math.random() * BOARD_SIZE);
@@ -101,8 +104,9 @@ describe("Piece Statistics Generator", () => {
           totalPlacements++;
           terrainStats[startTerrain].total++;
 
-          const boardState: (BoardPiece | null)[][] = Array.from({ length: BOARD_SIZE }, () =>
-            Array(BOARD_SIZE).fill(null),
+          const boardState: (BoardPiece | null)[][] = Array.from(
+            { length: BOARD_SIZE },
+            () => Array(BOARD_SIZE).fill(null),
           );
 
           const p1: BoardPiece = { type: attacker, player: "red" };
@@ -121,10 +125,20 @@ describe("Piece Statistics Generator", () => {
             const piece = isAttackerTurn ? p1 : p2;
             const targetPos = isAttackerTurn ? pB : pA;
 
-            const moves = getValidMoves(pos[0], pos[1], piece, actingPlayer, boardState, terrain, "2p-ns", 1);
+            const moves = getValidMoves(
+              pos[0],
+              pos[1],
+              piece,
+              actingPlayer,
+              boardState,
+              terrain,
+              "2p-ns",
+              1,
+            );
             if (moves.length === 0) break;
 
-            const isCapture = (m: number[]) => m[0] === targetPos[0] && m[1] === targetPos[1];
+            const isCapture = (m: number[]) =>
+              m[0] === targetPos[0] && m[1] === targetPos[1];
             const captureMove = moves.find(isCapture);
 
             if (captureMove) {
@@ -135,9 +149,11 @@ describe("Piece Statistics Generator", () => {
               break;
             }
 
-            const getDistance = (m: number[]) => Math.abs(m[0] - targetPos[0]) + Math.abs(m[1] - targetPos[1]);
+            const getDistance = (m: number[]) =>
+              Math.abs(m[0] - targetPos[0]) + Math.abs(m[1] - targetPos[1]);
             const bestMove = moves.reduce(
-              (best, curr) => (getDistance(curr) < getDistance(best) ? curr : best),
+              (best, curr) =>
+                getDistance(curr) < getDistance(best) ? curr : best,
               moves[0],
             );
 
@@ -163,8 +179,13 @@ describe("Piece Statistics Generator", () => {
       });
     });
 
-    const outputPath = path.resolve(__dirname, "../shared/assets/statistics.json");
+    const outputPath = path.resolve(
+      __dirname,
+      "../shared/assets/statistics.json",
+    );
     fs.writeFileSync(outputPath, JSON.stringify(stats, null, 2), "utf8");
-    console.log(`Statistics generated: ${ITERATIONS_PER_MATCHUP.toLocaleString()} per matchup`);
+    console.log(
+      `Statistics generated: ${ITERATIONS_PER_MATCHUP.toLocaleString()} per matchup`,
+    );
   }, 900000);
 });

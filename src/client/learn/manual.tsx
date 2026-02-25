@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { Waves, Crosshair, ShieldPlus, Zap } from "lucide-react";
 import { useRouteContext } from "@context";
-import { PIECES, INITIAL_ARMY } from "@/constants";
+import { PIECES, INITIAL_ARMY } from "@constants";
 import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
-import { UNIT_DETAILS, unitColorMap } from "@/constants";
+import { UNIT_DETAILS, unitColorMap } from "@constants";
 import type { PieceStyle } from "@/shared/types/game";
 import type { TerrainType } from "@/shared/types/game";
 

@@ -1,5 +1,10 @@
-import { MAX_TERRAIN_PER_PLAYER, TERRAIN_TYPES } from "@/constants";
-import type { GameMode, PieceType, TerrainType, TrenchessState } from "@/shared/types";
+import { MAX_TERRAIN_PER_PLAYER, TERRAIN_TYPES } from "@constants";
+import type {
+  GameMode,
+  PieceType,
+  TerrainType,
+  TrenchessState,
+} from "@/shared/types";
 import type { Ctx } from "boardgame.io";
 import { getPlayerCells } from "./territory";
 
@@ -21,7 +26,7 @@ export const resolvePlayerId = (
     (playerID !== undefined
       ? G.playerMap[playerID]
       : G.playerMap[ctx.currentPlayer]);
-  
+
   const isActive = pid && G.activePlayers.includes(pid);
   return isActive ? pid : null;
 };
@@ -39,7 +44,8 @@ export const isPlayerReadyToPlay = (
   const myCells = getPlayerCells(player, mode);
   let terrainCount = 0;
   for (const [row, col] of myCells) {
-    if (terrain[row] && terrain[row][col] !== TERRAIN_TYPES.FLAT) terrainCount++;
+    if (terrain[row] && terrain[row][col] !== TERRAIN_TYPES.FLAT)
+      terrainCount++;
   }
 
   const targetTerrain = getQuota(mode);

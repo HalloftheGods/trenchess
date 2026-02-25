@@ -1,6 +1,6 @@
-import { BOARD_SIZE } from "@/constants";
-import { PIECES } from "@/constants/pieces";
-import { TERRAIN_TYPES } from "@/constants/terrain";
+import { BOARD_SIZE } from "@constants";
+import { PIECES } from "@constants/pieces";
+import { TERRAIN_TYPES } from "@constants/terrain";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
@@ -605,9 +605,14 @@ const addKingMoves = (
 ) => {
   // 1. Standard 1-step moves in all 8 directions
   const kingSteps = [
-    [-1, -1], [-1, 0], [-1, 1],
-    [0, -1],           [0, 1],
-    [1, -1],  [1, 0],  [1, 1],
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
   ];
 
   kingSteps.forEach(([dr, dc]) => {

@@ -1,9 +1,6 @@
-import { BOARD_SIZE } from "@/constants";
-import {
-  MAX_TERRAIN_PER_PLAYER,
-  TERRAIN_TYPES,
-} from "@/constants";
-import { INITIAL_ARMY } from "@/constants";
+import { BOARD_SIZE } from "@constants";
+import { MAX_TERRAIN_PER_PLAYER, TERRAIN_TYPES } from "@constants";
+import { INITIAL_ARMY } from "@constants";
 import type {
   GameMode,
   BoardPiece,
@@ -23,7 +20,7 @@ export const createInitialState = (
   const board: (BoardPiece | null)[][] = Array(BOARD_SIZE)
     .fill(null)
     .map(() => Array(BOARD_SIZE).fill(null));
-    
+
   const terrain: TerrainType[][] = Array(BOARD_SIZE)
     .fill(null)
     .map(() => Array(BOARD_SIZE).fill(TERRAIN_TYPES.FLAT as TerrainType));
@@ -43,7 +40,7 @@ export const createInitialState = (
       const unitType = unit.type;
       return Array(unitCount).fill(unitType);
     });
-    
+
     inventory[player] = playerUnitList;
 
     const playerTerrainList = [
@@ -52,7 +49,7 @@ export const createInitialState = (
       ...Array(terrainQuota).fill(TERRAIN_TYPES.MOUNTAINS),
       ...Array(terrainQuota).fill(TERRAIN_TYPES.DESERT),
     ] as TerrainType[];
-    
+
     terrainInventory[player] = playerTerrainList;
   });
 

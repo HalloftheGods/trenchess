@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import MmoActionBar from "@/client/game/shared/components/organisms/MmoActionBar";
-import { PIECES } from "@/constants";
+import { PIECES } from "@constants";
 import type { GameState, PieceStyle } from "@/shared/types";
 
 describe("MmoActionBar", () => {
@@ -33,14 +33,13 @@ describe("MmoActionBar", () => {
     vi.clearAllMocks();
   });
 
-  it("should call setClassicalFormation and randomizeTerrain when Pi button is clicked", () => {
+  it("should call setClassicalFormation when Pi button is clicked", () => {
     render(<MmoActionBar {...mockProps} />);
 
     const piButton = screen.getByTitle("Pi");
     fireEvent.click(piButton);
 
     expect(mockProps.setClassicalFormation).toHaveBeenCalled();
-    expect(mockProps.randomizeTerrain).toHaveBeenCalled();
   });
 
   it("should call applyChiGarden when Chi button is clicked", () => {

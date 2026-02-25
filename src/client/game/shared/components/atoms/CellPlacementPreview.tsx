@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Flex } from "@atoms";
-import { PLAYER_CONFIGS, INITIAL_ARMY, TERRAIN_INTEL } from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
+import { PLAYER_CONFIGS, INITIAL_ARMY, TERRAIN_INTEL } from "@constants";
+import { TERRAIN_TYPES } from "@constants";
 import { canPlaceUnit } from "@/core/setup/validation";
 import { Ban } from "lucide-react";
 import type {

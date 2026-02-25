@@ -8,7 +8,7 @@ import { Pencil } from "lucide-react";
 import { serializeGame } from "@/shared/utils/gameUrl";
 import type { useGameState } from "@hooks/useGameState";
 import { useDeployment } from "@/client/game/shared/hooks/useDeployment";
-import { INITIAL_ARMY, TERRAIN_TYPES, TERRAIN_INTEL } from "@/constants";
+import { INITIAL_ARMY, TERRAIN_TYPES, TERRAIN_INTEL } from "@constants";
 
 interface ZenGardenViewProps {
   game: ReturnType<typeof useGameState>;
@@ -61,7 +61,8 @@ const ZenGardenView: React.FC<ZenGardenViewProps> = ({
     const playerTerrainInventory =
       game.terrainInventory[perspectivePlayerId] || [];
     terrainTypesToCount.forEach((terrainType) => {
-      const label = (TERRAIN_INTEL[terrainType]?.label as string) || terrainType;
+      const label =
+        (TERRAIN_INTEL[terrainType]?.label as string) || terrainType;
       counts[label] = playerTerrainInventory.filter(
         (type: string) => type === terrainType,
       ).length;

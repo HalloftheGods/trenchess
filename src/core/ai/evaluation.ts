@@ -1,6 +1,6 @@
-import { BOARD_SIZE } from "@/constants";
-import { PIECES } from "@/constants";
-import { TERRAIN_TYPES, CORE_TERRAIN_INTEL } from "@/constants/terrain";
+import { BOARD_SIZE } from "@constants";
+import { PIECES } from "@constants";
+import { TERRAIN_TYPES, CORE_TERRAIN_INTEL } from "@constants/terrain";
 import type {
   BoardPiece,
   TerrainType,

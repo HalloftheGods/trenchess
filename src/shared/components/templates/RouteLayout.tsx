@@ -1,4 +1,4 @@
-import React, { lazy } from "react";
+import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { CornerControls } from "@/client/game/shared/components/organisms/CornerControls";
 import { IconButton } from "@/shared/components/atoms/IconButton";
@@ -104,4 +104,3 @@ const RouteLayout: React.FC<MenuLayoutProps> = (props) => {
 };
 
 export default RouteLayout;
-export const LazyRouteLayout = lazy(() => import("./RouteLayout"));

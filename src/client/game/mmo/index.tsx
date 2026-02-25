@@ -6,11 +6,11 @@ import GameStateDebug from "../shared/components/molecules/GameStateDebug";
 
 import { useRouteContext } from "@context";
 import { useDeployment } from "@/client/game/shared/hooks/useDeployment";
-import { INITIAL_ARMY, UNIT_POINTS } from "@/constants";
-import { TERRAIN_TYPES, TERRAIN_INTEL } from "@/constants";
+import { INITIAL_ARMY, UNIT_POINTS } from "@constants";
+import { TERRAIN_TYPES, TERRAIN_INTEL } from "@constants";
 import { getPlayerCells } from "@/core/setup/setupLogic";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
-import { MAX_TERRAIN_PER_PLAYER } from "@/constants";
+import { MAX_TERRAIN_PER_PLAYER } from "@constants";
 import { getServerUrl } from "@hooks/useMultiplayer";
 import type { GameStateHook, BoardPiece } from "@/shared/types";
 import { GameStartOverlay, ReadyUpPanel } from "../shared/components";
@@ -248,13 +248,12 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
         />
       }
       leftPanel={
-        <div className="flex flex-col justify-between h-full">
+        <div className="flex flex-col justify-center gap-8 h-full">
           {["red", "green"].map((expectedPid: string) => {
             const pid = game.activePlayers.includes(expectedPid)
               ? expectedPid
               : undefined;
-            if (!pid)
-              return <div key={`empty-${expectedPid}`} className="flex-1 invisible" />;
+            if (!pid) return null;
 
             const myCells = getPlayerCells(pid, game.mode);
             let pPlacedCount = 0;
@@ -318,13 +317,12 @@ const MmoView: React.FC<MmoViewProps> = ({ game }) => {
         </div>
       }
       rightPanel={
-        <div className="flex flex-col justify-between h-full">
+        <div className="flex flex-col justify-center gap-8 h-full">
           {["yellow", "blue"].map((expectedPid: string) => {
             const pid = game.activePlayers.includes(expectedPid)
               ? expectedPid
               : undefined;
-            if (!pid)
-              return <div key={`empty-${expectedPid}`} className="flex-1 invisible" />;
+            if (!pid) return null;
 
             const myCells = getPlayerCells(pid, game.mode);
             let pPlacedCount = 0;

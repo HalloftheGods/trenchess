@@ -1,6 +1,6 @@
 import React from "react";
-import { PIECES } from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
+import { PIECES } from "@constants";
+import { TERRAIN_TYPES } from "@constants";
 import { getValidMoves } from "@/core/mechanics/gameLogic";
 import type { PieceType } from "@/shared/types/game";
 import type { TerrainIntelPanelEntry } from "@/shared/types/guide";
@@ -17,9 +17,9 @@ export const TerrainPreviewGrid: React.FC<TerrainPreviewGridProps> = ({
   unitType,
   terrainData,
 }) => {
-  const pieceType = (PIECES[unitType.toUpperCase() as keyof typeof PIECES] || 
-                    (unitType === "Pawn" ? PIECES.PAWN : null)) as PieceType;
-  
+  const pieceType = (PIECES[unitType.toUpperCase() as keyof typeof PIECES] ||
+    (unitType === "Pawn" ? PIECES.PAWN : null)) as PieceType;
+
   if (!pieceType) return null;
 
   let activeTerrain = TERRAIN_TYPES.FLAT;
@@ -30,11 +30,11 @@ export const TerrainPreviewGrid: React.FC<TerrainPreviewGridProps> = ({
 
   const SIMULATION_SIZE = 12;
   const SIMULATION_CENTER = 6;
-  
+
   const simulationBoard = Array(SIMULATION_SIZE)
     .fill(null)
     .map(() => Array(SIMULATION_SIZE).fill(null));
-    
+
   const simulationTerrain = Array(SIMULATION_SIZE)
     .fill(null)
     .map(() => Array(SIMULATION_SIZE).fill(TERRAIN_TYPES.FLAT));
@@ -68,7 +68,9 @@ export const TerrainPreviewGrid: React.FC<TerrainPreviewGridProps> = ({
           const targetRow = SIMULATION_CENTER + rowOffset;
           const targetCol = SIMULATION_CENTER + colOffset;
           const isCenter = rowOffset === 0 && colOffset === 0;
-          const isMovePossible = calculatedMoves.some(([mr, mc]) => mr === targetRow && mc === targetCol);
+          const isMovePossible = calculatedMoves.some(
+            ([mr, mc]) => mr === targetRow && mc === targetCol,
+          );
 
           let cellColor = "bg-slate-300 dark:bg-white/5";
           if (activeTerrain === TERRAIN_TYPES.TREES)

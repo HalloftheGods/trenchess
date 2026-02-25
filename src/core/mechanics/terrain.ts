@@ -1,6 +1,6 @@
-import { BOARD_SIZE } from "@/constants";
-import { PIECES } from "@/constants";
-import { TERRAIN_TYPES, TERRAIN_DETAILS } from "@/constants";
+import { BOARD_SIZE } from "@constants";
+import { PIECES } from "@constants";
+import { TERRAIN_TYPES, TERRAIN_DETAILS } from "@constants";
 import type { PieceType, TerrainType } from "@/shared/types";
 import { getValidMoves } from "./movement/movementLogic";
 
@@ -12,13 +12,16 @@ export const isUnitProtected = (
   unitType: string,
   terrainType: TerrainType | string,
 ): boolean => {
-  const matchByTerrainKey = (terrain: { key: string }) => terrain.key === terrainType;
+  const matchByTerrainKey = (terrain: { key: string }) =>
+    terrain.key === terrainType;
   const terrainInfo = TERRAIN_DETAILS.find(matchByTerrainKey);
-  
+
   const hasTerrainInfo = !!terrainInfo;
   if (!hasTerrainInfo) return false;
-  
-  const isSanctuaryUnit = terrainInfo!.sanctuaryUnits.includes(unitType as PieceType);
+
+  const isSanctuaryUnit = terrainInfo!.sanctuaryUnits.includes(
+    unitType as PieceType,
+  );
   return isSanctuaryUnit;
 };
 
@@ -37,7 +40,7 @@ export function canUnitTraverseTerrain(
   const simulationBoard = Array(BOARD_SIZE)
     .fill(null)
     .map(() => Array(BOARD_SIZE).fill(null));
-    
+
   const simulationTerrain = Array(BOARD_SIZE)
     .fill(null)
     .map(() => Array(BOARD_SIZE).fill(TERRAIN_TYPES.FLAT as TerrainType));
@@ -45,19 +48,28 @@ export function canUnitTraverseTerrain(
   const centerPoint = 6;
   const areaOffset = 3;
 
-  for (let row = centerPoint - areaOffset; row <= centerPoint + areaOffset; row++) {
-    for (let col = centerPoint - areaOffset; col <= centerPoint + areaOffset; col++) {
+  for (
+    let row = centerPoint - areaOffset;
+    row <= centerPoint + areaOffset;
+    row++
+  ) {
+    for (
+      let col = centerPoint - areaOffset;
+      col <= centerPoint + areaOffset;
+      col++
+    ) {
       const isRowInBounds = row >= 0 && row < BOARD_SIZE;
       const isColInBounds = col >= 0 && col < BOARD_SIZE;
       const isWithinSimulationArea = isRowInBounds && isColInBounds;
-      
+
       if (isWithinSimulationArea) {
         simulationTerrain[row][col] = terrainType;
       }
     }
   }
-  
-  simulationTerrain[centerPoint][centerPoint] = TERRAIN_TYPES.FLAT as TerrainType;
+
+  simulationTerrain[centerPoint][centerPoint] =
+    TERRAIN_TYPES.FLAT as TerrainType;
   simulationBoard[centerPoint][centerPoint] = { type: unitType, player: "red" };
 
   const validMoves = getValidMoves(
@@ -75,7 +87,7 @@ export function canUnitTraverseTerrain(
     const isTargetTerrainMatch = simulationTerrain[row][col] === terrainType;
     return isTargetTerrainMatch;
   });
-  
+
   return canEnterTerrainTile;
 }
 
@@ -90,7 +102,8 @@ export function getTraversableTerrains(unitType: PieceType): TerrainType[] {
     TERRAIN_TYPES.DESERT as TerrainType,
   ];
 
-  const matchByUnitTraversability = (terrain: TerrainType) => canUnitTraverseTerrain(unitType, terrain);
+  const matchByUnitTraversability = (terrain: TerrainType) =>
+    canUnitTraverseTerrain(unitType, terrain);
   return allTerrainTypes.filter(matchByUnitTraversability);
 }
 
@@ -107,6 +120,7 @@ export function getTraversableUnits(terrainType: TerrainType): PieceType[] {
     PIECES.PAWN as PieceType,
   ];
 
-  const matchByTerrainTraversability = (unit: PieceType) => canUnitTraverseTerrain(unit, terrainType);
+  const matchByTerrainTraversability = (unit: PieceType) =>
+    canUnitTraverseTerrain(unit, terrainType);
   return allUnitTypes.filter(matchByTerrainTraversability);
 }

@@ -3,8 +3,8 @@ import React, { useMemo, useState } from "react";
 import InteractiveGuide, {
   type Slide,
 } from "@/shared/components/templates/InteractiveGuide";
-import { PIECES, INITIAL_ARMY } from "@/constants";
-import { UNIT_DETAILS, unitColorMap } from "@/constants";
+import { PIECES, INITIAL_ARMY } from "@constants";
+import { UNIT_DETAILS, unitColorMap } from "@constants";
 import { useRouteContext } from "@context";
 import type {
   PieceType,

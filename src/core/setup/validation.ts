@@ -1,5 +1,5 @@
-import { PIECES } from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
+import { PIECES } from "@constants";
+import { TERRAIN_TYPES } from "@constants";
 import type { PieceType, TerrainType } from "@/shared/types";
 
 const { ROOK, BISHOP, KNIGHT } = PIECES;
@@ -25,7 +25,8 @@ export const canPlaceUnit = (
   const isDesertBlockedForNonRooks = isDesert && !isRook;
   const isForestBlockedForHeavyArmor = isForest && (isRook || isKnight);
   const isSwampBlockedForCavalryAndSeer = isSwamp && (isKnight || isBishop);
-  const isMountainBlockedForHeavyArmorAndSeer = isMountain && (isRook || isBishop);
+  const isMountainBlockedForHeavyArmorAndSeer =
+    isMountain && (isRook || isBishop);
 
   const isBlocked =
     isDesertBlockedForNonRooks ||

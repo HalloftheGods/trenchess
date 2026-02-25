@@ -5,7 +5,7 @@ import GameBoard from "@/client/game/shared/components/organisms/GameBoard";
 import Shoutbox from "@/client/game/shared/components/organisms/Shoutbox";
 import GameStateDebug from "../shared/components/molecules/GameStateDebug";
 import type { useGameState } from "@hooks/useGameState";
-import { INITIAL_ARMY, TERRAIN_TYPES, TERRAIN_INTEL } from "@/constants";
+import { INITIAL_ARMY, TERRAIN_TYPES, TERRAIN_INTEL } from "@constants";
 
 interface SpectatorViewProps {
   game: ReturnType<typeof useGameState>;
@@ -48,7 +48,8 @@ const SpectatorView: React.FC<SpectatorViewProps> = ({
     const playerTerrainInventory =
       game.terrainInventory[perspectivePlayerId] || [];
     terrainTypesToCount.forEach((terrainType) => {
-      const label = (TERRAIN_INTEL[terrainType]?.label as string) || terrainType;
+      const label =
+        (TERRAIN_INTEL[terrainType]?.label as string) || terrainType;
       counts[label] = playerTerrainInventory.filter(
         (type: string) => type === terrainType,
       ).length;

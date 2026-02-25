@@ -6,10 +6,10 @@
  * Using new 5-column layout.
  */
 import React, { useState, useMemo, useEffect } from "react";
-import { INITIAL_ARMY } from "@/constants";
+import { INITIAL_ARMY } from "@constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import { UNIT_DETAILS, unitColorMap, TERRAIN_LIST } from "@/constants";
+import { UNIT_DETAILS, unitColorMap, TERRAIN_LIST } from "@constants";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 import { deserializeGame } from "@/shared/utils/serialization";
 import { analytics } from "@/shared/utils/analytics";

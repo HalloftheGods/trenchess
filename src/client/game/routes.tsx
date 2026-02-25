@@ -1,23 +1,13 @@
-import { lazy } from "react";
-import type { RouteConfig } from "@/constants/routes";
+import type { RouteConfig } from "@/shared/types/route";
 import type { GameStateHook, GameMode, GameState } from "@/shared/types";
+import { ROUTES } from "@constants/routes";
 
-export const GAME_PATHS = {
-  GAME: "/game",
-  GAME_MMO: "/game/mmo",
-  GAME_DETAIL: "/game/:roomId",
-  GAMEMASTER: "/game/gamemaster",
-  LIBRARY: "/library",
-} as const;
-
-export const GameLazyRoutes = {
-  screen: lazy(() => import("@/client/game/index")),
-  mmo: lazy(() => import("@/client/game/mmo")),
-  gamemaster: lazy(() => import("@/client/game/gamemaster/index")),
-  library: lazy(
-    () => import("@/client/game/shared/components/organisms/SeedLibrary"),
-  ),
-};
+const GameMmoLazy = ROUTES.GAME_MMO.component(() => import("@/client/game/mmo"));
+const GameModeLazy = ROUTES.GAME_MODE.component(() => import("@/client/game/index"));
+const GamemasterLazy = ROUTES.GAMEMASTER.component(() => import("@/client/game/gamemaster/index"));
+const GameLazy = ROUTES.GAME.component(() => import("@/client/game/index"));
+const GameDetailLazy = ROUTES.GAME_DETAIL.component(() => import("@/client/game/index"));
+const LibraryLazy = ROUTES.LIBRARY.component(() => import("@/client/game/shared/components/organisms/SeedLibrary"));
 
 export const getGameRoutes = (
   game: GameStateHook,
@@ -31,28 +21,22 @@ export const getGameRoutes = (
   mode: GameMode,
   initFromSeed: (seed: string, targetState?: GameState) => boolean,
 ): RouteConfig[] => [
-  { path: GAME_PATHS.GAME_MMO, element: <GameLazyRoutes.mmo game={game} /> },
-  {
-    path: GAME_PATHS.GAMEMASTER,
-    element: <GameLazyRoutes.gamemaster game={game} />,
-  },
-  {
-    path: GAME_PATHS.GAME,
-    element: <GameLazyRoutes.screen {...gameScreenProps} />,
-  },
-  {
-    path: GAME_PATHS.GAME_DETAIL,
-    element: <GameLazyRoutes.screen {...gameScreenProps} />,
-  },
-  {
-    path: GAME_PATHS.LIBRARY,
-    element: (
-      <GameLazyRoutes.library
-        onBack={handleBackToMenu}
-        onLoadSeed={(seed) => initFromSeed(seed)}
-        onEditInZen={(seed) => initFromSeed(seed, "zen-garden")}
-        activeMode={mode}
-      />
-    ),
-  },
+  ROUTES.GAME_MMO.define(<GameMmoLazy game={game} />),
+  
+  ROUTES.GAME_MODE.define(<GameModeLazy {...gameScreenProps} />),
+  
+  ROUTES.GAMEMASTER.define(<GamemasterLazy game={game} />),
+  
+  ROUTES.GAME.define(<GameLazy {...gameScreenProps} />),
+  
+  ROUTES.GAME_DETAIL.define(<GameDetailLazy {...gameScreenProps} />),
+  
+  ROUTES.LIBRARY.define(
+    <LibraryLazy
+      onBack={handleBackToMenu}
+      onLoadSeed={(seed: string) => initFromSeed(seed)}
+      onEditInZen={(seed: string) => initFromSeed(seed, "zen-garden")}
+      activeMode={mode}
+    />
+  ),
 ];

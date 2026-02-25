@@ -1,7 +1,7 @@
 import { Trophy, Skull } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { PLAYER_CONFIGS, UNIT_POINTS } from "@/constants";
-import { ROUTES } from "@/constants/routes";
+import { PLAYER_CONFIGS, UNIT_POINTS } from "@constants";
+import { ROUTES } from "@constants/routes";
 import { FinalBoardPreview } from "../molecules/FinalBoardPreview";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 
@@ -56,7 +56,7 @@ const VictoryOverlay: React.FC<VictoryOverlayProps> = ({
 
   const handleReturn = () => {
     setGameState("menu");
-    navigate(ROUTES.HOME);
+    navigate(ROUTES.HOME.url);
   };
 
   return (

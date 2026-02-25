@@ -1,6 +1,6 @@
 import { getPlayerCells, getPlayersForMode } from "@/core/setup/territory";
 import { canPlaceUnit } from "@/core/setup/validation";
-import { TERRAIN_TYPES, INITIAL_ARMY } from "@/constants";
+import { TERRAIN_TYPES, INITIAL_ARMY } from "@constants";
 import { DEFAULT_SEEDS } from "@/core/setup/seeds";
 import { deserializeGame, adaptSeedToMode } from "@/shared/utils/serialization";
 import type {

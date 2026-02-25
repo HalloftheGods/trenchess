@@ -28,8 +28,8 @@ import {
   UNIT_INTEL,
   CHESS_NAME,
   TERRAIN_INTEL,
-} from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
+} from "@constants";
+import { TERRAIN_TYPES } from "@constants";
 import {
   isUnitProtected,
   getTraversableTerrains,

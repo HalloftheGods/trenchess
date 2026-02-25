@@ -1,17 +1,22 @@
-import { Suspense, useMemo } from "react";
+import { Suspense, useMemo, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { ROUTES, LazyRoutes } from "@/constants/routes.ts";
+import { ROUTES } from "@constants/routes";
 import { LoadingFallback } from "@/shared/components/molecules/LoadingFallback";
-import { LoadingScreen } from "@/shared/components/atoms";
+import { LoadingScreen } from "./shared/components";
 
-import { getPlayRoutes } from "./client/play/routes.tsx";
-import { getLearnRoutes } from "./client/learn/routes.tsx";
-import { getHomeRoutes } from "./client/home/routes.tsx";
-import { getGameRoutes } from "./client/game/routes.tsx";
-import { getDebugRoutes } from "./client/debug/routes.tsx";
-import { getOtherRoutes } from "./client/other/routes.tsx";
+import {
+  playRoutes,
+  debugRoutes,
+  getLearnRoutes,
+  getHomeRoutes,
+  getGameRoutes,
+  getOtherRoutes,
+} from "./client/routes";
 
 import type { AppRoutesProps, RouteConfig } from "@/shared/types";
+
+const LazyRouteLayout = lazy(() => import("@/shared/components/templates/RouteLayout"));
+const LearnManualLazy = ROUTES.LEARN_MANUAL.component(() => import("@/client/learn/manual"));
 
 export const AppRoutes = ({
   game,
@@ -40,8 +45,8 @@ export const AppRoutes = ({
       game,
       isStarting: routeContextValue.isStarting,
       onMenuClick: handleBackToMenu,
-      onHowToPlayClick: () => navigate(ROUTES.LEARN_MANUAL),
-      onLibraryClick: () => navigate(ROUTES.LIBRARY),
+      onHowToPlayClick: () => navigate(ROUTES.LEARN_MANUAL.url),
+      onLibraryClick: () => navigate(ROUTES.LIBRARY.url),
     }),
     [game, routeContextValue.isStarting, handleBackToMenu, navigate],
   );
@@ -49,10 +54,10 @@ export const AppRoutes = ({
   const menuRoutes = useMemo(
     () => [
       ...getHomeRoutes().filter((r) => r.index), // only index for home
-      ...getPlayRoutes(),
+      ...playRoutes,
       ...getLearnRoutes(navigate),
       ...getOtherRoutes(darkMode, handleBackToMenu, navigate).filter(
-        (r) => r.path !== "tutorial",
+        (r) => r.path !== ROUTES.TUTORIAL.path,
       ), // Tutorial is top-level
     ],
     [darkMode, handleBackToMenu, navigate],
@@ -67,20 +72,15 @@ export const AppRoutes = ({
         mode,
         initFromSeed,
       ),
-      ...getDebugRoutes(),
+      ...debugRoutes,
       ...getOtherRoutes(darkMode, handleBackToMenu, navigate).filter(
-        (r) => r.path === "tutorial" || r.path === "learn/manual",
+        (r) =>
+          r.path === ROUTES.TUTORIAL.path ||
+          r.path === ROUTES.LEARN_MANUAL.path,
       ),
-      {
-        path: ROUTES.LEARN_MANUAL,
-        element: (
-          <LazyRoutes.learn.manual
-            onBack={handleBackToMenu}
-            darkMode={darkMode}
-            pieceStyle={pieceStyle}
-          />
-        ),
-      },
+      ROUTES.LEARN_MANUAL.define(
+        <LearnManualLazy onBack={handleBackToMenu} darkMode={darkMode} pieceStyle={pieceStyle} />
+      ),
       ...getHomeRoutes().filter((r) => r.path === "*"),
     ],
     [
@@ -113,9 +113,9 @@ export const AppRoutes = ({
       <Suspense fallback={<LoadingFallback fullScreen={true} />}>
         <Routes>
           <Route
-            path={ROUTES.HOME}
+            path={ROUTES.HOME.path}
             element={
-              <LazyRoutes.shared.layout
+              <LazyRouteLayout
                 darkMode={darkMode}
                 pieceStyle={pieceStyle}
                 toggleTheme={toggleTheme}
@@ -130,17 +130,9 @@ export const AppRoutes = ({
                 onTrenchGuide={routeContextValue.onTrenchGuide}
                 onOpenLibrary={routeContextValue.onOpenLibrary}
                 selectedBoard={mode}
-                setSelectedBoard={(m) => m && setMode(m)}
+                setSelectedBoard={(m: any) => m && setMode(m)}
                 selectedPreset={selectedPreset}
-                setSelectedPreset={(
-                  p:
-                    | "classic"
-                    | "quick"
-                    | "terrainiffic"
-                    | "custom"
-                    | "zen-garden"
-                    | null,
-                ) => setSelectedPreset(p)}
+                setSelectedPreset={(p: any) => setSelectedPreset(p)}
                 playerTypes={playerTypes}
                 activePlayers={activePlayers}
               />

@@ -1,6 +1,6 @@
 import React from "react";
-import { INITIAL_ARMY } from "@/constants";
-import { PLAYER_CONFIGS } from "@/constants";
+import { INITIAL_ARMY } from "@constants";
+import { PLAYER_CONFIGS } from "@constants";
 import type { ArmyUnit, BoardPiece } from "@/shared/types/game";
 
 interface ArmyRosterProps {

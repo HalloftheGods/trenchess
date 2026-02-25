@@ -1,96 +1,50 @@
-import { lazy } from "react";
 import type { NavigateFunction } from "react-router-dom";
 import {
   TrenchGuideWrapper,
   ChessGuideWrapper,
 } from "./components/RouteWrappers";
-import type { RouteConfig } from "@/constants/routes";
+import type { RouteConfig } from "@/shared/types/route";
+import { ROUTES } from "@constants/routes";
 
-export const LEARN_PATHS = {
-  LEARN: "/learn",
-  LEARN_MANUAL: "/learn/manual",
-  LEARN_ENDGAME: "/learn/endgame",
-  LEARN_ENDGAME_WORLD: "/learn/endgame/capture-the-world",
-  LEARN_ENDGAME_KING: "/learn/endgame/capture-the-king",
-  LEARN_ENDGAME_ARMY: "/learn/endgame/capture-the-army",
-  LEARN_TRENCH: "/learn/trench",
-  LEARN_TRENCH_DETAIL: "/learn/trench/:terrain",
-  LEARN_CHESS: "/learn/chess",
-  LEARN_CHESSMEN: "/learn/chess/chessmen",
-  LEARN_CHESSMEN_DETAIL: "/learn/chess/chessmen/:unitType",
-  LEARN_CHESSMEN_MANUAL: "/learn/chess/chessmen",
-  LEARN_MATH: "/learn/math",
-} as const;
-
-export const LearnLazyRoutes = {
-  view: lazy(() => import("./index")),
-  manual: lazy(() => import("./manual")),
-  endgame: {
-    main: lazy(() => import("./endgame/index")),
-    world: lazy(() => import("./endgame/capture-the-world")),
-    king: lazy(() => import("./endgame/capture-the-king")),
-    army: lazy(() => import("./endgame/capture-the-army")),
-  },
-  trench: {
-    main: lazy(() => import("./trench/index")),
-    detail: lazy(() => import("./trench/detail")),
-  },
-  chess: {
-    main: lazy(() => import("./chess/index")),
-    chessmen: lazy(() => import("./chess/chessmen")),
-    detail: lazy(() => import("./chess/detail")),
-  },
-  math: {
-    main: lazy(() => import("./math/index")),
-  },
-};
+const LearnIndexLazy = ROUTES.LEARN.component(() => import("./index"));
+const LearnEndgameIndexLazy = ROUTES.LEARN_ENDGAME.component(() => import("./endgame/index"));
+const LearnEndgameWorldLazy = ROUTES.LEARN_ENDGAME_WORLD.component(() => import("./endgame/capture-the-world"));
+const LearnEndgameKingLazy = ROUTES.LEARN_ENDGAME_KING.component(() => import("./endgame/capture-the-king"));
+const LearnEndgameArmyLazy = ROUTES.LEARN_ENDGAME_ARMY.component(() => import("./endgame/capture-the-army"));
+const LearnTrenchIndexLazy = ROUTES.LEARN_TRENCH.component(() => import("./trench/index"));
+const LearnChessIndexLazy = ROUTES.LEARN_CHESS.component(() => import("./chess/index"));
+const LearnChessmenIndexLazy = ROUTES.LEARN_CHESSMEN.component(() => import("./chess/chessmen"));
+const LearnMathIndexLazy = ROUTES.LEARN_MATH.component(() => import("./math/index"));
 
 export const getLearnRoutes = (navigate: NavigateFunction): RouteConfig[] => [
-  { path: "learn", element: <LearnLazyRoutes.view /> },
-  { path: "learn/endgame", element: <LearnLazyRoutes.endgame.main /> },
-  {
-    path: "learn/endgame/capture-the-world",
-    element: (
-      <LearnLazyRoutes.endgame.world
-        onBack={() => navigate(LEARN_PATHS.LEARN_ENDGAME)}
-      />
-    ),
-  },
-  {
-    path: "learn/endgame/capture-the-king",
-    element: (
-      <LearnLazyRoutes.endgame.king
-        onBack={() => navigate(LEARN_PATHS.LEARN_ENDGAME)}
-      />
-    ),
-  },
-  {
-    path: "learn/endgame/capture-the-army",
-    element: (
-      <LearnLazyRoutes.endgame.army
-        onBack={() => navigate(LEARN_PATHS.LEARN_ENDGAME)}
-      />
-    ),
-  },
-  { path: "learn/trench", element: <LearnLazyRoutes.trench.main /> },
-  {
-    path: "learn/trench/:terrain",
-    element: (
-      <TrenchGuideWrapper onBack={() => navigate(LEARN_PATHS.LEARN_TRENCH)} />
-    ),
-  },
-  { path: "learn/chess", element: <LearnLazyRoutes.chess.main /> },
-  {
-    path: "learn/chess/chessmen",
-    element: <LearnLazyRoutes.chess.chessmen />,
-  },
-  {
-    path: "learn/chess/chessmen/:unitType",
-    element: (
-      <ChessGuideWrapper
-        onBack={() => navigate(LEARN_PATHS.LEARN_CHESSMEN_MANUAL)}
-      />
-    ),
-  },
-  { path: "learn/math", element: <LearnLazyRoutes.math.main /> },
+  ROUTES.LEARN.define(<LearnIndexLazy />),
+  ROUTES.LEARN_ENDGAME.define(<LearnEndgameIndexLazy />),
+  
+  ROUTES.LEARN_ENDGAME_WORLD.define(
+    <LearnEndgameWorldLazy onBack={() => navigate(ROUTES.LEARN_ENDGAME.url)} />
+  ),
+  
+  ROUTES.LEARN_ENDGAME_KING.define(
+    <LearnEndgameKingLazy onBack={() => navigate(ROUTES.LEARN_ENDGAME.url)} />
+  ),
+  
+  ROUTES.LEARN_ENDGAME_ARMY.define(
+    <LearnEndgameArmyLazy onBack={() => navigate(ROUTES.LEARN_ENDGAME.url)} />
+  ),
+  
+  ROUTES.LEARN_TRENCH.define(<LearnTrenchIndexLazy />),
+  
+  ROUTES.LEARN_TRENCH_DETAIL.define(
+    <TrenchGuideWrapper onBack={() => navigate(ROUTES.LEARN_TRENCH.url)} />
+  ),
+  
+  ROUTES.LEARN_CHESS.define(<LearnChessIndexLazy />),
+  
+  ROUTES.LEARN_CHESSMEN.define(<LearnChessmenIndexLazy />),
+  
+  ROUTES.LEARN_CHESSMEN_DETAIL.define(
+    <ChessGuideWrapper onBack={() => navigate(ROUTES.LEARN_CHESSMEN.url)} />
+  ),
+  
+  ROUTES.LEARN_MATH.define(<LearnMathIndexLazy />),
 ];

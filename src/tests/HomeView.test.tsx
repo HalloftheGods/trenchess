@@ -1,7 +1,9 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { HomeView } from "@/client/home";
+import { RouteContext } from "@context";
+import React from "react";
 
 // Mock the components that might cause issues due to missing context or complex structure
 vi.mock("@/shared/components/templates/RoutePageLayout", () => ({
@@ -24,7 +26,7 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-// Mock useRouteContext
+// Mock RouteContext values
 const mockRouteContext = {
   darkMode: false,
   setHoveredMenu: vi.fn(),
@@ -34,19 +36,13 @@ const mockRouteContext = {
   selectedBoard: null,
 };
 
-vi.mock("@/route.context", async () => {
-  const actual = await vi.importActual("@/route.context");
-  return {
-    ...actual,
-    useRouteContext: () => mockRouteContext,
-  };
-});
-
 describe("HomeView", () => {
   const renderHome = () => {
     return render(
       <MemoryRouter>
-        <HomeView />
+        <RouteContext.Provider value={mockRouteContext as any}>
+          <HomeView />
+        </RouteContext.Provider>
       </MemoryRouter>,
     );
   };
@@ -76,7 +72,8 @@ describe("HomeView", () => {
 
   it("should call onZenGarden when 'Lay Trenchess' card is clicked", () => {
     renderHome();
-    const zenCard = screen.getByText(/Community Labrynth/i);
+    // Use the actual text from the component
+    const zenCard = screen.getByText(/Labyrinth Gardens/i);
     fireEvent.click(zenCard.closest("button")!);
     expect(mockRouteContext.onZenGarden).toHaveBeenCalled();
   });

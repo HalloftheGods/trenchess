@@ -1,5 +1,5 @@
-import { BOARD_SIZE } from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
+import { BOARD_SIZE } from "@constants";
+import { TERRAIN_TYPES } from "@constants";
 import type { TerrainType, BoardPiece, GameMode } from "@/shared/types";
 import { getClassicalFormationTargets } from "../formations";
 
@@ -12,7 +12,9 @@ export const buildBoard = (): (BoardPiece | null)[][] =>
  * buildClassicalBoard (Molecule)
  * Generates a board with a standard starting formation for the given mode.
  */
-export const buildClassicalBoard = (mode: GameMode): (BoardPiece | null)[][] => {
+export const buildClassicalBoard = (
+  mode: GameMode,
+): (BoardPiece | null)[][] => {
   const board = buildBoard();
   const players =
     mode === "2p-ns"

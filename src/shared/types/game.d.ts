@@ -1,6 +1,16 @@
 import React from "react";
 
-export type GameMode = "2p-ns" | "2p-ew" | "4p" | "2v2";
+export type GameMode = "2p-ns" | "2p-ew" | "4p" | "2v2" ;
+
+export interface TacticalConfig {
+  id: GameMode;
+  name: string;
+  players: string[];
+  quota: number;
+  layout: "vertical" | "horizontal" | "quadrant";
+  isCoop?: boolean;
+}
+
 export type GameState =
   | "menu"
   | "how-to-play"

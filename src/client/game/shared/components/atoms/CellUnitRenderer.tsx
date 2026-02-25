@@ -1,6 +1,6 @@
 import React from "react";
 import { Flex } from "@atoms";
-import { PLAYER_CONFIGS, INITIAL_ARMY, PIECES } from "@/constants";
+import { PLAYER_CONFIGS, INITIAL_ARMY, PIECES } from "@constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import type { BoardPiece, TerrainType, ArmyUnit } from "@/shared/types/game";
 
@@ -52,17 +52,19 @@ export const CellUnitRenderer: React.FC<CellUnitRendererProps> = ({
   const isKingInCheck = isKing && inCheck && isMyTurn;
 
   const isSetup = gameState === "setup" || gameState === "zen-garden";
-  
+
   // Tactical Entrance Hierarchy: Setup (Drop) > Move (Spin-Grow) > Default Arrive
-  const entranceClass = isSetup 
-    ? "animate-drop-in" 
-    : isDestination 
-      ? "animate-spin-grow" 
+  const entranceClass = isSetup
+    ? "animate-drop-in"
+    : isDestination
+      ? "animate-spin-grow"
       : "animate-move-arrive";
 
   const animationClass = isMyTurn ? "animate-float" : "";
   const textColorClass =
-    pieceStyle !== "emoji" ? `text-4xl ${playerConfig?.text || ""}` : "text-5xl";
+    pieceStyle !== "emoji"
+      ? `text-4xl ${playerConfig?.text || ""}`
+      : "text-5xl";
 
   const checkClass = isKingInCheck
     ? "bg-red-500/20 rounded-full animate-pulse ring-4 ring-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.5)]"

@@ -1,7 +1,7 @@
 import React from "react";
-import { PLAYER_CONFIGS } from "@/constants";
-import { INITIAL_ARMY } from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
+import { PLAYER_CONFIGS } from "@constants";
+import { INITIAL_ARMY } from "@constants";
+import { TERRAIN_TYPES } from "@constants";
 import { Box, Flex } from "@atoms";
 import type { ArmyUnit, PieceType, TerrainType } from "@/shared/types/game";
 

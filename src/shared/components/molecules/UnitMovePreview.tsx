@@ -6,7 +6,7 @@ import {
   INITIAL_ARMY,
   TERRAIN_DETAILS,
   BOARD_SIZE,
-} from "@/constants";
+} from "@constants";
 import { useRouteContext } from "@context";
 import { isUnitProtected, getValidMoves } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";

@@ -1,4 +1,4 @@
-import { PIECES } from "@/constants/pieces";
+import { PIECES } from "@constants/pieces";
 import type { UnitBlueprint } from "@/shared/types";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;

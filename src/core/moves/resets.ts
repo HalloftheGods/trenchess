@@ -1,7 +1,7 @@
 import { INVALID_MOVE } from "boardgame.io/core";
 import { resolvePlayerId } from "@/core/setup/coreHelpers";
 import { getPlayerCells } from "@/core/setup/territory";
-import { TERRAIN_TYPES } from "@/constants/terrain";
+import { TERRAIN_TYPES } from "@constants/terrain";
 import type { TrenchessState, TerrainType, PieceType } from "@/shared/types";
 import type { Ctx } from "boardgame.io";
 

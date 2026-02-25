@@ -1,9 +1,9 @@
 import React from "react";
 import { Ban, ShieldPlus, Zap } from "lucide-react";
-import { INITIAL_ARMY, unitColorMap } from "@/constants";
+import { INITIAL_ARMY, unitColorMap } from "@constants";
 import { useRouteContext } from "@context";
 
-import { CHESS_NAME } from "@/constants";
+import { CHESS_NAME } from "@constants";
 
 interface UnitChipProps {
   pieceKey: string;

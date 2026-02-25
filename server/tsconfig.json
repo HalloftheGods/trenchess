@@ -15,25 +15,34 @@
         "src/*"
       ],
       "@engine/*": [
-        "src/engine/*"
+        "src/core/*"
       ],
       "@shared/*": [
         "src/shared/*"
       ],
       "@logic/*": [
-        "src/engine/logic/*"
+        "src/core/mechanics/*"
       ],
       "@ai/*": [
-        "src/engine/ai/*"
+        "src/core/ai/*"
       ],
       "@setup/*": [
-        "src/engine/setup/*"
+        "src/core/setup/*"
       ],
-      "@engineConfigs/*": [
-        "src/engine/configs/*"
+      "@mechanics/*": [
+        "src/core/mechanics/*"
+      ],
+      "@primitives/*": [
+        "src/core/primitives/*"
+      ],
+      "@blueprints/*": [
+        "src/core/blueprints/*"
+      ],
+      "@seeds/*": [
+        "src/core/setup/seeds/*"
       ],
       "@engineTypes/*": [
-        "src/engine/types/*"
+        "src/shared/types/*"
       ],
       "@bionics/*": [
         "src/shared/components/*"
@@ -71,32 +80,47 @@
       "@hooks": [
         "src/shared/hooks"
       ],
+      "@context/*": [
+        "src/shared/context/*"
+      ],
+      "@context": [
+        "src/shared/context"
+      ],
       "@utils/*": [
         "src/shared/utils/*"
       ],
       "@utils": [
         "src/shared/utils"
       ],
-      "@sharedTypes/*": [
+      "@types/*": [
         "src/shared/types/*"
       ],
       "@assets/*": [
-        "src/app/assets/*"
+        "src/shared/assets/*"
       ],
       "@game/*": [
         "src/client/game/*"
       ],
-      "@menu/*": [
-        "src/app/routes/menu/*"
+      "@gameHooks/*": [
+        "src/client/game/shared/hooks/*"
       ],
-      "@routes/*": [
-        "src/app/routes/*"
+      "@gameHooks": [
+        "src/client/game/shared/hooks"
       ],
-      "@routes": [
-        "src/app/routes"
+      "@gameUtils/*": [
+        "src/client/game/shared/utils/*"
+      ],
+      "@gameUtils": [
+        "src/client/game/shared/utils"
+      ],
+      "@constants": [
+        "constants"
       ],
       "@constants/*": [
-        "src/constants/*"
+        "constants/*"
+      ],
+      "@client/*": [
+        "src/client/*"
       ]
     }
   },

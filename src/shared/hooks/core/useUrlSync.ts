@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from "react";
 import { serializeGame, deserializeGame } from "@utils/gameUrl";
 import { getPlayerCells } from "@/core/setup/setupLogic";
-import { BOARD_SIZE } from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
-import { INITIAL_ARMY } from "@/constants";
+import { BOARD_SIZE } from "@constants";
+import { TERRAIN_TYPES } from "@constants";
+import { INITIAL_ARMY } from "@constants";
+import type { ArmyUnit } from "@/shared/types/game";
 import type {
   GameMode,
   GameState as GameStateType,
@@ -120,9 +121,12 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
           }
         }
         const missingUnits: PieceType[] = [];
-        INITIAL_ARMY.forEach((u) => {
-          const missing = u.count - (placedUnits[u.type] || 0);
-          for (let i = 0; i < missing; i++) missingUnits.push(u.type);
+        INITIAL_ARMY.forEach((unit: ArmyUnit) => {
+          const count = placedUnits[unit.type] || 0;
+          const missing = unit.count - count;
+          if (missing > 0) {
+            for (let i = 0; i < missing; i++) missingUnits.push(unit.type);
+          }
         });
         newInventory[p] = missingUnits;
 

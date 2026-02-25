@@ -1,12 +1,12 @@
 import React from "react";
 import { ShieldPlus, Ban, Zap, Sparkles } from "lucide-react";
-import { INITIAL_ARMY, PIECES } from "@/constants";
-import { TERRAIN_TYPES } from "@/constants";
+import { INITIAL_ARMY, PIECES } from "@constants";
+import { TERRAIN_TYPES } from "@constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import { UNIT_DETAILS, unitColorMap, TERRAIN_DETAILS } from "@/constants";
+import { UNIT_DETAILS, unitColorMap, TERRAIN_DETAILS } from "@constants";
 import type { TerrainType, PieceType } from "@/shared/types/game";
-import type { PieceStyle } from "@/constants";
+import type { PieceStyle } from "@constants";
 
 interface TrenchCardDetailProps {
   terrainType: TerrainType;
@@ -16,7 +16,7 @@ interface TrenchCardDetailProps {
   onUnitSelect?: (unitType: string) => void;
 }
 
-import { CHESS_NAME } from "@/constants";
+import { CHESS_NAME } from "@constants";
 
 const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
   terrainType,
@@ -405,13 +405,19 @@ const TrenchCardDetail: React.FC<TrenchCardDetailProps> = ({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-3 w-full max-w-4xl">
           {/* Sanctuary units first */}
-          {terrain.sanctuaryUnits.map((pk: string) => renderUnitChip(pk, "sanctuary"))}
+          {terrain.sanctuaryUnits.map((pk: string) =>
+            renderUnitChip(pk, "sanctuary"),
+          )}
           {/* Allowed-but-not-sanctuary */}
           {terrain.allowedUnits
-            .filter((pk: string) => !terrain.sanctuaryUnits.includes(pk as PieceType))
+            .filter(
+              (pk: string) => !terrain.sanctuaryUnits.includes(pk as PieceType),
+            )
             .map((pk: string) => renderUnitChip(pk, "allow"))}
           {/* Blocked */}
-          {terrain.blockedUnits.map((pk: string) => renderUnitChip(pk, "block"))}
+          {terrain.blockedUnits.map((pk: string) =>
+            renderUnitChip(pk, "block"),
+          )}
         </div>
       </div>
     </div>

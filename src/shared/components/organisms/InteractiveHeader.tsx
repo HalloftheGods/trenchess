@@ -6,12 +6,17 @@
  */
 import React from "react";
 import { ArrowLeft } from "lucide-react";
-import { INITIAL_ARMY } from "@/constants";
+import { INITIAL_ARMY } from "@constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import { useRouteContext } from "@context";
-import { UNIT_COLORS, UNIT_NAMES, ALL_UNITS, TERRAIN_LIST } from "@/constants";
-import type { PieceType, TerrainType } from "@/shared/types/game";
+import { UNIT_COLORS, UNIT_NAMES, ALL_UNITS, TERRAIN_LIST } from "@constants";
+import type {
+  PieceType,
+  TerrainType,
+  TerrainDetail,
+  ArmyUnit,
+} from "@/shared/types/game";
 
 interface InteractiveHeaderProps {
   darkMode: boolean;
@@ -60,8 +65,10 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
         {/* 1. Unit Selector */}
         <div className="flex items-center gap-4">
           <div className="grid grid-cols-3 md:flex gap-2">
-            {ALL_UNITS.map((uType) => {
-              const u = INITIAL_ARMY.find((x) => x.type === uType);
+            {ALL_UNITS.map((uType: PieceType) => {
+              const u = INITIAL_ARMY.find(
+                (unit: ArmyUnit) => unit.type === uType,
+              );
               if (!u) return null;
               const colors = UNIT_COLORS[uType];
               const isActive = selectedUnit === uType;
@@ -107,33 +114,36 @@ const InteractiveHeader: React.FC<InteractiveHeaderProps> = ({
         {/* 2. Terrain Selector */}
         <div className="flex items-center gap-4">
           <div className="grid grid-cols-2 md:flex gap-2">
-            {TERRAIN_LIST.map((t, idx) => {
+            {TERRAIN_LIST.map((terrainItem: TerrainDetail, idx: number) => {
               const isActive = selectedTerrainIdx === idx;
               const tProtected =
                 selectedUnit &&
-                isUnitProtected(selectedUnit, t.terrainTypeKey as TerrainType);
+                isUnitProtected(
+                  selectedUnit,
+                  terrainItem.terrainTypeKey as TerrainType,
+                );
               const tBlocked =
                 selectedUnit &&
                 !canUnitTraverseTerrain(
                   selectedUnit as PieceType,
-                  t.terrainTypeKey as TerrainType,
+                  terrainItem.terrainTypeKey as TerrainType,
                 );
 
               return (
                 <button
-                  key={t.name}
+                  key={terrainItem.name}
                   onClick={() => onTerrainSelect(idx)}
                   className={`p-2.5 rounded-xl border transition-all cursor-pointer relative group ${
                     isActive
-                      ? `${t.bg} ${t.text} ${t.border} shadow-lg scale-110 border-2 z-10`
-                      : `${t.bg} ${t.text} ${t.border} opacity-50 hover:opacity-100 hover:scale-105`
+                      ? `${terrainItem.bg} ${terrainItem.text} ${terrainItem.border} shadow-lg scale-110 border-2 z-10`
+                      : `${terrainItem.bg} ${terrainItem.text} ${terrainItem.border} opacity-50 hover:opacity-100 hover:scale-105`
                   } ${tProtected ? "border-dotted border-4" : ""} ${tBlocked ? "border-double border-4" : ""}`}
-                  title={t.name}
+                  title={terrainItem.name}
                 >
-                  {t.icon && <t.icon size={20} />}
+                  {terrainItem.icon && <terrainItem.icon size={20} />}
                   {/* Tooltip */}
                   <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
-                    {t.name}
+                    {terrainItem.name}
                   </span>
                 </button>
               );

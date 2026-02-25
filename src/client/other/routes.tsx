@@ -1,49 +1,28 @@
-import { lazy } from "react";
 import type { NavigateFunction } from "react-router-dom";
-import type { RouteConfig } from "@/constants/routes";
+import type { RouteConfig } from "@/shared/types/route";
+import { ROUTES } from "@constants/routes";
 
-export const OTHER_PATHS = {
-  SCOREBOARD: "/scoreboard",
-  RULES: "/rules",
-  STATS: "/stats",
-  ZEN: "/zen",
-  TUTORIAL: "/tutorial",
-} as const;
-
-export const OtherLazyRoutes = {
-  scoreboard: lazy(() => import("@/client/scoreboard")),
-  rules: lazy(() => import("@/client/rules")),
-  stats: lazy(() => import("@/client/stats")),
-  tutorial: lazy(() => import("@/client/tutorial")),
-};
+const ScoreboardLazy = ROUTES.SCOREBOARD.component(() => import("@/client/scoreboard"));
+const RulesLazy = ROUTES.RULES.component(() => import("@/client/rules"));
+const StatsLazy = ROUTES.STATS.component(() => import("@/client/stats"));
+const TutorialLazy = ROUTES.TUTORIAL.component(() => import("@/client/tutorial"));
 
 export const getOtherRoutes = (
   darkMode: boolean,
   handleBackToMenu: () => void,
   navigate: NavigateFunction,
 ): RouteConfig[] => [
-  {
-    path: "scoreboard",
-    element: <OtherLazyRoutes.scoreboard darkMode={darkMode} />,
-  },
-  {
-    path: "rules",
-    element: (
-      <OtherLazyRoutes.rules
-        onBack={() => navigate(-1)}
-        darkMode={darkMode}
-      />
-    ),
-  },
-  { path: "stats", element: <OtherLazyRoutes.stats /> },
-  { path: "zen", element: <div /> },
-  {
-    path: "tutorial",
-    element: (
-      <OtherLazyRoutes.tutorial
-        onBack={handleBackToMenu}
-        darkMode={darkMode}
-      />
-    ),
-  },
+  ROUTES.SCOREBOARD.define(<ScoreboardLazy darkMode={darkMode} />),
+  
+  ROUTES.RULES.define(
+    <RulesLazy onBack={() => navigate(-1)} darkMode={darkMode} />
+  ),
+  
+  ROUTES.STATS.define(<StatsLazy />),
+  
+  ROUTES.ZEN.define(<div />),
+  
+  ROUTES.TUTORIAL.define(
+    <TutorialLazy onBack={handleBackToMenu} darkMode={darkMode} />
+  ),
 ];

@@ -1,10 +1,13 @@
-import { TERRAIN_INTEL } from "@/constants/ui/terrain";
-import TrenchessText from "@/shared/components/atoms/TrenchessText";
+import { Trees, Mountain, Waves } from "lucide-react";
+import TrenchessText from "../atoms/TrenchessText";
+import { Box } from "../atoms/Box";
+import { Flex } from "../atoms/Flex";
+import { DesertIcon } from "../atoms/UnitIcons";
 
 const LOADING_MESSAGES = [
-  "Opening Trench.",
-  "Pouring the Chessmen.",
-  "Cracking the Endgame.",
+  "Opening Trench...",
+  "Pouring the Chessmen...",
+  "Cracking the Endgame...",
 ];
 
 export const LoadingFallback = ({
@@ -12,74 +15,113 @@ export const LoadingFallback = ({
 }: {
   fullScreen?: boolean;
 }) => {
-  const terrainKeys = Object.keys(TERRAIN_INTEL);
+  const waveSequence = [0, 1, 2, 3, 4];
+  const interval = 3;
+  const totalDuration = LOADING_MESSAGES.length * interval;
+
+  const containerClass = fullScreen
+    ? "fixed inset-0 z-[9999] w-full h-full min-h-screen"
+    : "w-full min-h-[400px] h-full p-8 shadow-inner rounded-[3rem]";
 
   return (
-    <div
-      className={`flex flex-col items-center justify-center bg-slate-950 text-white p-6 text-center ${
-        fullScreen
-          ? "fixed inset-0 z-[9999]"
-          : "w-full h-full p-4 shadow-inner rounded-3xl"
-      }`}
+    <Box
+      className={`flex flex-col items-center justify-center bg-slate-950 text-white p-6 text-center animate-in fade-in duration-700 ${containerClass}`}
     >
-      <div className="relative mb-8 flex gap-4">
-        {terrainKeys.map((key, index) => {
-          const terrain = TERRAIN_INTEL[key];
-          const Icon = terrain.icon;
-          return (
-            <div
-              key={key}
-              className={`animate-bounce ${terrain.text}`}
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <Icon size={32} />
-            </div>
-          );
-        })}
-      </div>
+      {/* Background Atmosphere (only for full screen) */}
+      {fullScreen && (
+        <Box className="absolute inset-0 overflow-hidden pointer-events-none">
+          <Box className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-brand-red/5 rounded-full blur-[150px] animate-pulse" />
+          <Box className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-brand-blue/5 rounded-full blur-[120px] animate-pulse [animation-delay:2s]" />
+        </Box>
+      )}
 
-      <h2 className="text-3xl font-black uppercase tracking-tighter mb-2 animate-pulse">
+      {/* DesertIcon (Sun/Snow) on top */}
+      <Box className="mb-10 text-amber-500 animate-pulse">
+        <DesertIcon
+          size={56}
+          className="drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]"
+        />
+      </Box>
+
+      {/* Row of Trees and mountains - constrained to logo width (~w-64) */}
+      <Flex justify="between" className="w-64 mb-8 px-4">
+        <Box className="text-emerald-500 animate-float">
+          <Trees
+            size={48}
+            className="drop-shadow-[0_0_12px_rgba(16,185,129,0.4)]"
+          />
+        </Box>
+        <Box className="text-brand-red animate-float [animation-delay:1.5s]">
+          <Mountain
+            size={48}
+            className="drop-shadow-[0_0_12px_rgba(239,68,68,0.4)]"
+          />
+        </Box>
+      </Flex>
+
+      <h2 className="text-4xl font-black uppercase tracking-tighter mb-10">
         Loading <TrenchessText />
       </h2>
 
-      <div className="mt-4 relative h-[1.5em] flex justify-center text-slate-400 font-medium h-6 overflow-hidden">
+      {/* Animated Waves sequence */}
+      <Flex gap={3} className="text-brand-blue mb-12">
+        {waveSequence.map((index) => (
+          <Box
+            key={index}
+            className="animate-wave-pulse"
+            style={{ animationDelay: `${index * 0.15}s` }}
+          >
+            <Waves
+              size={36}
+              className="drop-shadow-[0_0_8px_rgba(37,99,235,0.3)]"
+            />
+          </Box>
+        ))}
+      </Flex>
+
+      {/* Rotating Loading Message */}
+      <Box className="mt-4 relative h-10 w-full overflow-hidden italic text-slate-400 font-medium">
         {LOADING_MESSAGES.map((message, index) => (
           <div
             key={index}
-            className="absolute animate-message-sequence opacity-0"
-            style={{ animationDelay: `${index * 2.3}s` }}
+            className="absolute inset-0 flex items-center justify-center opacity-0"
+            style={{
+              animation: `message-cycle-3 ${totalDuration}s linear infinite`,
+              animationDelay: `${index * interval}s`,
+            }}
           >
             {message}
           </div>
         ))}
-      </div>
-
-      <div className="mt-12 w-64 h-1 bg-slate-900 rounded-full overflow-hidden">
-        <div className="h-full bg-gradient-to-r from-brand-red via-amber-500 to-brand-blue animate-loading-bar" />
-      </div>
+      </Box>
 
       <style
         dangerouslySetInnerHTML={{
           __html: `
-        @keyframes loading-bar {
-          0% { transform: translateX(-100%); }
-          50% { transform: translateX(0); }
-          100% { transform: translateX(100%); }
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-15px); }
         }
-        .animate-loading-bar {
-          animation: loading-bar 2s infinite ease-in-out;
+        .animate-float {
+          animation: float 3s infinite ease-in-out;
         }
-        @keyframes message-sequence {
-          0%, 5% { transform: translateY(10px); opacity: 0; }
-          10%, 90% { transform: translateY(0); opacity: 1; }
-          95%, 100% { transform: translateY(-10px); opacity: 0; }
+        @keyframes wave-pulse {
+          0%, 100% { transform: scale(1); opacity: 0.2; }
+          50% { transform: scale(1.15); opacity: 1; }
         }
-        .animate-message-sequence {
-          animation: message-sequence 2.3s infinite;
+        .animate-wave-pulse {
+          animation: wave-pulse 1.2s ease-in-out infinite;
+        }
+        @keyframes message-cycle-3 {
+          0% { transform: translateY(15px); opacity: 0; }
+          8% { transform: translateY(0); opacity: 1; }
+          25% { transform: translateY(0); opacity: 1; }
+          33% { transform: translateY(-15px); opacity: 0; }
+          33.001%, 100% { opacity: 0; }
         }
       `,
         }}
       />
-    </div>
+    </Box>
   );
 };

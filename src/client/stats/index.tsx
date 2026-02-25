@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { ArrowLeft, Target, Shield, Crosshair } from "lucide-react";
+import {
+  ArrowLeft,
+  Target,
+  Shield,
+  Crosshair,
+  Gamepad2,
+  TestTubeDiagonal,
+  Zap,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import statsDataObj from "@assets/statistics.json";
 import {
@@ -8,9 +16,9 @@ import {
   UNIT_DETAILS,
   INITIAL_ARMY,
   TERRAIN_DETAILS,
-} from "@/constants";
+} from "@constants";
 import type { TerrainType } from "@/shared/types/game";
-import { TERRAIN_TYPES } from "@/constants";
+import { TERRAIN_TYPES } from "@constants";
 import { useRouteContext } from "@context";
 import type { PieceStyle } from "@/shared/types/game";
 
@@ -34,6 +42,10 @@ const statsData = statsDataObj as unknown as Record<
     }
   >
 >;
+
+const GLOBAL_GAMES = "2,410";
+const TESTS_RUN = "210";
+const SIMULATIONS = "18M+";
 
 const getUnitIcon = (type: string, pieceStyle: PieceStyle) => {
   const armyUnit = INITIAL_ARMY.find((u) => u.type === type);
@@ -86,20 +98,59 @@ export const StatsView = () => {
     <div className="min-h-screen pt-24 pb-12 px-6 flex flex-col items-center animate-fade-in text-white z-10 relative">
       <div className="w-full max-w-4xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex items-center gap-4 border-b border-white/10 pb-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors border border-white/10 focus:outline-none focus:ring-2 focus:ring-brand-blue"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <div>
-            <h1 className="text-4xl font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 drop-shadow-sm">
-              Combat Statistics
-            </h1>
-            <p className="text-sm text-gray-400 capitalize font-medium tracking-wide mt-1">
-              Threat Geometry & Capture Rates
-            </p>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-b border-white/10 pb-6 w-full">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors border border-white/10 focus:outline-none focus:ring-2 focus:ring-brand-blue"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+            <div>
+              <h1 className="text-4xl font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 drop-shadow-sm">
+                Combat Statistics
+              </h1>
+              <p className="text-sm text-gray-400 capitalize font-medium tracking-wide mt-1">
+                Threat Geometry & Capture Rates
+              </p>
+            </div>
+          </div>
+
+          {/* Quick Stats Dashboard */}
+          <div className="flex items-center gap-8 bg-white/5 border border-white/10 p-4 px-6 rounded-2xl backdrop-blur-sm self-stretch md:self-auto">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 text-slate-500 uppercase tracking-widest text-[10px] font-black mb-1">
+                <Gamepad2 size={12} className="text-amber-500/70" />
+                Games Played
+              </div>
+              <div className="text-xl font-black text-white leading-none">
+                {GLOBAL_GAMES}
+              </div>
+            </div>
+
+            <div className="w-px h-8 bg-white/10" />
+
+            <div className="flex flex-col text-right md:text-left">
+              <div className="flex items-center gap-2 text-slate-500 uppercase tracking-widest text-[10px] font-black mb-1">
+                <TestTubeDiagonal size={12} className="text-blue-500/70" />
+                Unit Tests
+              </div>
+              <div className="text-xl font-black text-white leading-none font-mono">
+                {TESTS_RUN}
+              </div>
+            </div>
+
+            <div className="w-px h-8 bg-white/10" />
+
+            <div className="flex flex-col text-right">
+              <div className="flex items-center gap-2 justify-end text-slate-500 uppercase tracking-widest text-[10px] font-black mb-1">
+                <Zap size={12} className="text-emerald-500/70" />
+                Simulations
+              </div>
+              <div className="text-xl font-black text-emerald-400 leading-none drop-shadow-[0_0_8px_rgba(52,211,153,0.3)]">
+                {SIMULATIONS}
+              </div>
+            </div>
           </div>
         </div>
 

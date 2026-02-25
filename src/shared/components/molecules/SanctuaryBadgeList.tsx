@@ -1,6 +1,6 @@
 import React from "react";
-import { INITIAL_ARMY, unitColorMap } from "@/constants";
-import { CHESS_NAME } from "@/constants";
+import { INITIAL_ARMY, unitColorMap } from "@constants";
+import { CHESS_NAME } from "@constants";
 import { useRouteContext } from "@context";
 import type { TerrainDetail } from "@/shared/types/game";
 import type { ArmyUnit } from "@/shared/types/game";

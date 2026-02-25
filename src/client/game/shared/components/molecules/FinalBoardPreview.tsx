@@ -1,5 +1,10 @@
 import React from "react";
-import { BOARD_SIZE, PLAYER_CONFIGS, INITIAL_ARMY, TERRAIN_INTEL } from "@/constants";
+import {
+  BOARD_SIZE,
+  PLAYER_CONFIGS,
+  INITIAL_ARMY,
+  TERRAIN_INTEL,
+} from "@constants";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 
 interface FinalBoardPreviewProps {
@@ -26,21 +31,26 @@ export const FinalBoardPreview: React.FC<FinalBoardPreviewProps> = ({
       const isLeft = c < 6;
       const territoryTint =
         mode === "2p-ns"
-          ? isTop ? "bg-red-500/10" : "bg-blue-500/10"
+          ? isTop
+            ? "bg-red-500/10"
+            : "bg-blue-500/10"
           : mode === "2p-ew"
-          ? isLeft ? "bg-emerald-500/10" : "bg-yellow-500/10"
-          : isTop && isLeft
-          ? "bg-red-500/10"
-          : isTop && !isLeft
-          ? "bg-yellow-500/10"
-          : !isTop && isLeft
-          ? "bg-emerald-500/10"
-          : "bg-blue-500/10";
+            ? isLeft
+              ? "bg-emerald-500/10"
+              : "bg-yellow-500/10"
+            : isTop && isLeft
+              ? "bg-red-500/10"
+              : isTop && !isLeft
+                ? "bg-yellow-500/10"
+                : !isTop && isLeft
+                  ? "bg-emerald-500/10"
+                  : "bg-blue-500/10";
 
       const terrainInfo = TERRAIN_INTEL[terr];
-      const cellClass = terr !== "flat" && terrainInfo
-        ? `${terrainInfo.bg.replace("/10", "/60")} shadow-inner`
-        : `${isAlt ? "bg-slate-800/40 dark:bg-black/20" : "bg-slate-700/40 dark:bg-white/5"} ${territoryTint}`;
+      const cellClass =
+        terr !== "flat" && terrainInfo
+          ? `${terrainInfo.bg.replace("/10", "/60")} shadow-inner`
+          : `${isAlt ? "bg-slate-800/40 dark:bg-black/20" : "bg-slate-700/40 dark:bg-white/5"} ${territoryTint}`;
 
       cells.push(
         <div
@@ -54,7 +64,7 @@ export const FinalBoardPreview: React.FC<FinalBoardPreviewProps> = ({
               {INITIAL_ARMY.find((u) => u.type === piece.type)?.bold || "•"}
             </div>
           )}
-        </div>
+        </div>,
       );
     }
   }

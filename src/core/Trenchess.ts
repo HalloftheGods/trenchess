@@ -82,12 +82,9 @@ export const Trenchess: Game<
     };
   },
 
-  moves: {
-    forfeit,
-  },
-
   phases: {
     gamemaster: {
+      start: true,
       next: "setup",
       turn: {
         activePlayers: { all: "editing" },

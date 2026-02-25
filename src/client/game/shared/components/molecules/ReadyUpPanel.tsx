@@ -11,7 +11,7 @@ import {
   Shield,
   CheckCircle2,
 } from "lucide-react";
-import { PLAYER_CONFIGS, INITIAL_ARMY } from "@/constants";
+import { PLAYER_CONFIGS, INITIAL_ARMY } from "@constants";
 import { PlayerTypeToggle } from "../atoms/PlayerTypeToggle";
 import type { BoardPiece, ArmyUnit } from "@/shared/types/game";
 
@@ -484,10 +484,13 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
                   }}
                   className="w-full py-4 flex items-center justify-center gap-3 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-900 dark:text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all border border-slate-200 dark:border-white/10 group"
                 >
-                  <RotateCcw size={14} className="group-hover:rotate-180 transition-transform duration-500" />
+                  <RotateCcw
+                    size={14}
+                    className="group-hover:rotate-180 transition-transform duration-500"
+                  />
                   NEXT COMMANDER
                 </button>
-                
+
                 <button
                   onClick={(e) => {
                     e.stopPropagation();

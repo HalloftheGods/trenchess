@@ -6,7 +6,7 @@ import {
   UNIT_DETAILS,
   unitColorMap,
   TERRAIN_DETAILS,
-} from "@/constants";
+} from "@constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import { useRouteContext } from "@context";

@@ -232,25 +232,3 @@ export interface SetupActions {
 export interface BgioSync {
   synced: boolean;
 }
-
-export interface GameStateHook
-  extends
-    GameTheme,
-    BoardState,
-    TurnState,
-    GameConfigState,
-    GameCore,
-    PlacementManager,
-    MoveExecution,
-    BoardInteraction,
-    ZenGardenInteraction,
-    SetupActions {
-  bgioState: { G: TrenchessState; ctx: Ctx } | null;
-  lastMove: TrenchessState["lastMove"];
-  ready: (pid?: string) => void;
-  finishGamemaster: () => void;
-  forfeit: (pid?: string) => void;
-  startGame: () => void;
-  isStarted: boolean;
-  multiplayer: MultiplayerState;
-}

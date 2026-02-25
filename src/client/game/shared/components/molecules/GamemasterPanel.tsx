@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Zap, RotateCcw, User, Monitor, CheckCircle2 } from "lucide-react";
-import { INITIAL_ARMY } from "@/constants";
+import { INITIAL_ARMY } from "@constants";
 import { PlayerTypeToggle } from "../atoms/PlayerTypeToggle";
 import { SegmentedControl } from "@molecules/SegmentedControl";
 import type {

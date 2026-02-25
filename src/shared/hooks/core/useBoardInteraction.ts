@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import * as SetupLogic from "@/core/setup";
-import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER } from "@/constants";
+import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER } from "@constants";
 import { analytics } from "@/shared/utils/analytics";
 import type {
   BoardInteraction,
