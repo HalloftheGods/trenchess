@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { LobbyClient } from "boardgame.io/client";
+import { analytics } from "@/shared/utils/analytics";
 import type {
   RoomInfo,
   BgioMatchPlayer,
@@ -138,6 +139,7 @@ export function useMultiplayer(): MultiplayerState {
         localStorage.setItem("battle-chess-credentials", res.playerCredentials);
         localStorage.setItem("battle-chess-is-host", "false");
         setIsHost(false);
+        analytics.trackEvent("Multiplayer", "Join", id);
         refreshRooms();
       } catch (e) {
         console.error("Failed to join lobby", e);
@@ -166,6 +168,7 @@ export function useMultiplayer(): MultiplayerState {
       localStorage.setItem("battle-chess-credentials", res.playerCredentials);
       localStorage.setItem("battle-chess-is-host", "true");
       setIsHost(true);
+      analytics.trackEvent("Multiplayer", "Host", matchID);
       refreshRooms();
       return matchID;
     } catch (e) {
@@ -191,6 +194,7 @@ export function useMultiplayer(): MultiplayerState {
     setPlayerCredentials(null);
     setPlayers([]);
     setIsHost(false);
+    analytics.trackEvent("Multiplayer", "Leave", roomId || "unknown");
     localStorage.removeItem("battle-chess-room-id");
     localStorage.removeItem("battle-chess-player-index");
     localStorage.removeItem("battle-chess-credentials");

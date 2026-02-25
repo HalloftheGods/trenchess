@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useGameTheme } from "@hooks/useGameTheme";
 import { useMultiplayer } from "@hooks/useMultiplayer";
 import { useComputerOpponent } from "@/client/game/shared/hooks/useComputerOpponent";
@@ -16,6 +16,7 @@ import { useMoveExecution } from "./core/useMoveExecution";
 import { useBoardInteraction } from "./core/useBoardInteraction";
 import { useZenGardenInteraction } from "./core/useZenGardenInteraction";
 import { useSetupActions } from "./core/useSetupActions";
+import { analytics } from "@/shared/utils/analytics";
 
 import type { GameStateHook } from "@/shared/types";
 
@@ -124,7 +125,31 @@ export function useGameState(): GameStateHook {
 
   // 6. Action Managers
   const placementManager = usePlacementManager(bgioState, core);
-  const moveExecution = useMoveExecution(core, clientRef);
+  const moveExecution = useMoveExecution(core, clientRef, (move) => {
+    const attacker = board[move.from[0]]?.[move.from[1]];
+    const victim = board[move.to[0]]?.[move.to[1]];
+    
+    // Check for Joust Capture (King jumping 2 squares)
+    let joustedPiece = null;
+    if (attacker?.type === "king") {
+      const rowDist = Math.abs(move.from[0] - move.to[0]);
+      const colDist = Math.abs(move.from[1] - move.to[1]);
+      if (rowDist === 2 || colDist === 2) {
+        const midR = (move.from[0] + move.to[0]) / 2;
+        const midC = (move.from[1] + move.to[1]) / 2;
+        joustedPiece = board[midR]?.[midC];
+      }
+    }
+
+    if (joustedPiece) {
+      analytics.trackEvent("Game", "Joust Capture", `${attacker?.type} takes ${joustedPiece.type}`);
+    } else if (victim) {
+      analytics.trackEvent("Game", "Capture", `${attacker?.type} takes ${victim.type}`);
+    }
+
+    const label = attacker ? `${attacker.type} to ${move.to}` : `${move.from} to ${move.to}`;
+    analytics.trackEvent("Game", "Move", label);
+  });
 
   const playerID = isOnline
     ? multiplayer.playerIndex !== null
@@ -171,6 +196,19 @@ export function useGameState(): GameStateHook {
     winner,
     setIsThinking: core.turnState.setIsThinking,
   });
+
+  // 8. Analytics Events
+  useEffect(() => {
+    if (gameState === "play" && isStarted) {
+      analytics.trackEvent("Game", "Start", mode);
+    }
+  }, [gameState, isStarted, mode]);
+
+  useEffect(() => {
+    if (winner) {
+      analytics.trackEvent("Game", "End", `${winner} won by ${winnerReason}`);
+    }
+  }, [winner, winnerReason]);
 
   return useMemo(
     () =>
@@ -248,6 +286,8 @@ export function useGameState(): GameStateHook {
           if (clientRef.current) clientRef.current.moves.finishGamemaster();
         },
         forfeit: (pid?: string) => {
+          const pId = pid || turn;
+          analytics.trackEvent("Game", "Forfeit", pId);
           if (clientRef.current) {
             clientRef.current.moves.forfeit(pid);
           } else {
@@ -293,6 +333,7 @@ export function useGameState(): GameStateHook {
       gameState,
       lastMove,
       multiplayer,
+      clientRef,
     ],
   );
 }

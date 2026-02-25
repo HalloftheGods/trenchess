@@ -4,6 +4,7 @@ import { Trees, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/client/game/shared/components/atoms/UnitIcons";
 import { useRouteContext } from "@context";
 import type { TerrainType } from "@/shared/types/game";
+import { analytics } from "@/shared/utils/analytics";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
@@ -18,6 +19,7 @@ export const LearnTrenchMainView: React.FC = () => {
     useRouteContext();
 
   const handleTrenchClick = (t: TerrainType) => {
+    analytics.trackEvent("Learn", "Explore Terrain", t);
     navigate(`/learn/trench/${t}`);
   };
 

@@ -5,13 +5,14 @@
  * Interactive Tutorial Page
  * Using new 5-column layout.
  */
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { INITIAL_ARMY } from "@/constants";
 import { isUnitProtected } from "@/core/mechanics/gameLogic";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import { UNIT_DETAILS, unitColorMap, TERRAIN_LIST } from "@/constants";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 import { deserializeGame } from "@/shared/utils/serialization";
+import { analytics } from "@/shared/utils/analytics";
 import TerrainDetailsPanel from "@/client/game/shared/components/organisms/TerrainDetailsPanel";
 import InteractiveHeader from "@/shared/components/organisms/InteractiveHeader";
 import CopyrightFooter from "@/shared/components/molecules/CopyrightFooter";
@@ -55,6 +56,19 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
     return [];
   });
   const [activeLayoutIdx, setActiveLayoutIdx] = useState<number>(-1);
+
+  useEffect(() => {
+    if (selectedUnit) {
+      analytics.trackEvent("Tutorial", "Select Unit", selectedUnit);
+    }
+  }, [selectedUnit]);
+
+  useEffect(() => {
+    if (selectedTerrainIdx >= 0) {
+      const terrainType = TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey;
+      analytics.trackEvent("Tutorial", "Select Terrain", terrainType);
+    }
+  }, [selectedTerrainIdx]);
 
   const handleSetSelectedTerrainIdx = (
     idx: number | ((prev: number) => number),

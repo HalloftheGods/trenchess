@@ -17,6 +17,7 @@ import { RouteBoardPreview } from "@/shared/components/organisms/RouteBoardPrevi
 import type { GameMode } from "@/shared/types/game";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import { useRouteContext } from "@context";
+import { analytics } from "@/shared/utils/analytics";
 
 const getServerUrl = () => {
   if (typeof window === "undefined") return "http://localhost:3001";
@@ -105,6 +106,7 @@ export const ScoreboardView = ({ darkMode }: ScoreboardProps) => {
   }, [hoveredMatch, setPreviewConfig, setTerrainSeed]);
 
   const handleSpectate = (roomId: string) => {
+    analytics.trackEvent("Scoreboard", "Spectate", roomId);
     navigate(`/play/lobby?join=${roomId}`);
   };
 

@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
-import { canPlaceUnit, getCellOwner } from "@/core/setup/setupLogic";
+import { canPlaceUnit } from "@/core/setup/setupLogic";
 import { TERRAIN_TYPES } from "@/constants";
+import { analytics } from "@/shared/utils/analytics";
 import type {
   ZenGardenInteraction,
   GameCore,
@@ -116,10 +117,12 @@ export function useZenGardenInteraction(
         }
         if (placementPiece) {
           client.moves.placePiece(r, c, placementPiece, startTurn, isGamemaster);
+          analytics.trackEvent(isGamemaster ? "Gamemaster" : "ZenGarden", "Place Piece", placementPiece);
           return;
         }
         if (placementTerrain) {
           client.moves.placeTerrain(r, c, placementTerrain, startTurn, isGamemaster);
+          analytics.trackEvent(isGamemaster ? "Gamemaster" : "ZenGarden", "Place Terrain", placementTerrain);
           return;
         }
         return;
@@ -154,6 +157,7 @@ export function useZenGardenInteraction(
       }
       if (placementPiece) {
         if (!board[r][c] && canPlaceUnit(placementPiece, terrain[r][c])) {
+          analytics.trackEvent("ZenGarden", "Place Piece (Local)", placementPiece);
           setBoard((prev) => {
             const nb = prev.map((row) => [...row]);
             nb[r][c] = { type: placementPiece, player: startTurn };
@@ -174,6 +178,7 @@ export function useZenGardenInteraction(
       }
       if (placementTerrain) {
         if (!board[r][c]) {
+          analytics.trackEvent("ZenGarden", "Place Terrain (Local)", placementTerrain);
           const newTerrain = terrain.map((row) => [...row]);
           newTerrain[r][c] = placementTerrain;
           setTerrain(newTerrain);

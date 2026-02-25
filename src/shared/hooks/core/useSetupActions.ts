@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import * as SetupLogic from "@/core/setup";
+import { analytics } from "@/shared/utils/analytics";
 import type {
   SetupActions,
   GameCore,
@@ -235,6 +236,8 @@ export function useSetupActions(
         setGameState("setup");
       }
 
+      analytics.trackEvent("Setup", "Init Preset", preset || "custom");
+
       setBoard(matchState.board);
       setTerrain(matchState.terrain);
       setInventory(matchState.inventory);
@@ -263,6 +266,7 @@ export function useSetupActions(
   );
 
   const randomizeTerrain = useCallback(() => {
+    analytics.trackEvent("Setup", "Randomize Terrain", turn);
     const bgioClient = bgioClientRef?.current;
     if (bgioClient) {
       bgioClient.moves.randomizeTerrain(turn);
@@ -291,6 +295,7 @@ export function useSetupActions(
   ]);
 
   const generateElementalTerrain = useCallback(() => {
+    analytics.trackEvent("Setup", "Generate Elemental Terrain", turn);
     const bgioClient = bgioClientRef?.current;
     if (bgioClient) {
       bgioClient.moves.applyChiGarden(turn);
@@ -319,6 +324,7 @@ export function useSetupActions(
   ]);
 
   const randomizeUnits = useCallback(() => {
+    analytics.trackEvent("Setup", "Randomize Units", turn);
     const bgioClient = bgioClientRef?.current;
     if (bgioClient) {
       bgioClient.moves.randomizeUnits(turn);
@@ -349,6 +355,7 @@ export function useSetupActions(
   ]);
 
   const setClassicalFormation = useCallback(() => {
+    analytics.trackEvent("Setup", "Set Classical Formation", turn);
     const bgioClient = bgioClientRef?.current;
     if (bgioClient) {
       bgioClient.moves.setClassicalFormation(turn);
@@ -395,6 +402,7 @@ export function useSetupActions(
   ]);
 
   const applyChiGarden = useCallback(() => {
+    analytics.trackEvent("Setup", "Apply Chi Garden", turn);
     const bgioClient = bgioClientRef?.current;
     if (bgioClient) {
       bgioClient.moves.applyChiGarden(turn);
@@ -447,6 +455,7 @@ export function useSetupActions(
   ]);
 
   const resetToOmega = useCallback(() => {
+    analytics.trackEvent("Setup", "Reset to Omega", turn);
     const bgioClient = bgioClientRef?.current;
     if (bgioClient) {
       bgioClient.moves.resetToOmega(turn);

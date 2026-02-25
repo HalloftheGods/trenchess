@@ -21,7 +21,7 @@ import RoutePageFooter from "@/shared/components/organisms/RoutePageFooter";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
 import { INITIAL_ARMY, PIECES, UNIT_DETAILS } from "@/constants";
-import { DualToneSwordsFlipped } from "@/shared/components";
+import { analytics } from "@/shared/utils/analytics";
 
 export const LearnChessmenView: React.FC = () => {
   const navigate = useNavigate();
@@ -99,7 +99,10 @@ export const LearnChessmenView: React.FC = () => {
           return (
             <RouteCard
               key={type}
-              onClick={() => navigate(`/learn/chess/chessmen/${type}`)}
+              onClick={() => {
+                analytics.trackEvent("Learn", "Explore Unit", type);
+                navigate(`/learn/chess/chessmen/${type}`);
+              }}
               onMouseEnter={() => setHoveredMenu("chess")}
               onMouseLeave={() => setHoveredMenu(null)}
               preview={{

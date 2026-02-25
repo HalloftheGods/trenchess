@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import * as SetupLogic from "@/core/setup";
 import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER } from "@/constants";
+import { analytics } from "@/shared/utils/analytics";
 import type {
   BoardInteraction,
   MultiplayerState,
@@ -167,6 +168,7 @@ export function useBoardInteraction(
 
             if (placedCount < maxQuota) {
               bgioClient.moves.placeTerrain(row, col, placementTerrain);
+              analytics.trackEvent("Setup", "Place Terrain", placementTerrain);
 
               const remainingInInventory =
                 bgioState?.G.terrainInventory[localPlayerName]?.filter(
@@ -184,6 +186,7 @@ export function useBoardInteraction(
             SetupLogic.canPlaceUnit(placementPiece, terrain[row][col])
           ) {
             bgioClient.moves.placePiece(row, col, placementPiece);
+            analytics.trackEvent("Setup", "Place Piece", placementPiece);
 
             const remainingInInventory =
               bgioState?.G.inventory[localPlayerName]?.filter(
