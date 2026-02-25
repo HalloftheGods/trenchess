@@ -26,10 +26,12 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
 
   // Set Gamemaster state on mount
   useEffect(() => {
-    if (game.gameState !== "gamemaster") {
+    const isNotGamemaster = game.gameState !== "gamemaster";
+    if (isNotGamemaster) {
       game.setGameState("gamemaster");
+      game.setMode("4p");
     }
-  }, [game]);
+  }, [game.gameState, game.setGameState, game.setMode]);
 
   const { placedCount, maxPlacement } = useDeployment({
     mode: game.mode,

@@ -78,10 +78,11 @@ const App = () => {
   const routeRoomId = match?.params.roomId;
 
   useEffect(() => {
-    // Exclude 'mmo' from auto-joining as it represents a special view mode
+    // Exclude 'mmo' and 'gamemaster' from auto-joining as they represent special view modes
     if (
       routeRoomId &&
       routeRoomId !== "mmo" &&
+      routeRoomId !== "gamemaster" &&
       multiplayer.roomId !== routeRoomId
     ) {
       console.log("App: Room ID detected in URL, joining:", routeRoomId);
@@ -106,8 +107,13 @@ const App = () => {
       }
       return;
     }
-    if (location.pathname === ROUTES.ZEN) {
-      initGameWithPreset("2p-ns", "zen-garden");
+    if (
+      (location.pathname === ROUTES.ZEN ||
+        location.pathname === ROUTES.GAMEMASTER) &&
+      gameState === "menu"
+    ) {
+      initGameWithPreset("4p", "zen-garden");
+      startGame();
       return;
     }
   }, [gameState, location.pathname, initFromSeed, initGameWithPreset, startGame]);

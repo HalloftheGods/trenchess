@@ -34,28 +34,37 @@ export function useComputerOpponent({
   setIsThinking,
 }: UseComputerOpponentProps) {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isThinkingRef = useRef(false);
 
   useEffect(() => {
-    // Clear any pending move if turn changes or game ends
+    // Clear any pending move if dependencies change
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
 
-    // Always ensure thinking is off when game ends or turn changes initially
-    setIsThinking(false);
+    const shouldThink = gameState === "play" && !winner && playerTypes[turn] === "computer";
 
-    if (gameState !== "play" || winner) return;
+    if (!shouldThink) {
+      if (isThinkingRef.current) {
+        isThinkingRef.current = false;
+        setIsThinking(false);
+      }
+      return;
+    }
 
     // Check if current player is Computer
-    if (playerTypes[turn] === "computer") {
-      // Use a self-executing async function for the effect
-      const runAi = async () => {
-        setIsThinking(true);
-        // Try the professional engine first
-        let move;
-        try {
-          const sfMove = await engineService.getBestMove(board, turn);
+    const runAi = async () => {
+      if (isThinkingRef.current) return;
+      
+      isThinkingRef.current = true;
+      setIsThinking(true);
+      
+      // Try the professional engine first
+      let move;
+      try {
+        const sfMove = await engineService.getBestMove(board, turn);
+        // ... (validation logic)
 
           // Stockfish is completely unaware of Trenchess terrain rules (swamps, mountains etc).
           // We must validate that the move it chose is actually physically possible in Trenchess.
@@ -90,7 +99,9 @@ export function useComputerOpponent({
           move = getBestMove(board, terrain, turn, mode);
         }
 
+        isThinkingRef.current = false;
         setIsThinking(false);
+        
         if (move) {
           executeMove(move.from[0], move.from[1], move.to[0], move.to[1], true);
         } else {
@@ -98,8 +109,7 @@ export function useComputerOpponent({
         }
       };
 
-      timeoutRef.current = setTimeout(runAi, 500); // reduced "thinking" time since Stockfish is fast
-    }
+      timeoutRef.current = setTimeout(runAi, 500);
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);

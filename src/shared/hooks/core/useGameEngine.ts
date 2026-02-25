@@ -107,7 +107,7 @@ export function useGameEngine({
     const hasPlayerChanged = local.playerID !== playerID;
     const hasRoomChanged = local.roomId !== currentRoomId;
     const hasDebugChanged = local.debug !== showBgDebug;
-    const hasSetupDataChanged = local.setupData !== setupData;
+    const hasSetupDataChanged = JSON.stringify(local.setupData) !== JSON.stringify(setupData);
 
     const needsReinit =
       !hasClient ||
@@ -130,14 +130,19 @@ export function useGameEngine({
     setupData,
   ]);
 
+  const lastBgioStateRef = useRef<string>("");
+
   // Authorization: Unified Sync Logic
   useEffect(() => {
     const isClientAvailable = !!clientInstance;
     if (!isClientAvailable) return;
 
     const onStateUpdate = (state: { G: TrenchessState; ctx: Ctx } | null) => {
-      const isStateValid = !!state;
-      if (isStateValid) {
+      if (!state) return;
+      
+      const stringified = JSON.stringify({ G: state.G, ctx: state.ctx });
+      if (stringified !== lastBgioStateRef.current) {
+        lastBgioStateRef.current = stringified;
         setBgioState(state);
       }
     };

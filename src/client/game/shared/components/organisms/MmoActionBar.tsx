@@ -218,60 +218,103 @@ const MmoActionBar: React.FC<MmoActionBarProps> = ({
       >
         {gameState !== "play" && (
           <>
-            {/* Options */}
+            {/* Options / Active Board */}
             <div className="flex flex-col items-center gap-1">
               <div className="flex items-center gap-2">
-                <ActionBarSlot
-                  label="Omega"
-                  hoverIcon={<Omega size={20} className="text-red-400" />}
-                  onClick={handleOmega}
-                >
-                  <Eye size={20} className="text-slate-500" />
-                </ActionBarSlot>
-                <ActionBarSlot
-                  label="Pi"
-                  disabled={chessLocked}
-                  hoverIcon={<Pi size={20} className="text-orange-400" />}
-                  onClick={handleClassic}
-                >
-                  <Pizza
-                    size={20}
-                    className={
-                      chessLocked ? "text-slate-600" : "text-amber-400"
-                    }
-                  />
-                </ActionBarSlot>
-                <ActionBarSlot
-                  label="Chi"
-                  disabled={chessLocked && trenchLocked}
-                  hoverIcon={<LandPlot size={20} className="text-teal-400" />}
-                  onClick={handleChi}
-                >
-                  <Shell
-                    size={20}
-                    className={
-                      chessLocked && trenchLocked
-                        ? "text-slate-600"
-                        : "text-emerald-400"
-                    }
-                  />
-                </ActionBarSlot>
-                <ActionBarSlot
-                  label="Random"
-                  disabled={bothLocked}
-                  hoverIcon={
-                    <ShieldQuestion size={20} className="text-blue-400" />
-                  }
-                  onClick={handleRandomize}
-                >
-                  <Dices
-                    size={20}
-                    className={bothLocked ? "text-slate-600" : "text-sky-400"}
-                  />
-                </ActionBarSlot>
+                {gameState === "gamemaster" || !!setMode ? (
+                  setMode && (
+                    <>
+                      <ActionBarSlot
+                        label="North/South"
+                        active={mode === "2p-ns"}
+                        onClick={() => setMode("2p-ns")}
+                      >
+                        <DualToneNS size={20} />
+                      </ActionBarSlot>
+                      <ActionBarSlot
+                        label="East/West"
+                        active={mode === "2p-ew"}
+                        onClick={() => setMode("2p-ew")}
+                      >
+                        <DualToneEW size={20} />
+                      </ActionBarSlot>
+                      <ActionBarSlot
+                        label="4-Player"
+                        active={mode === "4p"}
+                        onClick={() => setMode("4p")}
+                      >
+                        <QuadTone size={20} />
+                      </ActionBarSlot>
+                      <ActionBarSlot
+                        label="Alliance"
+                        active={mode === "2v2"}
+                        onClick={() => setMode("2v2")}
+                      >
+                        <AllianceTone size={20} />
+                      </ActionBarSlot>
+                    </>
+                  )
+                ) : (
+                  <>
+                    <ActionBarSlot
+                      label="Omega"
+                      hoverIcon={<Omega size={20} className="text-red-400" />}
+                      onClick={handleOmega}
+                    >
+                      <Eye size={20} className="text-slate-500" />
+                    </ActionBarSlot>
+                    <ActionBarSlot
+                      label="Pi"
+                      disabled={chessLocked}
+                      hoverIcon={<Pi size={20} className="text-orange-400" />}
+                      onClick={handleClassic}
+                    >
+                      <Pizza
+                        size={20}
+                        className={
+                          chessLocked ? "text-slate-600" : "text-amber-400"
+                        }
+                      />
+                    </ActionBarSlot>
+                    <ActionBarSlot
+                      label="Chi"
+                      disabled={chessLocked && trenchLocked}
+                      hoverIcon={
+                        <LandPlot size={20} className="text-teal-400" />
+                      }
+                      onClick={handleChi}
+                    >
+                      <Shell
+                        size={20}
+                        className={
+                          chessLocked && trenchLocked
+                            ? "text-slate-600"
+                            : "text-emerald-400"
+                        }
+                      />
+                    </ActionBarSlot>
+                    <ActionBarSlot
+                      label="Random"
+                      disabled={bothLocked}
+                      hoverIcon={
+                        <ShieldQuestion size={20} className="text-blue-400" />
+                      }
+                      onClick={handleRandomize}
+                    >
+                      <Dices
+                        size={20}
+                        className={
+                          bothLocked ? "text-slate-600" : "text-sky-400"
+                        }
+                      />
+                    </ActionBarSlot>
+                  </>
+                )}
               </div>
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                Quick Game Modes
+                {gameState === "gamemaster" || !!setMode
+                  ? "Active Board"
+                  : "Quick Game Modes"}
               </span>
             </div>
 
@@ -364,52 +407,10 @@ const MmoActionBar: React.FC<MmoActionBarProps> = ({
           </span>
         </div>
 
-        {gameState === "gamemaster" && (
+        {(gameState === "gamemaster" || !!setMode) && (
           <>
             <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/10 to-transparent mx-2" />
             
-            <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center gap-2">
-                    {setMode && (
-                        <>
-                            <ActionBarSlot 
-                                label="North/South" 
-                                active={mode === "2p-ns"} 
-                                onClick={() => setMode("2p-ns")}
-                            >
-                                <DualToneNS size={20} />
-                            </ActionBarSlot>
-                            <ActionBarSlot 
-                                label="East/West" 
-                                active={mode === "2p-ew"} 
-                                onClick={() => setMode("2p-ew")}
-                            >
-                                <DualToneEW size={20} />
-                            </ActionBarSlot>
-                            <ActionBarSlot 
-                                label="4-Player" 
-                                active={mode === "4p"} 
-                                onClick={() => setMode("4p")}
-                            >
-                                <QuadTone size={20} />
-                            </ActionBarSlot>
-                            <ActionBarSlot 
-                                label="Alliance" 
-                                active={mode === "2v2"} 
-                                onClick={() => setMode("2v2")}
-                            >
-                                <AllianceTone size={20} />
-                            </ActionBarSlot>
-                        </>
-                    )}
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                    Active Board
-                </span>
-            </div>
-
-            <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/10 to-transparent mx-2" />
-
             <div className="flex flex-col items-center gap-1">
                 <div className="flex items-center gap-2">
                     <ActionBarSlot 

@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { canPlaceUnit, getCellOwner } from "@/core/setup/setupLogic";
 import { TERRAIN_TYPES } from "@/constants";
 import type {
@@ -194,5 +194,8 @@ export function useZenGardenInteraction(
     ],
   );
 
-  return { handleZenGardenHover, handleZenGardenClick };
+  return useMemo(
+    () => ({ handleZenGardenHover, handleZenGardenClick }),
+    [handleZenGardenHover, handleZenGardenClick],
+  );
 }

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { PLAYER_CONFIGS } from "@/constants";
 import type { TurnState, GameOverReason } from "@/shared/types";
 
@@ -24,25 +24,39 @@ export function useTurnState(): TurnState {
     return PLAYER_CONFIGS[pid]?.name.toUpperCase() || pid.toUpperCase();
   }, []);
 
-  return {
-    turn,
-    setTurn,
-    activePlayers,
-    setActivePlayers,
-    readyPlayers,
-    setReadyPlayers,
-    playerTypes,
-    setPlayerTypes,
-    winner,
-    setWinner,
-    winnerReason,
-    setWinnerReason,
-    inCheck,
-    setInCheck,
-    isThinking,
-    setIsThinking,
-    localPlayerName,
-    setLocalPlayerName,
-    getPlayerDisplayName,
-  };
+  return useMemo(
+    () => ({
+      turn,
+      setTurn,
+      activePlayers,
+      setActivePlayers,
+      readyPlayers,
+      setReadyPlayers,
+      playerTypes,
+      setPlayerTypes,
+      winner,
+      setWinner,
+      winnerReason,
+      setWinnerReason,
+      inCheck,
+      setInCheck,
+      isThinking,
+      setIsThinking,
+      localPlayerName,
+      setLocalPlayerName,
+      getPlayerDisplayName,
+    }),
+    [
+      turn,
+      activePlayers,
+      readyPlayers,
+      playerTypes,
+      winner,
+      winnerReason,
+      inCheck,
+      isThinking,
+      localPlayerName,
+      getPlayerDisplayName,
+    ],
+  );
 }

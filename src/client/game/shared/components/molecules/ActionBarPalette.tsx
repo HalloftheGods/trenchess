@@ -30,9 +30,9 @@ export const ActionBarPalette: React.FC<ActionBarPaletteProps> = ({
   return (
     <div className={`flex flex-col items-center gap-1 ${className}`}>
       <div className="flex items-center gap-1.5">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <ActionBarSlot
-            key={item.key}
+            key={item.key || `item-${index}`}
             label={item.label}
             badge={item.badge}
             active={item.active}

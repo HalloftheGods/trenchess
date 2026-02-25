@@ -172,98 +172,126 @@ export function useGameState(): GameStateHook {
     setIsThinking: core.turnState.setIsThinking,
   });
 
-  return {
-    ...theme,
-    ...boardState,
-    ...turnState,
-    ...configState,
-    ...core,
-    ...placementManager,
-    ...moveExecution,
-    ...boardInteraction,
-    ...zenGardenInteraction,
-    ...setupActions,
-    bgioState,
+  return useMemo(
+    () => ({
+      ...theme,
+      ...boardState,
+      ...turnState,
+      ...configState,
+      ...core,
+      ...placementManager,
+      ...moveExecution,
+      ...boardInteraction,
+      ...zenGardenInteraction,
+      ...setupActions,
+      bgioState,
 
-    // Authority Overrides (MUST be last to ensure engine truth wins)
-    board,
-    terrain,
-    inventory,
-    terrainInventory,
-    capturedBy,
-    turn,
-    activePlayers,
-    readyPlayers,
-    winner,
-    winnerReason,
-    gameState,
-    lastMove,
-
-    ready: (pid?: string) => {
-      if (multiplayer.roomId) {
-        if (clientRef.current) clientRef.current.moves.ready();
-      } else {
-        if (clientRef.current) {
-          if (pid) {
-            clientRef.current.moves.ready(pid);
-
-            // Auto-switch perspective to the next player who isn't ready
-            const nextNonReadyPlayer = activePlayers.find(
-              (p) => p !== pid && !readyPlayers[p],
-            );
-            if (nextNonReadyPlayer) {
-              turnState.setTurn(nextNonReadyPlayer);
-            }
-          } else {
-            // Fallback: ready everyone if no PID provided
-            activePlayers.forEach((p) => {
-              clientRef.current!.moves.ready(p);
-            });
-          }
-        } else {
-          // Fallback: update local state if no client exists (pre-engine setup)
-          if (pid) {
-            turnState.setReadyPlayers((prev) => ({ ...prev, [pid]: true }));
-
-            const nextNonReadyPlayer = activePlayers.find(
-              (p) => p !== pid && !readyPlayers[p],
-            );
-            if (nextNonReadyPlayer) {
-              turnState.setTurn(nextNonReadyPlayer);
-            }
-          } else {
-            const allReady: Record<string, boolean> = {};
-            activePlayers.forEach((p) => {
-              allReady[p] = true;
-            });
-            turnState.setReadyPlayers(allReady);
-          }
-        }
-      }
-    },
-    startGame: () => setIsStarted(true),
-    finishGamemaster: () => {
-      if (clientRef.current) clientRef.current.moves.finishGamemaster();
-    },
-    forfeit: (pid?: string) => {
-      if (clientRef.current) {
-        clientRef.current.moves.forfeit(pid);
-      } else {
-        const pId = pid || turn;
-        turnState.setActivePlayers((prev) => prev.filter((p) => p !== pId));
-        if (activePlayers.length === 2) {
-          const winnerId = activePlayers.find((p) => p !== pId)!;
-          turnState.setWinner(winnerId);
-          turnState.setWinnerReason("forfeit");
-        }
-      }
-    },
-    multiplayer: {
-      ...multiplayer,
+      // Authority Overrides (MUST be last to ensure engine truth wins)
+      board,
+      terrain,
+      inventory,
+      terrainInventory,
+      capturedBy,
+      turn,
+      activePlayers,
       readyPlayers,
-      toggleReady: (_isReady: boolean) => {
-        if (clientRef.current) clientRef.current.moves.ready();
+      winner,
+      winnerReason,
+      gameState,
+      lastMove,
+
+      ready: (pid?: string) => {
+        if (multiplayer.roomId) {
+          if (clientRef.current) clientRef.current.moves.ready();
+        } else {
+          if (clientRef.current) {
+            if (pid) {
+              clientRef.current.moves.ready(pid);
+
+              // Auto-switch perspective to the next player who isn't ready
+              const nextNonReadyPlayer = activePlayers.find(
+                (p) => p !== pid && !readyPlayers[p],
+              );
+              if (nextNonReadyPlayer) {
+                turnState.setTurn(nextNonReadyPlayer);
+              }
+            } else {
+              // Fallback: ready everyone if no PID provided
+              activePlayers.forEach((p) => {
+                clientRef.current!.moves.ready(p);
+              });
+            }
+          } else {
+            // Fallback: update local state if no client exists (pre-engine setup)
+            if (pid) {
+              turnState.setReadyPlayers((prev) => ({ ...prev, [pid]: true }));
+
+              const nextNonReadyPlayer = activePlayers.find(
+                (p) => p !== pid && !readyPlayers[p],
+              );
+              if (nextNonReadyPlayer) {
+                turnState.setTurn(nextNonReadyPlayer);
+              }
+            } else {
+              const allReady: Record<string, boolean> = {};
+              activePlayers.forEach((p) => {
+                allReady[p] = true;
+              });
+              turnState.setReadyPlayers(allReady);
+            }
+          }
+        }
       },
-    },
-  };
+      startGame: () => setIsStarted(true),
+      finishGamemaster: () => {
+        if (clientRef.current) clientRef.current.moves.finishGamemaster();
+      },
+      forfeit: (pid?: string) => {
+        if (clientRef.current) {
+          clientRef.current.moves.forfeit(pid);
+        } else {
+          const pId = pid || turn;
+          turnState.setActivePlayers((prev) => prev.filter((p) => p !== pId));
+          if (activePlayers.length === 2) {
+            const winnerId = activePlayers.find((p) => p !== pId)!;
+            turnState.setWinner(winnerId);
+            turnState.setWinnerReason("forfeit");
+          }
+        }
+      },
+      multiplayer: {
+        ...multiplayer,
+        readyPlayers,
+        toggleReady: (_isReady: boolean) => {
+          if (clientRef.current) clientRef.current.moves.ready();
+        },
+      },
+    }),
+    [
+      theme,
+      boardState,
+      turnState,
+      configState,
+      core,
+      placementManager,
+      moveExecution,
+      boardInteraction,
+      zenGardenInteraction,
+      setupActions,
+      bgioState,
+      board,
+      terrain,
+      inventory,
+      terrainInventory,
+      capturedBy,
+      turn,
+      activePlayers,
+      readyPlayers,
+      winner,
+      winnerReason,
+      gameState,
+      lastMove,
+      multiplayer,
+    ],
+  );
 }

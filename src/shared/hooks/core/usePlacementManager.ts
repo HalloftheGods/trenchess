@@ -65,19 +65,30 @@ export function usePlacementManager(
     [board, terrain, mode],
   );
 
-  return {
-    selectedCell,
-    setSelectedCell,
-    hoveredCell,
-    setHoveredCell,
-    validMoves,
-    setValidMoves,
-    previewMoves,
-    setPreviewMoves,
-    placementPiece,
-    setPlacementPiece,
-    placementTerrain,
-    setPlacementTerrain,
-    getValidMovesForPiece,
-  };
+  return useMemo(
+    () => ({
+      selectedCell,
+      setSelectedCell,
+      hoveredCell,
+      setHoveredCell,
+      validMoves,
+      setValidMoves,
+      previewMoves,
+      setPreviewMoves,
+      placementPiece,
+      setPlacementPiece,
+      placementTerrain,
+      setPlacementTerrain,
+      getValidMovesForPiece,
+    }),
+    [
+      selectedCell,
+      hoveredCell,
+      validMoves,
+      previewMoves,
+      placementPiece,
+      placementTerrain,
+      getValidMovesForPiece,
+    ],
+  );
 }

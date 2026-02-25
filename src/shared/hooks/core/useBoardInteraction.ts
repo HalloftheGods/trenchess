@@ -250,5 +250,8 @@ export function useBoardInteraction(
     ],
   );
 
-  return { handleCellHover, handleCellClick };
+  return useMemo(
+    () => ({ handleCellHover, handleCellClick }),
+    [handleCellHover, handleCellClick],
+  );
 }

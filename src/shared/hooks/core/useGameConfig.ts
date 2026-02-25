@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type {
   GameConfigState,
   GameMode,
@@ -42,22 +42,34 @@ export function useGameConfig(): GameConfigState {
   const [mode, setMode] = useState<GameMode>("2p-ns");
   const [gameState, setGameState] = useState<GameState>("menu");
 
-  return {
-    mode,
-    setMode,
-    gameState,
-    setGameState,
-    setupMode,
-    setSetupMode,
-    isFlipped,
-    setIsFlipped,
-    autoFlip,
-    setAutoFlip,
-    layoutName,
-    setLayoutName,
-    selectedPreset,
-    setSelectedPreset,
-    showBgDebug,
-    setShowBgDebug,
-  };
+  return useMemo(
+    () => ({
+      mode,
+      setMode,
+      gameState,
+      setGameState,
+      setupMode,
+      setSetupMode,
+      isFlipped,
+      setIsFlipped,
+      autoFlip,
+      setAutoFlip,
+      layoutName,
+      setLayoutName,
+      selectedPreset,
+      setSelectedPreset,
+      showBgDebug,
+      setShowBgDebug,
+    }),
+    [
+      mode,
+      gameState,
+      setupMode,
+      isFlipped,
+      autoFlip,
+      layoutName,
+      selectedPreset,
+      showBgDebug,
+    ],
+  );
 }

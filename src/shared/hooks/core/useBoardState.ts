@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type {
   BoardState,
   BoardPiece,
@@ -32,16 +32,19 @@ export function useBoardState(): BoardState {
     blue: [],
   });
 
-  return {
-    board,
-    setBoard,
-    terrain,
-    setTerrain,
-    inventory,
-    setInventory,
-    terrainInventory,
-    setTerrainInventory,
-    capturedBy,
-    setCapturedBy,
-  };
+  return useMemo(
+    () => ({
+      board,
+      setBoard,
+      terrain,
+      setTerrain,
+      inventory,
+      setInventory,
+      terrainInventory,
+      setTerrainInventory,
+      capturedBy,
+      setCapturedBy,
+    }),
+    [board, terrain, inventory, terrainInventory, capturedBy],
+  );
 }
