@@ -1,14 +1,14 @@
 import { ROUTES } from "@constants/routes";
-import type { RouteConfig } from "@/shared/types/route";
+import type { RouteConfig, GameStateHook } from "@/shared/types";
 
 const DevCliLazy = ROUTES.DEV_CLI.component(() => import("@/client/dev/cli"));
 const DevRuleSetLazy = ROUTES.DEV_RULESET.component(
   () => import("@/client/dev/ruleset"),
 );
 
-const DEV_ROUTES: RouteConfig[] = [
-  ROUTES.DEV_CLI.define(<DevCliLazy />),
-  ROUTES.DEV_RULESET.define(<DevRuleSetLazy />),
+export const getDevRoutes = (game: GameStateHook): RouteConfig[] => [
+  ROUTES.DEV_CLI.define(<DevCliLazy game={game} />),
+  ROUTES.DEV_RULESET.define(<DevRuleSetLazy game={game} />),
 ];
 
-export default DEV_ROUTES;
+export default getDevRoutes;

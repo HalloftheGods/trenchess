@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import CopyrightFooter from "@molecules/CopyrightFooter";
-import { DebugSheet } from "../molecules/DebugSheet";
 
 interface GameLayoutProps {
   children: ReactNode;
@@ -16,7 +15,7 @@ export const GameLayout = ({ children, header, debugPanel }: GameLayoutProps) =>
         {children}
       </div>
       <CopyrightFooter />
-      <DebugSheet debugPanel={debugPanel} />
+      {debugPanel}
     </div>
   );
 };

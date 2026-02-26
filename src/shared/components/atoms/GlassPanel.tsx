@@ -1,10 +1,16 @@
 import type { ReactNode } from "react";
+import { TCCard } from "./ui";
 
 interface GlassPanelProps {
   children: ReactNode;
   className?: string;
 }
 
+/** @deprecated Use TCCard with variant="glass" directly */
 export const GlassPanel = ({ children, className = "" }: GlassPanelProps) => {
-  return <div className={`glass-panel ${className}`}>{children}</div>;
+  return (
+    <TCCard variant="glass" padding="none" className={className}>
+      {children}
+    </TCCard>
+  );
 };

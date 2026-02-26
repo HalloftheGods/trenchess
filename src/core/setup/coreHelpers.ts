@@ -20,9 +20,10 @@ export const resolvePlayerId = (
   ctx: Ctx,
   playerID?: string,
   explicitPid?: string,
+  allowExplicit: boolean = false,
 ): string | null => {
   const pid =
-    explicitPid ||
+    (allowExplicit && explicitPid) ||
     (playerID !== undefined
       ? G.playerMap[playerID]
       : G.playerMap[ctx.currentPlayer]);

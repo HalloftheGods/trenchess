@@ -1,4 +1,6 @@
 import React from "react";
+import { TCFlex } from "./ui/TCFlex";
+import type { TCFlexProps } from "./ui/TCFlex";
 
 interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
@@ -10,33 +12,27 @@ interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
   as?: React.ElementType;
 }
 
+/** @deprecated Use TCFlex directly */
 export const Flex: React.FC<FlexProps> = ({
-  children,
-  className = "",
   direction = "row",
   align,
   justify,
   gap,
-  as: Component = "div",
   ...props
 }) => {
-  const directionClass = {
-    row: "flex-row",
-    col: "flex-col",
-    "row-reverse": "flex-row-reverse",
-    "col-reverse": "flex-col-reverse",
-  }[direction];
-
-  const alignClass = align ? `items-${align}` : "";
-  const justifyClass = justify ? `justify-${justify}` : "";
-  const gapClass = gap ? (typeof gap === "number" ? `gap-${gap}` : gap) : "";
+  // Map old props to TCFlex props where possible, otherwise pass className
+  const mappedDirection = direction === "col" ? "col" : "row";
+  const mappedAlign = align === "baseline" ? undefined : align;
+  const mappedGap =
+    typeof gap === "number" ? (gap as TCFlexProps["gap"]) : undefined;
 
   return (
-    <Component
-      className={`flex ${directionClass} ${alignClass} ${justifyClass} ${gapClass} ${className}`}
+    <TCFlex
+      direction={mappedDirection}
+      align={mappedAlign}
+      justify={justify}
+      gap={mappedGap}
       {...props}
-    >
-      {children}
-    </Component>
+    />
   );
 };

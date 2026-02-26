@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { CornerControls } from "@/client/console/components/organisms/CornerControls";
+import { CornerControls } from "@/client/console/components";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 import { FileText, Trophy, AudioWaveform } from "lucide-react";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";

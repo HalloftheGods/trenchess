@@ -1,100 +1,30 @@
-import React, { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { GlassPanel, Text } from '@/shared/components/atoms';
-import { ROUTES } from '@constants/routes';
+import { useTerminal } from '@/shared/context/TerminalContext';
+import type { GameStateHook } from '@/shared/types';
 
-interface HistoryItem {
-  id: string;
-  type: "command" | "response" | "error" | "info";
-  text: string;
-  timestamp: string;
+interface DevCliProps {
+  game: GameStateHook;
 }
 
-const DevCli = () => {
-  const [history, setHistory] = useState<HistoryItem[]>([
-    {
-      id: 'init',
-      type: 'info',
-      text: 'Trenchess Dev CLI [Version 0.1.0]. Type "help" for commands.',
-      timestamp: new Date().toLocaleTimeString()
-    }
-  ]);
+const DevCli: React.FC<DevCliProps> = ({ game }) => {
+  const { history, addLog } = useTerminal();
   const [input, setInput] = useState('');
-  const navigate = useNavigate();
-
-  const addHistory = useCallback((type: HistoryItem["type"], text: string) => {
-    setHistory((prev) => [
-      ...prev,
-      {
-        id: Math.random().toString(36).substring(2, 11),
-        type,
-        text,
-        timestamp: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        }),
-      },
-    ]);
-  }, []);
 
   const handleCommand = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const fullCommand = input.trim();
-    addHistory("command", fullCommand);
-    
-    const [cmd, ...args] = fullCommand.split(" ");
-    const action = cmd.toLowerCase();
-
-    switch (action) {
-      case "help":
-        addHistory("info", "COMMANDS: play <style>, mmo, zen, master, clear, exit, goto <path>, status");
-        break;
-      case "play":
-        if (args[0]) {
-          navigate(ROUTES.GAME_CONSOLE.build({ style: args[0] }));
-          addHistory("response", `Switching to ${args[0]} mode...`);
-        } else {
-          addHistory("error", "Usage: play <style> (alpha, battle, pi, chi, omega)");
-        }
-        break;
-      case "mmo":
-        navigate(ROUTES.GAME_MMO.path);
-        addHistory("response", "Joining MMO...");
-        break;
-      case "zen":
-        navigate(ROUTES.GAME_CONSOLE.build({ style: "zen" }));
-        addHistory("response", "Entering Zen Garden...");
-        break;
-      case "master":
-        navigate(ROUTES.GAME_CONSOLE.build({ style: "gamemaster" }));
-        addHistory("response", "Entering Gamemaster Mode...");
-        break;
-      case "goto":
-        if (args[0]) {
-          navigate(args[0]);
-          addHistory("response", `Navigating to ${args[0]}...`);
-        } else {
-          addHistory("error", "Usage: goto <path>");
-        }
-        break;
-      case "status":
-        addHistory("response", "All systems nominal. CLI Active.");
-        break;
-      case "clear":
-        setHistory([]);
-        break;
-      case "exit":
-        navigate(ROUTES.HOME.path);
-        break;
-      default:
-        addHistory("error", `Unknown command: ${action}`);
-    }
-
+    game.dispatch(input.trim());
     setInput('');
   };
+
+  // Welcome message if history is empty
+  useEffect(() => {
+    if (history.length === 0) {
+      addLog('info', 'Trenchess Dev CLI [Version 0.1.0]. Type "help" for commands.');
+    }
+  }, [addLog, history.length]);
 
   return (
     <div className="flex flex-col h-screen bg-slate-950 p-4 font-mono">
@@ -113,6 +43,7 @@ const DevCli = () => {
                   item.type === 'command' ? 'text-brand-blue' :
                   item.type === 'error' ? 'text-red-400' :
                   item.type === 'info' ? 'text-amber-400' :
+                  item.type === 'game' ? 'text-teal-400' :
                   'text-green-400'
                 }`}>
                   {item.type === 'command' ? `> ${item.text}` : item.text}

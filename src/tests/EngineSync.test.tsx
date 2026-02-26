@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
-import { useGameState } from "@/shared/hooks/useGameState";
+import { useGameState } from "@/shared/hooks/engine/useGameState";
 import { RouteProvider } from "@context";
 import React from "react";
 
 // Mock hooks that use external services or complex state
-vi.mock("@hooks/useMultiplayer", () => ({
+vi.mock("@hooks/engine/useMultiplayer", () => ({
   useMultiplayer: () => ({
     roomId: null,
     playerIndex: null,
@@ -14,7 +14,7 @@ vi.mock("@hooks/useMultiplayer", () => ({
   getServerUrl: () => "http://localhost:3001",
 }));
 
-vi.mock("@hooks/useGameTheme", () => ({
+vi.mock("@hooks/interface/useGameTheme", () => ({
   useGameTheme: () => ({
     darkMode: false,
     theme: "classic",
@@ -32,7 +32,7 @@ const mockRouteContext = {
   playerConfig: { red: "human", blue: "human" },
 };
 
-vi.mock("@/core/ai/stockfish", () => ({
+vi.mock("@/core/bot/stockfish", () => ({
   StockfishEngine: class {
     init = vi.fn().mockResolvedValue(true);
     evaluate = vi.fn().mockResolvedValue(0);

@@ -1,4 +1,5 @@
 import React from "react";
+import { TCText } from "./ui";
 
 interface TextProps extends React.HTMLAttributes<HTMLSpanElement> {
   children?: React.ReactNode;
@@ -8,25 +9,7 @@ interface TextProps extends React.HTMLAttributes<HTMLSpanElement> {
   as?: React.ElementType;
 }
 
-export const Text: React.FC<TextProps> = ({
-  children,
-  className = "",
-  _variant = "body",
-  weight = "normal",
-  as: Component = "span",
-  ...props
-}) => {
-  const weightClass = {
-    normal: "font-normal",
-    medium: "font-medium",
-    semibold: "font-semibold",
-    bold: "font-bold",
-    black: "font-black",
-  }[weight];
-
-  return (
-    <Component className={`${weightClass} ${className}`} {...props}>
-      {children}
-    </Component>
-  );
+/** @deprecated Use TCText directly */
+export const Text: React.FC<TextProps> = ({ ...props }) => {
+  return <TCText {...(props as any)} />;
 };

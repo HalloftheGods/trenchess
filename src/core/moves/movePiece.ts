@@ -1,5 +1,5 @@
 import { INVALID_MOVE } from "boardgame.io/core";
-import { BOARD_SIZE } from "@constants";
+import Move, { getDist, getMidpoint, isSameRow, isSameCol, calculatePath } from "@engine/moves/base";
 import { PIECES } from "@constants";
 import type { TrenchessState, BoardPiece } from "@/shared/types";
 import type { Ctx } from "boardgame.io";
@@ -17,7 +17,7 @@ const handlePawnPromotion = (
 ) => {
   if (piece.type !== PAWN) return;
 
-  const lastIndex = BOARD_SIZE - 1;
+  const lastIndex = Move.BOARD_SIZE - 1;
 
   // Primitive Player Checks
   const isPlayerRed = playerId === "red";
@@ -64,33 +64,23 @@ const handlePawnPromotion = (
 const handleJoustCapture = (
   gameState: TrenchessState,
   piece: BoardPiece,
-  fromRow: number,
-  fromCol: number,
-  toRow: number,
-  toCol: number,
+  from: [number, number],
+  to: [number, number],
   playerId: string,
 ): BoardPiece | null => {
   if (piece.type !== KING) return null;
 
-  const rowDistance = Math.abs(fromRow - toRow);
-  const colDistance = Math.abs(fromCol - toCol);
+  const [dr, dc] = getDist(from, to);
 
-  const isVerticalJoustDistance = rowDistance === 2;
-  const isHorizontalJoustDistance = colDistance === 2;
-  const isSameColumn = fromCol === toCol;
-  const isSameRow = fromRow === toRow;
-
-  const isVerticalJoust = isVerticalJoustDistance && isSameColumn;
-  const isHorizontalJoust = isHorizontalJoustDistance && isSameRow;
+  const isVerticalJoust = dr === 2 && isSameCol(from, to);
+  const isHorizontalJoust = dc === 2 && isSameRow(from, to);
 
   if (!isVerticalJoust && !isHorizontalJoust) return null;
 
-  const midRow = fromRow + (toRow - fromRow) / 2;
-  const midCol = fromCol + (toCol - fromCol) / 2;
+  const [midRow, midCol] = getMidpoint(from, to);
   const midPiece = gameState.board[midRow][midCol];
 
-  const isPieceAtMidPoint = !!midPiece;
-  const isEnemyAtMidPoint = isPieceAtMidPoint && midPiece!.player !== playerId;
+  const isEnemyAtMidPoint = midPiece && midPiece.player !== playerId;
 
   if (isEnemyAtMidPoint) {
     gameState.board[midRow][midCol] = null;
@@ -105,22 +95,20 @@ const convertVictimArmy = (
   victimId: string,
   winnerId: string,
 ) => {
-  for (let row = 0; row < BOARD_SIZE; row++) {
-    for (let col = 0; col < BOARD_SIZE; col++) {
+  for (let row = 0; row < Move.BOARD_SIZE; row++) {
+    for (let col = 0; col < Move.BOARD_SIZE; col++) {
       const pieceAtCell = gameState.board[row][col];
-      const isPieceAtCell = !!pieceAtCell;
-      const isVictimPiece = isPieceAtCell && pieceAtCell!.player === victimId;
+      const isVictimPiece = pieceAtCell && pieceAtCell.player === victimId;
 
       if (isVictimPiece) {
-        pieceAtCell!.player = winnerId;
+        pieceAtCell.player = winnerId;
       }
     }
   }
 };
 
 const eliminatePlayer = (gameState: TrenchessState, victimId: string) => {
-  const isNotVictim = (player: string) => player !== victimId;
-  gameState.activePlayers = gameState.activePlayers.filter(isNotVictim);
+  gameState.activePlayers = gameState.activePlayers.filter((p) => p !== victimId);
 };
 
 const handleCapture = (
@@ -145,41 +133,6 @@ const handleCapture = (
   }
 };
 
-const calculatePath = (
-  from: [number, number],
-  to: [number, number],
-): [number, number][] => {
-  const [fR, fC] = from;
-  const [tR, tC] = to;
-  const path: [number, number][] = [];
-
-  const dR = Math.sign(tR - fR);
-  const dC = Math.sign(tC - fC);
-
-  const isKnightMove =
-    (Math.abs(tR - fR) === 2 && Math.abs(tC - fC) === 1) ||
-    (Math.abs(tR - fR) === 1 && Math.abs(tC - fC) === 2) ||
-    (Math.abs(tR - fR) === 3 && Math.abs(tC - fC) === 0) ||
-    (Math.abs(tR - fR) === 0 && Math.abs(tC - fC) === 3);
-
-  if (isKnightMove) {
-    // Knights jump, so path is just endpoints
-    return [from, to];
-  }
-
-  let currR = fR;
-  let currC = fC;
-
-  while (currR !== tR || currC !== tC) {
-    path.push([currR, currC]);
-    if (currR !== tR) currR += dR;
-    if (currC !== tC) currC += dC;
-  }
-  path.push([tR, tC]);
-
-  return path;
-};
-
 export const movePiece = (
   {
     G: gameState,
@@ -196,9 +149,7 @@ export const movePiece = (
   if (!playerId) return INVALID_MOVE;
 
   const pieceToMove = gameState.board[fromRow][fromCol];
-  const hasPieceToMove = !!pieceToMove;
-  const isPieceOwnedByPlayer =
-    hasPieceToMove && pieceToMove!.player === playerId;
+  const isPieceOwnedByPlayer = pieceToMove && pieceToMove.player === playerId;
 
   if (!isPieceOwnedByPlayer) return INVALID_MOVE;
 
@@ -224,10 +175,8 @@ export const movePiece = (
   const joustedPiece = handleJoustCapture(
     gameState,
     pieceToMove!,
-    fromRow,
-    fromCol,
-    toRow,
-    toCol,
+    from,
+    to,
     playerId,
   );
 
@@ -240,8 +189,7 @@ export const movePiece = (
       finalCapturedPiece,
       playerId,
     );
-    const isInvalidCapture = captureResult === INVALID_MOVE;
-    if (isInvalidCapture) return INVALID_MOVE;
+    if (captureResult === INVALID_MOVE) return INVALID_MOVE;
   }
 
   // 5. Apply Passive Terrain Events

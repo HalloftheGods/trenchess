@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Waves, Crosshair, ShieldPlus, Zap } from "lucide-react";
 import { useRouteContext } from "@context";
 import { PIECES, INITIAL_ARMY } from "@constants";
-import { DesertIcon } from "@/client/console/components/atoms/UnitIcons";
+import { DesertIcon } from "@/shared/components/atoms/UnitIcons";
 import { UNIT_DETAILS, unitColorMap } from "@constants";
 import type { PieceStyle } from "@/shared/types/game";
 import type { TerrainType } from "@/shared/types/game";
@@ -13,7 +13,7 @@ import { UnitMovePreview } from "@/shared/components/molecules/UnitMovePreview";
 import { TerrainIconBadge } from "@/shared/components/atoms/TerrainIconBadge";
 import { GuideBullet } from "@/shared/components/atoms/GuideBullet";
 import SectionDivider from "@/shared/components/molecules/SectionDivider";
-import TerrainIntelTool from "@/client/console/components/organisms/TerrainIntelTool";
+import { TerrainIntelTool } from "@/client/console/components";
 
 interface LearnManualViewProps {
   onBack: () => void;

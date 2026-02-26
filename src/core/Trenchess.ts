@@ -21,6 +21,9 @@ import {
   forfeit,
   setMode,
   mirrorBoard,
+  setTurn,
+  setPhase,
+  patchG,
 } from "@/core/moves";
 
 export const Trenchess: Game<
@@ -29,6 +32,16 @@ export const Trenchess: Game<
   TrenchessSetupData
 > = {
   name: "trenchess",
+
+  minPlayers: 2,
+  maxPlayers: 4,
+
+  moves: {
+    setTurn,
+    setPhase,
+    patchG,
+    setMode,
+  },
 
   setup: (_, setupData) => {
     const data = setupData as TrenchessSetupData;
@@ -63,7 +76,7 @@ export const Trenchess: Game<
     } = createInitialState(mode, players, data?.isMercenary);
 
     const initialReadyPlayers: Record<string, boolean> = {};
-    
+
     return {
       board: data?.board || initialBoard,
       terrain: data?.terrain || initialTerrain,
@@ -80,8 +93,8 @@ export const Trenchess: Game<
       winner: null,
       winnerReason: null,
       isGamemaster: data?.isGamemaster || false,
-      isGamemasterFinished: false,
       isMercenary: data?.isMercenary || false,
+      fogOfWar: true,
     };
   },
 
@@ -98,26 +111,34 @@ export const Trenchess: Game<
                 placePiece(game, row, col, type, explicitPid, true),
               placeTerrain: (game, row, col, type, explicitPid) =>
                 placeTerrain(game, row, col, type, explicitPid, true),
-              ready,
-              randomizeTerrain,
-              randomizeUnits,
-              setClassicalFormation,
-              applyChiGarden,
-              resetToOmega,
-              resetTerrain,
-              resetUnits,
-              forfeit,
+              ready: (game, explicitPid) => ready(game, explicitPid, true),
+              randomizeTerrain: (game, explicitPid) =>
+                randomizeTerrain(game, explicitPid, true),
+              randomizeUnits: (game, explicitPid) =>
+                randomizeUnits(game, explicitPid, true),
+              setClassicalFormation: (game, explicitPid) =>
+                setClassicalFormation(game, explicitPid, true),
+              applyChiGarden: (game, explicitPid) =>
+                applyChiGarden(game, explicitPid, true),
+              resetToOmega: (game, explicitPid) =>
+                resetToOmega(game, explicitPid, true),
+              resetTerrain: (game, explicitPid) =>
+                resetTerrain(game, explicitPid, true),
+              resetUnits: (game, explicitPid) =>
+                resetUnits(game, explicitPid, true),
+              forfeit: (game, explicitPid) => forfeit(game, explicitPid, true),
               setMode,
-              mirrorBoard,
-              finishGamemaster: ({ G }) => {
-                G.isGamemasterFinished = true;
+              mirrorBoard: (game, explicitPid) =>
+                mirrorBoard(game, explicitPid, true),
+              finishGamemaster: ({ events }) => {
+                events?.endPhase();
               },
             },
           },
         },
       },
       // Skip by default unless isGamemaster is true
-      endIf: ({ G }) => !G.isGamemaster || G.isGamemasterFinished,
+      endIf: ({ G }) => !G.isGamemaster,
     },
     setup: setupPhase,
     play: playPhase,

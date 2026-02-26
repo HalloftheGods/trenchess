@@ -13,8 +13,15 @@ export const ready = (
     ctx: context,
   }: { G: TrenchessState; playerID?: string; ctx: Ctx },
   explicitPid?: string,
+  isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(gameState, context, playerID, explicitPid);
+  const playerId = resolvePlayerId(
+    gameState,
+    context,
+    playerID,
+    explicitPid,
+    isGM,
+  );
   
   const hasPlayerId = !!playerId;
   if (hasPlayerId) {

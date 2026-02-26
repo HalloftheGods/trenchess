@@ -24,7 +24,7 @@
         "src/core/mechanics/*"
       ],
       "@ai/*": [
-        "src/core/ai/*"
+        "src/core/bot/*"
       ],
       "@setup/*": [
         "src/core/setup/*"

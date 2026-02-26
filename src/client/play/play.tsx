@@ -9,7 +9,7 @@ import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import RouteGrid from "@/shared/components/templates/RouteGrid";
 import RouteCard from "@/shared/components/molecules/RouteCard";
-import { HeaderLobby } from "@/client/console/components/organisms/HeaderLobby";
+import { HeaderLobby } from "@/client/console/components";
 
 export const PlayView: React.FC = () => {
   const navigate = useNavigate();

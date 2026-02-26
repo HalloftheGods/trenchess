@@ -36,36 +36,38 @@ describe("Bulk Setup Reroll Logic", () => {
     } as unknown as Ctx;
   });
 
+  const random = { Number: () => Math.random() };
+
   const getBoardSnapshot = (state: TrenchessState) =>
     JSON.stringify(state.board);
   const getTerrainSnapshot = (state: TrenchessState) =>
     JSON.stringify(state.terrain);
 
   it("should regenerate terrain on repeated randomizeTerrain calls", () => {
-    randomizeTerrain({ G, ctx });
+    randomizeTerrain({ G, ctx, random });
     const firstTerrain = getTerrainSnapshot(G);
 
-    randomizeTerrain({ G, ctx });
+    randomizeTerrain({ G, ctx, random });
     const secondTerrain = getTerrainSnapshot(G);
 
     expect(firstTerrain).not.toBe(secondTerrain);
   });
 
   it("should regenerate units on repeated randomizeUnits calls", () => {
-    randomizeUnits({ G, ctx });
+    randomizeUnits({ G, ctx, random });
     const firstBoard = getBoardSnapshot(G);
 
-    randomizeUnits({ G, ctx });
+    randomizeUnits({ G, ctx, random });
     const secondBoard = getBoardSnapshot(G);
 
     expect(firstBoard).not.toBe(secondBoard);
   });
 
   it("should regenerate layout on repeated setClassicalFormation (Pi) calls", () => {
-    setClassicalFormation({ G, ctx });
+    setClassicalFormation({ G, ctx, random });
     const firstTerrain = getTerrainSnapshot(G);
 
-    setClassicalFormation({ G, ctx });
+    setClassicalFormation({ G, ctx, random });
     const secondTerrain = getTerrainSnapshot(G);
 
     // Pi always uses Classical units, but terrain should be different
@@ -73,14 +75,14 @@ describe("Bulk Setup Reroll Logic", () => {
   });
 
   it("should cycle through library layouts on repeated applyChiGarden calls", () => {
-    applyChiGarden({ G, ctx });
+    applyChiGarden({ G, ctx, random });
     const firstTerrain = getTerrainSnapshot(G);
 
     // Call multiple times to increase chance of getting a different one
     // (since library might be small or we might get same one by chance)
     let different = false;
     for (let i = 0; i < 5; i++) {
-      applyChiGarden({ G, ctx });
+      applyChiGarden({ G, ctx, random });
       if (getTerrainSnapshot(G) !== firstTerrain) {
         different = true;
         break;

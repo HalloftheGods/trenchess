@@ -5,3 +5,4 @@ export * from "./ready";
 export * from "./bulkSetup";
 export * from "./resets";
 export * from "./forfeit";
+export * from "./debug";

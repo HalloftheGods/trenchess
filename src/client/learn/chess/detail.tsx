@@ -100,7 +100,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
       const getThemedMoveName = (ptype: string) => {
         switch (ptype) {
           case PIECES.KING:
-            return "The Footstool Footsoldier";
+            return "The Footsoldier Footstool";
           case PIECES.QUEEN:
             return "The 8 Legged Gallop";
           case PIECES.ROOK:

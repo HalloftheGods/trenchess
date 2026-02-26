@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Globe, Key, GlobeLock } from "lucide-react";
 import { useRouteContext } from "@context";
 import { ROUTES } from "@constants/routes";
-import { Shoutbox } from "@/client/console/components/organisms/Shoutbox";
+import { Shoutbox } from "@/client/console/components";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";

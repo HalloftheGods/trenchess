@@ -1,4 +1,5 @@
 import React from "react";
+import { TCHeading } from "./ui";
 
 interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   children?: React.ReactNode;
@@ -7,26 +8,10 @@ interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   weight?: "normal" | "medium" | "semibold" | "bold" | "black";
 }
 
-export const Heading: React.FC<HeadingProps> = ({
-  children,
-  className = "",
-  level = 1,
-  weight = "bold",
-  ...props
-}) => {
-  const Component = `h${level}` as React.ElementType;
+/** @deprecated Use TCHeading directly */
+export const Heading: React.FC<HeadingProps> = ({ level = 1, ...props }) => {
+  // Map level to supported levels in TCHeading (1-4)
+  const mappedLevel = level > 4 ? 4 : (level as 1 | 2 | 3 | 4);
 
-  const weightClass = {
-    normal: "font-normal",
-    medium: "font-medium",
-    semibold: "font-semibold",
-    bold: "font-bold",
-    black: "font-black",
-  }[weight];
-
-  return (
-    <Component className={`${weightClass} ${className}`} {...props}>
-      {children}
-    </Component>
-  );
+  return <TCHeading level={mappedLevel} {...props} />;
 };

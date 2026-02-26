@@ -1,4 +1,5 @@
 import type { BoardPiece, TerrainType, PieceType, GameMode } from "./game";
+import type { MovePattern } from "./moves";
 
 export interface SetupResult {
   mode: GameMode;
@@ -7,6 +8,17 @@ export interface SetupResult {
   inventory: Record<string, PieceType[]>;
   terrainInventory: Record<string, TerrainType[]>;
   mercenaryPoints?: Record<string, number>;
+  capturedBy: Record<string, BoardPiece[]>;
+  activePlayers: string[];
+  readyPlayers: Record<string, boolean>;
+  lastMove: {
+    from: [number, number];
+    to: [number, number];
+    path: [number, number][];
+    type: PieceType;
+    player: string;
+    isAiMove?: boolean;
+  } | null;
 }
 
 export interface Move {
@@ -17,9 +29,9 @@ export interface Move {
 
 export interface UnitBlueprint {
   type: PieceType;
-  movePattern: (r: number, c: number) => [number, number][];
-  newMovePattern?: (r: number, c: number) => [number, number][];
-  attackPattern?: (r: number, c: number) => [number, number][];
+  movePattern: MovePattern;
+  newMovePattern?: MovePattern;
+  attackPattern?: MovePattern;
   sanctuaryTerrain?: string[];
 }
 
@@ -28,5 +40,3 @@ export interface TerrainBlueprint {
   allowedUnits: PieceType[];
   blockedUnits: PieceType[];
 }
-
-

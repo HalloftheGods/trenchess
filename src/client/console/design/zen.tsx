@@ -4,7 +4,7 @@ import Header from "@/shared/components/organisms/Header";
 import {
   ConsoleGameBoard,
   DeploymentPanel,
-} from "../components/organisms";
+} from "../components";
 import { Pencil } from "lucide-react";
 import { serializeGame } from "@/shared/utils/gameUrl";
 import type { GameStateHook } from "@/shared/types";

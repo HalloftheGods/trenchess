@@ -3,7 +3,7 @@ import {
   createInitialState,
   applyClassicalFormation,
 } from "@/core/setup/setupLogic";
-import { getBestMove } from "@/core/ai/aiLogic";
+import { getBestMove } from "@/core/bot/aiLogic";
 import { getValidMoves, isPlayerInCheck } from "@/core/mechanics/gameLogic";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
 

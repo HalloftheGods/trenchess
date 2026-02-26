@@ -1,7 +1,7 @@
 import React from "react";
 import { PanelCard } from "../atoms/PanelCard";
 import { SectionRibbon } from "../atoms/SectionRibbon";
-import TerrainMovePreview from "@/client/console/components/organisms/TerrainMovePreview";
+import { TerrainMovePreview } from "@/client/console/components";
 import { LayoutPicker } from "../molecules/LayoutPicker";
 
 interface SimulationPreviewProps {

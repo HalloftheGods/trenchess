@@ -1,13 +1,13 @@
 import React from "react";
-import { TheBattlefield } from "../components/templates/Battkefield";
+import { TheBattlefield } from "../components/templates/Battlefield";
 import {
   ConsoleActionBar,
   ConsoleGameBoard,
-} from "../components/organisms";
-import { BattleSidebar } from "../components/organisms/BattleSidebar";
-import { BattleOverlay } from "../components/molecules/BattleOverlay";
+  BattleSidebar,
+} from "../components";
+import { BattleOverlay } from "../components";
 import { useRouteContext } from "@context";
-import { useConsoleLogic } from "@hooks/useConsoleLogic";
+import { useConsoleLogic } from "@hooks/interface/useConsoleLogic";
 import type { GameStateHook } from "@/shared/types";
 
 interface BattleViewProps {
@@ -21,7 +21,6 @@ const BattleView: React.FC<BattleViewProps> = ({ game }) => {
   return (
     <TheBattlefield
       darkMode={ctx.darkMode}
-      onLogoClick={ctx.onLogoClick}
       gameBoard={<ConsoleGameBoard game={game} />}
       actionBar={<ConsoleActionBar game={game} logic={logic} />}
       leftPanel={

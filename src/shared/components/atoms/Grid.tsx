@@ -1,41 +1,38 @@
 import React from "react";
+import { TCGrid } from "./ui";
 
 interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   className?: string;
   cols?: number | string;
+  mdCols?: number | string;
+  lgCols?: number | string;
   rows?: number | string;
   gap?: number | string;
   as?: React.ElementType;
 }
 
+/** @deprecated Use TCGrid directly */
 export const Grid: React.FC<GridProps> = ({
-  children,
-  className = "",
   cols,
-  rows,
+  mdCols,
+  lgCols,
   gap,
-  as: Component = "div",
   ...props
 }) => {
-  const colsClass = cols
-    ? typeof cols === "number"
-      ? `grid-cols-${cols}`
-      : cols
-    : "";
-  const rowsClass = rows
-    ? typeof rows === "number"
-      ? `grid-rows-${rows}`
-      : rows
-    : "";
-  const gapClass = gap ? (typeof gap === "number" ? `gap-${gap}` : gap) : "";
+  // Map old props to TCGrid props as best as possible
+  const mappedCols = typeof cols === "number" ? (cols as any) : undefined;
+  const mappedMdCols = typeof mdCols === "number" ? (mdCols as any) : undefined;
+  const mappedLgCols = typeof lgCols === "number" ? (lgCols as any) : undefined;
+  const mappedGap = typeof gap === "number" ? (gap as any) : undefined;
 
   return (
-    <Component
-      className={`grid ${colsClass} ${rowsClass} ${gapClass} ${className}`}
+    <TCGrid
+      cols={mappedCols}
+      mdCols={mappedMdCols}
+      lgCols={mappedLgCols}
+      gap={mappedGap}
       {...props}
-    >
-      {children}
-    </Component>
+    />
   );
 };

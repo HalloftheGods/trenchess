@@ -6,6 +6,7 @@ interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
   as?: React.ElementType;
 }
 
+/** @deprecated Use TCCard or a div with Tailwind directly */
 export const Box: React.FC<BoxProps> = ({
   children,
   className = "",

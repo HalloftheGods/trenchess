@@ -1,6 +1,6 @@
-import { Suspense, useMemo, lazy } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
 import type { RouteProps } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { Suspense, useMemo, lazy } from "react";
 import { ROUTES } from "@constants/routes";
 import { LoadingFallback } from "@/shared/components/molecules/LoadingFallback";
 import { LoadingScreen } from "./shared/components";
@@ -8,7 +8,7 @@ import { LoadingScreen } from "./shared/components";
 import {
   playRoutes,
   debugRoutes,
-  devRoutes,
+  getDevRoutes,
   getLearnRoutes,
   getHomeRoutes,
   getGameRoutes,
@@ -17,8 +17,12 @@ import {
 
 import type { AppRoutesProps, RouteConfig, GameMode } from "@/shared/types";
 
-const LazyRouteLayout = lazy(() => import("@/shared/components/templates/RouteLayout"));
-const LearnManualLazy = ROUTES.LEARN_MANUAL.component(() => import("@/client/learn/manual"));
+const LazyRouteLayout = lazy(
+  () => import("@/shared/components/templates/RouteLayout"),
+);
+const LearnManualLazy = ROUTES.LEARN_MANUAL.component(
+  () => import("@/client/learn/manual"),
+);
 
 export const AppRoutes = ({
   game,
@@ -75,14 +79,18 @@ export const AppRoutes = ({
         initFromSeed,
       ),
       ...debugRoutes,
-      ...devRoutes,
+      ...getDevRoutes(game),
       ...getOtherRoutes(darkMode, handleBackToMenu, navigate).filter(
         (r) =>
           r.path === ROUTES.TUTORIAL.path ||
           r.path === ROUTES.LEARN_MANUAL.path,
       ),
       ROUTES.LEARN_MANUAL.define(
-        <LearnManualLazy onBack={handleBackToMenu} darkMode={darkMode} pieceStyle={pieceStyle} />
+        <LearnManualLazy
+          onBack={handleBackToMenu}
+          darkMode={darkMode}
+          pieceStyle={pieceStyle}
+        />,
       ),
       ...getHomeRoutes().filter((r) => r.path === "*"),
     ],
@@ -105,7 +113,7 @@ export const AppRoutes = ({
     const routeProps: RouteProps = {
       element: route.element,
     };
-    
+
     return (
       <Route key={route.path || "wrapper"} path={route.path} {...routeProps}>
         {route.children?.map(renderRoute)}
@@ -141,7 +149,17 @@ export const AppRoutes = ({
                 selectedBoard={mode}
                 setSelectedBoard={(m: GameMode | null) => m && setMode(m)}
                 selectedPreset={selectedPreset}
-                setSelectedPreset={(p: string | null) => setSelectedPreset(p)}
+                setSelectedPreset={(p: string | null) =>
+                  setSelectedPreset(
+                    p as
+                      | "classic"
+                      | "quick"
+                      | "terrainiffic"
+                      | "custom"
+                      | "zen-garden"
+                      | null,
+                  )
+                }
                 playerTypes={playerTypes}
                 activePlayers={activePlayers}
               />

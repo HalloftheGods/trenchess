@@ -10,8 +10,9 @@ import type { Ctx } from "boardgame.io";
 export const forfeit = (
   { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
   explicitPid?: string,
+  isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
+  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
   if (!playerId) return INVALID_MOVE;
 
   // Remove the player from activePlayers

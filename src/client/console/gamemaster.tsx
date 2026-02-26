@@ -4,9 +4,9 @@ import {
   ConsoleActionBar,
   ConsoleGameBoard,
   ConsolePlayerColumn,
-} from "./components/organisms";
+} from "./components";
 import { useRouteContext } from "@context";
-import { useConsoleLogic } from "@hooks/useConsoleLogic";
+import { useConsoleLogic } from "@hooks/interface/useConsoleLogic";
 import type { GameStateHook } from "@/shared/types";
 
 interface GamemasterViewProps {
@@ -20,7 +20,7 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
   const handleNextCommander = () => {
     const currentIndex = game.activePlayers.indexOf(game.turn);
     const nextIndex = (currentIndex + 1) % game.activePlayers.length;
-    game.setTurn(game.activePlayers[nextIndex]);
+    game.setTurn?.(game.activePlayers[nextIndex]);
   };
 
   const handleFinishDeployment = () => {
@@ -30,7 +30,6 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
   return (
     <GamemasterLayout
       darkMode={ctx.darkMode}
-      onLogoClick={ctx.onLogoClick}
       gameBoard={<ConsoleGameBoard game={game} />}
       actionBar={<ConsoleActionBar game={game} logic={logic} />}
       leftPanel={

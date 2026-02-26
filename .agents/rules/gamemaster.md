@@ -25,9 +25,12 @@ CHANT THIS MOTO: Do it right the first time. Take the time to do it right now vs
   - `Molecules/Organisms`: No raw HTML elements. Use Tailwind utilities exclusively.
 - **Micro-Files:** Keep files at 100-150 lines. above 200 indicates solution could have been minimize. Atomize logic aggressively to maintain focus.
 - **Pattern Extraction:** Destructure primitives (e.g., PIECES) locally. Extract shared patterns into named constants at the top of the file to keep code lean.
+- **Constant Deconstruction:** Avoid repeating long constant paths. Destructure primitives at the top of the file to maintain focus.
 
 ## 3. Coding Standards
 - **Commentless Narrative:** Code must tell a story without comments. Use descriptive `Adjective-Noun` or `Verb-Noun` identifiers (e.g., `isValidMove`, `calculateCaptureRate`).
+- **Higher-Order Atomization:** Use "definer" utilities (e.g. `defineMovePattern`) and helper factories (e.g. `move`) to minimize boilerplate, ensure sterile typing, and humanize the implementation story.
+- **Tactical Nomenclature:** Use themed names for upgrades and transitions (e.g. `leapOfFaith`) to maintain the project's narrative.
 - **TypeScript Sterility:** 
   - **Zero `any` Policy:** Use of `any` or `unknown` is a failure of architecture. Find or create the correct type.
   - **Unused Variable Cleanup:** Never leave unused variables, imports, or types. Prefix intentionally unused parameters with `_`.

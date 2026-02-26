@@ -1,21 +1,21 @@
+import { TCText } from "./ui";
+
 interface TrenchessTextProps {
   className?: string;
 }
 
-/**
- * Renders the branded "TRENCHESS" name with the canonical logo colors:
- *   TREN → red-600
- *   CHESS → blue-600
- *
- * Usage:
- *   <TrenchessText />                      → "TRENCHESS"
- *   Play <TrenchessText />                 → "Play TRENCHESS" (white + red + blue)
- */
 const TrenchessText: React.FC<TrenchessTextProps> = ({ className = "" }) => (
-  <span className={`font-black uppercase tracking-tighter ${className}`}>
-    <span className="text-brand-red">Tren</span>
-    <span className="text-brand-blue">chess</span>
-  </span>
+  <TCText
+    variant="none"
+    className={`font-black uppercase tracking-tighter inline-flex ${className}`}
+  >
+    <TCText variant="none" className="text-brand-red">
+      Tren
+    </TCText>
+    <TCText variant="none" className="text-brand-blue">
+      chess
+    </TCText>
+  </TCText>
 );
 
 export default TrenchessText;

@@ -17,12 +17,7 @@ import {
   randomizeUnits as randomizeUnitsLogic,
 } from "@/core/setup/randomization";
 import { applyClassicalFormation as applyClassicalFormationLogic } from "@/core/setup/formations";
-
-interface RandomAPI {
-  Number: () => number;
-  Die: (n: number) => number;
-  Shuffle: <T>(array: T[]) => T[];
-}
+import M from "@engine/moves/base/move";
 
 export const setMode = ({ G }: { G: TrenchessState }, mode: GameMode) => {
   G.mode = mode;
@@ -32,8 +27,9 @@ export const setMode = ({ G }: { G: TrenchessState }, mode: GameMode) => {
 export const mirrorBoard = (
   { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
   explicitPid?: string,
+  isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
+  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
   if (!playerId) return INVALID_MOVE;
 
   const source = playerId;
@@ -52,39 +48,40 @@ export const mirrorBoard = (
   const targetCells = getPlayerCells(target, G.mode);
 
   // Clear target cells first
-  for (const [r, c] of targetCells) {
-    G.board[r][c] = null;
-    G.terrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+  for (const [row, col] of targetCells) {
+    G.board[row][col] = null;
+    G.terrain[row][col] = TERRAIN_TYPES.FLAT as TerrainType;
   }
 
   // Mirror source to target
-  for (const [r, c] of sourceCells) {
-    const piece = G.board[r][c];
-    const terr = G.terrain[r][c];
-    const tr = 11 - r;
-    const tc = 11 - c;
-    if (tr >= 0 && tr < 12 && tc >= 0 && tc < 12) {
+  const max = M.BOARD_SIZE - 1;
+  for (const [row, col] of sourceCells) {
+    const piece = G.board[row][col];
+    const terr = G.terrain[row][col];
+    const tr = max - row;
+    const tc = max - col;
+    if (tr >= 0 && tr < M.BOARD_SIZE && tc >= 0 && tc < M.BOARD_SIZE) {
       G.terrain[tr][tc] = terr;
       if (piece) G.board[tr][tc] = { ...piece, player: target };
     }
   }
 
   // Update inventories
-  const updateInventoryForPlayer = (p: string) => {
+  const updateInventoryForPlayer = (player: string) => {
     const placedUnits: Record<string, number> = {};
-    for (let r = 0; r < 12; r++) {
-      for (let c = 0; c < 12; c++) {
-        const piece = G.board[r][c];
-        if (piece && piece.player === p)
+    for (let row = 0; row < M.BOARD_SIZE; row++) {
+      for (let col = 0; col < M.BOARD_SIZE; col++) {
+        const piece = G.board[row][col];
+        if (piece && piece.player === player)
           placedUnits[piece.type] = (placedUnits[piece.type] || 0) + 1;
       }
     }
     const missingUnits: PieceType[] = [];
-    INITIAL_ARMY.forEach((u) => {
-      const count = placedUnits[u.type] || 0;
-      const missing = u.count - count;
+    INITIAL_ARMY.forEach((unit) => {
+      const count = placedUnits[unit.type] || 0;
+      const missing = unit.count - count;
       if (missing > 0) {
-        for (let i = 0; i < missing; i++) missingUnits.push(u.type);
+        for (let i = 0; i < missing; i++) missingUnits.push(unit.type);
       }
     });
     return missingUnits;
@@ -95,13 +92,22 @@ export const mirrorBoard = (
 };
 
 export const randomizeTerrain = (
-  { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
+  {
+    G,
+    playerID,
+    ctx,
+    random,
+  }: {
+    G: TrenchessState;
+    playerID?: string;
+    ctx: Ctx;
+    random: { Number: () => number };
+  },
   explicitPid?: string,
+  isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
+  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
   if (!playerId) return INVALID_MOVE;
-
-  const random = (ctx as unknown as { random: RandomAPI }).random;
 
   const result = randomizeTerrainLogic(
     G.terrain,
@@ -117,16 +123,25 @@ export const randomizeTerrain = (
 };
 
 export const randomizeUnits = (
-  { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
+  {
+    G,
+    playerID,
+    ctx,
+    random,
+  }: {
+    G: TrenchessState;
+    playerID?: string;
+    ctx: Ctx;
+    random: { Number: () => number };
+  },
   explicitPid?: string,
+  isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
+  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
   if (!playerId) return INVALID_MOVE;
 
-  const random = (ctx as unknown as { random: RandomAPI }).random;
-
   // Random Mode Logic: Choose between intelligent random placement OR a structured formation
-  const strategy = random?.Number() || Math.random();
+  const strategy = random.Number();
 
   if (strategy < 0.4) {
     // 40% chance: Pure intelligent randomization
@@ -149,9 +164,7 @@ export const randomizeUnits = (
       "skirmish",
     ];
     const formation =
-      formations[
-        Math.floor((random?.Number() || Math.random()) * formations.length)
-      ];
+      formations[Math.floor(random.Number() * formations.length)];
 
     const result = applyClassicalFormationLogic(
       G.board,
@@ -168,13 +181,22 @@ export const randomizeUnits = (
 };
 
 export const setClassicalFormation = (
-  { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
+  {
+    G,
+    playerID,
+    ctx,
+    random,
+  }: {
+    G: TrenchessState;
+    playerID?: string;
+    ctx: Ctx;
+    random: { Number: () => number };
+  },
   explicitPid?: string,
+  isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
+  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
   if (!playerId) return INVALID_MOVE;
-
-  const random = (ctx as unknown as { random: RandomAPI }).random;
 
   // Pi Mode: Standard formation + ALWAYS 16 terrain tiles
   const terrainResult = randomizeTerrainLogic(
@@ -202,17 +224,26 @@ export const setClassicalFormation = (
 };
 
 export const applyChiGarden = (
-  { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
+  {
+    G,
+    playerID,
+    ctx,
+    random,
+  }: {
+    G: TrenchessState;
+    playerID?: string;
+    ctx: Ctx;
+    random: { Number: () => number };
+  },
   explicitPid?: string,
+  isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
+  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
   if (!playerId) return INVALID_MOVE;
 
-  const random = (ctx as unknown as { random: RandomAPI }).random;
-
   // 1. Select a random layout from the library
-  const modeSeeds = DEFAULT_SEEDS.filter((s) => s.mode === G.mode);
-  const randVal = random?.Number() || Math.random();
+  const modeSeeds = DEFAULT_SEEDS.filter((seed) => seed.mode === G.mode);
+  const randVal = random.Number();
   const seedToUse =
     modeSeeds.length > 0
       ? modeSeeds[Math.floor(randVal * modeSeeds.length)].seed
@@ -225,28 +256,28 @@ export const applyChiGarden = (
 
     // Check if the configuration has any pieces for this player
     let seedHasUnits = false;
-    for (const [r, c] of myCells) {
-      if (adapted.board[r][c]) {
+    for (const [row, col] of myCells) {
+      if (adapted.board[row][col]) {
         seedHasUnits = true;
         break;
       }
     }
 
     // 2. Apply Terrain + Units (Units only if present in build)
-    for (const [r, c] of myCells) {
-      const newTerrain = adapted.terrain[r][c];
-      const existingPiece = G.board[r][c];
+    for (const [row, col] of myCells) {
+      const newTerrain = adapted.terrain[row][col];
+      const existingPiece = G.board[row][col];
 
       // If seed has units, we overwrite everything in our territory
       if (seedHasUnits) {
-        G.terrain[r][c] = newTerrain;
-        G.board[r][c] = adapted.board[r][c];
+        G.terrain[row][col] = newTerrain;
+        G.board[row][col] = adapted.board[row][col];
       } else {
         // Garden Logic: Preserve existing pieces if compatible, otherwise clear tile
         if (existingPiece && !canPlaceUnit(existingPiece.type, newTerrain)) {
-          G.terrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+          G.terrain[row][col] = TERRAIN_TYPES.FLAT as TerrainType;
         } else {
-          G.terrain[r][c] = newTerrain;
+          G.terrain[row][col] = newTerrain;
         }
       }
     }

@@ -1,28 +1,10 @@
 import { INVALID_MOVE } from "boardgame.io/core";
 import { UNIT_POINTS } from "@constants";
-import { canPlaceUnit, getPlayerCells, getCellOwner } from "@/core/setup/setupLogic";
+import { canPlaceUnit, getCellOwner } from "@/core/setup/setupLogic";
 import { resolvePlayerId } from "@/core/setup/coreHelpers";
-import type { PieceType, TrenchessState, GameMode } from "@/shared/types";
+import { isWithinTerritory } from "./base/territory";
+import type { PieceType, TrenchessState } from "@/shared/types";
 import type { Ctx } from "boardgame.io";
-
-const isWithinTerritory = (
-  playerId: string,
-  mode: GameMode,
-  row: number,
-  col: number,
-): boolean => {
-  const myCells = getPlayerCells(playerId, mode);
-  
-  const isTargetCellInMyCells = myCells.some(
-    ([cellRow, cellCol]) => {
-      const isRowMatch = cellRow === row;
-      const isColMatch = cellCol === col;
-      return isRowMatch && isColMatch;
-    },
-  );
-  
-  return isTargetCellInMyCells;
-};
 
 const handleRemoval = (
   gameState: TrenchessState,
@@ -123,7 +105,7 @@ export const placePiece = (
   explicitPid?: string,
   isGM?: boolean,
 ) => {
-  let playerId = resolvePlayerId(gameState, context, playerID, explicitPid);
+  let playerId = resolvePlayerId(gameState, context, playerID, explicitPid, isGM);
 
   if (isGM) {
     const cellOwner = getCellOwner(row, col, gameState.mode);
@@ -132,26 +114,20 @@ export const placePiece = (
     }
   }
 
-  const hasPlayerId = !!playerId;
-  if (!hasPlayerId) return INVALID_MOVE;
+  if (!playerId) return INVALID_MOVE;
 
   const isPlayerPlacingInOwnTerritory = isWithinTerritory(
-    playerId!,
+    playerId,
     gameState.mode,
-    row,
-    col,
+    [row, col],
   );
   
   if (!isGM && !isPlayerPlacingInOwnTerritory) return INVALID_MOVE;
 
-  const isRemovingPiece = type === null;
-  if (isRemovingPiece) {
-    handleRemoval(gameState, playerId!, row, col);
+  if (type === null) {
+    handleRemoval(gameState, playerId, row, col);
     return;
   }
 
-  const isPlacingPiece = !isRemovingPiece;
-  if (isPlacingPiece) {
-    return handlePlacement(gameState, playerId!, row, col, type!);
-  }
+  return handlePlacement(gameState, playerId, row, col, type);
 };

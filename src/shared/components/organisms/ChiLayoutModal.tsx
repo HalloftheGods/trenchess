@@ -4,7 +4,7 @@
  */
 import React from "react";
 import { X, Map as MapIcon, ChevronRight } from "lucide-react";
-import BoardPreview from "@/client/console/components/organisms/BoardPreview";
+import { BoardPreview } from "@/client/console/components";
 import { useRouteContext } from "@context";
 import type { GameMode, SeedItem } from "@/shared/types/game";
 
@@ -86,7 +86,7 @@ const ChiLayoutModal: React.FC<ChiLayoutModalProps> = ({
                   }`}
                 >
                   <BoardPreview
-                    selectedMode={(item.mode as GameMode) || activeMode}
+                    selectedMode={(item.mode as GameMode) || activeMode || "4p"}
                     selectedProtocol="terrainiffic"
                     customSeed={item.seed}
                     darkMode={darkMode}

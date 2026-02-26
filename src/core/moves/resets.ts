@@ -12,8 +12,9 @@ import type { Ctx } from "boardgame.io";
 export const resetTerrain = (
   { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
   explicitPid?: string,
+  isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
+  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
   if (!playerId) return INVALID_MOVE;
 
   const myCells = getPlayerCells(playerId, G.mode);
@@ -39,8 +40,9 @@ export const resetTerrain = (
 export const resetUnits = (
   { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
   explicitPid?: string,
+  isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
+  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
   if (!playerId) return INVALID_MOVE;
 
   const myCells = getPlayerCells(playerId, G.mode);
@@ -64,13 +66,14 @@ export const resetUnits = (
 export const resetToOmega = (
   { G, playerID, ctx }: { G: TrenchessState; playerID?: string; ctx: Ctx },
   explicitPid?: string,
+  isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid);
+  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
   if (!playerId) return INVALID_MOVE;
 
   // 1. Reset Terrain
-  resetTerrain({ G, playerID, ctx }, explicitPid);
+  resetTerrain({ G, playerID, ctx }, explicitPid, isGM);
 
   // 2. Reset Units
-  resetUnits({ G, playerID, ctx }, explicitPid);
+  resetUnits({ G, playerID, ctx }, explicitPid, isGM);
 };

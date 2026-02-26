@@ -1,7 +1,8 @@
-import { DesertIcon } from "@/client/console/components/atoms/UnitIcons";
+import React from "react";
+import { DesertIcon } from "@/shared/components/atoms/UnitIcons";
 import LogoAsset from "@assets/trenchess.png";
 import { Waves, Trees, Mountain } from "lucide-react";
-import { Box, Flex, Text, Heading } from "@/shared/components/atoms";
+import { TCFlex, TCText, TCHeading, TCHero } from "@/shared/components/atoms";
 
 interface GameLogoProps {
   size?: "small" | "medium" | "large";
@@ -35,7 +36,7 @@ const GameLogo: React.FC<GameLogoProps> = ({
     : "w-5 h-5 md:w-8 md:h-8";
 
   return (
-    <Flex
+    <TCFlex
       direction="col"
       align="center"
       className={`${onClick ? "cursor-pointer group" : ""} ${className}`}
@@ -43,9 +44,9 @@ const GameLogo: React.FC<GameLogoProps> = ({
     >
       {/* Large Math Equation Layout */}
       {(isLarge || isMedium) && (
-        <Flex align="end" gap={2} className="md:gap-6 mt-4 group">
+        <TCFlex align="end" gap={2} className="md:gap-6 mt-4 group">
           {/* Logo on the left, tucked close to the result */}
-          <Box
+          <div
             className={`
               transform -rotate-6 transition-transform
               shrink-0 mb-2 md:mb-4
@@ -62,22 +63,24 @@ const GameLogo: React.FC<GameLogoProps> = ({
               alt="Trenchess Logo"
               className="w-full h-full drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]"
             />
-          </Box>
+          </div>
 
           {/* Vertical Equation Column on the Right */}
-          <Flex
+          <TCFlex
             direction="col"
             align="end"
             className="font-black uppercase tracking-[0.2em]"
           >
             {/* Top: Chess + Terrain */}
-            <Flex
+            <TCFlex
               direction="col"
               align="end"
               gap={1}
               className="md:gap-2 text-slate-500 dark:text-slate-400 mb-2"
             >
-              <Text
+              <TCHeading
+                level={4}
+                variant="brand"
                 className={
                   isMedium
                     ? "text-2xl md:text-3xl lg:text-4xl"
@@ -85,11 +88,12 @@ const GameLogo: React.FC<GameLogoProps> = ({
                 }
               >
                 {topText || "Chess"}
-              </Text>
+              </TCHeading>
 
               {showTerrain && (
-                <Flex align="center" gap={2} className="md:gap-5">
-                  <Text
+                <TCFlex align="center" gap={2} className="md:gap-5">
+                  <TCText
+                    variant="none"
                     className={
                       isMedium
                         ? "text-xl md:text-2xl lg:text-3xl"
@@ -97,104 +101,114 @@ const GameLogo: React.FC<GameLogoProps> = ({
                     }
                   >
                     +
-                  </Text>
-                  <Flex
+                  </TCText>
+                  <TCFlex
                     align="center"
                     className={isMedium ? "gap-1" : "gap-1.5 md:gap-3"}
                   >
-                    <Box
+                    <div
                       className={`terrain-badge terrain-badge-green ${terrainBadgeClass}`}
                     >
                       <Trees className={iconSizeClass} />
-                    </Box>
-                    <Box
+                    </div>
+                    <div
                       className={`terrain-badge terrain-badge-blue ${terrainBadgeClass}`}
                     >
                       <Waves className={iconSizeClass} />
-                    </Box>
-                    <Box
+                    </div>
+                    <div
                       className={`terrain-badge terrain-badge-red ${terrainBadgeClass}`}
                     >
                       <Mountain className={iconSizeClass} />
-                    </Box>
-                    <Box
+                    </div>
+                    <div
                       className={`terrain-badge terrain-badge-amber ${terrainBadgeClass}`}
                     >
                       <DesertIcon className={iconSizeClass} />
-                    </Box>
-                  </Flex>
-                </Flex>
+                    </div>
+                  </TCFlex>
+                </TCFlex>
               )}
-            </Flex>
+            </TCFlex>
 
             {/* Middle: Equation Bar */}
-            <Box className="w-full h-1 md:h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 opacity-60 mb-2 md:mb-4" />
+            <div className="w-full h-1 md:h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 opacity-60 mb-2 md:mb-4" />
 
             {/* Bottom: The Result */}
-            <Heading
-              level={1}
+            <TCHero
               className={`leading-none whitespace-nowrap relative ${
-                logoText
-                  ? "text-4xl md:text-5xl lg:text-6xl"
-                  : isMedium
-                    ? "text-6xl md:text-7xl lg:text-8xl"
-                    : "text-7xl md:text-xl lg:text-[11rem]"
+                logoText ? "text-4xl md:text-5xl lg:text-6xl" : ""
               }`}
             >
               {logoText ? (
-                <Text className="text-slate-100">{logoText}</Text>
+                <TCText variant="none" className="text-slate-100">
+                  {logoText}
+                </TCText>
               ) : (
                 <>
-                  <Text className="brand-title-red">TREN</Text>
-                  <Text className="brand-title-blue">CHESS</Text>
+                  <TCText variant="none" className="brand-title-red">
+                    TREN
+                  </TCText>
+                  <TCText variant="none" className="brand-title-blue">
+                    CHESS
+                  </TCText>
                 </>
               )}
 
               {onResumeClick && (
-                <Box
+                <div
                   className="absolute -top-4 -right-8 md:-top-6 md:-right-12 animate-bounce cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     onResumeClick();
                   }}
                 >
-                  <Box className="bg-emerald-500 text-white px-3 py-1 md:px-4 md:py-2 rounded-full shadow-lg border-2 border-white dark:border-slate-900 flex items-center gap-2 transform rotate-12 hover:rotate-0 transition-transform">
-                    <Text className="text-xs md:text-sm font-bold tracking-normal">
+                  <div className="bg-emerald-500 text-white px-3 py-1 md:px-4 md:py-2 rounded-full shadow-lg border-2 border-white dark:border-slate-900 flex items-center gap-2 transform rotate-12 hover:rotate-0 transition-transform">
+                    <TCText
+                      variant="none"
+                      className="text-xs md:text-sm font-bold tracking-normal"
+                    >
                       RESUME
-                    </Text>
+                    </TCText>
                     {resumeBoardIcon}
                     {resumePresetIcon}
-                  </Box>
-                </Box>
+                  </div>
+                </div>
               )}
-            </Heading>
-          </Flex>
-        </Flex>
+            </TCHero>
+          </TCFlex>
+        </TCFlex>
       )}
 
       {/* Compact Layout (Small) */}
       {!isLarge && !isMedium && (
-        <Flex align="center" gap={4}>
-          <Box className="w-12 h-12 transform -rotate-6">
+        <TCFlex align="center" gap={4}>
+          <div className="w-12 h-12 transform -rotate-6">
             <img src={LogoAsset} alt="Logo" className="w-full h-full" />
-          </Box>
-          <Heading
+          </div>
+          <TCHeading
             level={1}
-            weight="black"
+            variant="brand"
             className="text-4xl tracking-tighter"
           >
             {logoText ? (
-              <Text className="text-slate-100">{logoText}</Text>
+              <TCText variant="none" className="text-slate-100">
+                {logoText}
+              </TCText>
             ) : (
               <>
-                <Text className="brand-title-red">TREN</Text>
-                <Text className="brand-title-blue">CHESS</Text>
+                <TCText variant="none" className="brand-title-red">
+                  TREN
+                </TCText>
+                <TCText variant="none" className="brand-title-blue">
+                  CHESS
+                </TCText>
               </>
             )}
-          </Heading>
-        </Flex>
+          </TCHeading>
+        </TCFlex>
       )}
-    </Flex>
+    </TCFlex>
   );
 };
 

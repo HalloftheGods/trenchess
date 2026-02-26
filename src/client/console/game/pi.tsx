@@ -1,13 +1,13 @@
 import React from "react";
-import { TheBattlefield } from "../components/templates/Battkefield";
+import { TheBattlefield } from "../components/templates/Battlefield";
 import {
   ConsoleActionBar,
   ConsoleGameBoard,
   ConsoleOverlays,
   ConsolePlayerColumn,
-} from "../components/organisms";
+} from "../components";
 import { useRouteContext } from "@context";
-import { useConsoleLogic } from "@hooks/useConsoleLogic";
+import { useConsoleLogic } from "@hooks/interface/useConsoleLogic";
 import type { GameStateHook } from "@/shared/types";
 
 interface PiViewProps {
@@ -25,7 +25,6 @@ const PiView: React.FC<PiViewProps> = ({ game }) => {
   return (
     <TheBattlefield
       darkMode={ctx.darkMode}
-      onLogoClick={ctx.onLogoClick}
       gameBoard={<ConsoleGameBoard game={game} />}
       actionBar={<ConsoleActionBar game={game} logic={logic} />}
       leftPanel={

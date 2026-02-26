@@ -1,12 +1,12 @@
-import { RouteProvider } from "@/shared/context";
+import { RouteProvider, TerminalProvider } from "@/shared/context";
 import { ScrollToTop } from "@/shared/components/atoms/ScrollToTop";
 import { AnalyticsTracker } from "@/shared/components/atoms/AnalyticsTracker";
-import { useAppInitialization } from "@/shared/hooks/useAppInitialization";
-import { useRouteContextValue } from "@/shared/hooks/useRouteContextValue";
+import { useAppInitialization } from "@/shared/hooks/navigation/useAppInitialization";
+import { useRouteContextValue } from "@/shared/hooks/navigation/useRouteContextValue";
 import { GlobalDebugPortal } from "@/shared/components/organisms";
 import { AppRoutes } from "./App.Routes";
 
-const App = () => {
+const AppContent = () => {
   const {
     game,
     seeds,
@@ -33,6 +33,14 @@ const App = () => {
       />
       <GlobalDebugPortal game={game} />
     </RouteProvider>
+  );
+};
+
+const App = () => {
+  return (
+    <TerminalProvider>
+      <AppContent />
+    </TerminalProvider>
   );
 };
 

@@ -9,4 +9,6 @@ Keep names precise and quick to read and understand.
 Named Booleans: Use named boolean variables for all conditionals to ensure readability.
 Name Anonymous functions: define the function as a const before passing it. Do not abbreviate params to single letters.
 Readable Conditionals & Anonymous Functions: Always name conditionals and anonymous functions into readable variables to minimize confusion.
+Higher-Order Atomization: Use "definer" utilities (e.g. `defineMovePattern`) and helper factories (e.g. `move`) to minimize boilerplate, ensure sterile typing, and humanize the implementation story.
+Tactical Nomenclature: Use themed names for upgrades and transitions (e.g. `leapOfFaith`) to maintain the project's narrative.
 Refer to coding_standards.examples.ms for implementation patterns.

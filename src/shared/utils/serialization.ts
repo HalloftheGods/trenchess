@@ -73,7 +73,10 @@ export const deserializeGame = (
     const seed: GameSeed = JSON.parse(json);
 
     // Validate mode basic check
-    if (!["2p-ns", "2p-ew", "4p", "2v2"].includes(seed.m)) {
+    if (
+      !seed.m ||
+      !["2p-ns", "2p-ew", "4p", "2v2"].includes(seed.m as string)
+    ) {
       console.warn("Invalid mode in seed:", seed.m);
       return null;
     }

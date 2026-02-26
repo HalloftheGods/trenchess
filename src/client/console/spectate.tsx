@@ -4,7 +4,7 @@ import Header from "@/shared/components/organisms/Header";
 import {
   ConsoleGameBoard,
   Shoutbox,
-} from "./components/organisms";
+} from "./components";
 import type { GameStateHook } from "@/shared/types";
 
 interface SpectatorViewProps {

@@ -1,4 +1,5 @@
 import React from "react";
+import type { MovePattern } from "./moves";
 
 export type GameMode = "2p-ns" | "2p-ew" | "4p" | "2v2" | null;
 
@@ -69,9 +70,9 @@ export interface TrenchessState {
   winner: string | null;
   winnerReason: GameOverReason;
   isGamemaster?: boolean;
-  isGamemasterFinished?: boolean;
   isMercenary?: boolean;
   mercenaryPoints?: Record<string, number>;
+  fogOfWar: boolean;
 }
 
 export interface TrenchessSetupData {
@@ -81,7 +82,6 @@ export interface TrenchessSetupData {
   inventory?: Record<string, PieceType[]>;
   terrainInventory?: Record<string, TerrainType[]>;
   isGamemaster?: boolean;
-  isGamemasterFinished?: boolean;
   isMercenary?: boolean;
 }
 
@@ -142,9 +142,9 @@ export interface UnitDetails {
     stats: string[];
     sanctuaryTerrain?: TerrainType[];
   };
-  movePattern: (r: number, c: number) => [number, number][];
-  newMovePattern?: (r: number, c: number) => [number, number][];
-  attackPattern?: (r: number, c: number) => [number, number][];
+  movePattern: MovePattern;
+  newMovePattern?: MovePattern;
+  attackPattern?: MovePattern;
 }
 
 export interface UnitColors {

@@ -411,7 +411,6 @@ export const RulesView: React.FC<RulesPageProps> = ({ onBack, darkMode }) => {
       <div className="flex flex-row justify-center gap-6">
         <div className="justify-center flex flex-col">
           <PageHeader onLogoClick={onBack} />
-
           <h2 className="text-4xl md:text-5xl font-black uppercase tracking-widest mb-3 flex items-center gap-4">
             <span className={`text-${slides[currentSlide].color}`}>
               {slides[currentSlide].title.split(".")[0]}.

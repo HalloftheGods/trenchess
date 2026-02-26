@@ -6,7 +6,7 @@ import {
   generateElementalTerrain,
 } from "@/core/setup/setupLogic";
 import type { GameMode } from "@/shared/types/game";
-import { getBestMove } from "@/core/ai/aiLogic";
+import { getBestMove } from "@/core/bot/aiLogic";
 
 const SERVER_URL = "http://localhost:3001";
 const ROOM_ID =

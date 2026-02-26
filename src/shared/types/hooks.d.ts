@@ -40,51 +40,6 @@ export interface UseBoardPreviewProps {
   hideUnits?: boolean;
 }
 
-export interface BoardState {
-  board: (BoardPiece | null)[][];
-  setBoard: React.Dispatch<React.SetStateAction<(BoardPiece | null)[][]>>;
-  terrain: TerrainType[][];
-  setTerrain: React.Dispatch<React.SetStateAction<TerrainType[][]>>;
-  inventory: Record<string, PieceType[]>;
-  setInventory: React.Dispatch<
-    React.SetStateAction<Record<string, PieceType[]>>
-  >;
-  terrainInventory: Record<string, TerrainType[]>;
-  setTerrainInventory: React.Dispatch<
-    React.SetStateAction<Record<string, TerrainType[]>>
-  >;
-  capturedBy: Record<string, BoardPiece[]>;
-  setCapturedBy: React.Dispatch<
-    React.SetStateAction<Record<string, BoardPiece[]>>
-  >;
-}
-
-export interface TurnState {
-  turn: string;
-  setTurn: React.Dispatch<React.SetStateAction<string>>;
-  activePlayers: string[];
-  setActivePlayers: React.Dispatch<React.SetStateAction<string[]>>;
-  readyPlayers: Record<string, boolean>;
-  setReadyPlayers: React.Dispatch<
-    React.SetStateAction<Record<string, boolean>>
-  >;
-  playerTypes: Record<string, "human" | "computer">;
-  setPlayerTypes: React.Dispatch<
-    React.SetStateAction<Record<string, "human" | "computer">>
-  >;
-  winner: string | null;
-  setWinner: React.Dispatch<React.SetStateAction<string | null>>;
-  winnerReason: GameOverReason;
-  setWinnerReason: React.Dispatch<React.SetStateAction<GameOverReason>>;
-  inCheck: boolean;
-  setInCheck: React.Dispatch<React.SetStateAction<boolean>>;
-  isThinking: boolean;
-  setIsThinking: React.Dispatch<React.SetStateAction<boolean>>;
-  localPlayerName: string;
-  setLocalPlayerName: React.Dispatch<React.SetStateAction<string>>;
-  getPlayerDisplayName: (pid: string) => string;
-}
-
 export interface GameConfigState {
   mode: GameMode;
   setMode: React.Dispatch<React.SetStateAction<GameMode>>;
@@ -112,6 +67,8 @@ export interface GameConfigState {
   >;
   showBgDebug: boolean;
   setShowBgDebug: React.Dispatch<React.SetStateAction<boolean>>;
+  showRules: boolean;
+  setShowRules: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface BgioClient {
@@ -143,6 +100,9 @@ export interface BgioClient {
     finishGamemaster: () => void;
     setMode: (mode: GameMode) => void;
     mirrorBoard: (pid?: string) => void;
+    setTurn: (pid: string) => void;
+    setPhase: (phase: string) => void;
+    patchG: (patch: Partial<TrenchessState>) => void;
   };
   stop: () => void;
   start: () => void;
@@ -154,9 +114,19 @@ export interface BgioClient {
 }
 
 export interface GameCore {
-  boardState: BoardState;
-  turnState: TurnState;
   configState: GameConfigState;
+  turnState: {
+    playerTypes: Record<string, "human" | "computer">;
+    setPlayerTypes: React.Dispatch<
+      React.SetStateAction<Record<string, "human" | "computer">>
+    >;
+    isThinking: boolean;
+    setIsThinking: React.Dispatch<React.SetStateAction<boolean>>;
+    localPlayerName: string;
+    setLocalPlayerName: React.Dispatch<React.SetStateAction<string>>;
+    getPlayerDisplayName: (pid: string) => string;
+    inCheck: boolean;
+  };
   isAllPlaced: boolean;
   isPlayerReady: (p: string) => boolean;
   initFromSeed: (seed: string, targetState?: GameState) => boolean;

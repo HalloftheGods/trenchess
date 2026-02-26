@@ -15,7 +15,7 @@
         "src/core/mechanics/*"
       ],
       "@ai/*": [
-        "src/core/ai/*"
+        "src/core/bot/*"
       ],
       "@setup/*": [
         "src/core/setup/*"
@@ -138,7 +138,9 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src",

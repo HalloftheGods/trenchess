@@ -37,8 +37,8 @@ export const createInitialState = (
 
   players.forEach((player) => {
     // Map initial army to flat list of types
-    const playerUnitList = isMercenary 
-      ? (["king"] as PieceType[]) 
+    const playerUnitList = isMercenary
+      ? (["king"] as PieceType[])
       : INITIAL_ARMY.flatMap((unit) => {
           const unitCount = unit.count;
           const unitType = unit.type;
@@ -60,5 +60,16 @@ export const createInitialState = (
     terrainInventory[player] = playerTerrainList;
   });
 
-  return { mode, board, terrain, inventory, terrainInventory, mercenaryPoints };
+  return {
+    mode,
+    board,
+    terrain,
+    inventory,
+    terrainInventory,
+    mercenaryPoints,
+    capturedBy: players.reduce((acc, p) => ({ ...acc, [p]: [] }), {}),
+    activePlayers: players,
+    readyPlayers: {},
+    lastMove: null,
+  };
 };

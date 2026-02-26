@@ -1,6 +1,6 @@
 import type { TerrainType, TerrainDetail } from "@/shared/types/game";
 import { Trees, Waves, Mountain } from "lucide-react";
-import { DesertIcon } from "@/client/console/components/atoms/UnitIcons";
+import { DesertIcon } from "@/shared/components/atoms/UnitIcons";
 import { TERRAIN_TYPES, CORE_TERRAIN_INTEL } from "../terrain";
 
 const { FORESTS, SWAMPS, MOUNTAINS, DESERT } = TERRAIN_TYPES;

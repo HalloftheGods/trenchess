@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { useMultiplayer } from "@/shared/hooks/useMultiplayer";
+import { useMultiplayer } from "@/shared/hooks/engine/useMultiplayer";
 
 // Mock boardgame.io LobbyClient
 const mockLobbyMethods = {

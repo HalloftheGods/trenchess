@@ -20,7 +20,8 @@ export const ROUTES = {
   GAME_CONSOLE: paramRoute<{ style: string }>("/console/game/:style"),
   GAME_MODE: paramRoute<{ mode: string }>("/game/board/:mode"),
   GAME_DETAIL: paramRoute<{ roomId: string }>("/game/:roomId"),
-  GAMEMASTER: route("/game/gamemaster"),
+  GAMEMASTER: route("/console/gamemaster"),
+  MASTER_CONSOLE: route("/console/master"),
   LIBRARY: route("/library"),
   ZEN: route("/zen"),
 
@@ -48,7 +49,7 @@ export const ROUTES = {
   STATS: route("/stats"),
   TUTORIAL: route("/tutorial"),
   DEV_CLI: route("/dev/cli"),
-  DEV_RULESET: route("/dev/ruleset"),
+  DEV_RULESET: route("/dev/rules"),
 } as const;
 
 export const ROUTE_NAME_MAP: Record<string, string> = {

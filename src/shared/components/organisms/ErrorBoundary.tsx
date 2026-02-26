@@ -1,6 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { AlertOctagon } from "lucide-react";
-import { DesertIcon } from "@/client/console/components/atoms/UnitIcons";
+import { DesertIcon } from "@/shared/components/atoms/UnitIcons";
 
 interface Props {
   children?: ReactNode;

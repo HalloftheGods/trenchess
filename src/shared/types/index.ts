@@ -7,6 +7,8 @@ export type * from "./hooks";
 export type * from "./state";
 export type * from "./core";
 export type * from "./route";
+export type * from "./stats";
+export type { n, Coord, Coords, MoveFn, MovePattern } from "./moves";
 
 import type { GameMode, PreviewConfig, SeedItem, ArmyUnit } from "./game";
 import type { MultiplayerState } from "./multiplayer";

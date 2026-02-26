@@ -9,19 +9,22 @@ const GameConsoleLazy = ROUTES.GAME_CONSOLE.component(
   () => import("@/client/console/game/index"),
 );
 const GameModeLazy = ROUTES.GAME_MODE.component(
-  () => import("@/client/console/GameScreen"),
+  () => import("@/client/console/screens/GameScreen"),
 );
 const GamemasterLazy = ROUTES.GAMEMASTER.component(
   () => import("@/client/console/gamemaster"),
 );
+const MasterConsoleLazy = ROUTES.MASTER_CONSOLE.component(
+  () => import("@/client/console/master"),
+);
 const GameLazy = ROUTES.GAME.component(
-  () => import("@/client/console/GameScreen"),
+  () => import("@/client/console/screens/GameScreen"),
 );
 const GameDetailLazy = ROUTES.GAME_DETAIL.component(
-  () => import("@/client/console/GameScreen"),
+  () => import("@/client/console/screens/GameScreen"),
 );
 const LibraryLazy = ROUTES.LIBRARY.component(
-  () => import("@/client/console/components/organisms/SeedLibrary"),
+  () => import("@/client/console/components/hud/organisms/SeedLibrary"),
 );
 
 import ConsoleView from "./index";
@@ -53,6 +56,8 @@ export const getGameRoutes = (
       ROUTES.GAME_MODE.define(<GameModeLazy {...gameScreenProps} />),
 
       ROUTES.GAMEMASTER.define(<GamemasterLazy game={game} />),
+
+      ROUTES.MASTER_CONSOLE.define(<MasterConsoleLazy game={game} />),
 
       ROUTES.GAME.define(<GameLazy {...gameScreenProps} />),
 

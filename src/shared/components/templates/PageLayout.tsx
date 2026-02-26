@@ -9,7 +9,7 @@ import CopyrightFooter from "@/shared/components/molecules/CopyrightFooter";
 
 interface PageLayoutProps {
   darkMode: boolean;
-  header: React.ReactNode;
+  header?: React.ReactNode;
   children: React.ReactNode;
   footer?: React.ReactNode;
 }

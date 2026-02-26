@@ -1,6 +1,7 @@
 import { BOARD_SIZE } from "@constants";
 import { PIECES } from "@constants/pieces";
-import { TERRAIN_TYPES } from "@constants/terrain";
+import { TERRAIN_TYPES, CORE_TERRAIN_INTEL } from "@constants/terrain";
+import { UNIT_BLUEPRINTS } from "@/core/blueprints/units";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
@@ -21,62 +22,43 @@ export const isPlayerInCheck = (
   for (let row = 0; row < BOARD_SIZE; row++) {
     for (let col = 0; col < BOARD_SIZE; col++) {
       const pieceAtCell = board[row][col];
-      const isOccupied = !!pieceAtCell;
-      const isOwnPiece = isOccupied && pieceAtCell!.player === player;
-      const isKing = isOwnPiece && pieceAtCell!.type === KING;
-
-      if (isKing) {
+      if (pieceAtCell?.player === player && pieceAtCell?.type === KING) {
         kingPosition = [row, col];
         break;
       }
     }
-    const isKingFound = !!kingPosition;
-    if (isKingFound) break;
+    if (kingPosition) break;
   }
 
-  const isKingLost = !kingPosition;
-  if (isKingLost) return true; // Lost state
+  if (!kingPosition) return true; // Lost state if King is missing
 
-  const [kingRow, kingCol] = kingPosition!;
+  const [kingRow, kingCol] = kingPosition;
 
   // 2. Check if any enemy piece can attack kingPosition
-  const isAnyEnemyAttackingKing = board.some((boardRow, row) =>
+  return board.some((boardRow, row) =>
     boardRow.some((cell, col) => {
-      const hasPieceAtCell = !!cell;
-      const isEnemyPiece = hasPieceAtCell && cell!.player !== player;
-
-      if (isEnemyPiece) {
-        // Get their raw moves (recursionDepth 1 to skip own checkmate filtering)
+      if (cell && cell.player !== player) {
         const enemyMoves = getValidMoves(
           row,
           col,
-          cell!,
-          cell!.player,
+          cell,
+          cell.player,
           board,
           terrain,
           mode,
           1,
         );
 
-        const canReachKing = enemyMoves.some(([moveRow, moveCol]) => {
-          const isRowMatch = moveRow === kingRow;
-          const isColMatch = moveCol === kingCol;
-          return isRowMatch && isColMatch;
-        });
-
-        return canReachKing;
+        return enemyMoves.some(([mr, mc]) => mr === kingRow && mc === kingCol);
       }
       return false;
     }),
   );
-
-  return isAnyEnemyAttackingKing;
 };
 
 /**
  * hasAnyValidMoves (Molecule)
  * Returns true if the player has at least one legal move available.
- * Used for stalemate and checkmate detection.
  */
 export const hasAnyValidMoves = (
   player: string,
@@ -84,31 +66,15 @@ export const hasAnyValidMoves = (
   terrain: TerrainType[][],
   mode: GameMode,
 ): boolean => {
-  const canPerformAnyAction = board.some((boardRow, row) =>
+  return board.some((boardRow, row) =>
     boardRow.some((cell, col) => {
-      const hasPieceAtCell = !!cell;
-      const isOwnPiece = hasPieceAtCell && cell!.player === player;
-
-      if (isOwnPiece) {
-        const moves = getValidMoves(
-          row,
-          col,
-          cell!,
-          player,
-          board,
-          terrain,
-          mode,
-          0,
-        );
-
-        const hasMovesAvailable = moves.length > 0;
-        return hasMovesAvailable;
+      if (cell && cell.player === player) {
+        const moves = getValidMoves(row, col, cell, player, board, terrain, mode, 0);
+        return moves.length > 0;
       }
       return false;
     }),
   );
-
-  return canPerformAnyAction;
 };
 
 /**
@@ -124,69 +90,95 @@ const checkCellCompatibility = (
   terrain: TerrainType[][],
   validMoves: number[][],
 ): boolean => {
-  const isRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-  const isColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-  const isWithinBoardBoundaries = isRowInBounds && isColInBounds;
+  const isWithinBoard =
+    targetRow >= 0 &&
+    targetRow < BOARD_SIZE &&
+    targetCol >= 0 &&
+    targetCol < BOARD_SIZE;
 
-  if (!isWithinBoardBoundaries) return false;
+  if (!isWithinBoard) return false;
 
   const targetPiece = board[targetRow][targetCol];
-  const targetTerrain = terrain[targetRow]?.[targetCol];
-  if (!targetTerrain) return false;
+  const targetTerrain = terrain[targetRow][targetCol];
 
-  const isDesert = targetTerrain === TERRAIN_TYPES.DESERT;
-  if (isDesert) {
-    const isOccupied = !!targetPiece;
-    const isEnemyAtCell = isOccupied && targetPiece!.player !== player;
-    const isCellEmpty = !isOccupied;
+  // 1. Terrain Blocking
+  const terrainIntel = CORE_TERRAIN_INTEL[targetTerrain];
+  const isBlockedByTerrain = terrainIntel?.blockedUnits.includes(piece.type);
+  if (isBlockedByTerrain) return false;
 
-    const isEnemyOrEmpty = isCellEmpty || isEnemyAtCell;
-    if (isEnemyOrEmpty) {
-      validMoves.push([targetRow, targetCol]);
-    }
-    return false;
+  // 2. Desert Special Rule: Cannot pass through, but can end/capture there.
+  if (targetTerrain === TERRAIN_TYPES.DESERT) {
+    const isEnemyOrEmpty = !targetPiece || targetPiece.player !== player;
+    if (isEnemyOrEmpty) validMoves.push([targetRow, targetCol]);
+    return false; // Path stops at desert
   }
 
-  const isKnight = piece.type === KNIGHT;
-  const isBishop = piece.type === BISHOP;
-  const isRook = piece.type === ROOK;
-
-  const isSwamps = targetTerrain === TERRAIN_TYPES.SWAMPS;
-  const isForests = targetTerrain === TERRAIN_TYPES.FORESTS;
-  const isMountains = targetTerrain === TERRAIN_TYPES.MOUNTAINS;
-
-  const isKnightBlockedBySwamp = isKnight && isSwamps;
-  const isBishopBlockedBySwamp = isBishop && isSwamps;
-  const isRookBlockedByForest = isRook && isForests;
-  const isKnightBlockedByForest = isKnight && isForests;
-  const isRookBlockedByMountain = isRook && isMountains;
-  const isBishopBlockedByMountain = isBishop && isMountains;
-
-  const isSanctuaryBlocked =
-    isKnightBlockedBySwamp ||
-    isBishopBlockedBySwamp ||
-    isRookBlockedByForest ||
-    isKnightBlockedByForest ||
-    isRookBlockedByMountain ||
-    isBishopBlockedByMountain;
-
-  if (isSanctuaryBlocked) return false;
-
+  // 3. Occupancy Check
   const isOccupied = !!targetPiece;
   if (!isOccupied) {
     validMoves.push([targetRow, targetCol]);
     return true; // Path continues
-  } else {
-    const isEnemyPiece = targetPiece!.player !== player;
-    if (isEnemyPiece) {
-      validMoves.push([targetRow, targetCol]);
-    }
-    return false; // Path blocked by inhabitant
   }
+
+  const isEnemyPiece = targetPiece!.player !== player;
+  if (isEnemyPiece) {
+    validMoves.push([targetRow, targetCol]);
+  }
+
+  return false; // Path blocked by inhabitant
+};
+
+/**
+ * addStepMoves (Atom)
+ * Handles non-sliding move patterns from blueprints.
+ */
+const addStepMoves = (
+  row: number,
+  col: number,
+  piece: BoardPiece,
+  player: string,
+  board: (BoardPiece | null)[][],
+  terrain: TerrainType[][],
+  validMoves: number[][],
+  pattern?: (r: number, c: number) => [number, number][],
+) => {
+  if (!pattern) return;
+  pattern(row, col).forEach(([tr, tc]) => {
+    checkCellCompatibility(tr, tc, piece, player, board, terrain, validMoves);
+  });
+};
+
+/**
+ * addSlidingMoves (Atom)
+ * Handles sliding move patterns in specific directions.
+ */
+const addSlidingMoves = (
+  row: number,
+  col: number,
+  piece: BoardPiece,
+  player: string,
+  board: (BoardPiece | null)[][],
+  terrain: TerrainType[][],
+  validMoves: number[][],
+  directions: number[][],
+) => {
+  directions.forEach(([dr, dc]) => {
+    let tr = row + dr;
+    let tc = col + dc;
+    while (
+      checkCellCompatibility(tr, tc, piece, player, board, terrain, validMoves)
+    ) {
+      const isOccupied = !!board[tr][tc];
+      if (isOccupied) break;
+      tr += dr;
+      tc += dc;
+    }
+  });
 };
 
 /**
  * addPawnMoves (Molecule)
+ * Pawns have complex mode-dependent movement.
  */
 const addPawnMoves = (
   row: number,
@@ -212,15 +204,9 @@ const addPawnMoves = (
     [1, -1].forEach((rowOffset) => {
       const targetRow = row + rowOffset;
       const targetCol = col + moveDirection;
-
-      const isTargetRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-      const isTargetColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-      const isTargetInBounds = isTargetRowInBounds && isTargetColInBounds;
-
+      const isTargetInBounds = targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE;
       const targetPiece = isTargetInBounds ? board[targetRow][targetCol] : null;
-      const isEnemyTarget = !!targetPiece && targetPiece.player !== player;
-
-      if (isEnemyTarget) validMoves.push([targetRow, targetCol]);
+      if (targetPiece && targetPiece.player !== player) validMoves.push([targetRow, targetCol]);
     });
 
     // Backflip Maneuver
@@ -232,74 +218,35 @@ const addPawnMoves = (
     [1, -1].forEach((rowOffset) => {
       const targetRow = row + rowOffset;
       const targetCol = col - 2 * moveDirection;
-
-      const isTargetRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-      const isTargetColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-      const isTargetInBounds = isTargetRowInBounds && isTargetColInBounds;
-
+      const isTargetInBounds = targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE;
       const targetPiece = isTargetInBounds ? board[targetRow][targetCol] : null;
-      const isEnemyTarget = !!targetPiece && targetPiece.player !== player;
-
-      if (isEnemyTarget) validMoves.push([targetRow, targetCol]);
+      if (targetPiece && targetPiece.player !== player) validMoves.push([targetRow, targetCol]);
     });
   } else if (isFourPlayerMode) {
-    let rowDir = 0,
-      colDir = 0;
-    if (player === "red") {
-      rowDir = 1;
-      colDir = 1;
-    } else if (player === "yellow") {
-      rowDir = 1;
-      colDir = -1;
-    } else if (player === "green") {
-      rowDir = -1;
-      colDir = 1;
-    } else if (player === "blue") {
-      rowDir = -1;
-      colDir = -1;
-    }
+    let rowDir = 0, colDir = 0;
+    if (player === "red") { rowDir = 1; colDir = 1; }
+    else if (player === "yellow") { rowDir = 1; colDir = -1; }
+    else if (player === "green") { rowDir = -1; colDir = 1; }
+    else if (player === "blue") { rowDir = -1; colDir = -1; }
 
-    [
-      [rowDir, 0],
-      [0, colDir],
-    ].forEach(([dr, dc]) => {
-      const targetRow = row + dr;
-      const targetCol = col + dc;
-
-      const isTargetRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-      const isTargetColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-      const isTargetInBounds = isTargetRowInBounds && isTargetColInBounds;
-
-      const isCellClear = isTargetInBounds && !board[targetRow][targetCol];
-      if (isCellClear) validMoves.push([targetRow, targetCol]);
+    [[rowDir, 0], [0, colDir]].forEach(([dr, dc]) => {
+      const tr = row + dr;
+      const tc = col + dc;
+      if (tr >= 0 && tr < BOARD_SIZE && tc >= 0 && tc < BOARD_SIZE && !board[tr][tc]) validMoves.push([tr, tc]);
     });
 
-    const captureRow = row + rowDir;
-    const captureCol = col + colDir;
-    const isCaptureRowInBounds = captureRow >= 0 && captureRow < BOARD_SIZE;
-    const isCaptureColInBounds = captureCol >= 0 && captureCol < BOARD_SIZE;
-    const isCaptureInBounds = isCaptureRowInBounds && isCaptureColInBounds;
-
-    const targetPiece = isCaptureInBounds
-      ? board[captureRow][captureCol]
-      : null;
-    const isEnemyTarget = !!targetPiece && targetPiece.player !== player;
-    if (isEnemyTarget) validMoves.push([captureRow, captureCol]);
+    const cr = row + rowDir;
+    const cc = col + colDir;
+    if (cr >= 0 && cr < BOARD_SIZE && cc >= 0 && cc < BOARD_SIZE) {
+      const targetPiece = board[cr][cc];
+      if (targetPiece && targetPiece.player !== player) validMoves.push([cr, cc]);
+    }
 
     // Backflip
-    [
-      [-2 * rowDir, 0],
-      [0, -2 * colDir],
-    ].forEach(([dr, dc]) => {
-      const targetRow = row + dr;
-      const targetCol = col + dc;
-
-      const isTargetRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-      const isTargetColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-      const isTargetInBounds = isTargetRowInBounds && isTargetColInBounds;
-
-      const isCellClear = isTargetInBounds && !board[targetRow][targetCol];
-      if (isCellClear) validMoves.push([targetRow, targetCol]);
+    [[-2 * rowDir, 0], [0, -2 * colDir]].forEach(([dr, dc]) => {
+      const tr = row + dr;
+      const tc = col + dc;
+      if (tr >= 0 && tr < BOARD_SIZE && tc >= 0 && tc < BOARD_SIZE && !board[tr][tc]) validMoves.push([tr, tc]);
     });
   } else {
     // Standard North-South
@@ -307,286 +254,30 @@ const addPawnMoves = (
     const moveDirection = isNorthPlayer ? 1 : -1;
     const frontRow = row + moveDirection;
 
-    const isFrontRowInBounds = frontRow >= 0 && frontRow < BOARD_SIZE;
-    const isPathClear = isFrontRowInBounds && !board[frontRow][col];
-    if (isPathClear) validMoves.push([frontRow, col]);
+    if (frontRow >= 0 && frontRow < BOARD_SIZE && !board[frontRow][col]) validMoves.push([frontRow, col]);
 
     [1, -1].forEach((colOffset) => {
-      const targetRow = row + moveDirection;
-      const targetCol = col + colOffset;
-
-      const isTargetRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-      const isTargetColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-      const isTargetInBounds = isTargetRowInBounds && isTargetColInBounds;
-
-      const targetPiece = isTargetInBounds ? board[targetRow][targetCol] : null;
-      const isEnemyTarget = !!targetPiece && targetPiece.player !== player;
-
-      if (isEnemyTarget) validMoves.push([targetRow, targetCol]);
+      const tr = row + moveDirection;
+      const tc = col + colOffset;
+      if (tr >= 0 && tr < BOARD_SIZE && tc >= 0 && tc < BOARD_SIZE) {
+        const targetPiece = board[tr][tc];
+        if (targetPiece && targetPiece.player !== player) validMoves.push([tr, tc]);
+      }
     });
 
     // Backflip
     const backflipRow = row - 2 * moveDirection;
-    const isBackflipRowInBounds = backflipRow >= 0 && backflipRow < BOARD_SIZE;
-    const isBackflipClear = isBackflipRowInBounds && !board[backflipRow][col];
-    if (isBackflipClear) validMoves.push([backflipRow, col]);
+    if (backflipRow >= 0 && backflipRow < BOARD_SIZE && !board[backflipRow][col]) validMoves.push([backflipRow, col]);
 
     [1, -1].forEach((colOffset) => {
-      const targetRow = row - 2 * moveDirection;
-      const targetCol = col + colOffset;
-
-      const isTargetRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-      const isTargetColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-      const isTargetInBounds = isTargetRowInBounds && isTargetColInBounds;
-
-      const targetPiece = isTargetInBounds ? board[targetRow][targetCol] : null;
-      const isEnemyTarget = !!targetPiece && targetPiece.player !== player;
-
-      if (isEnemyTarget) validMoves.push([targetRow, targetCol]);
+      const tr = row - 2 * moveDirection;
+      const tc = col + colOffset;
+      if (tr >= 0 && tr < BOARD_SIZE && tc >= 0 && tc < BOARD_SIZE) {
+        const targetPiece = board[tr][tc];
+        if (targetPiece && targetPiece.player !== player) validMoves.push([tr, tc]);
+      }
     });
   }
-};
-
-/**
- * addKnightMoves (Molecule)
- */
-const addKnightMoves = (
-  row: number,
-  col: number,
-  piece: BoardPiece,
-  player: string,
-  board: (BoardPiece | null)[][],
-  terrain: TerrainType[][],
-  validMoves: number[][],
-) => {
-  const knightLeaps = [
-    [-2, -1],
-    [-2, 1],
-    [-1, -2],
-    [-1, 2],
-    [1, -2],
-    [1, 2],
-    [2, -1],
-    [2, 1],
-  ];
-
-  knightLeaps.forEach(([dr, dc]) => {
-    const targetRow = row + dr;
-    const targetCol = col + dc;
-
-    const isTargetRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-    const isTargetColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-    const isTargetInBounds = isTargetRowInBounds && isTargetColInBounds;
-
-    if (isTargetInBounds) {
-      const targetPiece = board[targetRow][targetCol];
-      const targetTerrain = terrain[targetRow][targetCol];
-
-      const isKnight = piece.type === KNIGHT;
-      const isSwamps = targetTerrain === TERRAIN_TYPES.SWAMPS;
-      const isForests = targetTerrain === TERRAIN_TYPES.FORESTS;
-      const isTerrainBlocked = isKnight && (isSwamps || isForests);
-
-      if (isTerrainBlocked) return;
-
-      const isOccupied = !!targetPiece;
-      const isOwnPiece = isOccupied && targetPiece!.player === player;
-      const isEnemyOrEmpty = !isOwnPiece;
-
-      if (isEnemyOrEmpty) validMoves.push([targetRow, targetCol]);
-    }
-  });
-
-  // Elite Jump (Triple Leap)
-  const eliteJumps = [
-    [3, 0],
-    [-3, 0],
-    [0, 3],
-    [0, -3],
-  ];
-  eliteJumps.forEach(([dr, dc]) => {
-    const targetRow = row + dr;
-    const targetCol = col + dc;
-
-    const isTargetRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-    const isTargetColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-    const isTargetInBounds = isTargetRowInBounds && isTargetColInBounds;
-
-    if (isTargetInBounds) {
-      const targetPiece = board[targetRow][targetCol];
-      const targetTerrain = terrain[targetRow][targetCol];
-
-      const isSwamps = targetTerrain === TERRAIN_TYPES.SWAMPS;
-      const isForests = targetTerrain === TERRAIN_TYPES.FORESTS;
-      const isTerrainBlocked = isSwamps || isForests;
-
-      if (isTerrainBlocked) return;
-
-      const isOccupied = !!targetPiece;
-      const isOwnPiece = isOccupied && targetPiece!.player === player;
-      const isEnemyOrEmpty = !isOwnPiece;
-
-      if (isEnemyOrEmpty) validMoves.push([targetRow, targetCol]);
-    }
-  });
-};
-
-/**
- * addBishopMoves (Molecule)
- */
-const addBishopMoves = (
-  row: number,
-  col: number,
-  piece: BoardPiece,
-  player: string,
-  board: (BoardPiece | null)[][],
-  terrain: TerrainType[][],
-  validMoves: number[][],
-) => {
-  const diagonals = [
-    [1, 1],
-    [1, -1],
-    [-1, 1],
-    [-1, -1],
-  ];
-  diagonals.forEach(([dr, dc]) => {
-    let targetRow = row + dr;
-    let targetCol = col + dc;
-
-    while (true) {
-      const isRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-      const isColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-      const isWithinBoard = isRowInBounds && isColInBounds;
-      if (!isWithinBoard) break;
-
-      const canContinue = checkCellCompatibility(
-        targetRow,
-        targetCol,
-        piece,
-        player,
-        board,
-        terrain,
-        validMoves,
-      );
-
-      const isOccupied = !!board[targetRow][targetCol];
-      if (!canContinue || isOccupied) break;
-
-      targetRow += dr;
-      targetCol += dc;
-    }
-  });
-
-  // Seer Leap
-  const seerLeaps = [
-    [2, 0],
-    [-2, 0],
-    [0, 2],
-    [0, -2],
-  ];
-  seerLeaps.forEach(([dr, dc]) => {
-    const targetRow = row + dr;
-    const targetCol = col + dc;
-
-    const isTargetRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-    const isTargetColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-    const isTargetInBounds = isTargetRowInBounds && isTargetColInBounds;
-
-    if (isTargetInBounds) {
-      const targetTerrain = terrain[targetRow][targetCol];
-      const isSwamps = targetTerrain === TERRAIN_TYPES.SWAMPS;
-      const isMountains = targetTerrain === TERRAIN_TYPES.MOUNTAINS;
-      const isTerrainBlocked = isSwamps || isMountains;
-
-      if (isTerrainBlocked) return;
-
-      const targetPiece = board[targetRow][targetCol];
-      const isOccupied = !!targetPiece;
-      const isOwnPiece = isOccupied && targetPiece!.player === player;
-      const isEnemyOrEmpty = !isOwnPiece;
-
-      if (isEnemyOrEmpty) validMoves.push([targetRow, targetCol]);
-    }
-  });
-};
-
-/**
- * addRookMoves (Molecule)
- */
-const addRookMoves = (
-  row: number,
-  col: number,
-  piece: BoardPiece,
-  player: string,
-  board: (BoardPiece | null)[][],
-  terrain: TerrainType[][],
-  validMoves: number[][],
-) => {
-  const orthogonals = [
-    [0, 1],
-    [0, -1],
-    [1, 0],
-    [-1, 0],
-  ];
-  orthogonals.forEach(([dr, dc]) => {
-    let targetRow = row + dr;
-    let targetCol = col + dc;
-
-    while (true) {
-      const isRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-      const isColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-      const isWithinBoard = isRowInBounds && isColInBounds;
-      if (!isWithinBoard) break;
-
-      const canContinue = checkCellCompatibility(
-        targetRow,
-        targetCol,
-        piece,
-        player,
-        board,
-        terrain,
-        validMoves,
-      );
-
-      const isOccupied = !!board[targetRow][targetCol];
-      if (!canContinue || isOccupied) break;
-
-      targetRow += dr;
-      targetCol += dc;
-    }
-  });
-
-  // Bastion Leap
-  const bastionLeaps = [
-    [1, 1],
-    [1, -1],
-    [-1, 1],
-    [-1, -1],
-  ];
-  bastionLeaps.forEach(([dr, dc]) => {
-    const targetRow = row + dr;
-    const targetCol = col + dc;
-
-    const isTargetRowInBounds = targetRow >= 0 && targetRow < BOARD_SIZE;
-    const isTargetColInBounds = targetCol >= 0 && targetCol < BOARD_SIZE;
-    const isTargetInBounds = isTargetRowInBounds && isTargetColInBounds;
-
-    if (isTargetInBounds) {
-      const targetTerrain = terrain[targetRow][targetCol];
-      const isForests = targetTerrain === TERRAIN_TYPES.FORESTS;
-      const isMountains = targetTerrain === TERRAIN_TYPES.MOUNTAINS;
-      const isTerrainBlocked = isForests || isMountains;
-
-      if (isTerrainBlocked) return;
-
-      const targetPiece = board[targetRow][targetCol];
-      const isOccupied = !!targetPiece;
-      const isOwnPiece = isOccupied && targetPiece!.player === player;
-      const isEnemyOrEmpty = !isOwnPiece;
-
-      if (isEnemyOrEmpty) validMoves.push([targetRow, targetCol]);
-    }
-  });
 };
 
 /**
@@ -603,98 +294,37 @@ const addKingMoves = (
   recursionDepth: number,
   validMoves: number[][],
 ) => {
-  // 1. Standard 1-step moves in all 8 directions
-  const kingSteps = [
-    [-1, -1],
-    [-1, 0],
-    [-1, 1],
-    [0, -1],
-    [0, 1],
-    [1, -1],
-    [1, 0],
-    [1, 1],
-  ];
+  const blueprint = UNIT_BLUEPRINTS[KING];
 
-  kingSteps.forEach(([dr, dc]) => {
-    checkCellCompatibility(
-      row + dr,
-      col + dc,
-      piece,
-      player,
-      board,
-      terrain,
-      validMoves,
-    );
-  });
+  // 1. Standard 1-step moves
+  addStepMoves(row, col, piece, player, board, terrain, validMoves, blueprint.movePattern);
 
   // 2. Orthogonal Joust (2-step jumps)
-  const kingOrthogonalJumps = [
-    [0, 1],
-    [0, -1],
-    [1, 0],
-    [-1, 0],
-  ];
-  kingOrthogonalJumps.forEach(([dr, dc]) => {
+  blueprint.newMovePattern?.(row, col).forEach(([tr, tc]) => {
+    const dr = (tr - row) / 2;
+    const dc = (tc - col) / 2;
     const midRow = row + dr;
     const midCol = col + dc;
 
-    const isMidRowInBounds = midRow >= 0 && midRow < BOARD_SIZE;
-    const isMidColInBounds = midCol >= 0 && midCol < BOARD_SIZE;
-    const isWithinBounds = isMidRowInBounds && isMidColInBounds;
-    if (!isWithinBounds) return;
-
-    const midPiece = board[midRow][midCol];
-    const isOccupied = !!midPiece;
-    const isOwnPiece = isOccupied && midPiece!.player === player;
-    const isSafeToPass = !isOwnPiece;
+    const midPiece = board[midRow]?.[midCol];
+    const isSafeToPass = !midPiece || midPiece.player !== player;
 
     if (isSafeToPass) {
-      const isDeepRecursion = recursionDepth > 0;
-      if (isDeepRecursion) {
-        checkCellCompatibility(
-          row + dr * 2,
-          col + dc * 2,
-          piece,
-          player,
-          board,
-          terrain,
-          validMoves,
-        );
+      if (recursionDepth > 0) {
+        checkCellCompatibility(tr, tc, piece, player, board, terrain, validMoves);
       } else {
-        // Tactical Rule: King cannot pass through a guarded square
         const isMidPointGuarded = board.some((boardRow, br) =>
           boardRow.some((cell, bc) => {
-            const hasEnemyPiece = cell && cell.player !== player;
-            if (!hasEnemyPiece) return false;
-
-            const enemyMoves = getValidMoves(
-              br,
-              bc,
-              cell!,
-              cell!.player,
-              board,
-              terrain,
-              mode,
-              recursionDepth + 1,
-            );
-
-            const canEnemyReachMidPoint = enemyMoves.some(
-              ([mr, mc]) => mr === midRow && mc === midCol,
-            );
-            return canEnemyReachMidPoint;
+            if (cell && cell.player !== player) {
+              const enemyMoves = getValidMoves(br, bc, cell, cell.player, board, terrain, mode, recursionDepth + 1);
+              return enemyMoves.some(([mr, mc]) => mr === midRow && mc === midCol);
+            }
+            return false;
           }),
         );
 
         if (!isMidPointGuarded) {
-          checkCellCompatibility(
-            row + dr * 2,
-            col + dc * 2,
-            piece,
-            player,
-            board,
-            terrain,
-            validMoves,
-          );
+          checkCellCompatibility(tr, tc, piece, player, board, terrain, validMoves);
         }
       }
     }
@@ -703,7 +333,7 @@ const addKingMoves = (
 
 /**
  * getValidMoves — The definitive tactical calculation for unit movement.
- * Refactored for Immortal Narrative standards and Granular coding.
+ * Refactored to use UNIT_BLUEPRINTS and provide clean, readable logic.
  */
 export const getValidMoves = (
   row: number,
@@ -717,63 +347,37 @@ export const getValidMoves = (
   skipCheck = false,
 ): number[][] => {
   const validMoves: number[][] = [];
+  const { type } = piece;
 
-  const isPawn = piece.type === PAWN;
-  const isKnight = piece.type === KNIGHT;
-  const isBishop = piece.type === BISHOP;
-  const isRook = piece.type === ROOK;
-  const isQueen = piece.type === QUEEN;
-  const isKing = piece.type === KING;
-
-  if (isPawn) {
+  if (type === PAWN) {
     addPawnMoves(row, col, player, board, mode, validMoves);
+  } else if (type === KNIGHT) {
+    addStepMoves(row, col, piece, player, board, terrain, validMoves, UNIT_BLUEPRINTS[KNIGHT].movePattern);
+    addStepMoves(row, col, piece, player, board, terrain, validMoves, UNIT_BLUEPRINTS[KNIGHT].newMovePattern);
+  } else if (type === BISHOP) {
+    addSlidingMoves(row, col, piece, player, board, terrain, validMoves, [[1, 1], [1, -1], [-1, 1], [-1, -1]]);
+    addStepMoves(row, col, piece, player, board, terrain, validMoves, UNIT_BLUEPRINTS[BISHOP].newMovePattern);
+  } else if (type === ROOK) {
+    addSlidingMoves(row, col, piece, player, board, terrain, validMoves, [[0, 1], [0, -1], [1, 0], [-1, 0]]);
+    addStepMoves(row, col, piece, player, board, terrain, validMoves, UNIT_BLUEPRINTS[ROOK].newMovePattern);
+  } else if (type === QUEEN) {
+    addSlidingMoves(row, col, piece, player, board, terrain, validMoves, [
+      [0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]
+    ]);
+    addStepMoves(row, col, piece, player, board, terrain, validMoves, UNIT_BLUEPRINTS[QUEEN].newMovePattern);
+  } else if (type === KING) {
+    addKingMoves(row, col, piece, player, board, terrain, mode, recursionDepth, validMoves);
   }
 
-  if (isKnight || isQueen) {
-    addKnightMoves(row, col, piece, player, board, terrain, validMoves);
-  }
-
-  if (isBishop || isQueen) {
-    addBishopMoves(row, col, piece, player, board, terrain, validMoves);
-  }
-
-  if (isRook || isQueen) {
-    addRookMoves(row, col, piece, player, board, terrain, validMoves);
-  }
-
-  if (isKing) {
-    addKingMoves(
-      row,
-      col,
-      piece,
-      player,
-      board,
-      terrain,
-      mode,
-      recursionDepth,
-      validMoves,
-    );
-  }
-
-  // --- Final Safety Check: Checkmate Prevention ---
+  // Final Safety Check: Checkmate Prevention
   const isOuterSearch = recursionDepth === 0;
-  const shouldFilterChecks = isOuterSearch && !skipCheck;
-
-  if (shouldFilterChecks) {
+  if (isOuterSearch && !skipCheck) {
     const isSafeMove = ([moveRow, moveCol]: number[]) => {
       const simulatedBoard = board.map((r) => [...r]);
       simulatedBoard[moveRow][moveCol] = { ...piece };
       simulatedBoard[row][col] = null;
-
-      const isInCheckAfterMove = isPlayerInCheck(
-        player,
-        simulatedBoard,
-        terrain,
-        mode,
-      );
-      return !isInCheckAfterMove;
+      return !isPlayerInCheck(player, simulatedBoard, terrain, mode);
     };
-
     return validMoves.filter(isSafeMove);
   }
 
