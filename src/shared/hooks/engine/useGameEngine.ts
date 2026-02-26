@@ -37,7 +37,6 @@ export function useGameEngine({
     playerID?: string;
     roomId?: string;
     debug?: boolean;
-    mode?: GameMode;
   }>({});
 
   const initClient = useCallback(() => {
@@ -77,7 +76,6 @@ export function useGameEngine({
       playerID,
       roomId: multiplayer.roomId || undefined,
       debug: showBgDebug,
-      mode: mode,
     };
   }, [
     mode,
@@ -104,8 +102,7 @@ export function useGameEngine({
       !clientRef.current ||
       local.playerID !== playerID ||
       local.roomId !== currentRoomId ||
-      local.debug !== showBgDebug ||
-      local.mode !== mode;
+      local.debug !== showBgDebug;
 
     if (needsReinit) {
       initClient();
@@ -114,7 +111,6 @@ export function useGameEngine({
     multiplayer.playerIndex,
     multiplayer.roomId,
     showBgDebug,
-    mode,
     initClient,
   ]);
 

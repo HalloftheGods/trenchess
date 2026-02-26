@@ -1,6 +1,11 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 
-export type TerminalLogType = "command" | "response" | "error" | "info" | "game";
+export type TerminalLogType =
+  | "command"
+  | "response"
+  | "error"
+  | "info"
+  | "game";
 
 export interface TerminalHistoryItem {
   id: string;
@@ -15,9 +20,13 @@ interface TerminalContextValue {
   clearHistory: () => void;
 }
 
-const TerminalContext = createContext<TerminalContextValue | undefined>(undefined);
+const TerminalContext = createContext<TerminalContextValue | undefined>(
+  undefined,
+);
 
-export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [history, setHistory] = useState<TerminalHistoryItem[]>([]);
 
   const addLog = useCallback((type: TerminalLogType, text: string) => {
@@ -45,6 +54,7 @@ export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTerminal = () => {
   const context = useContext(TerminalContext);
   if (!context) {

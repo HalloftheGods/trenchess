@@ -62,9 +62,11 @@ export interface GameStateHook
   };
   dispatch: (command: string) => void;
   patchG: (patch: Partial<TrenchessState>) => void;
+  authorizeMasterProtocol: () => void;
   ready: (pid?: string) => void;
   startGame: () => void;
   finishGamemaster: () => void;
   forfeit: (pid?: string) => void;
-  setGameState?: (phase: any) => void;
+  setGameState?: (phase: string) => void;
+  setMode: (mode: GameMode) => void;
 }

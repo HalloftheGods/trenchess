@@ -86,11 +86,15 @@ export const ArchitectOrganism: React.FC<ArchitectOrganismProps> = ({
             >
               <AllianceTone size={20} />
             </ActionBarSlot>
-            {(gameState === "gamemaster" || handleRules) && <TCDivider className="h-6" />}
+            {(gameState === "gamemaster" || handleRules) && (
+              <TCDivider className="h-6" />
+            )}
           </>
         )}
 
-        {(gameState === "gamemaster" || (!setMode && gameState !== "play") || handleRules) && (
+        {(gameState === "gamemaster" ||
+          (!setMode && gameState !== "play") ||
+          handleRules) && (
           <>
             {handleRules && (
               <ActionBarSlot
@@ -163,7 +167,7 @@ export const ArchitectOrganism: React.FC<ArchitectOrganismProps> = ({
       >
         {gameState === "gamemaster"
           ? "Architect Palette"
-          : !!setMode
+          : setMode
             ? "Active Board"
             : "Quick Game Modes"}
       </TCText>

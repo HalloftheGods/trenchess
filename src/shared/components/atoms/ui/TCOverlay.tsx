@@ -7,6 +7,7 @@ interface TCOverlayProps {
   blur?: "sm" | "md" | "lg" | "xl" | "none";
   opacity?: "light" | "medium" | "heavy";
   className?: string;
+  fullHeight?: boolean;
 }
 
 export const TCOverlay: React.FC<TCOverlayProps> = ({
@@ -16,6 +17,7 @@ export const TCOverlay: React.FC<TCOverlayProps> = ({
   blur = "xl",
   opacity = "heavy",
   className = "",
+  fullHeight = false,
 }) => {
   if (!isOpen) return null;
 
@@ -39,7 +41,12 @@ export const TCOverlay: React.FC<TCOverlayProps> = ({
 
   return (
     <div className={combinedClassName} onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()}>{children}</div>
+      <div 
+        className={fullHeight ? "w-full h-full flex flex-col items-center justify-center" : ""}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {children}
+      </div>
     </div>
   );
 };

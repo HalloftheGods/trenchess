@@ -30,7 +30,7 @@ export const TCToggle: React.FC<TCToggleProps> = ({
     },
   };
 
-  const currentSize = sizes[size];
+  const currentSize = sizes[size] || sizes.md;
 
   const handleToggle = () => {
     if (!disabled) {

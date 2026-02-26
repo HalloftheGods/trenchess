@@ -247,12 +247,19 @@ export function useGameState(): GameStateHook {
           if (clientRef.current) clientRef.current.moves.setPhase(phase);
         },
         mode: G.mode,
+        setMode: (m: GameMode) => {
+          if (clientRef.current) clientRef.current.moves.setMode(m);
+        },
         lastMove,
         isStarted: true,
         dispatch,
 
         patchG: (patch: Partial<TrenchessState>) => {
           if (clientRef.current) clientRef.current.moves.patchG(patch);
+        },
+
+        authorizeMasterProtocol: () => {
+          if (clientRef.current) clientRef.current.moves.authorizeMasterProtocol();
         },
 
         ready: (pid?: string) => {
@@ -302,8 +309,7 @@ export function useGameState(): GameStateHook {
       multiplayer,
       clientRef,
       G.mode,
-      config.showRules,
-      config.setShowRules,
+      dispatch,
     ],
   );
 }

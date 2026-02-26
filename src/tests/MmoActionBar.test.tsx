@@ -36,7 +36,7 @@ describe("MmoActionBar", () => {
     game: mockGame,
     logic: mockLogic,
     darkMode: false,
-    pieceStyle: "lucide" as any,
+    pieceStyle: "lucide" as const,
     toggleTheme: vi.fn(),
     togglePieceStyle: vi.fn(),
   };
@@ -45,40 +45,40 @@ describe("MmoActionBar", () => {
     vi.clearAllMocks();
   });
 
-  it("should call dispatch with 'pi' when Pi button is clicked", () => {
+  it("should call dispatch with 'board pi' when Pi button is clicked", () => {
     render(<MmoActionBar {...mockProps} />);
 
     const piButton = screen.getByTitle("Pi");
     fireEvent.click(piButton);
 
-    expect(mockDispatch).toHaveBeenCalledWith("pi");
+    expect(mockDispatch).toHaveBeenCalledWith("board pi");
   });
 
-  it("should call dispatch with 'chi' when Chi button is clicked", () => {
+  it("should call dispatch with 'board chi' when Chi button is clicked", () => {
     render(<MmoActionBar {...mockProps} />);
 
     const chiButton = screen.getByTitle("Chi");
     fireEvent.click(chiButton);
 
-    expect(mockDispatch).toHaveBeenCalledWith("chi");
+    expect(mockDispatch).toHaveBeenCalledWith("board chi");
   });
 
-  it("should call dispatch with 'random' when Random button is clicked", () => {
+  it("should call dispatch with 'board random' when Random button is clicked", () => {
     render(<MmoActionBar {...mockProps} />);
 
     const randomButton = screen.getByTitle("Random");
     fireEvent.click(randomButton);
 
-    expect(mockDispatch).toHaveBeenCalledWith("random");
+    expect(mockDispatch).toHaveBeenCalledWith("board random");
   });
 
-  it("should call dispatch with 'omega' when Omega button is clicked", () => {
+  it("should call dispatch with 'board omega' when Omega button is clicked", () => {
     render(<MmoActionBar {...mockProps} />);
 
     const omegaButton = screen.getByTitle("Omega");
     fireEvent.click(omegaButton);
 
-    expect(mockDispatch).toHaveBeenCalledWith("omega");
+    expect(mockDispatch).toHaveBeenCalledWith("board omega");
   });
 
   it("should respect locks for randomization", () => {

@@ -10,7 +10,7 @@ interface LoseScreenProps {
   terrain?: TerrainType[][];
   mode?: string;
   getPlayerDisplayName?: (pid: string) => string;
-  setGameState?: (state: any) => void;
+  setGameState?: (state: string) => void;
 }
 
 const LoseScreen: React.FC<LoseScreenProps> = ({
@@ -31,12 +31,16 @@ const LoseScreen: React.FC<LoseScreenProps> = ({
   },
   setGameState = (state) => console.log("Set game state to", state),
 }) => {
-  const mockBoard: (BoardPiece | null)[][] = board || Array(12)
-    .fill(null)
-    .map(() => Array(12).fill(null));
-  const mockTerrain: TerrainType[][] = terrain || Array(12)
-    .fill(null)
-    .map(() => Array(12).fill("flat"));
+  const mockBoard: (BoardPiece | null)[][] =
+    board ||
+    Array(12)
+      .fill(null)
+      .map(() => Array(12).fill(null));
+  const mockTerrain: TerrainType[][] =
+    terrain ||
+    Array(12)
+      .fill(null)
+      .map(() => Array(12).fill("flat"));
 
   if (!board) {
     mockBoard[0][0] = { type: "king", player: "blue" };
@@ -50,7 +54,7 @@ const LoseScreen: React.FC<LoseScreenProps> = ({
       localPlayerName={localPlayerName}
       board={mockBoard}
       terrain={mockTerrain}
-      mode={mode as any}
+      mode={mode as "2p-ns" | "2p-ew" | "4p" | "2v2"}
       getPlayerDisplayName={getPlayerDisplayName}
       setGameState={setGameState}
     />

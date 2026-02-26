@@ -14,9 +14,6 @@ const GameModeLazy = ROUTES.GAME_MODE.component(
 const GamemasterLazy = ROUTES.GAMEMASTER.component(
   () => import("@/client/console/gamemaster"),
 );
-const MasterConsoleLazy = ROUTES.MASTER_CONSOLE.component(
-  () => import("@/client/console/master"),
-);
 const GameLazy = ROUTES.GAME.component(
   () => import("@/client/console/screens/GameScreen"),
 );
@@ -56,8 +53,6 @@ export const getGameRoutes = (
       ROUTES.GAME_MODE.define(<GameModeLazy {...gameScreenProps} />),
 
       ROUTES.GAMEMASTER.define(<GamemasterLazy game={game} />),
-
-      ROUTES.MASTER_CONSOLE.define(<MasterConsoleLazy game={game} />),
 
       ROUTES.GAME.define(<GameLazy {...gameScreenProps} />),
 

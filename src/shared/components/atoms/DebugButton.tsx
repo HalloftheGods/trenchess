@@ -28,7 +28,7 @@ export const DebugButton: React.FC<DebugButtonProps> = ({
 
   return (
     <TCButton
-      variant={mappedVariant as any}
+      variant={mappedVariant as "brand" | "danger" | "secondary"}
       className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider h-auto min-h-0 ${activeClasses} ${className}`}
       {...props}
     >

@@ -138,12 +138,12 @@ const MmoActionBar: React.FC<MmoActionBarProps> = ({
           chessLocked={chessLocked}
           trenchLocked={trenchLocked}
           bothLocked={bothLocked}
-          handleOmega={() => dispatch("omega")}
-          handleClassic={() => dispatch("pi")}
-          handleChi={() => dispatch("chi")}
-          handleRandomize={() => dispatch("random")}
+          handleOmega={() => dispatch("board omega")}
+          handleClassic={() => dispatch("board pi")}
+          handleChi={() => dispatch("board chi")}
+          handleRandomize={() => dispatch("board random")}
           handleRules={() => game.setShowRules(true)}
-          mirrorBoard={() => dispatch("mirror")}
+          mirrorBoard={() => dispatch("board mirror")}
         />
       }
       trench={

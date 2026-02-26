@@ -11,5 +11,5 @@ interface TextProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 /** @deprecated Use TCText directly */
 export const Text: React.FC<TextProps> = ({ ...props }) => {
-  return <TCText {...(props as any)} />;
+  return <TCText {...props} />;
 };

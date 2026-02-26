@@ -19,9 +19,23 @@ import {
 import { applyClassicalFormation as applyClassicalFormationLogic } from "@/core/setup/formations";
 import M from "@engine/moves/base/move";
 
-export const setMode = ({ G }: { G: TrenchessState }, mode: GameMode) => {
+import { createInitialState } from "@/core/setup/setupLogic";
+
+export const setMode = (
+  { G }: { G: TrenchessState },
+  mode: GameMode,
+) => {
+  const players = getPlayersForMode(mode);
+  const initialState = createInitialState(mode, players, G.isMercenary);
+  
+  // Authoritative Reset
   G.mode = mode;
-  G.activePlayers = getPlayersForMode(mode);
+  G.activePlayers = players;
+  G.board = initialState.board;
+  G.terrain = initialState.terrain;
+  G.inventory = initialState.inventory;
+  G.terrainInventory = initialState.terrainInventory;
+  G.readyPlayers = {};
 };
 
 export const mirrorBoard = (
@@ -106,14 +120,21 @@ export const randomizeTerrain = (
   explicitPid?: string,
   isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
-  if (!playerId) return INVALID_MOVE;
+  const pids =
+    isGM && !explicitPid
+      ? G.activePlayers
+      : [resolvePlayerId(G, ctx, playerID, explicitPid, isGM)].filter(
+          Boolean,
+        ) as string[];
+
+  const noPlayersFound = pids.length === 0;
+  if (noPlayersFound) return INVALID_MOVE;
 
   const result = randomizeTerrainLogic(
     G.terrain,
     G.board,
     G.terrainInventory,
-    [playerId],
+    pids,
     G.mode,
     undefined,
     random,
@@ -137,8 +158,15 @@ export const randomizeUnits = (
   explicitPid?: string,
   isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
-  if (!playerId) return INVALID_MOVE;
+  const pids =
+    isGM && !explicitPid
+      ? G.activePlayers
+      : [resolvePlayerId(G, ctx, playerID, explicitPid, isGM)].filter(
+          Boolean,
+        ) as string[];
+
+  const noPlayersFound = pids.length === 0;
+  if (noPlayersFound) return INVALID_MOVE;
 
   // Random Mode Logic: Choose between intelligent random placement OR a structured formation
   const strategy = random.Number();
@@ -149,7 +177,7 @@ export const randomizeUnits = (
       G.board,
       G.terrain,
       G.inventory,
-      [playerId],
+      pids,
       G.mode,
       random,
     );
@@ -171,7 +199,7 @@ export const randomizeUnits = (
       G.terrain,
       G.inventory,
       G.terrainInventory,
-      [playerId],
+      pids,
       G.mode,
       formation,
     );
@@ -195,15 +223,22 @@ export const setClassicalFormation = (
   explicitPid?: string,
   isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
-  if (!playerId) return INVALID_MOVE;
+  const pids =
+    isGM && !explicitPid
+      ? G.activePlayers
+      : [resolvePlayerId(G, ctx, playerID, explicitPid, isGM)].filter(
+          Boolean,
+        ) as string[];
+
+  const noPlayersFound = pids.length === 0;
+  if (noPlayersFound) return INVALID_MOVE;
 
   // Pi Mode: Standard formation + ALWAYS 16 terrain tiles
   const terrainResult = randomizeTerrainLogic(
     G.terrain,
     G.board,
     G.terrainInventory,
-    [playerId],
+    pids,
     G.mode,
     16,
     random,
@@ -213,7 +248,7 @@ export const setClassicalFormation = (
     terrainResult.terrain,
     G.inventory,
     terrainResult.terrainInventory,
-    [playerId],
+    pids,
     G.mode,
     "classical",
   );
@@ -238,8 +273,15 @@ export const applyChiGarden = (
   explicitPid?: string,
   isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
-  if (!playerId) return INVALID_MOVE;
+  const pids =
+    isGM && !explicitPid
+      ? G.activePlayers
+      : [resolvePlayerId(G, ctx, playerID, explicitPid, isGM)].filter(
+          Boolean,
+        ) as string[];
+
+  const noPlayersFound = pids.length === 0;
+  if (noPlayersFound) return INVALID_MOVE;
 
   // 1. Select a random layout from the library
   const modeSeeds = DEFAULT_SEEDS.filter((seed) => seed.mode === G.mode);
@@ -252,39 +294,42 @@ export const applyChiGarden = (
   const decoded = deserializeGame(seedToUse);
   if (decoded) {
     const adapted = adaptSeedToMode(decoded, G.mode);
-    const myCells = getPlayerCells(playerId, G.mode);
 
-    // Check if the configuration has any pieces for this player
-    let seedHasUnits = false;
-    for (const [row, col] of myCells) {
-      if (adapted.board[row][col]) {
-        seedHasUnits = true;
-        break;
-      }
-    }
+    pids.forEach((playerId) => {
+      const myCells = getPlayerCells(playerId, G.mode);
 
-    // 2. Apply Terrain + Units (Units only if present in build)
-    for (const [row, col] of myCells) {
-      const newTerrain = adapted.terrain[row][col];
-      const existingPiece = G.board[row][col];
-
-      // If seed has units, we overwrite everything in our territory
-      if (seedHasUnits) {
-        G.terrain[row][col] = newTerrain;
-        G.board[row][col] = adapted.board[row][col];
-      } else {
-        // Garden Logic: Preserve existing pieces if compatible, otherwise clear tile
-        if (existingPiece && !canPlaceUnit(existingPiece.type, newTerrain)) {
-          G.terrain[row][col] = TERRAIN_TYPES.FLAT as TerrainType;
-        } else {
-          G.terrain[row][col] = newTerrain;
+      // Check if the configuration has any pieces for this player
+      let seedHasUnits = false;
+      for (const [row, col] of myCells) {
+        if (adapted.board[row][col]) {
+          seedHasUnits = true;
+          break;
         }
       }
-    }
 
-    if (seedHasUnits) {
-      G.inventory[playerId] = [];
-    }
-    G.terrainInventory[playerId] = [];
+      // 2. Apply Terrain + Units (Units only if present in build)
+      for (const [row, col] of myCells) {
+        const newTerrain = adapted.terrain[row][col];
+        const existingPiece = G.board[row][col];
+
+        // If seed has units, we overwrite everything in our territory
+        if (seedHasUnits) {
+          G.terrain[row][col] = newTerrain;
+          G.board[row][col] = adapted.board[row][col];
+        } else {
+          // Garden Logic: Preserve existing pieces if compatible, otherwise clear tile
+          if (existingPiece && !canPlaceUnit(existingPiece.type, newTerrain)) {
+            G.terrain[row][col] = TERRAIN_TYPES.FLAT as TerrainType;
+          } else {
+            G.terrain[row][col] = newTerrain;
+          }
+        }
+      }
+
+      if (seedHasUnits) {
+        G.inventory[playerId] = [];
+      }
+      G.terrainInventory[playerId] = [];
+    });
   }
 };

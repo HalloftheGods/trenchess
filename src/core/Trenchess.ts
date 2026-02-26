@@ -24,6 +24,8 @@ import {
   setTurn,
   setPhase,
   patchG,
+  authorizeMasterProtocol,
+  CORE_ADMIN_MOVES,
 } from "@/core/moves";
 
 export const Trenchess: Game<
@@ -41,6 +43,8 @@ export const Trenchess: Game<
     setPhase,
     patchG,
     setMode,
+    authorizeMasterProtocol,
+    ...CORE_ADMIN_MOVES,
   },
 
   setup: (_, setupData) => {
@@ -94,7 +98,6 @@ export const Trenchess: Game<
       winnerReason: null,
       isGamemaster: data?.isGamemaster || false,
       isMercenary: data?.isMercenary || false,
-      fogOfWar: true,
     };
   },
 
@@ -102,6 +105,9 @@ export const Trenchess: Game<
     gamemaster: {
       start: true,
       next: "setup",
+      moves: {
+        authorizeMasterProtocol,
+      },
       turn: {
         activePlayers: { all: "editing" },
         stages: {
@@ -130,6 +136,7 @@ export const Trenchess: Game<
               setMode,
               mirrorBoard: (game, explicitPid) =>
                 mirrorBoard(game, explicitPid, true),
+              ...CORE_ADMIN_MOVES,
               finishGamemaster: ({ events }) => {
                 events?.endPhase();
               },

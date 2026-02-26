@@ -21,10 +21,14 @@ export const Grid: React.FC<GridProps> = ({
   ...props
 }) => {
   // Map old props to TCGrid props as best as possible
-  const mappedCols = typeof cols === "number" ? (cols as any) : undefined;
-  const mappedMdCols = typeof mdCols === "number" ? (mdCols as any) : undefined;
-  const mappedLgCols = typeof lgCols === "number" ? (lgCols as any) : undefined;
-  const mappedGap = typeof gap === "number" ? (gap as any) : undefined;
+  type GridCols = 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12;
+  type GridGap = 0 | 1 | 2 | 3 | 4 | 6 | 8 | 10 | 12;
+  const mappedCols = typeof cols === "number" ? (cols as GridCols) : undefined;
+  const mappedMdCols =
+    typeof mdCols === "number" ? (mdCols as GridCols) : undefined;
+  const mappedLgCols =
+    typeof lgCols === "number" ? (lgCols as GridCols) : undefined;
+  const mappedGap = typeof gap === "number" ? (gap as GridGap) : undefined;
 
   return (
     <TCGrid

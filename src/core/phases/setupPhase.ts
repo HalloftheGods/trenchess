@@ -10,11 +10,16 @@ import {
   resetTerrain,
   resetUnits,
   forfeit,
+  authorizeMasterProtocol,
+  CORE_ADMIN_MOVES,
 } from "@/core/moves";
 import type { TrenchessState } from "@/shared/types/game";
 
 export const setupPhase = {
   next: "play",
+  moves: {
+    ...CORE_ADMIN_MOVES,
+  },
   turn: {
     activePlayers: { all: "setup" },
     stages: {
@@ -31,6 +36,7 @@ export const setupPhase = {
           resetTerrain,
           resetUnits,
           forfeit,
+          authorizeMasterProtocol,
         },
       },
     },

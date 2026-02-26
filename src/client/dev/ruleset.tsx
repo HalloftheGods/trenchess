@@ -8,14 +8,10 @@ interface RulesetEditorProps {
 
 export default function RulesetEditor({ game }: RulesetEditorProps) {
   return (
-    <div className="min-h-screen bg-slate-950 overflow-y-auto custom-scrollbar">
-      {/* Background FX */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-5%] left-[-5%] w-[30%] h-[30%] bg-brand-blue/5 blur-[100px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-5%] right-[-5%] w-[30%] h-[30%] bg-indigo-500/5 blur-[100px] rounded-full animate-pulse delay-1000" />
+    <div className="absolute inset-0 z-50 flex flex-col bg-slate-950/60 backdrop-blur-3xl overflow-hidden pointer-events-auto">
+      <div className="flex-1 w-full h-full relative z-10 overflow-hidden text-white drop-shadow-2xl">
+        <ProtocolEditor game={game} />
       </div>
-
-      <ProtocolEditor game={game} />
     </div>
   );
 }

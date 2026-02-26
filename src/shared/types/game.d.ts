@@ -72,7 +72,6 @@ export interface TrenchessState {
   isGamemaster?: boolean;
   isMercenary?: boolean;
   mercenaryPoints?: Record<string, number>;
-  fogOfWar: boolean;
 }
 
 export interface TrenchessSetupData {

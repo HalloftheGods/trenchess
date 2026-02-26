@@ -8,8 +8,7 @@ import DebugGameSection from "./DebugGameSection";
 import DebugMultiplayerSection from "./DebugMultiplayerSection";
 import DebugInventorySection from "./DebugInventorySection";
 
-import type { Ctx } from "boardgame.io";
-import type { GameStateHook, TrenchessState } from "@/shared/types";
+import type { GameStateHook } from "@/shared/types";
 import type { MultiplayerPlayer } from "@/shared/types/multiplayer";
 
 interface OnlineInfo {
@@ -39,12 +38,10 @@ const GameStateDebug: React.FC<GameStateDebugProps> = ({
   game,
   onlineInfo,
   isSheet = false,
-  placedCount = 0,
-  maxPlacement = 0,
   inventoryCounts = {},
   terrainInventoryCounts = {},
 }) => {
-  const { gameState, getPlayerDisplayName, bgioState } = game;
+  const { getPlayerDisplayName, bgioState } = game;
 
   const isOnlineMatch = !!onlineInfo?.roomId;
   const initialSection = isOnlineMatch ? "online" : "game";

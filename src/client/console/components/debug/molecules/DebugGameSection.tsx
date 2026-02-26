@@ -5,7 +5,7 @@ import {
   DebugSelect,
 } from "@/shared/components/atoms";
 import { DebugRow } from "./DebugRow";
-import type { GameState, GameStateHook } from "@/shared/types";
+import type { GameStateHook } from "@/shared/types";
 
 interface DebugGameSectionProps {
   isOpen: boolean;
@@ -33,11 +33,10 @@ export const DebugGameSection: React.FC<DebugGameSectionProps> = ({
     placementTerrain,
     isFlipped,
     showBgDebug,
+    setShowBgDebug,
     setGameState,
-    setMode,
     setTurn,
     setSetupMode,
-    setShowBgDebug,
     dispatch,
   } = game;
 
@@ -69,21 +68,17 @@ export const DebugGameSection: React.FC<DebugGameSectionProps> = ({
         </DebugRow>
 
         <DebugRow label="Mode">
-          {setMode ? (
-            <DebugSelect
-              value={mode || ""}
-              onChange={(e) => dispatch(`play ${e.target.value}`)}
-              options={[
-                { value: "2p-ns", label: "2p-ns" },
-                { value: "2p-ew", label: "2p-ew" },
-                { value: "4p", label: "4p" },
-                { value: "2v2", label: "2v2" },
-                { value: "", label: "(None)" },
-              ]}
-            />
-          ) : (
-            mode || "(None)"
-          )}
+          <DebugSelect
+            value={mode || ""}
+            onChange={(e) => dispatch(`play ${e.target.value}`)}
+            options={[
+              { value: "2p-ns", label: "2p-ns" },
+              { value: "2p-ew", label: "2p-ew" },
+              { value: "4p", label: "4p" },
+              { value: "2v2", label: "2v2" },
+              { value: "", label: "(None)" },
+            ]}
+          />
         </DebugRow>
 
         <DebugRow label="Current Turn">
@@ -105,10 +100,12 @@ export const DebugGameSection: React.FC<DebugGameSectionProps> = ({
           {setSetupMode ? (
             <DebugSelect
               value={setupMode}
-              onChange={(e) => setSetupMode(e.target.value as SetupMode)}
+              onChange={(e) =>
+                setSetupMode(e.target.value as "terrain" | "pieces")
+              }
               options={[
                 { value: "terrain", label: "terrain" },
-                { value: "units", label: "units" },
+                { value: "pieces", label: "units" },
               ]}
             />
           ) : (

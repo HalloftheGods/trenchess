@@ -14,23 +14,32 @@ export const resetTerrain = (
   explicitPid?: string,
   isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
-  if (!playerId) return INVALID_MOVE;
+  const pids =
+    isGM && !explicitPid
+      ? G.activePlayers
+      : [resolvePlayerId(G, ctx, playerID, explicitPid, isGM)].filter(
+          Boolean,
+        ) as string[];
 
-  const myCells = getPlayerCells(playerId, G.mode);
-  const reclaimed: TerrainType[] = [];
+  const noPlayersFound = pids.length === 0;
+  if (noPlayersFound) return INVALID_MOVE;
 
-  for (const [r, c] of myCells) {
-    if (G.terrain[r][c] !== TERRAIN_TYPES.FLAT) {
-      reclaimed.push(G.terrain[r][c]);
-      G.terrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+  pids.forEach((playerId) => {
+    const myCells = getPlayerCells(playerId, G.mode);
+    const reclaimed: TerrainType[] = [];
+
+    for (const [r, c] of myCells) {
+      if (G.terrain[r][c] !== TERRAIN_TYPES.FLAT) {
+        reclaimed.push(G.terrain[r][c]);
+        G.terrain[r][c] = TERRAIN_TYPES.FLAT as TerrainType;
+      }
     }
-  }
 
-  G.terrainInventory[playerId] = [
-    ...(G.terrainInventory[playerId] || []),
-    ...reclaimed,
-  ];
+    G.terrainInventory[playerId] = [
+      ...(G.terrainInventory[playerId] || []),
+      ...reclaimed,
+    ];
+  });
 };
 
 /**
@@ -42,21 +51,30 @@ export const resetUnits = (
   explicitPid?: string,
   isGM?: boolean,
 ) => {
-  const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
-  if (!playerId) return INVALID_MOVE;
+  const pids =
+    isGM && !explicitPid
+      ? G.activePlayers
+      : [resolvePlayerId(G, ctx, playerID, explicitPid, isGM)].filter(
+          Boolean,
+        ) as string[];
 
-  const myCells = getPlayerCells(playerId, G.mode);
-  const reclaimed: PieceType[] = [];
+  const noPlayersFound = pids.length === 0;
+  if (noPlayersFound) return INVALID_MOVE;
 
-  for (const [r, c] of myCells) {
-    const piece = G.board[r][c];
-    if (piece && piece.player === playerId) {
-      reclaimed.push(piece.type);
-      G.board[r][c] = null;
+  pids.forEach((playerId) => {
+    const myCells = getPlayerCells(playerId, G.mode);
+    const reclaimed: PieceType[] = [];
+
+    for (const [r, c] of myCells) {
+      const piece = G.board[r][c];
+      if (piece && piece.player === playerId) {
+        reclaimed.push(piece.type);
+        G.board[r][c] = null;
+      }
     }
-  }
 
-  G.inventory[playerId] = [...(G.inventory[playerId] || []), ...reclaimed];
+    G.inventory[playerId] = [...(G.inventory[playerId] || []), ...reclaimed];
+  });
 };
 
 /**
@@ -68,6 +86,12 @@ export const resetToOmega = (
   explicitPid?: string,
   isGM?: boolean,
 ) => {
+  if (isGM && !explicitPid) {
+    resetTerrain({ G, playerID, ctx }, undefined, true);
+    resetUnits({ G, playerID, ctx }, undefined, true);
+    return;
+  }
+
   const playerId = resolvePlayerId(G, ctx, playerID, explicitPid, isGM);
   if (!playerId) return INVALID_MOVE;
 

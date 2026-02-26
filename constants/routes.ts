@@ -21,7 +21,6 @@ export const ROUTES = {
   GAME_MODE: paramRoute<{ mode: string }>("/game/board/:mode"),
   GAME_DETAIL: paramRoute<{ roomId: string }>("/game/:roomId"),
   GAMEMASTER: route("/console/gamemaster"),
-  MASTER_CONSOLE: route("/console/master"),
   LIBRARY: route("/library"),
   ZEN: route("/zen"),
 

@@ -56,12 +56,14 @@ const createMockGame = (overrides = {}) => {
   const readyPlayers: Record<string, boolean> = {};
   const playerTypes: Record<string, "human" | "computer"> = {};
   const inventory: Record<string, PieceType[]> = {};
+  const terrainInventory: Record<string, TerrainType[]> = {};
   const capturedBy: Record<string, BoardPiece[]> = {};
 
   activePlayers.forEach((pid: string) => {
     readyPlayers[pid] = false;
     playerTypes[pid] = "human";
     inventory[pid] = [];
+    terrainInventory[pid] = [];
     capturedBy[pid] = [];
   });
 
@@ -77,6 +79,7 @@ const createMockGame = (overrides = {}) => {
       .fill(null)
       .map(() => Array(12).fill(TERRAIN_TYPES.FLAT)),
     inventory,
+    terrainInventory,
     readyPlayers,
     playerTypes,
     capturedBy,
@@ -116,6 +119,14 @@ const createMockGame = (overrides = {}) => {
     pieceStyle: "classic",
     isFlipped: false,
     localPlayerName: "red",
+    multiplayer: {
+      roomId: null,
+      playerIndex: null,
+      isHost: true,
+      joinGame: vi.fn(),
+      leaveGame: vi.fn(),
+      toggleReady: vi.fn(),
+    },
     ...overrides,
   };
 };

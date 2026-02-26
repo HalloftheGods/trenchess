@@ -10,7 +10,7 @@ interface WinScreenProps {
   terrain?: TerrainType[][];
   mode?: string;
   getPlayerDisplayName?: (pid: string) => string;
-  setGameState?: (state: any) => void;
+  setGameState?: (state: string) => void;
 }
 
 const WinScreen: React.FC<WinScreenProps> = ({
@@ -31,12 +31,16 @@ const WinScreen: React.FC<WinScreenProps> = ({
   },
   setGameState = (state) => console.log("Set game state to", state),
 }) => {
-  const mockBoard: (BoardPiece | null)[][] = board || Array(12)
-    .fill(null)
-    .map(() => Array(12).fill(null));
-  const mockTerrain: TerrainType[][] = terrain || Array(12)
-    .fill(null)
-    .map(() => Array(12).fill("flat"));
+  const mockBoard: (BoardPiece | null)[][] =
+    board ||
+    Array(12)
+      .fill(null)
+      .map(() => Array(12).fill(null));
+  const mockTerrain: TerrainType[][] =
+    terrain ||
+    Array(12)
+      .fill(null)
+      .map(() => Array(12).fill("flat"));
 
   if (!board) {
     mockBoard[0][0] = { type: "king", player: "red" };
@@ -51,7 +55,7 @@ const WinScreen: React.FC<WinScreenProps> = ({
       localPlayerName={localPlayerName}
       board={mockBoard}
       terrain={mockTerrain}
-      mode={mode as any}
+      mode={mode as "2p-ns" | "2p-ew" | "4p" | "2v2"}
       getPlayerDisplayName={getPlayerDisplayName}
       setGameState={setGameState}
     />
