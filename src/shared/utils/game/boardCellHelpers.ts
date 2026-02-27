@@ -11,6 +11,7 @@ export const getSetupHighlightArea = (
 ): string => {
   if (!isSetupPhase) return "";
 
+
   if (mode === "2p-ns") {
     if (turn === "red" && row < 6)
       return "ring-1 ring-orange-500/20 ring-inset bg-orange-500/5";

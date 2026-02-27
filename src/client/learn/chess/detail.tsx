@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 
 import InteractiveGuide, {
   type Slide,
@@ -30,7 +30,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
   const { getIcon } = useRouteContext();
   const [selectedTerrain, setSelectedTerrain] = useState<string | null>(null);
 
-  const slides: Slide[] = useMemo(() => {
+  const slides: Slide[] = (() => {
     const UNIT_ORDER: PieceType[] = (
       initialUnit
         ? [
@@ -246,7 +246,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
         ),
       };
     }).filter(Boolean) as Slide[];
-  }, [initialUnit, selectedTerrain, getIcon]);
+  })();
 
   return (
     <InteractiveGuide

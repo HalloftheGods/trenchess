@@ -1,9 +1,9 @@
 import { BookOpen, Database } from "lucide-react";
-import type { GameMode } from "@/shared/types/game";
+import type { GameMode, GameState } from "@/shared/types/game";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 import { SegmentedControl } from "@/shared/components/molecules/SegmentedControl";
 import { PlayerBadge } from "@/shared/components/atoms";
-import { PLAYER_CONFIGS } from "@constants";
+import { PLAYER_CONFIGS, PHASES } from "@constants";
 import GameLogo from "@/shared/components/molecules/GameLogo";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
 import type { PieceStyle } from "@/shared/types/game";
@@ -14,7 +14,7 @@ interface HeaderProps {
   onLibraryClick: () => void;
   isFlipped: boolean;
   setIsFlipped: (flipped: boolean) => void;
-  gameState: string;
+  gameState: GameState;
   gameMode: GameMode;
   turn: string;
   activePlayers: string[];
@@ -100,7 +100,7 @@ const Header = ({
         />
 
         {/* Helper function to check if we should show player badges */}
-        {gameState !== "menu" && (
+        {gameState !== PHASES.MENU && (
           <div className="flex flex-wrap justify-center gap-3 bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-white/5 p-2 rounded-3xl shadow-2xl">
             {activePlayers.map((pid) => (
               <PlayerBadge

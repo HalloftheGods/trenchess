@@ -7,7 +7,7 @@ export function useLayoutActions(
   board: (BoardPiece | null)[][],
   terrain: TerrainType[][],
   layoutName: string,
-  clientRef?: React.MutableRefObject<BgioClient | undefined>,
+  clientRef?: React.RefObject<BgioClient | undefined>,
 ) {
   const [copied, setCopied] = useState(false);
   const { librarySeeds, saveSeed } = useLibrarySeeds();

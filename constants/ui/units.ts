@@ -5,6 +5,12 @@ import {
   ChessRook,
   ChessBishop,
   ChessPawn,
+  Rabbit,
+  VenetianMask,
+  Flashlight,
+  Castle,
+  SunMoon,
+  Orbit,
 } from "lucide-react";
 import {
   KingIcon,
@@ -97,6 +103,7 @@ export const UNIT_THEME_DATA = {
     outlined: "♔︎",
     custom: KingIcon,
     lucide: ChessKing,
+    hoverIcon: Orbit,
   },
   [QUEEN]: {
     emoji: "👸",
@@ -104,6 +111,7 @@ export const UNIT_THEME_DATA = {
     outlined: "♕︎",
     custom: QueenIcon,
     lucide: ChessQueen,
+    hoverIcon: SunMoon,
   },
   [ROOK]: {
     emoji: "🛡️",
@@ -111,6 +119,7 @@ export const UNIT_THEME_DATA = {
     outlined: "♖︎",
     custom: RookIcon,
     lucide: ChessRook,
+    hoverIcon: Castle,
   },
   [BISHOP]: {
     emoji: "🎯",
@@ -118,6 +127,7 @@ export const UNIT_THEME_DATA = {
     outlined: "♗︎",
     custom: BishopIcon,
     lucide: ChessBishop,
+    hoverIcon: Flashlight,
   },
   [KNIGHT]: {
     emoji: "🏇",
@@ -125,6 +135,7 @@ export const UNIT_THEME_DATA = {
     outlined: "♘︎",
     custom: KnightIcon,
     lucide: ChessKnight,
+    hoverIcon: VenetianMask,
   },
   [PAWN]: {
     emoji: "🤖",
@@ -132,6 +143,7 @@ export const UNIT_THEME_DATA = {
     outlined: "♙︎",
     custom: PawnIcon,
     lucide: ChessPawn,
+    hoverIcon: Rabbit,
   },
 };
 

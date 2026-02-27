@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useAiDecision } from "./useAiDecision";
+import { PHASES } from "@constants/game";
 import type { GameMode, BoardPiece, TerrainType } from "@/shared/types/game";
 
 interface UseComputerOpponentProps {
@@ -35,7 +36,7 @@ export function useComputerOpponent({
       timeoutRef.current = null;
     }
 
-    const shouldThink = gameState === "play" && !winner && playerTypes[turn] === "computer";
+    const shouldThink = gameState === PHASES.COMBAT && !winner && playerTypes[turn] === "computer";
 
     if (!shouldThink) {
       if (isThinkingRef.current) {

@@ -14,8 +14,8 @@ import {
 } from "lucide-react";
 import { INITIAL_ARMY, TERRAIN_INTEL, unitColorMap } from "@constants";
 import { TERRAIN_TYPES } from "@constants";
-import { isUnitProtected } from "@/core/mechanics/gameLogic";
-import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
+import { isUnitProtected } from "@/core/mechanics";
+import { canUnitTraverseTerrain } from "@/core/mechanics";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 
 interface TerrainDetailsPanelProps {

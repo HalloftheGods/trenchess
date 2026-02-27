@@ -1,5 +1,5 @@
-import { useState, useCallback, useMemo } from "react";
-import { getValidMoves } from "@/core/mechanics/gameLogic";
+import { useState, useCallback } from "react";
+import { getValidMoves } from "@/core/mechanics";
 import type {
   PlacementManager,
   GameCore,
@@ -14,12 +14,20 @@ export function usePlacementManager(
   bgioState: { G: TrenchessState; ctx: Ctx } | null,
   core: GameCore,
 ): PlacementManager {
-  const { configState } = core;
+  const { configState: _unusedConfigState } = core;
 
-  // Authoritative state from engine
-  const board = useMemo(() => bgioState?.G?.board || Array(12).fill(null).map(() => Array(12).fill(null)), [bgioState?.G?.board]);
-  const terrain = useMemo(() => bgioState?.G?.terrain || Array(12).fill(null).map(() => Array(12).fill("flat")), [bgioState?.G?.terrain]);
-  const mode = bgioState?.G?.mode || configState.mode;
+  // Derived inline for zero-lag synchronization with engine state
+  const board =
+    bgioState?.G?.board ||
+    Array(12)
+      .fill(null)
+      .map(() => Array(12).fill(null));
+  const terrain =
+    bgioState?.G?.terrain ||
+    Array(12)
+      .fill(null)
+      .map(() => Array(12).fill("flat"));
+  const mode = bgioState?.G?.mode || core.mode;
 
   const [selectedCell, setSelectedCell] = useState<[number, number] | null>(
     null,
@@ -56,30 +64,19 @@ export function usePlacementManager(
     [board, terrain, mode],
   );
 
-  return useMemo(
-    () => ({
-      selectedCell,
-      setSelectedCell,
-      hoveredCell,
-      setHoveredCell,
-      validMoves,
-      setValidMoves,
-      previewMoves,
-      setPreviewMoves,
-      placementPiece,
-      setPlacementPiece,
-      placementTerrain,
-      setPlacementTerrain,
-      getValidMovesForPiece,
-    }),
-    [
-      selectedCell,
-      hoveredCell,
-      validMoves,
-      previewMoves,
-      placementPiece,
-      placementTerrain,
-      getValidMovesForPiece,
-    ],
-  );
+  return {
+    selectedCell,
+    setSelectedCell,
+    hoveredCell,
+    setHoveredCell,
+    validMoves,
+    setValidMoves,
+    previewMoves,
+    setPreviewMoves,
+    placementPiece,
+    setPlacementPiece,
+    placementTerrain,
+    setPlacementTerrain,
+    getValidMovesForPiece,
+  };
 }

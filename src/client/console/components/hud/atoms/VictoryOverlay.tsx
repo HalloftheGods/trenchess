@@ -1,7 +1,7 @@
 import React from "react";
 import { Trophy, Skull, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { PLAYER_CONFIGS, UNIT_POINTS } from "@constants";
+import { PLAYER_CONFIGS, UNIT_POINTS, PHASES } from "@constants";
 import { ROUTES } from "@constants/routes";
 import { FinalBoardPreview } from "../../board/molecules/FinalBoardPreview";
 import {
@@ -11,7 +11,7 @@ import {
   TCHeading,
   TCText,
 } from "@/shared/components/atoms/ui";
-import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
+import type { BoardPiece, TerrainType, GameMode, GameState } from "@/shared/types/game";
 
 interface VictoryOverlayProps {
   winner: string;
@@ -21,7 +21,7 @@ interface VictoryOverlayProps {
   terrain?: TerrainType[][];
   mode?: GameMode;
   getPlayerDisplayName: (pid: string) => string;
-  setGameState: (state: "menu") => void;
+  setGameState: (state: GameState) => void;
 }
 
 const VictoryOverlay: React.FC<VictoryOverlayProps> = ({
@@ -62,7 +62,7 @@ const VictoryOverlay: React.FC<VictoryOverlayProps> = ({
     ) || 0;
 
   const handleReturn = () => {
-    setGameState("menu");
+    setGameState(PHASES.MENU);
     navigate(ROUTES.HOME.path);
   };
 

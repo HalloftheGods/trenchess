@@ -1,5 +1,6 @@
 import React from "react";
 import type { MovePattern } from "./moves";
+import { PHASES } from "@constants/game";
 
 export type GameMode = "2p-ns" | "2p-ew" | "4p" | "2v2" | null;
 
@@ -12,19 +13,7 @@ export interface TacticalConfig {
   isCoop?: boolean;
 }
 
-export type GameState =
-  | "menu"
-  | "how-to-play"
-  | "gamemaster"
-  | "setup"
-  | "play"
-  | "finished"
-  | "zen-garden"
-  | "library"
-  | "tutorial"
-  | "ctf-guide"
-  | "trench-guide"
-  | "chess-guide";
+export type GameState = (typeof PHASES)[keyof typeof PHASES];
 export type SetupMode = "terrain" | "pieces";
 export type GameOverReason = "checkmate" | "stalemate" | "forfeit" | null;
 
@@ -100,6 +89,7 @@ export interface ArmyUnit {
   outlined: string;
   custom: React.FC<{ className?: string; size?: number | string }>;
   lucide: React.FC<{ className?: string; size?: number | string }>;
+  hoverIcon?: React.FC<{ className?: string; size?: number | string }>;
 }
 
 export interface PreviewConfig {

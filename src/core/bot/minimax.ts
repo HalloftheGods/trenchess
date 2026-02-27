@@ -1,8 +1,8 @@
 import { BOARD_SIZE } from "@constants";
 import { TERRAIN_TYPES, CORE_TERRAIN_INTEL } from "@constants/terrain";
 import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
-import { getValidMoves } from "@/core/mechanics/gameLogic";
-import { isPlayerInCheck } from "@/core/mechanics/gameLogic";
+import { getValidMoves } from "@/core/mechanics";
+import { isPlayerInCheck } from "@/core/mechanics";
 import { SCORES, hasCommander, evaluateBoard } from "@/core/bot/evaluation";
 
 const { DESERT } = TERRAIN_TYPES;

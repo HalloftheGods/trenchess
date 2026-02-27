@@ -1,7 +1,7 @@
 import React from "react";
 import { PIECES } from "@constants";
 import { TERRAIN_TYPES } from "@constants";
-import { getValidMoves } from "@/core/mechanics/gameLogic";
+import { getValidMoves } from "@/core/mechanics";
 import type { PieceType } from "@/shared/types/game";
 import type { TerrainIntelPanelEntry } from "@/shared/types/guide";
 

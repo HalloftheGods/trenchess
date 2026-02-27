@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import type { TrenchessState } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
 
@@ -6,19 +5,14 @@ export function usePlayerRole(
   bgioState: { G: TrenchessState; ctx: Ctx } | null,
   playerID?: string,
 ) {
-  const currentTurn = useMemo(() => {
-    if (bgioState?.G?.playerMap && bgioState?.ctx) {
-      return bgioState.G.playerMap[bgioState.ctx.currentPlayer];
-    }
-    return "red";
-  }, [bgioState]);
+  const G = bgioState?.G;
+  const ctx = bgioState?.ctx;
+  const playerMap = G?.playerMap;
+  const currentPlayer = ctx?.currentPlayer;
 
-  const localPlayer = useMemo(() => {
-    if (playerID && bgioState?.G?.playerMap[playerID]) {
-      return bgioState.G.playerMap[playerID];
-    }
-    return currentTurn;
-  }, [playerID, bgioState, currentTurn]);
+  // Zero-lag derivation from authoritative pointers
+  const currentTurn = (currentPlayer && playerMap?.[currentPlayer]) || "red";
+  const localPlayer = (playerID && playerMap?.[playerID]) || currentTurn;
 
   return { currentTurn, localPlayer };
 }

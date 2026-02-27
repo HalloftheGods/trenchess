@@ -1,1 +1,1 @@
-export * from "@/core/mechanics/terrain";
+export { canUnitTraverseTerrain } from "@/core/mechanics";

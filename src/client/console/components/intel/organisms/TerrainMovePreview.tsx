@@ -1,7 +1,7 @@
 import React from "react";
 import { ShieldPlus, X, Columns4, Shield } from "lucide-react";
 import { PIECES, TERRAIN_LIST, INITIAL_ARMY } from "@constants";
-import { isUnitProtected } from "@/core/mechanics/gameLogic";
+import { isUnitProtected } from "@/core/mechanics";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import type { TerrainType, PieceType } from "@/shared/types";
 import { useRouteContext } from "@context";

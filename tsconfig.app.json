@@ -145,6 +145,7 @@
   "include": [
     "src",
     "src/client/console/shared",
-    "constants"
+    "constants",
+    "__tests__"
   ]
 }

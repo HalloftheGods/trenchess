@@ -23,7 +23,7 @@ export const TutorialPageLayout: React.FC<TutorialPageLayoutProps> = ({
 }) => {
   return (
     <div
-      className={`min-h-screen w-full flex flex-col ${darkMode ? "bg-[#050b15]" : "bg-stone-100"} p-4 md:p-8 overflow-y-auto`}
+      className={`min-h-screen w-full flex flex-col ${darkMode ? "bg-[#02030f]" : "bg-stone-100"} p-4 md:p-8 overflow-y-auto`}
     >
       <div className="max-w-7xl mx-auto flex flex-col gap-6 min-h-[calc(100vh-8rem)] w-full">
         {HeaderSlot}

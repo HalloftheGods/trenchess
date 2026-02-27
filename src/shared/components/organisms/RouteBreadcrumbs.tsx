@@ -41,17 +41,19 @@ export const RouteBreadcrumbs: React.FC = () => {
     multiplayer,
   } = useRouteContext();
 
+  const isSelectionPage = location.pathname === ROUTES.PLAY.url || location.pathname === ROUTES.PLAY_LOCAL.url;
+
   const effectivePlayerCount =
     urlPlayers && location.pathname.includes("/setup")
       ? parseInt(urlPlayers, 10)
-      : playerCount;
+      : isSelectionPage ? null : playerCount;
       
   const effectivePlayMode =
     urlMode === "online" || urlMode === "multiplayer"
       ? "online"
       : (urlMode === "practice" || urlMode === "couch")
         ? "local"
-        : playMode;
+        : isSelectionPage ? null : playMode;
 
   const getPlayModeIcon = () => {
     if (effectivePlayMode === "online") return <GlobeLock size={18} />;
@@ -106,7 +108,7 @@ export const RouteBreadcrumbs: React.FC = () => {
   };
 
   const currentPlayModeParam = urlMode || (effectivePlayMode === "online" ? "multiplayer" : effectivePlayerCount === 1 ? "practice" : "couch");
-  const currentPlayersParam = urlPlayers || effectivePlayerCount.toString();
+  const currentPlayersParam = urlPlayers || effectivePlayerCount?.toString() || "";
 
   const items = [
     {
@@ -147,7 +149,7 @@ export const RouteBreadcrumbs: React.FC = () => {
               : "slate") as BreadcrumbColor,
       path: effectivePlayMode === "online" ? ROUTES.PLAY_LOBBY.url : ROUTES.PLAY_LOCAL.url,
       value: effectivePlayerCount,
-      badge: effectivePlayerCount > 0 ? effectivePlayerCount : undefined,
+      badge: (effectivePlayerCount !== null && effectivePlayerCount > 0) ? effectivePlayerCount : undefined,
     },
     {
       icon: getBoardIcon(),

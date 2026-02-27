@@ -12,6 +12,7 @@ import {
   UNIT_DETAILS,
   TERRAIN_DETAILS,
   TERRAIN_TYPES,
+  INITIAL_ARMY,
 } from "@constants";
 import type { PieceStyle, TerrainType, MatchStatEntry } from "@/shared/types";
 
@@ -30,6 +31,8 @@ export const CombatStatBox: React.FC<CombatStatBoxProps> = ({
 }) => {
   const selectedColor = unitColorMap[selectedPiece];
   const pieceKeys = Object.values(PIECES);
+  const unit = INITIAL_ARMY.find((u) => u.type === selectedPiece);
+  const HoverIcon = unit?.hoverIcon || Target;
 
   return (
     <Box
@@ -38,7 +41,7 @@ export const CombatStatBox: React.FC<CombatStatBoxProps> = ({
       <Box
         className={`absolute top-0 right-0 p-8 opacity-10 ${selectedColor?.text}`}
       >
-        <Target size={128} />
+        <HoverIcon size={128} />
       </Box>
 
       <Flex

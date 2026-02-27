@@ -29,11 +29,9 @@ import {
   CHESS_NAME,
   TERRAIN_INTEL,
 } from "@constants";
+import { PHASES } from "@constants/game";
 import { TERRAIN_TYPES } from "@constants";
-import {
-  isUnitProtected,
-  getTraversableTerrains,
-} from "@/core/mechanics/terrain";
+import { isUnitProtected, getTraversableTerrains } from "@/core/mechanics";
 import { DesertIcon } from "@/shared/components/atoms/UnitIcons";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
@@ -163,7 +161,11 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
   let activeData: UnitIntelPanelEntry | TerrainIntelPanelEntry | null = null;
   let activeType: "unit" | "terrain" | null = null;
 
-  if (gameState === "setup" || gameState === "zen-garden") {
+  if (
+    gameState === PHASES.MAIN ||
+    gameState === PHASES.GENESIS ||
+    gameState === PHASES.ZEN_GARDEN
+  ) {
     if (setupMode === "pieces" && placementPiece) {
       activeData = UNIT_INTEL_PANEL[placementPiece];
       activeType = "unit";
@@ -171,7 +173,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
       activeData = TERRAIN_INTEL_PANEL[placementTerrain];
       activeType = "terrain";
     }
-  } else if (gameState === "play" && selectedCell) {
+  } else if (gameState === PHASES.COMBAT && selectedCell) {
     const [r, c] = selectedCell;
     const piece = board[r][c];
     if (piece) {
@@ -184,7 +186,7 @@ const IntelPanel: React.FC<IntelPanelProps> = ({
   }
 
   if (!activeData) {
-    if (gameState === "play") {
+    if (gameState === PHASES.COMBAT) {
       // Show Scoreboard / Game Status
       return (
         <div className="xl:col-span-3 order-3">

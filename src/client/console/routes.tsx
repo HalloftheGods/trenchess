@@ -1,5 +1,6 @@
 import type { RouteConfig } from "@/shared/types/route";
 import type { GameStateHook, GameMode, GameState } from "@/shared/types";
+import { PHASES } from "@constants/game";
 import { ROUTES } from "@constants/routes";
 
 const GameMmoLazy = ROUTES.GAME_MMO.component(
@@ -62,7 +63,7 @@ export const getGameRoutes = (
         <LibraryLazy
           onBack={handleBackToMenu}
           onLoadSeed={(seed: string) => initFromSeed(seed)}
-          onEditInZen={(seed: string) => initFromSeed(seed, "zen-garden")}
+          onEditInZen={(seed: string) => initFromSeed(seed, PHASES.ZEN_GARDEN)}
           activeMode={mode}
         />,
       ),

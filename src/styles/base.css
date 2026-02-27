@@ -1,6 +1,6 @@
 body {
   font-family: var(--font-sans);
-  @apply min-h-screen bg-stone-100 dark:bg-[#050b15] text-slate-800 dark:text-slate-100 overflow-x-hidden transition-colors;
+  @apply min-h-screen bg-stone-100 dark:bg-[#02030f] text-slate-800 dark:text-slate-100 overflow-x-hidden transition-colors;
 }
 
 #root {

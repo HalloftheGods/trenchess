@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { PIECES } from "@constants";
 import { TERRAIN_TYPES } from "@constants";
 import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
@@ -20,7 +19,7 @@ export function useBoardPreview({
   pieceStyle,
   hideUnits,
 }: UseBoardPreviewProps) {
-  const seedData = useMemo(() => {
+  const seedData = (() => {
     if (customSeed) {
       const parsed = deserializeGame(customSeed);
       if (parsed && selectedMode) {
@@ -29,7 +28,7 @@ export function useBoardPreview({
       return parsed;
     }
     return null;
-  }, [customSeed, selectedMode]);
+  })();
 
   const getBorderClasses = () => {
     const baseT = "border-t-slate-200/30 dark:border-t-white/5";
@@ -79,7 +78,7 @@ export function useBoardPreview({
     );
   };
 
-  const generatedTerrain = useMemo(() => {
+  const generatedTerrain = (() => {
     if (forcedTerrain) {
       return TerraForm.generate({
         mode: selectedMode || "2p-ns",
@@ -104,7 +103,7 @@ export function useBoardPreview({
       seed: terrainSeed,
       symmetry: "rotational",
     });
-  }, [selectedMode, selectedProtocol, terrainSeed, seedData, forcedTerrain]);
+  })();
 
   const getTerrainAt = (
     row: number,

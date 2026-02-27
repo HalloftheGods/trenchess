@@ -352,13 +352,13 @@ export const PlaySetupView: React.FC = () => {
                 hideUnits: true,
               }}
               darkMode={darkMode}
+              badge="Chaos Mode"
               title="α Alpha"
               description='"Entropy unleashed."'
-              Icon={Dices}
               color="blue"
-              badge="Chaos Mode"
-              HoverIcon={ShieldQuestion}
               className="w-full"
+              HoverIcon={Dices}
+              Icon={ShieldQuestion}
             />
           </>
         )}

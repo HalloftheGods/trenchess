@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 
 export function useUrlState() {
   const getParam = useCallback((key: string) => {
@@ -11,7 +11,7 @@ export function useUrlState() {
     if (typeof window === "undefined") return;
     const url = new URL(window.location.href);
     let changed = false;
-    
+
     Object.entries(updates).forEach(([key, value]) => {
       const current = url.searchParams.get(key);
       if (value === null) {
@@ -30,8 +30,8 @@ export function useUrlState() {
     }
   }, []);
 
-  const seed = useMemo(() => getParam("seed"), [getParam]);
-  const view = useMemo(() => getParam("v"), [getParam]);
+  const seed = getParam("seed");
+  const view = getParam("v");
 
   return { seed, view, updateParams, getParam };
 }

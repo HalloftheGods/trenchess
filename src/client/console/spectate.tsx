@@ -2,10 +2,11 @@ import React from "react";
 import { SpectatorLayout } from "./components/templates/SpectatorLayout";
 import Header from "@/shared/components/organisms/Header";
 import {
-  ConsoleGameBoard,
+  ConnectedBoard,
   Shoutbox,
 } from "./components";
 import type { GameStateHook } from "@/shared/types";
+import { PHASES } from "@constants/game";
 
 interface SpectatorViewProps {
   game: GameStateHook;
@@ -43,10 +44,10 @@ const SpectatorView: React.FC<SpectatorViewProps> = ({
           pieceStyle={game.pieceStyle}
           toggleTheme={game.toggleTheme}
           togglePieceStyle={game.togglePieceStyle}
-          onZenGarden={() => game.setGameState("zen-garden")}
+          onZenGarden={() => game.setGameState(PHASES.ZEN_GARDEN)}
         />
       }
-      gameBoard={<ConsoleGameBoard game={game} />}
+      gameBoard={<ConnectedBoard game={game} />}
       shoutbox={
         <Shoutbox multiplayer={game.multiplayer} darkMode={game.darkMode} />
       }

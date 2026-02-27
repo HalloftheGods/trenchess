@@ -13,7 +13,7 @@ const ScoreboardLayout: React.FC<ScoreboardLayoutProps> = ({
 }) => {
   return (
     <div
-      className={`min-h-screen ${darkMode ? "bg-[#050b15]" : "bg-stone-100"} flex transition-colors overflow-hidden`}
+      className={`min-h-screen ${darkMode ? "bg-[#02030f]" : "bg-stone-100"} flex transition-colors overflow-hidden`}
     >
       {/* Left Column: Scrollable Content */}
       <div className="flex-1 overflow-y-auto scrollbar-hide flex flex-col items-center">

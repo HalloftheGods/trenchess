@@ -5,10 +5,9 @@
  * Interactive Tutorial Page
  * Using new 5-column layout.
  */
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { INITIAL_ARMY } from "@constants";
-import { isUnitProtected } from "@/core/mechanics/gameLogic";
-import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
+import { isUnitProtected, canUnitTraverseTerrain } from "@/core/mechanics";
 import { UNIT_DETAILS, unitColorMap, TERRAIN_LIST } from "@constants";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 import { deserializeGame } from "@/shared/utils/serialization";
@@ -82,7 +81,7 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
       ? TERRAIN_LIST[selectedTerrainIdx].terrainTypeKey
       : null;
 
-  const filteredSeeds = useMemo(() => {
+  const filteredSeeds = (() => {
     return allSeeds.filter((item) => {
       const data = deserializeGame(item.seed);
       if (!data) return false;
@@ -94,7 +93,7 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
       }
       return false;
     });
-  }, [allSeeds, activeTerrainTypeKey]);
+  })();
 
   const handlePrevLayout = () => {
     if (filteredSeeds.length === 0) return;
@@ -116,7 +115,7 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
       ? "Default"
       : filteredSeeds[activeLayoutIdx]?.name || "Saved Layout";
 
-  const terrainPositions = useMemo<Set<string> | undefined>(() => {
+  const terrainPositions = (() => {
     if (
       activeLayoutIdx === -1 ||
       !filteredSeeds[activeLayoutIdx] ||
@@ -135,7 +134,7 @@ export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
       }
     }
     return positions.size > 0 ? positions : undefined;
-  }, [activeLayoutIdx, filteredSeeds, activeTerrainTypeKey]);
+  })();
 
   const textColor = darkMode ? "text-slate-100" : "text-slate-800";
   const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";

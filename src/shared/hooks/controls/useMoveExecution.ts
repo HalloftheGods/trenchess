@@ -3,7 +3,7 @@ import type { MoveExecution, GameCore, BgioClient } from "@/shared/types";
 
 export function useMoveExecution(
   _core: GameCore, // core is unused now that we delegate to bgioClient
-  bgioClientRef?: React.MutableRefObject<BgioClient | undefined>,
+  bgioClientRef?: React.RefObject<BgioClient | undefined>,
   onMoveExecuted?: (move: {
     from: [number, number];
     to: [number, number];

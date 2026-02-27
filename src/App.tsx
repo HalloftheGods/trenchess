@@ -1,4 +1,8 @@
-import { RouteProvider, TerminalProvider } from "@/shared/context";
+import {
+  RouteProvider,
+  TerminalProvider,
+  GameProvider,
+} from "@/shared/context";
 import { ScrollToTop } from "@/shared/components/atoms/ScrollToTop";
 import { AnalyticsTracker } from "@/shared/components/atoms/AnalyticsTracker";
 import { useAppInitialization } from "@/shared/hooks/navigation/useAppInitialization";
@@ -39,7 +43,9 @@ const AppContent = () => {
 const App = () => {
   return (
     <TerminalProvider>
-      <AppContent />
+      <GameProvider>
+        <AppContent />
+      </GameProvider>
     </TerminalProvider>
   );
 };

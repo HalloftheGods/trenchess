@@ -30,10 +30,26 @@ export const createInitialState = (
   const terrainInventory: Record<string, TerrainType[]> = {};
   const mercenaryPoints: Record<string, number> = {};
 
+  const isUnconfigured = mode === null;
   const isTwoPlayerMode = mode === "2p-ns" || mode === "2p-ew";
   const terrainQuota = isTwoPlayerMode
     ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
     : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+
+  if (isUnconfigured) {
+    return {
+      mode,
+      board,
+      terrain,
+      inventory: {},
+      terrainInventory: {},
+      mercenaryPoints: {},
+      capturedBy: {},
+      activePlayers: [],
+      readyPlayers: {},
+      lastMove: null,
+    };
+  }
 
   players.forEach((player) => {
     // Map initial army to flat list of types

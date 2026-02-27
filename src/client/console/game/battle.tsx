@@ -2,7 +2,7 @@ import React from "react";
 import { TheBattlefield } from "../components/templates/Battlefield";
 import {
   ConsoleActionBar,
-  ConsoleGameBoard,
+  ConnectedBoard,
   BattleSidebar,
 } from "../components";
 import { BattleOverlay } from "../components";
@@ -21,7 +21,7 @@ const BattleView: React.FC<BattleViewProps> = ({ game }) => {
   return (
     <TheBattlefield
       darkMode={ctx.darkMode}
-      gameBoard={<ConsoleGameBoard game={game} />}
+      gameBoard={<ConnectedBoard game={game} />}
       actionBar={<ConsoleActionBar game={game} logic={logic} />}
       leftPanel={
         <BattleSidebar

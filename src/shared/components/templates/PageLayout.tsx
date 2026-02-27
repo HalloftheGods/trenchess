@@ -22,7 +22,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
 }) => {
   return (
     <div
-      className={`min-h-screen ${darkMode ? "bg-[#050b15]" : "bg-stone-100"} text-slate-900 dark:text-slate-100 flex flex-col items-center p-8 transition-colors overflow-y-auto w-full`}
+      className={`min-h-screen ${darkMode ? "bg-[#02030f]" : "bg-stone-100"} text-slate-900 dark:text-slate-100 flex flex-col items-center p-8 transition-colors overflow-y-auto w-full`}
     >
       {header}
       {children}

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Zap, RotateCcw, User, Monitor, CheckCircle2 } from "lucide-react";
 import { INITIAL_ARMY } from "@constants";
 import { PlayerTypeToggle } from "../atoms";
@@ -75,11 +75,11 @@ export const GamemasterPanel: React.FC<GamemasterPanelProps> = ({
   );
   const unitsPlaced = totalUnitCount - (inventory[playerID] || []).length;
 
-  const readiness = useMemo(() => {
+  const readiness = (() => {
     const totalPlaced = unitsPlaced + placedCount;
     const totalMax = totalUnitCount + maxPlacement;
     return Math.floor((totalPlaced / totalMax) * 100);
-  }, [unitsPlaced, placedCount, totalUnitCount, maxPlacement]);
+  })();
 
   const ribbonBgClass =
     {

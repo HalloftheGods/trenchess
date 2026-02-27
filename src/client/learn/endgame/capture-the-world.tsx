@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Earth, Crown, Replace, Swords } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import InteractiveGuide, {
@@ -30,15 +30,13 @@ export const LearnEndgameCtwView: React.FC<CaptureTheWorldGuideProps> = ({
     return undefined;
   });
 
-  const customPreviewConfig: PreviewConfig = useMemo(() => {
-    return {
-      mode: "2v2",
-      protocol: "terrainiffic",
-      customSeed: randomSeed,
-      showIcons: true,
-      hideUnits: false,
-    };
-  }, [randomSeed]);
+  const customPreviewConfig: PreviewConfig = {
+    mode: "2v2",
+    protocol: "terrainiffic",
+    customSeed: randomSeed,
+    showIcons: true,
+    hideUnits: false,
+  };
 
   const slides: Slide[] = [
     {

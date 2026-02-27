@@ -1,6 +1,7 @@
 import React from "react";
 import { GameStartOverlay } from "../atoms/GameStartOverlay";
 import type { GameStateHook } from "@/shared/types";
+import { PHASES } from "@constants/game";
 
 interface BattleOverlayProps {
   game: GameStateHook;
@@ -20,7 +21,8 @@ export const BattleOverlay: React.FC<BattleOverlayProps> = ({
     isOnline && !!myPlayerId && !!game.readyPlayers[myPlayerId];
 
   const showOverlay =
-    game.gameState === "setup" && (isAllPlacedLocally || isMyPlayerPlaced);
+    (game.gameState === PHASES.MAIN || game.gameState === PHASES.GENESIS) &&
+    (isAllPlacedLocally || isMyPlayerPlaced);
 
   if (!showOverlay) return null;
 

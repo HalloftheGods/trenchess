@@ -7,8 +7,7 @@
 import React from "react";
 import { ArrowLeft } from "lucide-react";
 import { INITIAL_ARMY } from "@constants";
-import { isUnitProtected } from "@/core/mechanics/gameLogic";
-import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
+import { isUnitProtected, canUnitTraverseTerrain } from "@/core/mechanics";
 import { useRouteContext } from "@context";
 import { UNIT_COLORS, UNIT_NAMES, ALL_UNITS, TERRAIN_LIST } from "@constants";
 import type {

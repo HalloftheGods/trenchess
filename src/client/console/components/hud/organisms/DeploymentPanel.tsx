@@ -25,6 +25,7 @@ import { ZenActions } from "../molecules/ZenActions";
 import { SeedLibraryList } from "../molecules/SeedLibraryList";
 import { CheckAlert } from "../../board/atoms/CheckAlert";
 import { ActiveFieldStrategy } from "../atoms/ActiveFieldStrategy";
+import { PHASES } from "@constants/game";
 
 interface DeploymentPanelProps {
   mode: GameMode;
@@ -71,7 +72,7 @@ interface DeploymentPanelProps {
   ready?: () => void;
   startGame?: () => void;
   localPlayerName?: string;
-  clientRef?: React.MutableRefObject<BgioClient | undefined>;
+  clientRef?: React.RefObject<BgioClient | undefined>;
 }
 
 export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
@@ -118,7 +119,9 @@ export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
   clientRef,
 }) => {
   const perspectiveTurn =
-    gameState === "setup" ? localPlayerName || turn : turn;
+    (gameState === PHASES.MAIN || gameState === PHASES.GENESIS)
+      ? localPlayerName || turn
+      : turn;
 
   const { maxPlacement, placedCount } = useDeploymentMetrics({
     mode,
@@ -137,7 +140,10 @@ export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
       clientRef,
     );
 
-  const isZen = gameState === "zen-garden" || gameState === "gamemaster";
+  const isZen =
+    gameState === PHASES.ZEN_GARDEN ||
+    gameState === PHASES.GAMEMASTER ||
+    gameState === PHASES.GENESIS;
 
   const isStateInitialized = terrain && terrain.length && board && board.length;
 
@@ -165,7 +171,7 @@ export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
           setTurn={setTurn || (() => {})}
         />
 
-        {(gameState === "setup" || isZen) && (
+        {(gameState === PHASES.MAIN || gameState === PHASES.GENESIS || isZen) && (
           <div className="mb-6">
             <SegmentedControl
               options={[
@@ -201,7 +207,7 @@ export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
           </div>
         )}
 
-        {(gameState === "setup" || isZen) && (
+        {(gameState === PHASES.MAIN || gameState === PHASES.GENESIS || isZen) && (
           <>
             <div className={setupMode === "terrain" ? "mb-5 block" : "hidden"}>
               <DeploymentTerrainPalette
@@ -244,7 +250,7 @@ export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
           </>
         )}
 
-        {(gameState === "setup" || isZen) && (
+        {(gameState === PHASES.MAIN || gameState === PHASES.GENESIS || isZen) && (
           <div className="mt-auto space-y-3 pt-6">
             <DeploymentFooterControls
               isZen={isZen}
@@ -275,7 +281,7 @@ export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
           </div>
         )}
 
-        {gameState === "play" && (
+        {gameState === PHASES.COMBAT && (
           <div className="space-y-6">
             <CheckAlert inCheck={inCheck} />
 

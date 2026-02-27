@@ -12,9 +12,10 @@ export const TCDot: React.FC<TCDotProps> = ({
   className = "",
 }) => {
   const activeStyles = isActive
-    ? "animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.2)]"
-    : "opacity-40";
-  const combinedClassName = `w-3 h-3 rounded-full ${color} ${activeStyles} ${className}`;
+    ? "ring-2 ring-white/50 shadow-[0_0_12px_rgba(255,255,255,0.4)] scale-110"
+    : "opacity-20 scale-90";
+
+  const combinedClassName = `w-3.5 h-3.5 rounded-full border border-black/20 transition-all duration-500 ${color} ${activeStyles} ${className}`;
 
   return <div className={combinedClassName} />;
 };

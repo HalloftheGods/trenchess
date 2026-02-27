@@ -35,7 +35,7 @@ export const RouteBoardPreview: React.FC<MenuBoardPreviewProps> = ({
       : currentSeed?.seed;
 
   const defaultClassName =
-    "hidden lg:block fixed right-20 top-1/2 -translate-y-1/2 w-[400px] z-40 animate-in fade-in slide-in-from-right-8 duration-500 pointer-events-none";
+    "hidden lg:block w-[400px] z-40 animate-in fade-in slide-in-from-right-8 duration-500 pointer-events-none";
 
   return (
     <div className={className || defaultClassName}>

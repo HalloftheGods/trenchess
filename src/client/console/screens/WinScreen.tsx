@@ -1,6 +1,6 @@
 import React from "react";
 import { VictoryOverlay } from "@/client/console/components";
-import type { TerrainType, BoardPiece } from "@/shared/types/game";
+import type { TerrainType, BoardPiece, GameState } from "@/shared/types/game";
 
 interface WinScreenProps {
   winner?: string;
@@ -10,7 +10,7 @@ interface WinScreenProps {
   terrain?: TerrainType[][];
   mode?: string;
   getPlayerDisplayName?: (pid: string) => string;
-  setGameState?: (state: string) => void;
+  setGameState?: (state: GameState) => void;
 }
 
 const WinScreen: React.FC<WinScreenProps> = ({

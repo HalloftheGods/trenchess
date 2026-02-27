@@ -2,6 +2,7 @@ import React from "react";
 import { Sparkles, Sword } from "lucide-react";
 import { PLAYER_CONFIGS } from "@constants";
 import { PlayerTypeToggle } from "../atoms";
+import { PHASES } from "@constants/game";
 
 import type { MultiplayerState } from "@/shared/types/multiplayer";
 
@@ -38,14 +39,14 @@ export const DeploymentHeader: React.FC<DeploymentHeaderProps> = ({
         )}
         {isZen
           ? "Zen Garden"
-          : gameState === "setup"
+          : (gameState === PHASES.MAIN || gameState === PHASES.GENESIS)
             ? multiplayer?.roomId
               ? "Operation Deployment"
               : `Player ${PLAYER_CONFIGS[turn]?.name || ""}`
             : "Command Center"}
       </h2>
 
-      {!isZen && gameState === "setup" && !multiplayer?.roomId && (
+      {!isZen && (gameState === PHASES.MAIN || gameState === PHASES.GENESIS) && !multiplayer?.roomId && (
         <PlayerTypeToggle
           turn={turn}
           playerTypes={playerTypes}

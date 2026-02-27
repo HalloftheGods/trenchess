@@ -25,7 +25,7 @@ export const TheBattlefield: React.FC<BattlefieldProps> = ({
 }) => {
   return (
     <div
-      className={`min-h-screen bg-slate-50 dark:bg-[#050b15] text-slate-800 dark:text-slate-100 flex flex-col items-center justify-center overflow-hidden relative ${darkMode ? "dark" : ""}`}
+      className={`min-h-screen bg-slate-50 dark:bg-[#02030f] text-slate-800 dark:text-slate-100 flex flex-col items-center justify-center overflow-hidden relative ${darkMode ? "dark" : ""}`}
     >
       {/* Center Header */}
       {centerHeader && (
@@ -43,9 +43,9 @@ export const TheBattlefield: React.FC<BattlefieldProps> = ({
       </div>
 
       {/* Main content area: 3-Column Layout */}
-      <div className="w-full max-w-[1600px] flex items-stretch justify-center gap-6 px-4 pt-24 pb-8 relative z-10">
+      <div className="w-full max-w-[1600px] flex items-stretch justify-center gap-6 px-4 pt-32 pb-8 relative z-10">
         {/* Left Column */}
-        <div className="hidden lg:flex w-72 flex-col flex-shrink-0">
+        <div className="hidden lg:flex w-72 flex-col flex-shrink-0 h-full">
           {leftPanel}
         </div>
 
@@ -55,7 +55,7 @@ export const TheBattlefield: React.FC<BattlefieldProps> = ({
         </div>
 
         {/* Right Column */}
-        <div className="hidden lg:flex w-72 flex-col flex-shrink-0">
+        <div className="hidden lg:flex w-72 flex-col flex-shrink-0 h-full">
           {rightPanel}
         </div>
       </div>

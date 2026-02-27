@@ -3,6 +3,7 @@ import { Box } from "@atoms";
 import { getQuadrantBaseStyle } from "@/shared/utils/game/boardStyles";
 import { TerrainOverlay } from "../atoms/TerrainOverlay";
 import { CellUnitRenderer } from "../atoms/CellUnitRenderer";
+import { PHASES } from "@constants/game";
 import { CellHighlight } from "../atoms/CellHighlight";
 import { CellPlacementPreview } from "../atoms/CellPlacementPreview";
 import { getSetupHighlightArea } from "@/shared/utils/game/boardCellHelpers";
@@ -90,7 +91,8 @@ const BoardCell: React.FC<BoardCellProps> = ({
   const isDestination = lastMove?.to[0] === row && lastMove?.to[1] === col;
   const isInPath = lastMove?.path.some(([pr, pc]) => pr === row && pc === col);
 
-  const isSetupActive = gameState === "setup" || gameState === "zen-garden";
+  const isSetupActive =
+    gameState === PHASES.MAIN || gameState === PHASES.GENESIS || gameState === PHASES.ZEN_GARDEN;
   const hasInhabitant = !!(
     piece ||
     (isHovered && isSetupActive && !!placementPiece)

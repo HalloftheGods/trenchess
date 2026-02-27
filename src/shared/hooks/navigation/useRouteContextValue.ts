@@ -1,6 +1,7 @@
 import { useMemo, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "@constants/routes";
+import { PHASES } from "@constants/game";
 import type {
   GameMode,
   SeedItem,
@@ -29,10 +30,15 @@ export const useRouteContextValue = ({
 
   // Additional UI states managed by context
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
-  const [previewConfig, setPreviewConfig] = useState<PreviewConfig>({ mode: game.mode || null });
+  const [previewConfig, setPreviewConfig] = useState<PreviewConfig>({
+    mode: game.mode || null,
+  });
   const [, setHoveredTerrain] = useState<string | null>(null);
   const [terrainSeed, setTerrainSeed] = useState<number | undefined>(undefined);
-  const [backAction, setBackAction] = useState<{ label?: string; onClick: () => void } | null>(null);
+  const [backAction, setBackAction] = useState<{
+    label?: string;
+    onClick: () => void;
+  } | null>(null);
 
   const {
     darkMode,
@@ -41,16 +47,15 @@ export const useRouteContextValue = ({
     getIcon,
     toggleTheme,
     togglePieceStyle,
-    setGameState,
     initGameWithPreset,
     startGame,
-    mode,
-    setMode,
     selectedPreset,
     setSelectedPreset,
     playerTypes,
     setPlayerTypes,
     activePlayers,
+    activeMode,
+    setPhase, // Now we extract this
   } = game;
 
   const getIconWrapper: RouteContextType["getIcon"] = useCallback(
@@ -73,14 +78,14 @@ export const useRouteContextValue = ({
       : "practice";
 
   const onTutorial = useCallback(() => {
-    setGameState("tutorial");
+    setPhase(PHASES.GENESIS);
     navigate(ROUTES.TUTORIAL.url);
-  }, [setGameState, navigate]);
+  }, [setPhase, navigate]);
 
   const onLogoClick = useCallback(() => {
-    setGameState("menu");
+    setPhase(PHASES.GENESIS);
     navigate(ROUTES.HOME.url);
-  }, [setGameState, navigate]);
+  }, [setPhase, navigate]);
 
   const onZenGarden = useCallback(() => {
     setIsStarting(true);
@@ -96,11 +101,11 @@ export const useRouteContextValue = ({
     setIsStarting(true);
     navigate(ROUTES.GAMEMASTER.url);
     setTimeout(() => {
-      initGameWithPreset(mode || "4p", "zen-garden");
+      initGameWithPreset(activeMode || "4p", "zen-garden");
       startGame();
       setTimeout(() => setIsStarting(false), 500);
     }, 1000);
-  }, [navigate, initGameWithPreset, startGame, mode]);
+  }, [navigate, initGameWithPreset, startGame, activeMode]);
 
   const onStartGame = useCallback(
     (
@@ -123,8 +128,6 @@ export const useRouteContextValue = ({
         ? ROUTES.GAME_DETAIL.build({ roomId: multiplayer.roomId })
         : ROUTES.GAME_CONSOLE.build({ style });
 
-      setMode(startGameMode);
-      setGameState("setup");
       navigate(target);
 
       setTimeout(() => {
@@ -139,14 +142,7 @@ export const useRouteContextValue = ({
         setTimeout(() => setIsStarting(false), 500);
       }, 1000);
     },
-    [
-      multiplayer,
-      setMode,
-      setGameState,
-      navigate,
-      initGameWithPreset,
-      startGame,
-    ],
+    [multiplayer, navigate, initGameWithPreset, startGame],
   );
 
   const onCtwGuide = useCallback(
@@ -171,19 +167,17 @@ export const useRouteContextValue = ({
     [navigate],
   );
 
-  const setSelectedBoard = useCallback(
-    (m: GameMode | null) => m && setMode(m),
-    [setMode],
+  const [selectedBoard, setSelectedBoardState] = useState<GameMode | null>(
+    game.mode || null,
   );
 
-  return useMemo(
+  const setSelectedBoard = useCallback((mode: GameMode | null) => {
+    setSelectedBoardState(mode);
+  }, []);
+
+  const actions = useMemo(
     () => ({
-      hoveredMenu,
       setHoveredMenu,
-      darkMode,
-      multiplayer,
-      pieceStyle,
-      getIcon: getIconWrapper,
       toggleTheme,
       togglePieceStyle,
       onTutorial,
@@ -192,60 +186,76 @@ export const useRouteContextValue = ({
       onGamemaster,
       setPlayerTypes,
       onStartGame,
-      isStarting,
       onCtwGuide,
       onChessGuide,
       onTrenchGuide,
       onOpenLibrary,
-      selectedBoard: mode,
       setSelectedBoard,
-      selectedPreset,
       setSelectedPreset,
+      setPreviewConfig,
+      setHoveredTerrain,
+      setPreviewSeedIndex,
+      setTerrainSeed,
+      setBackAction,
+    }),
+    [
+      toggleTheme,
+      togglePieceStyle,
+      onTutorial,
+      onLogoClick,
+      onZenGarden,
+      onGamemaster,
+      setPlayerTypes,
+      onStartGame,
+      onCtwGuide,
+      onChessGuide,
+      onTrenchGuide,
+      onOpenLibrary,
+      setSelectedBoard,
+      setSelectedPreset,
+      setPreviewConfig,
+      setPreviewSeedIndex,
+    ],
+  );
+
+  return useMemo(
+    () => ({
+      ...actions,
+      hoveredMenu,
+      darkMode,
+      multiplayer,
+      pieceStyle,
+      getIcon: getIconWrapper,
+      isStarting,
+      selectedBoard: selectedBoard || activeMode,
+      selectedPreset,
       playerConfig: playerTypes,
       activePlayers,
       playMode,
       playerCount: activePlayers.length,
       previewConfig,
-      setPreviewConfig,
-      setHoveredTerrain: setHoveredTerrain,
       seeds,
       previewSeedIndex,
-      setPreviewSeedIndex,
       terrainSeed,
-      setTerrainSeed,
       backAction,
-      setBackAction,
     }),
     [
+      actions,
       hoveredMenu,
       darkMode,
       multiplayer,
       pieceStyle,
       getIconWrapper,
-      toggleTheme,
-      togglePieceStyle,
-      onTutorial,
-      onLogoClick,
-      onZenGarden,
-      onGamemaster,
-      setPlayerTypes,
-      onStartGame,
       isStarting,
-      onCtwGuide,
-      onChessGuide,
-      onTrenchGuide,
-      onOpenLibrary,
-      mode,
-      setSelectedBoard,
+      selectedBoard,
+      activeMode,
       selectedPreset,
-      setSelectedPreset,
       playerTypes,
       activePlayers,
       playMode,
       previewConfig,
       seeds,
       previewSeedIndex,
-      setPreviewSeedIndex,
       terrainSeed,
       backAction,
     ],

@@ -9,12 +9,12 @@ function walkDir(dir, callback) {
   });
 }
 
-const directories = ["./src", "./src/tests"]; // Adjusted to look into src/tests if it exists or just ./src
+const directories = ["./src", "./__tests__"]; // Adjusted to look into __tests__ if it exists or just ./src
 
-// But wait, the grep showed /src/tests usually.
-// Let's just walk ./src and ./src/tests explicitly if they exist.
+// But wait, the grep showed /__tests__ usually.
+// Let's just walk ./src and ./__tests__ explicitly if they exist.
 
-const targets = ["./src", "./src/tests"];
+const targets = ["./src", "./__tests__"];
 
 targets.forEach((target) => {
   if (!fs.existsSync(target)) return;

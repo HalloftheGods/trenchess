@@ -15,6 +15,7 @@ interface RoutePageHeaderProps {
   className?: string;
   onBackClick?: () => void;
   backLabel?: string;
+  hidePreview?: boolean;
 }
 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -36,6 +37,7 @@ const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
   className = "",
   onBackClick,
   backLabel,
+  hidePreview = false,
 }) => {
   const {
     onLogoClick,
@@ -93,7 +95,9 @@ const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
     <div className={`w-full flex flex-col items-center pt-3 mb-4 ${className}`}>
       {/* 2-Column Desktop Layout */}
       <div className="w-full max-w-7xl px-0">
-        <div className="flex flex-col lg:grid lg:grid-cols-2 items-center gap-12 lg:gap-16 min-h-[300px]">
+        <div
+          className={`flex flex-col lg:grid ${hidePreview ? "lg:grid-cols-1" : "lg:grid-cols-2"} items-center gap-12 lg:gap-16 min-h-[300px]`}
+        >
           {/* Column 1: Logo & Controls */}
           <div className="w-full flex flex-col items-center justify-center relative">
             <div
@@ -111,9 +115,11 @@ const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
           </div>
 
           {/* Column 2: Board Preview */}
-          <div className="w-full flex items-center justify-end">
-            <RouteBoardPreview className="w-full max-w-[480px] aspect-square animate-in fade-in slide-in-from-right-12 duration-700" />
-          </div>
+          {!hidePreview && (
+            <div className="w-full flex items-center justify-end">
+              <RouteBoardPreview className="w-full max-w-[480px] aspect-square animate-in fade-in slide-in-from-right-12 duration-700" />
+            </div>
+          )}
         </div>
       </div>
 

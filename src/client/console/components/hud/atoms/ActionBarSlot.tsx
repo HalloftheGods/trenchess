@@ -1,6 +1,5 @@
 import React from "react";
 import { TCFlex } from "@/shared/components/atoms/ui/TCFlex";
-import { TCText } from "@/shared/components/atoms/ui/TCTypography";
 
 interface ActionBarSlotProps {
   children: React.ReactNode;
@@ -28,11 +27,11 @@ export const ActionBarSlot: React.FC<ActionBarSlotProps> = ({
   className = "",
 }) => {
   const activeStyles = active
-    ? "border-slate-300 dark:border-white/40 bg-white/60 dark:bg-white/15 shadow-[0_0_12px_rgba(0,0,0,0.1)] dark:shadow-[0_0_12px_rgba(255,255,255,0.15)] scale-110 z-10"
-    : "border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-white/5 hover:bg-slate-200/50 dark:hover:bg-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:scale-105";
+    ? "border-white/30 bg-white/10 dark:bg-white/15 shadow-[0_0_20px_rgba(255,255,255,0.1)] scale-110 z-10"
+    : "border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/20 hover:scale-105";
 
   const disabledStyles = disabled
-    ? "opacity-30 cursor-not-allowed"
+    ? "opacity-20 cursor-not-allowed grayscale"
     : "cursor-pointer";
 
   return (
@@ -42,19 +41,19 @@ export const ActionBarSlot: React.FC<ActionBarSlotProps> = ({
       title={label}
       className={`
         relative group flex flex-col items-center justify-center
-        w-12 h-12 rounded-lg border transition-all duration-200
+        w-12 h-12 rounded-md border transition-all duration-300 ease-out
         ${activeStyles}
         ${disabledStyles}
         ${className}
       `}
     >
-      <TCFlex center className="w-full h-full relative">
+      <TCFlex center className="w-full h-full relative z-10">
         {hoverIcon ? (
           <>
-            <div className="transition-all duration-300 group-hover:opacity-0 group-hover:scale-0">
+            <div className="transition-all duration-300 group-hover:opacity-0 group-hover:scale-75">
               {children}
             </div>
-            <div className="absolute transition-all duration-300 opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100">
+            <div className="absolute transition-all duration-300 opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100">
               {hoverIcon}
             </div>
           </>
@@ -64,18 +63,15 @@ export const ActionBarSlot: React.FC<ActionBarSlotProps> = ({
       </TCFlex>
 
       {badge !== undefined && (
-        <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-slate-100 dark:bg-slate-900/90 rounded-full text-[9px] flex items-center justify-center font-black border border-slate-300 dark:border-white/20 text-slate-800 dark:text-white shadow-sm backdrop-blur-sm px-1">
+        <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] bg-slate-950 dark:bg-white rounded-full text-[8px] flex items-center justify-center font-black border border-white/20 dark:border-slate-900 text-white dark:text-slate-950 shadow-lg z-20 px-1">
           {badge}
         </span>
       )}
 
       {label && (
-        <TCText
-          variant="none"
-          className="absolute -top-10 text-[9px] font-bold text-slate-400 whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:-top-12 transition-all pointer-events-none"
-        >
-          {label}
-        </TCText>
+        <div className="absolute -bottom-10 px-2 py-1 bg-slate-900/90 backdrop-blur-md border border-white/10 rounded text-[9px] font-bold text-white whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:-bottom-12 transition-all pointer-events-none z-50 shadow-2xl">
+          {label.toUpperCase()}
+        </div>
       )}
     </button>
   );

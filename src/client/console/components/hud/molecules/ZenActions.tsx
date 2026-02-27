@@ -1,6 +1,7 @@
 import React from "react";
 import { Copy, Save } from "lucide-react";
 
+import { PHASES } from "@constants/game";
 import type { GameState } from "@/shared/types/game";
 
 interface ZenActionsProps {
@@ -40,7 +41,7 @@ export const ZenActions: React.FC<ZenActionsProps> = ({
       </button>
       <div className="grid grid-cols-2 gap-3">
         <button
-          onClick={() => setGameState("menu")}
+          onClick={() => setGameState(PHASES.MENU)}
           className="py-3 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-2xl font-black text-[10px] uppercase tracking-widest text-slate-500 border border-transparent transition-all hover:text-slate-700 dark:hover:text-slate-300"
         >
           Exit Editor

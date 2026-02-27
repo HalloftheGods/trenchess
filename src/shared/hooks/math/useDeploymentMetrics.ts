@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER, INITIAL_ARMY } from "@constants";
 import { getPlayerCells } from "@/core/setup/setupLogic";
 import type { GameMode, TerrainType, PieceType } from "@/shared/types/game";
@@ -18,32 +17,22 @@ export function useDeploymentMetrics({
   activePlayers,
   perspectivePlayerId,
 }: DeploymentMetricsProps) {
-  const maxPlacement = useMemo(() => 
+  // Derived inline for zero-lag synchronization with engine state
+  const maxPlacement = 
     activePlayers.length === 2
       ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-      : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER,
-    [activePlayers.length]
-  );
+      : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
 
-  const placedCount = useMemo(() => {
-    if (!terrain || !terrain.length) return 0;
+  let placedCount = 0;
+  if (terrain && terrain.length) {
     const myCells = getPlayerCells(perspectivePlayerId, mode);
-    let count = 0;
     for (const [r, c] of myCells) {
-      if (terrain[r] && terrain[r][c] !== TERRAIN_TYPES.FLAT) count++;
+      if (terrain[r] && terrain[r][c] !== TERRAIN_TYPES.FLAT) placedCount++;
     }
-    return count;
-  }, [terrain, mode, perspectivePlayerId]);
+  }
 
-  const totalUnitCount = useMemo(() => 
-    INITIAL_ARMY.reduce((sum, unit) => sum + unit.count, 0),
-    []
-  );
-
-  const unitsPlaced = useMemo(() => 
-    totalUnitCount - (inventory[perspectivePlayerId] || []).length,
-    [inventory, perspectivePlayerId, totalUnitCount]
-  );
+  const totalUnitCount = INITIAL_ARMY.reduce((sum, unit) => sum + unit.count, 0);
+  const unitsPlaced = totalUnitCount - (inventory[perspectivePlayerId] || []).length;
 
   return { maxPlacement, placedCount, unitsPlaced, maxUnits: totalUnitCount };
 }

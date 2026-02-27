@@ -4,6 +4,7 @@ import {
   DebugButton,
   DebugSelect,
 } from "@/shared/components/atoms";
+import { PHASES } from "@constants/game";
 import { DebugRow } from "./DebugRow";
 import type { GameStateHook } from "@/shared/types";
 
@@ -34,7 +35,6 @@ export const DebugGameSection: React.FC<DebugGameSectionProps> = ({
     isFlipped,
     showBgDebug,
     setShowBgDebug,
-    setGameState,
     setTurn,
     setSetupMode,
     dispatch,
@@ -44,27 +44,25 @@ export const DebugGameSection: React.FC<DebugGameSectionProps> = ({
     <AccordionSection title="Game Logic" isOpen={isOpen} onToggle={onToggle}>
       <div className="space-y-1.5 py-1">
         <DebugRow label="Engine Phase">
-          {setGameState ? (
-            <DebugSelect
-              value={gameState}
-              onChange={(e) => {
-                const newPhase = e.target.value;
-                dispatch(`phase ${newPhase}`);
-              }}
-              options={[
-                { value: "menu", label: "menu" },
-                { value: "setup", label: "setup" },
-                { value: "play", label: "play" },
-                { value: "library", label: "library" },
-                { value: "how-to-play", label: "how-to-play" },
-                { value: "zen-garden", label: "zen-garden" },
-                { value: "gamemaster", label: "gamemaster" },
-              ]}
-              className="text-amber-500 font-bold"
-            />
-          ) : (
-            <span className="font-bold text-amber-500">{gameState}</span>
-          )}
+          <DebugSelect
+            value={gameState}
+            onChange={(e) => {
+              const newPhase = e.target.value;
+              dispatch(`phase ${newPhase}`);
+            }}
+            options={[
+              { value: PHASES.MENU, label: "menu" },
+              { value: PHASES.GENESIS, label: "genesis" },
+              { value: PHASES.MAIN, label: "main" },
+              { value: PHASES.COMBAT, label: "combat" },
+              { value: PHASES.FINISHED, label: "finished" },
+              { value: PHASES.LIBRARY, label: "library" },
+              { value: PHASES.HOW_TO_PLAY, label: "how-to-play" },
+              { value: PHASES.ZEN_GARDEN, label: "zen-garden" },
+              { value: PHASES.GAMEMASTER, label: "gamemaster" },
+            ]}
+            className="text-amber-500 font-bold"
+          />
         </DebugRow>
 
         <DebugRow label="Mode">

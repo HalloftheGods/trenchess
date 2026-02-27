@@ -13,7 +13,7 @@ import {
   footsoldierFootstool as orthogonal2,
   fourCornersFortnight as diagonal1,
   doubleBackflip as pawnBackflip,
-} from "../moves/patterns";
+} from "../mechanics/moves/patterns";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 

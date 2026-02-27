@@ -23,8 +23,17 @@ export const BattleSidebar: React.FC<BattleSidebarProps> = ({
 }) => {
   const players = side === "left" ? ["red", "green"] : ["yellow", "blue"];
 
+  const isFourPlayerMode = game.mode === "4p" || game.mode === "2v2";
+  const isNorthSouthMode = game.mode === "2p-ns";
+  const nsJustification = side === "right" ? "justify-end" : "justify-start";
+  const justification = isFourPlayerMode
+    ? "justify-between"
+    : isNorthSouthMode
+      ? nsJustification
+      : "justify-center";
+
   return (
-    <div className="flex flex-col justify-between gap-8 h-full">
+    <div className={`flex flex-col ${justification} gap-8 h-full`}>
       {players.map((expectedPid: string) => {
         const pid = game.activePlayers.includes(expectedPid)
           ? expectedPid

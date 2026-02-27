@@ -171,7 +171,7 @@ const SeedLibrary: React.FC<SeedLibraryProps> = ({
   );
 
   return (
-    <div className="min-h-screen bg-stone-100 dark:bg-[#050b15] text-slate-900 dark:text-slate-100 flex flex-col items-center p-4 md:p-8 transition-colors">
+    <div className="min-h-screen bg-stone-100 dark:bg-[#02030f] text-slate-900 dark:text-slate-100 flex flex-col items-center p-4 md:p-8 transition-colors">
       <div className="w-full max-w-7xl">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">

@@ -136,17 +136,24 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
     onSlideChangeRef.current = onSlideChange;
   }, [onSlideChange]);
 
+  const lastSlideIdRef = useRef<string | null>(null);
+
   useEffect(() => {
-    if (currentSlide) {
+    if (currentSlide && currentSlide.id !== lastSlideIdRef.current) {
+      lastSlideIdRef.current = currentSlide.id;
       setPreviewConfig(currentSlide.previewConfig);
       if (onSlideChangeRef.current) {
         onSlideChangeRef.current(currentSlide.id);
       }
     }
-    // Cleanup if unmounted to a default state?
-    // MenuLayout usually defaults it when not hovered, but here we enforce it persistently.
-    return () => setPreviewConfig({ mode: null });
   }, [currentSlide, setPreviewConfig]);
+
+
+  // Cleanup only on unmount
+  useEffect(() => {
+    return () => setPreviewConfig({ mode: null });
+  }, [setPreviewConfig]);
+
 
   const textColor = darkMode ? "text-slate-100" : "text-slate-800";
   const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";

@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useMemo } from "react";
 import type { RouteContextType, PreviewConfig } from "@/shared/types";
 
 export const RouteContext = createContext<RouteContextType | undefined>(undefined);
@@ -24,27 +24,38 @@ export const RouteProvider: React.FC<{
     onClick: () => void;
   } | null>(null);
 
+  const contextValue = useMemo(
+    () => ({
+      ...(value as RouteContextType),
+      hoveredMenu,
+      setHoveredMenu,
+      setHoveredTerrain,
+      terrainSeed: terrainSeed ?? value?.terrainSeed,
+      setTerrainSeed,
+      previewSeedIndex: previewSeedIndex ?? value?.previewSeedIndex ?? 0,
+      setPreviewSeedIndex,
+      previewConfig: previewConfig || value?.previewConfig || {},
+      setPreviewConfig,
+      backAction,
+      setBackAction,
+    }),
+    [
+      value,
+      hoveredMenu,
+      terrainSeed,
+      previewSeedIndex,
+      previewConfig,
+      backAction,
+    ],
+  );
+
   return (
-    <RouteContext.Provider
-      value={{
-        ...(value as RouteContextType),
-        hoveredMenu,
-        setHoveredMenu,
-        setHoveredTerrain,
-        terrainSeed: terrainSeed ?? value?.terrainSeed,
-        setTerrainSeed,
-        previewSeedIndex: previewSeedIndex ?? value?.previewSeedIndex ?? 0,
-        setPreviewSeedIndex,
-        previewConfig: previewConfig || value?.previewConfig || {},
-        setPreviewConfig,
-        backAction,
-        setBackAction,
-      }}
-    >
+    <RouteContext.Provider value={contextValue}>
       {children}
     </RouteContext.Provider>
   );
 };
+
 
 export const useRouteContext = () => {
   const context = useContext(RouteContext);

@@ -33,12 +33,17 @@ export const useCommandDispatcher = (game: GameStateHook) => {
           }
           break;
         case "turn":
+        case "setturn":
           if (args[0]) {
             game.setTurn?.(args[0]);
             addLog("response", `Forcing turn to ${args[0]}...`);
           } else {
             addLog("error", "Usage: turn <pid>");
           }
+          break;
+        case "finishgamemaster":
+          game.finishGamemaster();
+          addLog("response", "Exiting Gamemaster mode...");
           break;
         case "phase":
           if (args[0]) {
@@ -49,7 +54,7 @@ export const useCommandDispatcher = (game: GameStateHook) => {
               navigate(ROUTES.GAME_CONSOLE.build({ style: "zen" }));
               addLog("response", "Entering Zen Garden...");
             } else {
-              game.setGameState?.(args[0]);
+              game.setPhase(args[0]);
               addLog("response", `Forcing phase to ${args[0]}...`);
             }
           } else {
@@ -59,7 +64,10 @@ export const useCommandDispatcher = (game: GameStateHook) => {
         case "play":
           if (args[0]) {
             const style = args[0].toLowerCase();
-            if (game.isStarted) {
+            if (style === "none") {
+              game.setMode(null as unknown as GameMode);
+              addLog("response", "Engine mode cleared.");
+            } else if (game.isStarted) {
               game.setMode(style as GameMode);
               addLog("response", `Engine mode executed: SET_MODE to ${style}`);
             } else {
@@ -69,7 +77,7 @@ export const useCommandDispatcher = (game: GameStateHook) => {
           } else {
             addLog(
               "error",
-              "Usage: play <style> (alpha, battle, pi, chi, omega)",
+              "Usage: play <style> (alpha, battle, pi, chi, omega, none)",
             );
           }
           break;

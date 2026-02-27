@@ -67,6 +67,10 @@ export interface GameStateHook
   startGame: () => void;
   finishGamemaster: () => void;
   forfeit: (pid?: string) => void;
-  setGameState?: (phase: string) => void;
+  setPhase: (phase: string) => void;
+  setGameState: (phase: string) => void;
   setMode: (mode: GameMode) => void;
+  mode: GameMode;
+  activeMode: GameMode;
+  gameState: GameState;
 }

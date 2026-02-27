@@ -2,7 +2,7 @@ import React from "react";
 import { TheBattlefield } from "../components/templates/Battlefield";
 import {
   ConsoleActionBar,
-  ConsoleGameBoard,
+  ConnectedBoard,
   ConsoleOverlays,
   ConsolePlayerColumn,
 } from "../components";
@@ -24,7 +24,7 @@ const OmegaView: React.FC<OmegaViewProps> = ({ game }) => {
   return (
     <TheBattlefield
       darkMode={ctx.darkMode}
-      gameBoard={<ConsoleGameBoard game={game} />}
+      gameBoard={<ConnectedBoard game={game} />}
       actionBar={<ConsoleActionBar game={game} logic={logic} />}
       leftPanel={
         <ConsolePlayerColumn

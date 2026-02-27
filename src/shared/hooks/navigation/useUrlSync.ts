@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { serializeGame, deserializeGame } from "@utils/gameUrl";
 import { useUrlState } from "./useUrlState";
+import { PHASES } from "@constants/game";
 import type {
   GameMode,
   GameState as GameStateType,
@@ -56,7 +57,7 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
       setMode(data.mode);
       setLocalPlayerName("");
       if (data.layoutName) setLayoutName(data.layoutName);
-      setGameState(targetState || "setup");
+      setGameState(targetState || PHASES.MAIN);
       return true;
     },
     [setMode, setLocalPlayerName, setLayoutName, setGameState],
@@ -66,23 +67,37 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
   useEffect(() => {
     if (urlSeed) {
       initFromSeed(urlSeed);
-    } else if (urlView && ["how-to-play", "library", "zen-garden"].includes(urlView)) {
+    } else if (
+      urlView &&
+      ([PHASES.HOW_TO_PLAY, PHASES.LIBRARY, PHASES.ZEN_GARDEN] as string[]).includes(
+        urlView as string,
+      )
+    ) {
       setGameState(urlView as GameStateType);
     }
   }, [urlSeed, urlView, initFromSeed, setGameState]);
 
   // Sync to URL from State
   useEffect(() => {
-    if (gameState === "play" || gameState === "setup") return;
-    if (["how-to-play", "library", "zen-garden"].includes(gameState)) {
+    if (
+      gameState === PHASES.COMBAT ||
+      gameState === PHASES.MAIN ||
+      gameState === PHASES.GENESIS
+    )
+      return;
+    if (
+      ([PHASES.HOW_TO_PLAY, PHASES.LIBRARY, PHASES.ZEN_GARDEN] as string[]).includes(
+        gameState as string,
+      )
+    ) {
       updateParams({ v: gameState, seed: null });
-    } else if (gameState === "menu") {
+    } else if (gameState === PHASES.MENU) {
       updateParams({ v: null, seed: null });
     }
   }, [gameState, updateParams]);
 
   useEffect(() => {
-    if (gameState === "play") {
+    if (gameState === PHASES.COMBAT) {
       if (!urlSeed) publishSeed();
     }
   }, [gameState, urlSeed, publishSeed]);

@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import {
@@ -20,10 +20,7 @@ import { useRouteContext } from "@context";
 import { analytics } from "@/shared/utils/analytics";
 import { ROUTES } from "@constants/routes";
 
-const getServerUrl = () => {
-  if (typeof window === "undefined") return "http://localhost:3001";
-  return window.location.protocol + "//" + window.location.hostname + ":3001";
-};
+import { getServerUrl } from "@/shared/utils/env";
 
 interface Match {
   id: string;
@@ -111,47 +108,46 @@ export const ScoreboardView = ({ darkMode }: ScoreboardProps) => {
     navigate(`${ROUTES.PLAY_LOBBY.url}?join=${roomId}`);
   };
 
-  const sidebar = useMemo(
-    () => (
-      <div className="w-full flex flex-col gap-8 animate-in fade-in slide-in-from-right-8 duration-500">
+  const sidebar = (
+    <div className="w-full flex flex-col gap-8 animate-in fade-in slide-in-from-right-8 duration-500">
+      <div className="w-full flex justify-center">
         <RouteBoardPreview />
+      </div>
 
-        {hoveredMatch && (
-          <div className="flex flex-col gap-2 p-6 bg-white/5 dark:bg-black/20 rounded-3xl border border-white/5 backdrop-blur-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
-                Match Signature
+      {hoveredMatch && (
+        <div className="flex flex-col gap-2 p-6 bg-white/5 dark:bg-black/20 rounded-3xl border border-white/5 backdrop-blur-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+              Match Signature
+            </span>
+            <span className="text-[10px] font-mono text-brand-red uppercase">
+              {hoveredMatch.id.substring(0, 8)}
+            </span>
+          </div>
+          <div className="h-px bg-white/5 my-2" />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-1">
+                State
               </span>
-              <span className="text-[10px] font-mono text-brand-red uppercase">
-                {hoveredMatch.id.substring(0, 8)}
+              <span
+                className={`text-xs font-black uppercase tracking-widest ${hoveredMatch.winner ? "text-emerald-500" : "text-brand-blue"}`}
+              >
+                {hoveredMatch.winner ? "Archive" : "In Progress"}
               </span>
             </div>
-            <div className="h-px bg-white/5 my-2" />
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-1">
-                  State
-                </span>
-                <span
-                  className={`text-xs font-black uppercase tracking-widest ${hoveredMatch.winner ? "text-emerald-500" : "text-brand-blue"}`}
-                >
-                  {hoveredMatch.winner ? "Archive" : "In Progress"}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-1">
-                  Players
-                </span>
-                <span className="text-xs font-black uppercase tracking-widest text-slate-300">
-                  {hoveredMatch.players}/4 Units
-                </span>
-              </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-1">
+                Players
+              </span>
+              <span className="text-xs font-black uppercase tracking-widest text-slate-300">
+                {hoveredMatch.players}/4 Units
+              </span>
             </div>
           </div>
-        )}
-      </div>
-    ),
-    [hoveredMatch],
+        </div>
+      )}
+    </div>
   );
 
   return (
@@ -159,6 +155,7 @@ export const ScoreboardView = ({ darkMode }: ScoreboardProps) => {
       <RoutePageHeader
         label="Global Scoreboard"
         onBackClick={() => navigate(ROUTES.HOME.url)}
+        hidePreview
       />
 
       <section className="flex flex-col gap-8 mt-4">

@@ -7,6 +7,7 @@ import {
   TCText,
   TCButton,
   TCToggle,
+  TCBadge,
 } from "@/shared/components/atoms/ui";
 import {
   Shield,
@@ -22,13 +23,13 @@ import {
   Layers,
   Lock,
 } from "lucide-react";
+import { PHASES } from "@constants/game";
 import type { GameStateHook, GameMode, TrenchessState } from "@/shared/types";
 
 interface ProtocolEditorProps {
   game: GameStateHook;
   onClose?: () => void;
 }
-
 
 /**
  * RuleCard — Re-imagined for cinematic wide-screen layout.
@@ -97,7 +98,6 @@ const SegmentedPicker: React.FC<{
   color?: string;
   isLocked?: boolean;
 }> = ({ options, activeId, onChange, color = "brand-blue", isLocked }) => (
-
   <div
     className={`flex p-1 bg-black/40 rounded-xl border border-white/5 gap-1 ${isLocked ? "opacity-30 pointer-events-none" : ""}`}
   >
@@ -149,7 +149,7 @@ export const ProtocolEditor: React.FC<ProtocolEditorProps> = ({
       ? activePlayers.filter((p) => p !== pid)
       : [...activePlayers, pid];
 
-    if (newActive.length === 0 && gameState === "play") {
+    if (newActive.length === 0 && gameState === PHASES.COMBAT) {
       dispatch("phase gamemaster");
     }
 
@@ -158,16 +158,16 @@ export const ProtocolEditor: React.FC<ProtocolEditorProps> = ({
       `info FLEET_UPDATE: ${pid.toUpperCase()} ${isCurrentlyActive ? "DEACTIVATED" : "ACTIVATED"}`,
     );
 
-
     if (newActive.length === 0) {
       dispatch("info ENGINE_MODE: OMNIPOTENT_ARCHITECT (0 PARTICIPANTS)");
     }
   };
 
   const phases = [
-    { id: "setup", label: "SETUP" },
-    { id: "play", label: "PLAY" },
-    { id: "gamemaster", label: "MASTER" },
+    { id: PHASES.GENESIS, label: "GENESIS" },
+    { id: PHASES.MAIN, label: "MAIN" },
+    { id: PHASES.COMBAT, label: "COMBAT" },
+    { id: PHASES.GAMEMASTER, label: "MASTER" },
   ];
 
   const modes = [
@@ -435,9 +435,11 @@ export const ProtocolEditor: React.FC<ProtocolEditorProps> = ({
                     isLocked={!isGM}
                   />
                 ) : (
-                  <TCBadge variant="outline" className="text-[8px] opacity-40">
-                    OVERRIDE ACTIVE
-                  </TCBadge>
+                  <TCBadge
+                    variant="blue"
+                    label="OVERRIDE ACTIVE"
+                    className="text-[8px] opacity-40"
+                  />
                 )}
               </RuleCard>
 

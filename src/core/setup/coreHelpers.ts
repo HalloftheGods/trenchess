@@ -28,6 +28,9 @@ export const resolvePlayerId = (
       ? G.playerMap[playerID]
       : G.playerMap[ctx.currentPlayer]);
 
+  // In GM mode, we allow moves for any potential player even if not in the active list yet
+  if (allowExplicit && pid) return pid;
+
   const isActive = pid && G.activePlayers.includes(pid);
   return isActive ? pid : null;
 };

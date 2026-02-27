@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { canPlaceUnit } from "@/core/setup/setupLogic";
-import { TERRAIN_TYPES } from "@constants";
+import { TERRAIN_TYPES, PHASES } from "@constants";
 import { analytics } from "@/shared/utils/analytics";
 import type {
   ZenGardenInteraction,
@@ -25,7 +25,7 @@ export function useZenGardenInteraction(
   bgioState: { G: TrenchessState; ctx: Ctx } | null,
   core: GameCore,
   placementManager: PlacementManager,
-  clientRef?: React.MutableRefObject<BgioClient | undefined>,
+  clientRef?: React.RefObject<BgioClient | undefined>,
 ): ZenGardenInteraction {
   const G = bgioState?.G;
   const ctx = bgioState?.ctx;
@@ -94,7 +94,7 @@ export function useZenGardenInteraction(
       if (!client) return;
 
       const startTurn = overrideTurn || turn;
-      const isGamemaster = core.configState.gameState === "gamemaster";
+      const isGamemaster = core.gameState === PHASES.GAMEMASTER;
 
       if (placementPiece === ("TRASH" as unknown as PieceType)) {
         if (board[r][c]) {
@@ -152,12 +152,9 @@ export function useZenGardenInteraction(
       terrain,
       turn,
       clientRef,
-      core.configState.gameState,
+      core.gameState,
     ],
   );
 
-  return useMemo(
-    () => ({ handleZenGardenHover, handleZenGardenClick }),
-    [handleZenGardenHover, handleZenGardenClick],
-  );
+  return { handleZenGardenHover, handleZenGardenClick };
 }

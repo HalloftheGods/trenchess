@@ -9,6 +9,7 @@ import MmoView from "../mmo";
 import ZenView from "../design/zen";
 import GamemasterView from "../gamemaster";
 import SpectatorView from "../spectate";
+import { PHASES } from "@constants/game";
 import type { GameStateHook } from "@/shared/types";
 
 interface ConsoleViewDispatcherProps {
@@ -45,7 +46,7 @@ const ConsoleViewDispatcher: React.FC<ConsoleViewDispatcherProps> = ({
       return <MmoView game={game} />;
     case "zen":
       return <ZenView {...viewProps} />;
-    case "gamemaster":
+    case PHASES.GAMEMASTER:
       return <GamemasterView game={game} />;
     case "spectator":
       return <SpectatorView {...viewProps} />;

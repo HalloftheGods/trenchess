@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { ShieldPlus } from "lucide-react";
 import InteractiveGuide, {
   type Slide,
@@ -17,7 +17,7 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
   onBack,
   initialTerrain,
 }) => {
-  const slides: Slide[] = useMemo(() => {
+  const slides: Slide[] = (() => {
     const terrainSlides = TERRAIN_DETAILS.map(
       (terrain: (typeof TERRAIN_DETAILS)[number]) => {
         const IconComp = terrain.icon;
@@ -136,7 +136,7 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
     }
 
     return [...sortedSlides, rulesSlide];
-  }, [initialTerrain]);
+  })();
 
   return (
     <InteractiveGuide

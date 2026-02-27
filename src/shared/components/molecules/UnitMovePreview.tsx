@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Columns4, Shield, X } from "lucide-react";
 import {
   UNIT_DETAILS,
@@ -8,7 +8,7 @@ import {
   BOARD_SIZE,
 } from "@constants";
 import { useRouteContext } from "@context";
-import { isUnitProtected, getValidMoves } from "@/core/mechanics/gameLogic";
+import { isUnitProtected, getValidMoves } from "@/core/mechanics";
 import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
 import type { PieceType, TerrainType, BoardPiece } from "@/shared/types";
 
@@ -36,7 +36,7 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
   const { getIcon } = useRouteContext();
 
   // Tactical logic simulation
-  const tacticalMoves = useMemo(() => {
+  const tacticalMoves = (() => {
     if (!UNIT_DETAILS[unitType]) return [];
 
     const simulationBoard: (BoardPiece | null)[][] = Array(BOARD_SIZE)
@@ -74,7 +74,7 @@ export const UnitMovePreview: React.FC<UnitMovePreviewProps> = ({
       simulationTerrain,
       "2p-ns",
     );
-  }, [unitType, selectedTerrain]);
+  })();
 
   const details = UNIT_DETAILS[unitType];
   if (!details) return null;

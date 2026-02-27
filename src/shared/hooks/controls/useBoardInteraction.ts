@@ -1,6 +1,6 @@
-import { useCallback, useMemo } from "react";
-import * as SetupLogic from "@/core/setup";
-import { TERRAIN_TYPES } from "@constants";
+import { useCallback } from "react";
+import { useSetupBoardInteraction } from "./useSetupBoardInteraction";
+import { usePlayBoardInteraction } from "./usePlayBoardInteraction";
 import type {
   BoardInteraction,
   MultiplayerState,
@@ -14,6 +14,7 @@ import type {
   TerrainType,
 } from "@/shared/types/game";
 import type { Ctx } from "boardgame.io";
+import { PHASES } from "@constants/game";
 
 const EMPTY_BOARD: (BoardPiece | null)[][] = [];
 const EMPTY_TERRAIN: TerrainType[][] = [];
@@ -34,7 +35,7 @@ export function useBoardInteraction(
     isAiMove?: boolean,
   ) => void,
   _multiplayer?: MultiplayerState,
-  bgioClientRef?: React.MutableRefObject<BgioClient | undefined>,
+  bgioClientRef?: React.RefObject<BgioClient | undefined>,
   playerID?: string,
 ): BoardInteraction {
   const { configState } = core;
@@ -44,155 +45,56 @@ export function useBoardInteraction(
   const ctx = bgioState?.ctx;
   const board = G?.board || EMPTY_BOARD;
   const terrain = G?.terrain || EMPTY_TERRAIN;
-  const mode = G?.mode || configState.mode;
+  const mode = G?.mode || core.mode;
 
   const currentTurn = G && ctx ? G.playerMap[ctx.currentPlayer] : "red";
 
-  // Perspective: Who is the local user?
-  const localPlayer = useMemo(() => {
-    if (playerID && G?.playerMap[playerID]) return G.playerMap[playerID];
-    return currentTurn;
-  }, [playerID, G?.playerMap, currentTurn]);
+  // Perspective: Who is the local user? (Derived inline for zero-lag)
+  const localPlayer =
+    playerID && G?.playerMap[playerID] ? G.playerMap[playerID] : currentTurn;
 
-  const currentPhase = ctx?.phase || "menu";
-  const isSetupPhase = currentPhase === "setup";
+  const currentPhase = ctx?.phase || PHASES.MENU;
+  const isSetupPhase = currentPhase === PHASES.MAIN || currentPhase === PHASES.GENESIS;
 
-  const {
-    selectedCell,
-    setSelectedCell,
-    setHoveredCell,
-    validMoves,
-    setValidMoves,
-    setPreviewMoves,
-    placementPiece,
-    placementTerrain,
-    getValidMovesForPiece,
-  } = placementManager;
+  // Specialized interaction hooks
+  const { handleSetupHover, handleSetupClick } = useSetupBoardInteraction({
+    localPlayer,
+    mode,
+    board,
+    terrain,
+    configState,
+    placementManager,
+    bgioClientRef,
+  });
+
+  const { handlePlayHover, handlePlayClick } = usePlayBoardInteraction({
+    currentTurn,
+    board,
+    placementManager,
+    executeMove,
+  });
 
   const handleCellHover = useCallback(
     (row: number, col: number) => {
-      if (!isSetupPhase || (!placementPiece && !placementTerrain)) {
-        setHoveredCell(null);
-        setPreviewMoves([]);
-        return;
-      }
-
-      // Territory check for placement
-      const myCells = SetupLogic.getPlayerCells(localPlayer, mode);
-      const isMyTerritory = myCells.some(([r, c]) => r === row && c === col);
-
-      if (!isMyTerritory || board[row][col]) {
-        setHoveredCell(null);
-        setPreviewMoves([]);
-        return;
-      }
-
-      if (configState.setupMode === "terrain" && placementTerrain) {
-        setHoveredCell([row, col]);
-      } else if (
-        placementPiece &&
-        SetupLogic.canPlaceUnit(placementPiece, terrain[row][col])
-      ) {
-        setHoveredCell([row, col]);
-        setPreviewMoves(
-          getValidMovesForPiece(
-            row,
-            col,
-            { type: placementPiece, player: localPlayer },
-            localPlayer,
-            0,
-            true,
-          ),
-        );
+      if (isSetupPhase) {
+        handleSetupHover(row, col);
+      } else {
+        handlePlayHover(row, col);
       }
     },
-    [
-      isSetupPhase,
-      placementPiece,
-      placementTerrain,
-      localPlayer,
-      mode,
-      board,
-      configState.setupMode,
-      terrain,
-      setHoveredCell,
-      setPreviewMoves,
-      getValidMovesForPiece,
-    ],
+    [isSetupPhase, handleSetupHover, handlePlayHover],
   );
 
   const handleCellClick = useCallback(
     (row: number, col: number) => {
-      const client = bgioClientRef?.current;
-      if (!client) return;
-
       if (isSetupPhase) {
-        const myCells = SetupLogic.getPlayerCells(localPlayer, mode);
-        const isMyTerritory = myCells.some(([r, c]) => r === row && c === col);
-        if (!isMyTerritory) return;
-
-        if (configState.setupMode === "terrain") {
-          const currentTerrain = terrain[row][col];
-          if (currentTerrain !== TERRAIN_TYPES.FLAT) {
-            client.moves.placeTerrain(
-              row,
-              col,
-              TERRAIN_TYPES.FLAT,
-              localPlayer,
-            );
-          } else if (placementTerrain && !board[row][col]) {
-            client.moves.placeTerrain(row, col, placementTerrain, localPlayer);
-          }
-        } else {
-          if (placementPiece) {
-            client.moves.placePiece(row, col, placementPiece, localPlayer);
-          } else if (board[row][col]?.player === localPlayer) {
-            client.moves.placePiece(row, col, null, localPlayer);
-          }
-        }
-        return;
-      }
-
-      // Play Phase
-      if (selectedCell) {
-        const isTargetValid = validMoves.some(
-          ([vr, vc]) => vr === row && vc === col,
-        );
-        if (isTargetValid) {
-          executeMove(selectedCell[0], selectedCell[1], row, col);
-        }
-        setSelectedCell(null);
-        setValidMoves([]);
+        handleSetupClick(row, col);
       } else {
-        const piece = board[row][col];
-        if (piece && piece.player === currentTurn) {
-          setSelectedCell([row, col]);
-          setValidMoves(getValidMovesForPiece(row, col, piece, currentTurn));
-        }
+        handlePlayClick(row, col);
       }
     },
-    [
-      bgioClientRef,
-      isSetupPhase,
-      localPlayer,
-      mode,
-      configState.setupMode,
-      terrain,
-      placementTerrain,
-      board,
-      placementPiece,
-      selectedCell,
-      validMoves,
-      executeMove,
-      setSelectedCell,
-      setValidMoves,
-      currentTurn,
-      getValidMovesForPiece,
-    ],
+    [isSetupPhase, handleSetupClick, handlePlayClick],
   );
 
-  return useMemo(
-    () => ({ handleCellHover, handleCellClick }),
-    [handleCellHover, handleCellClick],
-  );
+  return { handleCellHover, handleCellClick };
 }

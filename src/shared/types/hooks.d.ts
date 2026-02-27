@@ -41,10 +41,6 @@ export interface UseBoardPreviewProps {
 }
 
 export interface GameConfigState {
-  mode: GameMode;
-  setMode: React.Dispatch<React.SetStateAction<GameMode>>;
-  gameState: GameState;
-  setGameState: React.Dispatch<React.SetStateAction<GameState>>;
   setupMode: SetupMode;
   setSetupMode: React.Dispatch<React.SetStateAction<SetupMode>>;
   isFlipped: boolean;
@@ -103,6 +99,7 @@ export interface BgioClient {
     setTurn: (pid: string) => void;
     setPhase: (phase: string) => void;
     patchG: (patch: Partial<TrenchessState>) => void;
+    authorizeMasterProtocol: () => void;
   };
   stop: () => void;
   start: () => void;
@@ -113,6 +110,7 @@ export interface BgioClient {
   matchID: string | null;
 }
 
+// (Will fix GameStateHook in state.d.ts after viewing it)
 export interface GameCore {
   configState: GameConfigState;
   turnState: {
@@ -130,6 +128,8 @@ export interface GameCore {
   isAllPlaced: boolean;
   isPlayerReady: (p: string) => boolean;
   initFromSeed: (seed: string, targetState?: GameState) => boolean;
+  mode: GameMode;
+  gameState: GameState;
 }
 
 export interface PlacementManager {

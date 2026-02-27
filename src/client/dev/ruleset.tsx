@@ -1,4 +1,3 @@
-import React from "react";
 import { ProtocolEditor } from "./components/ProtocolEditor";
 import type { GameStateHook } from "@/shared/types";
 

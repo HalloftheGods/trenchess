@@ -2,12 +2,13 @@ import React from "react";
 import { ZenGardenLayout } from "../components/templates/ZenGardenLayout";
 import Header from "@/shared/components/organisms/Header";
 import {
-  ConsoleGameBoard,
+  ConnectedBoard,
   DeploymentPanel,
 } from "../components";
 import { Pencil } from "lucide-react";
 import { serializeGame } from "@/shared/utils/gameUrl";
 import type { GameStateHook } from "@/shared/types";
+import { PHASES } from "@constants/game";
 
 interface ZenGardenViewProps {
   game: GameStateHook;
@@ -77,7 +78,7 @@ const ZenGardenView: React.FC<ZenGardenViewProps> = ({
           pieceStyle={game.pieceStyle}
           toggleTheme={game.toggleTheme}
           togglePieceStyle={game.togglePieceStyle}
-          onZenGarden={() => game.setGameState("zen-garden")}
+          onZenGarden={() => game.setGameState(PHASES.ZEN_GARDEN)}
         >
           {renderZenGardenControls()}
           {renderZenGardenSeedButton()}
@@ -125,7 +126,7 @@ const ZenGardenView: React.FC<ZenGardenViewProps> = ({
           localPlayerName={game.localPlayerName}
         />
       }
-      gameBoard={<ConsoleGameBoard game={game} />}
+      gameBoard={<ConnectedBoard game={game} />}
     />
   );
 };

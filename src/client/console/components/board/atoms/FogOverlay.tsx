@@ -31,7 +31,7 @@ export const FogOverlay: React.FC<FogOverlayProps> = ({ regions }) => {
         >
           <EyeOff className="w-12 h-12 text-slate-600 mb-3" />
           <span className="text-slate-500 text-xs font-bold uppercase tracking-[0.3em]">
-            Classified
+            Confidential
           </span>
         </div>
       ))}

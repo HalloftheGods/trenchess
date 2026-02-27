@@ -16,10 +16,7 @@ import {
   TERRAIN_LIST,
   TERRAIN_INTEL,
 } from "@constants";
-import {
-  canUnitTraverseTerrain,
-  isUnitProtected,
-} from "@/core/mechanics/terrain";
+import { isUnitProtected, canUnitTraverseTerrain } from "@/core/mechanics";
 import { X, ShieldPlus } from "lucide-react";
 import type { TerrainType, PieceType } from "@/shared/types/game";
 

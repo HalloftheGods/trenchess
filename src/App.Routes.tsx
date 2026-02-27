@@ -15,7 +15,7 @@ import {
   getOtherRoutes,
 } from "./client/routes";
 
-import type { AppRoutesProps, RouteConfig, GameMode } from "@/shared/types";
+import type { AppRoutesProps, RouteConfig } from "@/shared/types";
 
 const LazyRouteLayout = lazy(
   () => import("@/shared/components/templates/RouteLayout"),
@@ -31,20 +31,7 @@ export const AppRoutes = ({
 }: AppRoutesProps) => {
   const navigate = useNavigate();
 
-  const {
-    multiplayer,
-    mode,
-    setMode,
-    selectedPreset,
-    setSelectedPreset,
-    playerTypes,
-    activePlayers,
-    darkMode,
-    pieceStyle,
-    toggleTheme,
-    togglePieceStyle,
-    initFromSeed,
-  } = game;
+  const { mode, darkMode, pieceStyle, initFromSeed } = game;
 
   const gameScreenProps = useMemo(
     () => ({
@@ -131,39 +118,7 @@ export const AppRoutes = ({
         <Routes>
           <Route
             path={ROUTES.HOME.path}
-            element={
-              <LazyRouteLayout
-                darkMode={darkMode}
-                pieceStyle={pieceStyle}
-                toggleTheme={toggleTheme}
-                togglePieceStyle={togglePieceStyle}
-                onTutorial={routeContextValue.onTutorial}
-                onLogoClick={routeContextValue.onLogoClick}
-                onZenGarden={routeContextValue.onZenGarden}
-                multiplayer={multiplayer}
-                onStartGame={routeContextValue.onStartGame}
-                onCtwGuide={routeContextValue.onCtwGuide}
-                onChessGuide={routeContextValue.onChessGuide}
-                onTrenchGuide={routeContextValue.onTrenchGuide}
-                onOpenLibrary={routeContextValue.onOpenLibrary}
-                selectedBoard={mode}
-                setSelectedBoard={(m: GameMode | null) => m && setMode(m)}
-                selectedPreset={selectedPreset}
-                setSelectedPreset={(p: string | null) =>
-                  setSelectedPreset(
-                    p as
-                      | "classic"
-                      | "quick"
-                      | "terrainiffic"
-                      | "custom"
-                      | "zen-garden"
-                      | null,
-                  )
-                }
-                playerTypes={playerTypes}
-                activePlayers={activePlayers}
-              />
-            }
+            element={<LazyRouteLayout />}
           >
             {menuRoutes.map(renderRoute)}
           </Route>

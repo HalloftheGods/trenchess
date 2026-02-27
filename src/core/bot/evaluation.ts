@@ -7,7 +7,7 @@ import type {
   GameMode,
   PieceType,
 } from "@/shared/types/game";
-import { isPlayerInCheck } from "@/core/mechanics/gameLogic";
+import { isPlayerInCheck } from "@/core/mechanics";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 const { FLAT, DESERT } = TERRAIN_TYPES;

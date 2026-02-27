@@ -2,7 +2,7 @@ import BoardCell from "./BoardCell";
 import { VictoryOverlay } from "../../hud";
 import { CheckAlert } from "../atoms";
 import { EyeOff } from "lucide-react";
-import { PLAYER_CONFIGS } from "@constants";
+import { PLAYER_CONFIGS, PHASES } from "@constants";
 import type {
   BoardPiece,
   TerrainType,
@@ -42,7 +42,7 @@ interface GameBoardProps {
   handleCellHover: (r: number, c: number) => void;
   setHoveredCell: (cell: [number, number] | null) => void;
   setPreviewMoves: (moves: number[][]) => void;
-  setGameState: (state: "menu") => void;
+  setGameState: (state: GameState) => void;
   isFlipped: boolean;
   localPlayerName?: string;
   fogOfWar?: boolean;
@@ -86,8 +86,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
     height: string;
     label: string;
   }[] = [];
-  if (fogOfWar && (gameState === "setup" || gameState === "gamemaster")) {
-    if (gameState === "gamemaster") {
+  if (fogOfWar && (gameState === PHASES.MAIN || gameState === PHASES.GENESIS || gameState === PHASES.GAMEMASTER)) {
+    if (gameState === PHASES.GAMEMASTER) {
       // Architect sees all - no fog
     } else if (mode === "2p-ns") {
       // Fog the half that ISN'T the current player's
@@ -157,8 +157,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
   // Helper: determine if a specific cell is in opponent territory during setup
   const isCellFogged = (r: number, c: number): boolean => {
     if (!fogOfWar) return false;
-    if (gameState !== "setup" && gameState !== "gamemaster") return false;
-    if (gameState === "gamemaster") return false;
+    if (gameState !== PHASES.MAIN && gameState !== PHASES.GENESIS && gameState !== PHASES.GAMEMASTER) return false;
+    if (gameState === PHASES.GAMEMASTER) return false;
     if (mode === "2p-ns") {
       return perspectiveTurn === "red" ? r >= 6 : r < 6;
     } else if (mode === "2p-ew") {
@@ -240,10 +240,10 @@ const GameBoard: React.FC<GameBoardProps> = ({
 
         {/* Tactical Status Alerts */}
         <div className="absolute left-1/2 -translate-x-1/2 bottom-8 z-[60] w-full max-w-[300px] pointer-events-none">
-          <CheckAlert inCheck={inCheck && gameState === "play"} />
+          <CheckAlert inCheck={inCheck && gameState === PHASES.COMBAT} />
         </div>
 
-        {gameState === "finished" && winner && (
+        {gameState === PHASES.FINISHED && winner && (
           <VictoryOverlay
             winner={winner}
             reason={winnerReason || undefined}

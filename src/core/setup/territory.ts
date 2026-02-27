@@ -93,6 +93,8 @@ export const getCellOwner = (
  */
 export const getPlayersForMode = (mode: GameMode): string[] => {
   switch (mode) {
+    case null:
+      return [];
     case "2p-ns":
       return ["red", "blue"];
     case "2p-ew":

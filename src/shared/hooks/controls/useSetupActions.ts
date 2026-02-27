@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { analytics } from "@/shared/utils/analytics";
+import { PHASES } from "@constants/game";
 import type {
   SetupActions,
   GameCore,
@@ -18,12 +19,11 @@ export function useSetupActions(
   setPlacementPiece: React.Dispatch<React.SetStateAction<PieceType | null>>,
   setPlacementTerrain: React.Dispatch<React.SetStateAction<TerrainType | null>>,
   setPreviewMoves: React.Dispatch<React.SetStateAction<number[][]>>,
-  bgioClientRef?: React.MutableRefObject<BgioClient | undefined>,
+  bgioClientRef?: React.RefObject<BgioClient | undefined>,
   _authoritativeBoard?: unknown,
   _authoritativeTerrain?: unknown,
 ): SetupActions {
-  const { configState, turnState } = core;
-  const { setMode, setGameState } = configState;
+  const { turnState } = core;
   const { setPlayerTypes } = turnState;
 
   const getClient = useCallback(() => {
@@ -45,13 +45,12 @@ export function useSetupActions(
 
       client.moves.setMode(selectedMode);
       client.moves.resetToOmega();
+      client.moves.setPhase(PHASES.MAIN);
 
-      setMode(selectedMode);
-      setGameState("setup");
       setPlacementPiece(null);
       setPlacementTerrain(null);
     },
-    [getClient, setMode, setGameState, setPlacementPiece, setPlacementTerrain],
+    [getClient, setPlacementPiece, setPlacementTerrain],
   );
 
   const initGameWithPreset = useCallback(
@@ -74,34 +73,26 @@ export function useSetupActions(
       if (preset === "quick") {
         client.moves.randomizeTerrain();
         client.moves.randomizeUnits();
-        setGameState("setup");
+        client.moves.setPhase(PHASES.MAIN);
       } else if (preset === "classic") {
         client.moves.setClassicalFormation();
-        setGameState("setup");
+        client.moves.setPhase(PHASES.MAIN);
       } else if (preset === "terrainiffic") {
         client.moves.applyChiGarden();
-        setGameState("setup");
+        client.moves.setPhase(PHASES.MAIN);
       } else if (preset === "zen-garden") {
         client.moves.patchG({ isGamemaster: true });
         client.moves.resetToOmega();
-        setGameState("gamemaster");
+        client.moves.setPhase(PHASES.GAMEMASTER);
       } else {
-        setGameState("setup");
+        client.moves.setPhase(PHASES.MAIN);
       }
 
-      setMode(selectedMode);
       setPlacementPiece(null);
       setPlacementTerrain(null);
       analytics.trackEvent("Setup", "Init Preset", preset || "custom");
     },
-    [
-      getClient,
-      setPlayerTypes,
-      setGameState,
-      setMode,
-      setPlacementPiece,
-      setPlacementTerrain,
-    ],
+    [getClient, setPlayerTypes, setPlacementPiece, setPlacementTerrain],
   );
 
   const randomizeTerrain = useCallback(() => {
@@ -167,9 +158,8 @@ export function useSetupActions(
     (newMode: GameMode) => {
       const client = getClient();
       if (client) client.moves.setMode(newMode);
-      setMode(newMode);
     },
-    [getClient, setMode],
+    [getClient],
   );
 
   return {

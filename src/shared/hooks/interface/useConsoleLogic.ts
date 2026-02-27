@@ -1,57 +1,64 @@
 import { useGameStats } from "../math/useGameStats";
 import { useInventoryCounts } from "../math/useInventoryCounts";
 import { useDeploymentMetrics } from "../math/useDeploymentMetrics";
-import { getServerUrl } from "../engine/useMultiplayer";
+import { getServerUrl } from "@/shared/utils/env";
 import type { GameStateHook } from "@/shared/types";
+import { PHASES } from "@constants/game";
 
-/**
- * useConsoleLogic — Orchestrator for UI console data.
- * Delegates to specialized hooks for metrics and stats.
- */
 export const useConsoleLogic = (game: GameStateHook) => {
-  const isOnline = !!game.multiplayer.roomId;
-  const perspectivePlayerId = isOnline
-    ? game.localPlayerName || game.turn
-    : game.turn;
+  const {
+    multiplayer,
+    localPlayerName,
+    turn,
+    isAllPlaced,
+    isPlayerReady,
+    readyPlayers,
+    gameState,
+    board,
+    terrain,
+    activePlayers,
+    inventory,
+    terrainInventory,
+    mode,
+  } = game;
+  const isOnline = !!multiplayer.roomId;
+  const perspectivePlayerId = isOnline ? localPlayerName || turn : turn;
+  const myPlayerId = isOnline ? localPlayerName : null;
 
-  const myPlayerId = isOnline ? game.localPlayerName : null;
-  const isAllPlacedLocally = !isOnline && game.isAllPlaced;
+  const isAllPlacedLocally = !isOnline && isAllPlaced;
   const isMyPlayerPlaced =
-    isOnline && !!myPlayerId && game.isPlayerReady(myPlayerId);
+    isOnline && !!myPlayerId && isPlayerReady(myPlayerId);
   const isMyPlayerLocked =
-    isOnline && !!myPlayerId && !!game.readyPlayers[myPlayerId];
-
+    isOnline && !!myPlayerId && !!readyPlayers[myPlayerId];
   const showOverlay =
-    game.gameState === "setup" && (isAllPlacedLocally || isMyPlayerPlaced);
+    gameState === PHASES.MAIN && (isAllPlacedLocally || isMyPlayerPlaced);
 
   const { sanctuaryBonuses, teamPowerStats } = useGameStats({
-    board: game.board,
-    terrain: game.terrain,
-    activePlayers: game.activePlayers,
+    board,
+    terrain,
+    activePlayers,
   });
-
   const inventoryCounts = useInventoryCounts({
-    inventory: game.inventory,
-    terrainInventory: game.terrainInventory,
+    inventory,
+    terrainInventory,
     perspectivePlayerId,
   });
-
   const { maxPlacement, placedCount, unitsPlaced, maxUnits } =
     useDeploymentMetrics({
-      mode: game.mode,
-      terrain: game.terrain,
-      inventory: game.inventory,
-      activePlayers: game.activePlayers,
+      mode,
+      terrain,
+      inventory,
+      activePlayers,
       perspectivePlayerId,
     });
 
   const onlineInfo = isOnline
     ? {
-        roomId: game.multiplayer.roomId,
-        playerIndex: game.multiplayer.playerIndex,
-        isHost: game.multiplayer.isHost,
-        isConnected: game.multiplayer.isConnected,
-        players: game.multiplayer.players,
+        roomId: multiplayer.roomId,
+        playerIndex: multiplayer.playerIndex,
+        isHost: multiplayer.isHost,
+        isConnected: multiplayer.isConnected,
+        players: multiplayer.players,
         serverUrl: getServerUrl(),
       }
     : undefined;

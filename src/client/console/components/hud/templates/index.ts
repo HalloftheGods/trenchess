@@ -1,1 +1,2 @@
-export * from "./ActionBarTemplate";
+// Templates for HUD
+export {};

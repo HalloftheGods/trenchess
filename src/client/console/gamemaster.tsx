@@ -2,7 +2,7 @@ import React from "react";
 import { GamemasterLayout } from "./components/templates/GamemasterLayout";
 import {
   ConsoleActionBar,
-  ConsoleGameBoard,
+  ConnectedBoard,
   ConsolePlayerColumn,
 } from "./components";
 import { useRouteContext } from "@context";
@@ -30,7 +30,7 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
   return (
     <GamemasterLayout
       darkMode={ctx.darkMode}
-      gameBoard={<ConsoleGameBoard game={game} />}
+      gameBoard={<ConnectedBoard game={game} />}
       actionBar={<ConsoleActionBar game={game} logic={logic} />}
       leftPanel={
         <ConsolePlayerColumn

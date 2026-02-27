@@ -33,7 +33,7 @@ export const GamemasterLayout: React.FC<GamemasterLayoutProps> = ({
       </div>
 
       {/* Main content area: 3-Column Layout */}
-      <div className="w-full max-w-[1700px] flex flex-col lg:flex-row items-start justify-center gap-8 px-6 pt-28 pb-12 relative z-10">
+      <div className="w-full max-w-[1700px] flex flex-col lg:flex-row items-start justify-center gap-8 px-6 pt-32 pb-12 relative z-10">
         {/* Left Column */}
         <div className="w-full lg:w-80 flex flex-col shrink-0 order-2 lg:order-1">
           {leftPanel}

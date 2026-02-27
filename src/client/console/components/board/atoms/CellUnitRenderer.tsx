@@ -1,7 +1,8 @@
 import React from "react";
 import { Flex } from "@atoms";
 import { PLAYER_CONFIGS, INITIAL_ARMY, PIECES } from "@constants";
-import { isUnitProtected } from "@/core/mechanics/gameLogic";
+import { PHASES } from "@constants/game";
+import { isUnitProtected } from "@/core/mechanics";
 import type { BoardPiece, TerrainType, ArmyUnit } from "@/shared/types/game";
 
 interface CellUnitRendererProps {
@@ -51,7 +52,10 @@ export const CellUnitRenderer: React.FC<CellUnitRendererProps> = ({
   const isKing = piece.type === PIECES.KING;
   const isKingInCheck = isKing && inCheck && isMyTurn;
 
-  const isSetup = gameState === "setup" || gameState === "zen-garden";
+  const isSetup =
+    gameState === PHASES.MAIN ||
+    gameState === PHASES.GENESIS ||
+    gameState === PHASES.ZEN_GARDEN;
 
   // Tactical Entrance Hierarchy: Setup (Drop) > Move (Spin-Grow) > Default Arrive
   const entranceClass = isSetup

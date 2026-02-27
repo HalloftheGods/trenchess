@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { isPlayerInCheck } from "@/core/mechanics/gameLogic";
+import { useState, useEffect, useCallback } from "react";
+import { isPlayerInCheck } from "@/core/mechanics";
 import { serializeGame } from "@utils/gameUrl";
 import { PLAYER_CONFIGS } from "@constants";
 import type {
@@ -7,15 +7,23 @@ import type {
   TerrainType,
   GameConfigState,
   GameCore,
+  GameMode,
+  GameState,
 } from "@/shared/types";
 import { useUrlSync } from "../navigation/useUrlSync";
+import { PHASES } from "@constants/game";
 
 /**
  * useGameLifecycle — UI-side lifecycle management.
  * Handles in-check detection, perspective flipping, and URL synchronization.
  */
 export function useGameLifecycle(
-  configState: GameConfigState,
+  configState: GameConfigState & {
+    mode: GameMode;
+    gameState: GameState;
+    setMode: (m: GameMode) => void;
+    setGameState: (p: string) => void;
+  },
   board: (BoardPiece | null)[][],
   terrain: TerrainType[][],
   turn: string,
@@ -34,11 +42,11 @@ export function useGameLifecycle(
   const [isThinking, setIsThinking] = useState(false);
   const [localPlayerName, setLocalPlayerName] = useState("");
 
-  const inCheck = useMemo(() => {
-    if (gameState !== "play") return false;
-    if (!board.length || !terrain.length) return false;
-    return isPlayerInCheck(turn, board, terrain, mode);
-  }, [gameState, board, terrain, turn, mode]);
+  // Derived inline for zero-lag synchronization with engine state
+  const inCheck =
+    gameState === PHASES.COMBAT && board.length && terrain.length
+      ? isPlayerInCheck(turn, board, terrain, mode)
+      : false;
 
   const getPlayerDisplayName = useCallback((pid: string) => {
     return PLAYER_CONFIGS[pid]?.name.toUpperCase() || pid.toUpperCase();
@@ -52,7 +60,7 @@ export function useGameLifecycle(
   const isAllPlaced = false; // Placeholder for UI compatibility
 
   useEffect(() => {
-    if (!autoFlip || gameState !== "play") return;
+    if (!autoFlip || gameState !== PHASES.COMBAT) return;
 
     if (mode === "2p-ns") setIsFlipped(turn === "red");
     else if (mode === "2p-ew") setIsFlipped(turn === "green");
@@ -76,25 +84,22 @@ export function useGameLifecycle(
   }, [mode, board, terrain, layoutName]);
 
   useEffect(() => {
-    if (gameState === "play") {
+    if (gameState === PHASES.COMBAT) {
       const params = new URLSearchParams(window.location.search);
       if (!params.has("seed")) publishSeed();
     }
   }, [gameState, publishSeed]);
 
-  const turnState = useMemo(
-    () => ({
-      playerTypes,
-      setPlayerTypes,
-      isThinking,
-      setIsThinking,
-      localPlayerName,
-      setLocalPlayerName,
-      getPlayerDisplayName,
-      inCheck,
-    }),
-    [playerTypes, isThinking, localPlayerName, getPlayerDisplayName, inCheck],
-  );
+  const turnState = {
+    playerTypes,
+    setPlayerTypes,
+    isThinking,
+    setIsThinking,
+    localPlayerName,
+    setLocalPlayerName,
+    getPlayerDisplayName,
+    inCheck,
+  };
 
   return {
     configState,
@@ -102,5 +107,7 @@ export function useGameLifecycle(
     isAllPlaced,
     isPlayerReady,
     initFromSeed,
+    mode,
+    gameState,
   };
 }

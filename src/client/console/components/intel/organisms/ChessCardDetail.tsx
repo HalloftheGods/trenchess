@@ -7,8 +7,8 @@ import {
   unitColorMap,
   TERRAIN_DETAILS,
 } from "@constants";
-import { isUnitProtected } from "@/core/mechanics/gameLogic";
-import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
+import { isUnitProtected } from "@/core/mechanics";
+import { canUnitTraverseTerrain } from "@/core/mechanics";
 import { useRouteContext } from "@context";
 import type { PieceType, TerrainType } from "@/shared/types/game";
 

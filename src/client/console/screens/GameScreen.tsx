@@ -4,6 +4,7 @@ import type { useGameState } from "@hooks/engine/useGameState";
 import MmoView from "../mmo";
 import ZenGardenView from "../design/zen";
 import ConsoleViewDispatcher from "../game";
+import { PHASES } from "@constants/game";
 
 interface GameScreenProps {
   game: ReturnType<typeof useGameState>;
@@ -34,7 +35,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
   }
 
   // Zen Garden has its own layout and controls
-  if (game.gameState === "zen-garden") {
+  if (game.gameState === PHASES.ZEN_GARDEN) {
     return <ZenGardenView {...viewProps} />;
   }
 
