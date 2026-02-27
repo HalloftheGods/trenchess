@@ -35,7 +35,7 @@ interface ProtocolEditorProps {
  * RuleCard — Re-imagined for cinematic wide-screen layout.
  */
 const RuleCard: React.FC<{
-  icon: React.ReactNode;
+  icon: React.ReactElement;
   title: string;
   description: string;
   children: React.ReactNode;
@@ -64,7 +64,7 @@ const RuleCard: React.FC<{
               : "bg-slate-800/50 text-slate-500"
           }`}
         >
-          {React.cloneElement(icon as React.ReactElement, { size: 24 })}
+          {React.cloneElement(icon, { size: 24 })}
         </div>
         <TCStack gap={1} className="min-w-0">
           <TCFlex align="center" gap={3}>
