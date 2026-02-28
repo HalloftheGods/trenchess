@@ -1,47 +1,15 @@
-import { RouteProvider, TerminalProvider, GameProvider } from "@context";
-import { ScrollToTop } from "@atoms/ScrollToTop";
-import { AnalyticsTracker } from "@atoms/AnalyticsTracker";
-import { useAppInitialization } from "@hooks/navigation/useAppInitialization";
-import { useRouteContextValue } from "@hooks/navigation/useRouteContextValue";
-import { GlobalDebugPortal } from "@organisms";
-import { AppRoutes } from "@/app/App.Routes";
+import { TerminalProvider, ThemeProvider, GameProvider } from "@context";
 
-const AppContent = () => {
-  const {
-    game,
-    seeds,
-    previewSeedIndex,
-    setPreviewSeedIndex,
-    handleBackToMenu,
-  } = useAppInitialization();
+interface AppProps {
+  children: React.ReactNode;
+}
 
-  const routeContextValue = useRouteContextValue({
-    game,
-    seeds,
-    previewSeedIndex,
-    setPreviewSeedIndex,
-  });
-
-  return (
-    <RouteProvider value={routeContextValue}>
-      <AnalyticsTracker />
-      <ScrollToTop />
-      <AppRoutes
-        game={game}
-        routeContextValue={routeContextValue}
-        handleBackToMenu={handleBackToMenu}
-      />
-      <GlobalDebugPortal game={game} />
-    </RouteProvider>
-  );
-};
-
-const App = () => {
+const App = ({ children }: AppProps) => {
   return (
     <TerminalProvider>
-      <GameProvider>
-        <AppContent />
-      </GameProvider>
+      <ThemeProvider>
+        <GameProvider>{children}</GameProvider>
+      </ThemeProvider>
     </TerminalProvider>
   );
 };
