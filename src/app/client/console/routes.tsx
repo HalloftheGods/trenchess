@@ -1,6 +1,7 @@
 import type { RouteConfig } from "@tc.types";
 import type { GameStateHook, GameMode, GameState } from "@tc.types";
 import { PHASES } from "@constants/game";
+import { ROUTES } from "@/app/routes";
 import {
   GameMmoScreen,
   GameConsoleScreen,
@@ -11,7 +12,6 @@ import {
 } from "./screens";
 
 import ConsoleView from "./index";
-import CONSOLE_ROUTES from "./constants";
 
 export const getGameRoutes = (
   game: GameStateHook,
@@ -28,10 +28,10 @@ export const getGameRoutes = (
   {
     element: <ConsoleView game={game} />,
     children: [
-      { path: CONSOLE_ROUTES.mmo, element: <GameMmoScreen game={game} /> },
+      { path: ROUTES.game.mmo, element: <GameMmoScreen game={game} /> },
 
       {
-        path: CONSOLE_ROUTES.console,
+        path: ROUTES.game.console,
         element: <GameConsoleScreen game={game} />,
       },
 
@@ -41,27 +41,27 @@ export const getGameRoutes = (
       },
 
       {
-        path: CONSOLE_ROUTES.mode,
+        path: ROUTES.game.mode,
         element: <GameModeScreen {...gameScreenProps} />,
       },
 
       {
-        path: CONSOLE_ROUTES.gamemaster,
+        path: ROUTES.game.gamemaster,
         element: <GamemasterScreen game={game} />,
       },
 
       {
-        path: CONSOLE_ROUTES.index,
+        path: ROUTES.game.index,
         element: <GameScreen {...gameScreenProps} />,
       },
 
       {
-        path: CONSOLE_ROUTES.detail,
+        path: ROUTES.game.detail,
         element: <GameScreen {...gameScreenProps} />,
       },
 
       {
-        path: CONSOLE_ROUTES.library,
+        path: ROUTES.game.library,
         element: (
           <LibraryScreen
             onBack={handleBackToMenu}

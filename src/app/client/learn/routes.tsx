@@ -4,6 +4,7 @@ import {
   ChessGuideWrapper,
 } from "./components/RouteWrappers";
 import type { RouteConfig } from "@tc.types";
+import { ROUTES } from "@/app/routes";
 import {
   LearnIndexScreen,
   LearnEndgameIndexScreen,
@@ -15,64 +16,63 @@ import {
   LearnChessmenIndexScreen,
   LearnMathIndexScreen,
 } from "./screens";
-import LEARN_ROUTES from "./constants";
 
 export const getLearnRoutes = (navigate: NavigateFunction): RouteConfig[] => [
-  { path: LEARN_ROUTES.index, element: <LearnIndexScreen /> },
+  { path: ROUTES.learn.index, element: <LearnIndexScreen /> },
   {
-    path: LEARN_ROUTES.endgame.index,
+    path: ROUTES.learn.endgame.index,
     element: <LearnEndgameIndexScreen />,
   },
 
   {
-    path: LEARN_ROUTES.endgame.captureTheWorld,
+    path: ROUTES.learn.endgame.captureTheWorld,
     element: (
       <LearnEndgameWorldScreen
-        onBack={() => navigate(LEARN_ROUTES.endgame.index)}
+        onBack={() => navigate(ROUTES.learn.endgame.index)}
       />
     ),
   },
 
   {
-    path: LEARN_ROUTES.endgame.captureTheKing,
+    path: ROUTES.learn.endgame.captureTheKing,
     element: (
       <LearnEndgameKingScreen
-        onBack={() => navigate(LEARN_ROUTES.endgame.index)}
+        onBack={() => navigate(ROUTES.learn.endgame.index)}
       />
     ),
   },
 
   {
-    path: LEARN_ROUTES.endgame.captureTheArmy,
+    path: ROUTES.learn.endgame.captureTheArmy,
     element: (
       <LearnEndgameArmyScreen
-        onBack={() => navigate(LEARN_ROUTES.endgame.index)}
+        onBack={() => navigate(ROUTES.learn.endgame.index)}
       />
     ),
   },
 
-  { path: LEARN_ROUTES.trench.index, element: <LearnTrenchIndexScreen /> },
+  { path: ROUTES.learn.trench.index, element: <LearnTrenchIndexScreen /> },
 
   {
-    path: LEARN_ROUTES.trench.detail,
+    path: ROUTES.learn.trench.detail,
     element: (
-      <TrenchGuideWrapper onBack={() => navigate(LEARN_ROUTES.trench.index)} />
+      <TrenchGuideWrapper onBack={() => navigate(ROUTES.learn.trench.index)} />
     ),
   },
 
-  { path: LEARN_ROUTES.chess.index, element: <LearnChessIndexScreen /> },
+  { path: ROUTES.learn.chess.index, element: <LearnChessIndexScreen /> },
 
   {
-    path: LEARN_ROUTES.chess.chessmen,
+    path: ROUTES.learn.chess.chessmen,
     element: <LearnChessmenIndexScreen />,
   },
 
   {
-    path: LEARN_ROUTES.chess.chessmenDetail,
+    path: ROUTES.learn.chess.chessmenDetail,
     element: (
-      <ChessGuideWrapper onBack={() => navigate(LEARN_ROUTES.chess.chessmen)} />
+      <ChessGuideWrapper onBack={() => navigate(ROUTES.learn.chess.chessmen)} />
     ),
   },
 
-  { path: LEARN_ROUTES.math, element: <LearnMathIndexScreen /> },
+  { path: ROUTES.learn.math, element: <LearnMathIndexScreen /> },
 ];
