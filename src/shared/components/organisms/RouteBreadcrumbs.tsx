@@ -23,13 +23,18 @@ import {
   AllianceTone,
   DualToneSwords,
 } from "../atoms/RouteIcons";
-import { ROUTES } from "@constants/routes";
+import { ROUTES } from "@/app/routes";
+import { buildRoute } from "@/shared/utilities/routes";
 
 type BreadcrumbColor = "red" | "blue" | "emerald" | "amber" | "slate";
 
 export const RouteBreadcrumbs: React.FC = () => {
   const navigate = useNavigate();
-  const { playMode: urlMode, players: urlPlayers } = useParams<{ playMode: string; players: string; step?: string }>();
+  const { playMode: urlMode, players: urlPlayers } = useParams<{
+    playMode: string;
+    players: string;
+    step?: string;
+  }>();
 
   const {
     playMode,
@@ -41,19 +46,25 @@ export const RouteBreadcrumbs: React.FC = () => {
     multiplayer,
   } = useRouteContext();
 
-  const isSelectionPage = location.pathname === ROUTES.PLAY.url || location.pathname === ROUTES.PLAY_LOCAL.url;
+  const isSelectionPage =
+    location.pathname === ROUTES.play.index ||
+    location.pathname === ROUTES.play.local;
 
   const effectivePlayerCount =
     urlPlayers && location.pathname.includes("/setup")
       ? parseInt(urlPlayers, 10)
-      : isSelectionPage ? null : playerCount;
-      
+      : isSelectionPage
+        ? null
+        : playerCount;
+
   const effectivePlayMode =
     urlMode === "online" || urlMode === "multiplayer"
       ? "online"
-      : (urlMode === "practice" || urlMode === "couch")
+      : urlMode === "practice" || urlMode === "couch"
         ? "local"
-        : isSelectionPage ? null : playMode;
+        : isSelectionPage
+          ? null
+          : playMode;
 
   const getPlayModeIcon = () => {
     if (effectivePlayMode === "online") return <GlobeLock size={18} />;
@@ -107,8 +118,15 @@ export const RouteBreadcrumbs: React.FC = () => {
     }
   };
 
-  const currentPlayModeParam = urlMode || (effectivePlayMode === "online" ? "multiplayer" : effectivePlayerCount === 1 ? "practice" : "couch");
-  const currentPlayersParam = urlPlayers || effectivePlayerCount?.toString() || "";
+  const currentPlayModeParam =
+    urlMode ||
+    (effectivePlayMode === "online"
+      ? "multiplayer"
+      : effectivePlayerCount === 1
+        ? "practice"
+        : "couch");
+  const currentPlayersParam =
+    urlPlayers || effectivePlayerCount?.toString() || "";
 
   const items = [
     {
@@ -119,7 +137,7 @@ export const RouteBreadcrumbs: React.FC = () => {
         : effectivePlayMode
           ? "red"
           : "slate") as BreadcrumbColor,
-      path: ROUTES.PLAY.url,
+      path: ROUTES.play.index,
       value: effectivePlayMode,
     },
     ...(effectivePlayMode === "online"
@@ -128,7 +146,7 @@ export const RouteBreadcrumbs: React.FC = () => {
             icon: <Key size={18} />,
             label: `Lobby: ${multiplayer?.roomId?.toUpperCase() || "CODE"}`,
             color: (multiplayer?.roomId ? "blue" : "slate") as BreadcrumbColor,
-            path: ROUTES.PLAY_LOBBY.url,
+            path: ROUTES.play.lobby,
             value: multiplayer?.roomId,
           },
         ]
@@ -147,9 +165,13 @@ export const RouteBreadcrumbs: React.FC = () => {
             : effectivePlayerCount === 4
               ? "amber"
               : "slate") as BreadcrumbColor,
-      path: effectivePlayMode === "online" ? ROUTES.PLAY_LOBBY.url : ROUTES.PLAY_LOCAL.url,
+      path:
+        effectivePlayMode === "online" ? ROUTES.play.lobby : ROUTES.play.local,
       value: effectivePlayerCount,
-      badge: (effectivePlayerCount !== null && effectivePlayerCount > 0) ? effectivePlayerCount : undefined,
+      badge:
+        effectivePlayerCount !== null && effectivePlayerCount > 0
+          ? effectivePlayerCount
+          : undefined,
     },
     {
       icon: getBoardIcon(),
@@ -161,7 +183,11 @@ export const RouteBreadcrumbs: React.FC = () => {
           : selectedBoard
             ? "emerald"
             : "slate") as BreadcrumbColor,
-      path: ROUTES.PLAY_SETUP.build({ playMode: currentPlayModeParam, players: currentPlayersParam, step: "1" }),
+      path: buildRoute(ROUTES.play.setup, {
+        playMode: currentPlayModeParam,
+        players: currentPlayersParam,
+        step: "1",
+      }),
       value: selectedBoard,
     },
     {
@@ -176,7 +202,11 @@ export const RouteBreadcrumbs: React.FC = () => {
             : selectedPreset
               ? "red"
               : "slate") as BreadcrumbColor,
-      path: ROUTES.PLAY_SETUP.build({ playMode: currentPlayModeParam, players: currentPlayersParam, step: "2" }),
+      path: buildRoute(ROUTES.play.setup, {
+        playMode: currentPlayModeParam,
+        players: currentPlayersParam,
+        step: "2",
+      }),
       value: selectedPreset,
     },
   ];

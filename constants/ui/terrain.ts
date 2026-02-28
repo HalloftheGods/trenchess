@@ -1,4 +1,4 @@
-import type { TerrainType, TerrainDetail } from "@/shared/types/game";
+import type { TerrainType, TerrainDetail } from "@tc.types/game";
 import { Trees, Waves, Mountain } from "lucide-react";
 import { DesertIcon } from "@/shared/components/atoms/UnitIcons";
 import { TERRAIN_TYPES, CORE_TERRAIN_INTEL } from "../terrain";

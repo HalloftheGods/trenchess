@@ -1,5 +1,5 @@
 import React from "react";
-import type { TerrainType } from "@/shared/types/game";
+import type { TerrainType } from "@tc.types/game";
 import { TERRAIN_DETAILS } from "@constants";
 import { Mountain, Trees, Waves } from "lucide-react";
 import { DesertIcon } from "@/shared/components/atoms/UnitIcons";

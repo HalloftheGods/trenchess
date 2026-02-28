@@ -24,7 +24,7 @@ const MD_COLS_MAP: Record<number, string> = {
   6: "md:grid-cols-6",
 };
 
-const RouteGrid: React.FC<MenuGridProps> = ({
+export const RouteGrid: React.FC<MenuGridProps> = ({
   children,
   cols = 3,
   className = "",

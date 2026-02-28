@@ -1,4 +1,4 @@
-import type { PlayerConfig } from "@/shared/types/game";
+import type { PlayerConfig } from "@tc.types";
 
 export const PLAYER_CONFIGS: Record<string, PlayerConfig> = {
   red: {

@@ -1,4 +1,4 @@
-import type { TrenchessState } from "@/shared/types/game";
+import type { TrenchessState } from "@tc.types/game";
 import type { Ctx } from "boardgame.io";
 
 export function usePlayerRole(

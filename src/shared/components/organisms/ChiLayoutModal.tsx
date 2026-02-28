@@ -4,9 +4,9 @@
  */
 import React from "react";
 import { X, Map as MapIcon, ChevronRight } from "lucide-react";
-import { BoardPreview } from "@/client/console/components";
+import { BoardPreview } from "@/app/client/console/components";
 import { useRouteContext } from "@context";
-import type { GameMode, SeedItem } from "@/shared/types/game";
+import type { GameMode, SeedItem } from "@tc.types";
 
 interface ChiLayoutModalProps {
   isOpen: boolean;

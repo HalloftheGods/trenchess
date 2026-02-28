@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { PHASES } from "@constants/game";
-import GamemasterView from "@/client/console/gamemaster";
+import GamemasterView from "@/app/client/console/gamemaster";
 import React from "react";
 import { TERRAIN_TYPES } from "@constants";
-import type { GameStateHook, BoardPiece, PieceType, TerrainType } from "@/shared/types";
+import type { GameStateHook, BoardPiece, PieceType, TerrainType } from "@tc.types";
 
 // Mock dependencies
 vi.mock("@/shared/hooks/core/useDeployment", () => ({

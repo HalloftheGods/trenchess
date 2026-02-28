@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { usePersistentPreset } from "./usePersistentPreset";
-import type { GameConfigState, SetupMode } from "@/shared/types";
+import type { GameConfigState, SetupMode } from "@tc.types";
 
 export function useGameConfig(): GameConfigState {
   const [setupMode, setSetupMode] = useState<SetupMode>("terrain");

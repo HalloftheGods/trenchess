@@ -1,23 +1,29 @@
 import { useEffect } from "react";
-import { useGameTheme } from "../interface/useGameTheme";
-import { useMultiplayer } from "./useMultiplayer";
-import { useComputerOpponent } from "../bot/useComputerOpponent";
-import { useGameEngineContext } from "@/shared/context/useGameEngineContext";
-import { useGameLifecycle } from "./useGameLifecycle";
-import { usePlayerRole } from "./usePlayerRole";
-import { useEngineMoves } from "./useEngineMoves";
-import { useEngineDerivations } from "./useEngineDerivations";
-import { usePlacementManager } from "../controls/usePlacementManager";
-import { useMoveExecution } from "../controls/useMoveExecution";
-import { useBoardInteraction } from "../controls/useBoardInteraction";
-import { useZenGardenInteraction } from "../controls/useZenGardenInteraction";
-import { useSetupActions } from "../controls/useSetupActions";
-import { useGameConfig } from "../interface/useGameConfig";
-import { useTerminal } from "@/shared/context/TerminalContext";
-import { useCommandDispatcher } from "../interface/useCommandDispatcher";
-import { analytics } from "@/shared/utils/analytics";
+import {
+  useGameTheme,
+  useGameConfig,
+  useCommandDispatcher,
+} from "@hooks/interface";
+import { useTerminal } from "@shared/context/TerminalContext";
+import {
+  useMultiplayer,
+  useGameLifecycle,
+  usePlayerRole,
+  useEngineMoves,
+  useEngineDerivations,
+} from "@hooks/engine";
+import { useComputerOpponent } from "@hooks/bot";
+import { useGameEngineContext } from "@shared/context/useGameEngineContext";
+import {
+  usePlacementManager,
+  useMoveExecution,
+  useBoardInteraction,
+  useZenGardenInteraction,
+  useSetupActions,
+} from "@controllers";
+import { analytics } from "@/shared/utilities/analytics";
 import { PHASES } from "@constants/game";
-import type { GameStateHook } from "@/shared/types";
+import type { GameStateHook } from "@tc.types";
 
 export function useGameState(): GameStateHook {
   const theme = useGameTheme();
@@ -182,7 +188,8 @@ export function useGameState(): GameStateHook {
   });
 
   useEffect(() => {
-    if (gameState === PHASES.COMBAT) analytics.trackEvent("Game", "Start", activeMode);
+    if (gameState === PHASES.COMBAT)
+      analytics.trackEvent("Game", "Start", activeMode);
     if (winner)
       analytics.trackEvent("Game", "End", `${winner} won: ${winnerReason}`);
   }, [gameState, winner, winnerReason, activeMode]);

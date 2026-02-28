@@ -1,5 +1,5 @@
-import { createInitialState } from "@/core/setup/setupLogic";
-import type { GameState, TrenchessState } from "@/shared/types";
+import { createInitialState } from "@/app/core/setup/setupLogic";
+import type { GameState, TrenchessState } from "@tc.types";
 import type { Ctx } from "boardgame.io";
 import { PHASES } from "@constants/game";
 

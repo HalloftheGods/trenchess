@@ -1,6 +1,7 @@
 import { useMemo, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ROUTES } from "@constants/routes";
+import { ROUTES } from "@/app/routes";
+import { buildRoute } from "@/shared/utilities/routes";
 import { PHASES } from "@constants/game";
 import type {
   GameMode,
@@ -9,7 +10,8 @@ import type {
   ArmyUnit,
   RouteContextType,
   PreviewConfig,
-} from "@/shared/types";
+  IconProps,
+} from "@tc.types";
 
 interface UseRouteContextValueProps {
   game: GameStateHook;
@@ -61,11 +63,11 @@ export const useRouteContextValue = ({
   const getIconWrapper: RouteContextType["getIcon"] = useCallback(
     (
       unit: ArmyUnit,
-      className?: string,
+      props?: IconProps | string,
       size?: number | string,
       filled?: boolean,
     ) => {
-      return getIcon(unit, className, size, filled);
+      return getIcon(unit, props, size, filled);
     },
     [getIcon],
   );
@@ -79,17 +81,17 @@ export const useRouteContextValue = ({
 
   const onTutorial = useCallback(() => {
     setPhase(PHASES.GENESIS);
-    navigate(ROUTES.TUTORIAL.url);
+    navigate(ROUTES.tutorial);
   }, [setPhase, navigate]);
 
   const onLogoClick = useCallback(() => {
     setPhase(PHASES.GENESIS);
-    navigate(ROUTES.HOME.url);
+    navigate(ROUTES.home);
   }, [setPhase, navigate]);
 
   const onZenGarden = useCallback(() => {
     setIsStarting(true);
-    navigate(ROUTES.GAME_CONSOLE.build({ style: "zen" }));
+    navigate(buildRoute(ROUTES.game.console, { style: "zen" }));
     setTimeout(() => {
       initGameWithPreset("4p", "zen-garden");
       startGame();
@@ -99,7 +101,7 @@ export const useRouteContextValue = ({
 
   const onGamemaster = useCallback(() => {
     setIsStarting(true);
-    navigate(ROUTES.GAMEMASTER.url);
+    navigate(ROUTES.console.gamemaster);
     setTimeout(() => {
       initGameWithPreset(activeMode || "4p", "zen-garden");
       startGame();
@@ -125,8 +127,8 @@ export const useRouteContextValue = ({
       else if (preset) style = preset;
 
       const target = multiplayer?.roomId
-        ? ROUTES.GAME_DETAIL.build({ roomId: multiplayer.roomId })
-        : ROUTES.GAME_CONSOLE.build({ style });
+        ? buildRoute(ROUTES.game.detail, { roomId: multiplayer.roomId })
+        : buildRoute(ROUTES.game.console, { style });
 
       navigate(target);
 
@@ -146,26 +148,23 @@ export const useRouteContextValue = ({
   );
 
   const onCtwGuide = useCallback(
-    () => navigate(ROUTES.LEARN_ENDGAME_WORLD.url),
+    () => navigate(ROUTES.learn.endgame.captureTheWorld),
     [navigate],
   );
   const onChessGuide = useCallback(
-    () => navigate(ROUTES.LEARN_CHESS.url),
+    () => navigate(ROUTES.learn.chess.index),
     [navigate],
   );
   const onTrenchGuide = useCallback(
     (t?: string) =>
       navigate(
         t
-          ? ROUTES.LEARN_TRENCH_DETAIL.build({ terrain: t })
-          : ROUTES.LEARN_TRENCH.url,
+          ? buildRoute(ROUTES.learn.trench.detail, { terrain: t })
+          : ROUTES.learn.trench.index,
       ),
     [navigate],
   );
-  const onOpenLibrary = useCallback(
-    () => navigate(ROUTES.LIBRARY.url),
-    [navigate],
-  );
+  const onOpenLibrary = useCallback(() => navigate(ROUTES.library), [navigate]);
 
   const [selectedBoard, setSelectedBoardState] = useState<GameMode | null>(
     game.mode || null,

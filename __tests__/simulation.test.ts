@@ -3,10 +3,10 @@ import {
   createInitialState,
   applyClassicalFormation,
   generateElementalTerrain,
-} from "@/core/setup/setupLogic";
-import { getBestMove } from "@/core/bot/aiLogic";
-import { getValidMoves, isPlayerInCheck } from "@/core/mechanics/movement";
-import type { BoardPiece, TerrainType, GameMode } from "@/shared/types/game";
+} from "@/app/core/setup/setupLogic";
+import { getBestMove } from "@/app/core/bot/aiLogic";
+import { getValidMoves, isPlayerInCheck } from "@/app/core/mechanics/movement";
+import type { BoardPiece, TerrainType, GameMode } from "@tc.types/game";
 import { BOARD_SIZE, PIECES } from "@constants";
 
 const isKingAlive = (board: (BoardPiece | null)[][], player: string) => {

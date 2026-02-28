@@ -7,15 +7,10 @@
 import React from "react";
 import { ArrowLeft } from "lucide-react";
 import { INITIAL_ARMY } from "@constants";
-import { isUnitProtected, canUnitTraverseTerrain } from "@/core/mechanics";
+import { isUnitProtected, canUnitTraverseTerrain } from "@/app/core/mechanics";
 import { useRouteContext } from "@context";
 import { UNIT_COLORS, UNIT_NAMES, ALL_UNITS, TERRAIN_LIST } from "@constants";
-import type {
-  PieceType,
-  TerrainType,
-  TerrainDetail,
-  ArmyUnit,
-} from "@/shared/types/game";
+import type { PieceType, TerrainType, TerrainDetail, ArmyUnit } from "@tc.types";
 
 interface InteractiveHeaderProps {
   darkMode: boolean;

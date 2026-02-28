@@ -1,6 +1,10 @@
-import { TERRAIN_TYPES, MAX_TERRAIN_PER_PLAYER, INITIAL_ARMY } from "@constants";
-import { getPlayerCells } from "@/core/setup/setupLogic";
-import type { GameMode, TerrainType, PieceType } from "@/shared/types/game";
+import {
+  TERRAIN_TYPES,
+  MAX_TERRAIN_PER_PLAYER,
+  INITIAL_ARMY,
+} from "@constants";
+import { getPlayerCells } from "@/app/core/setup/setupLogic";
+import type { GameMode, TerrainType, PieceType } from "@tc.types/game";
 
 interface DeploymentMetricsProps {
   mode: GameMode;
@@ -18,7 +22,7 @@ export function useDeploymentMetrics({
   perspectivePlayerId,
 }: DeploymentMetricsProps) {
   // Derived inline for zero-lag synchronization with engine state
-  const maxPlacement = 
+  const maxPlacement =
     activePlayers.length === 2
       ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
       : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
@@ -31,8 +35,12 @@ export function useDeploymentMetrics({
     }
   }
 
-  const totalUnitCount = INITIAL_ARMY.reduce((sum, unit) => sum + unit.count, 0);
-  const unitsPlaced = totalUnitCount - (inventory[perspectivePlayerId] || []).length;
+  const totalUnitCount = INITIAL_ARMY.reduce(
+    (sum, unit) => sum + unit.count,
+    0,
+  );
+  const unitsPlaced =
+    totalUnitCount - (inventory[perspectivePlayerId] || []).length;
 
   return { maxPlacement, placedCount, unitsPlaced, maxUnits: totalUnitCount };
 }

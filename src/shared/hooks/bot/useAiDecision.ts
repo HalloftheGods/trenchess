@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import { getBestMove } from "@/core/bot/aiLogic";
-import { getValidMoves } from "@/core/mechanics";
-import { engineService } from "@/core/bot/stockfishLogic";
-import type { GameMode, BoardPiece, TerrainType } from "@/shared/types/game";
+import { getBestMove } from "@/app/core/bot/aiLogic";
+import { getValidMoves } from "@/app/core/mechanics";
+import { engineService } from "@/app/core/bot/stockfishLogic";
+import type { GameMode, BoardPiece, TerrainType } from "@tc.types/game";
 
 export function useAiDecision() {
   const getDecision = useCallback(

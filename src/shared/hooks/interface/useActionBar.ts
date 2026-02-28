@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { TERRAIN_TYPES, TERRAIN_INTEL, INITIAL_ARMY, PLAYER_CONFIGS } from "@constants";
+import {
+  TERRAIN_TYPES,
+  TERRAIN_INTEL,
+  INITIAL_ARMY,
+  PLAYER_CONFIGS,
+} from "@constants";
 import { useWizardState } from "@/shared/hooks/interface/useWizardState";
-import type { GameStateHook, GameMode, GameState } from "@/shared/types";
+import type { GameStateHook, GameMode, GameState } from "@tc.types";
 import type { StyleChoice } from "@/shared/hooks/interface/useWizardState";
 
 interface UseActionBarLogicProps {
@@ -11,9 +16,19 @@ interface UseActionBarLogicProps {
 
 export const useActionBar = ({ game, logic }: UseActionBarLogicProps) => {
   const {
-    gameState, getIcon, turn, activePlayers, inventory,
-    placementPiece, placementTerrain, setPlacementPiece,
-    setPlacementTerrain, setSetupMode, mode, dispatch, terrain
+    gameState,
+    getIcon,
+    turn,
+    activePlayers,
+    inventory,
+    placementPiece,
+    placementTerrain,
+    setPlacementPiece,
+    setPlacementTerrain,
+    setSetupMode,
+    mode,
+    dispatch,
+    terrain,
   } = game;
   const { placedCount, maxPlacement } = logic;
 
@@ -22,11 +37,24 @@ export const useActionBar = ({ game, logic }: UseActionBarLogicProps) => {
   const [styleChoice, setStyleChoice] = useState<StyleChoice>(null);
 
   const bothLocked = trenchLocked && chessLocked;
-  const wizard = useWizardState({ gameState: gameState as GameState, mode, activePlayers, terrain, inventory, styleChoice });
-  const totalUnitCount = INITIAL_ARMY.reduce((sum, unit) => sum + unit.count, 0);
+  const wizard = useWizardState({
+    gameState: gameState as GameState,
+    mode,
+    activePlayers,
+    terrain,
+    inventory,
+    styleChoice,
+  });
+  const totalUnitCount = INITIAL_ARMY.reduce(
+    (sum, unit) => sum + unit.count,
+    0,
+  );
 
   const terrainItems = [
-    TERRAIN_TYPES.TREES, TERRAIN_TYPES.PONDS, TERRAIN_TYPES.RUBBLE, TERRAIN_TYPES.DESERT
+    TERRAIN_TYPES.TREES,
+    TERRAIN_TYPES.PONDS,
+    TERRAIN_TYPES.RUBBLE,
+    TERRAIN_TYPES.DESERT,
   ].map((tType) => {
     const intel = TERRAIN_INTEL[tType];
     const IconComp = intel?.icon;
@@ -41,13 +69,19 @@ export const useActionBar = ({ game, logic }: UseActionBarLogicProps) => {
         setPlacementPiece(null);
         setSetupMode("terrain");
       },
-      icon: IconComp ? React.createElement(IconComp, { size: 24, className: `${colorClass} drop-shadow-md` }) : null,
+      icon: IconComp
+        ? React.createElement(IconComp, {
+            size: 24,
+            className: `${colorClass} drop-shadow-md`,
+          })
+        : null,
       colorClass,
     };
   });
 
   const chessItems = INITIAL_ARMY.map((unit) => {
-    const count = (inventory[turn]?.filter((u) => u === unit.type) || []).length;
+    const count = (inventory[turn]?.filter((u) => u === unit.type) || [])
+      .length;
     const playerStyle = PLAYER_CONFIGS[turn]?.text || PLAYER_CONFIGS.red.text;
     return {
       key: unit.type,
@@ -75,10 +109,18 @@ export const useActionBar = ({ game, logic }: UseActionBarLogicProps) => {
   };
 
   return {
-    trenchLocked, setTrenchLocked, chessLocked, setChessLocked,
-    styleChoice, setStyleChoice, bothLocked, wizard, totalUnitCount,
-    terrainItems, chessItems, handleStyleSelect, handleModeSelect
+    trenchLocked,
+    setTrenchLocked,
+    chessLocked,
+    setChessLocked,
+    styleChoice,
+    setStyleChoice,
+    bothLocked,
+    wizard,
+    totalUnitCount,
+    terrainItems,
+    chessItems,
+    handleStyleSelect,
+    handleModeSelect,
   };
 };
-
-

@@ -1,5 +1,5 @@
 import { INITIAL_ARMY, TERRAIN_TYPES, TERRAIN_INTEL } from "@constants";
-import type { PieceType, TerrainType } from "@/shared/types/game";
+import type { PieceType, TerrainType } from "@tc.types/game";
 
 interface InventoryCountsProps {
   inventory: Record<string, PieceType[]>;
@@ -16,7 +16,9 @@ export function useInventoryCounts({
   const units: Record<string, number> = {};
   const playerInventory = inventory[perspectivePlayerId] || [];
   INITIAL_ARMY.forEach((unit) => {
-    units[unit.type] = playerInventory.filter((type) => type === unit.type).length;
+    units[unit.type] = playerInventory.filter(
+      (type) => type === unit.type,
+    ).length;
   });
 
   const terrain: Record<string, number> = {};
@@ -29,7 +31,9 @@ export function useInventoryCounts({
   const playerTerrainInventory = terrainInventory[perspectivePlayerId] || [];
   terrainTypesToCount.forEach((terrainType) => {
     const label = (TERRAIN_INTEL[terrainType]?.label as string) || terrainType;
-    terrain[label] = playerTerrainInventory.filter((type) => type === terrainType).length;
+    terrain[label] = playerTerrainInventory.filter(
+      (type) => type === terrainType,
+    ).length;
   });
 
   return { units, terrain };

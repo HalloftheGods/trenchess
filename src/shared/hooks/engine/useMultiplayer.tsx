@@ -8,16 +8,16 @@ import React, {
   useMemo,
 } from "react";
 import { LobbyClient } from "boardgame.io/client";
-import { analytics } from "@/shared/utils/analytics";
+import { analytics } from "@/shared/utilities/analytics";
 import type {
   RoomInfo,
   BgioMatchPlayer,
   BgioMatch,
   MultiplayerState,
   MultiplayerPlayer,
-} from "@/shared/types";
-import { getServerUrl } from "@/shared/utils/env";
-import { appStorage, APP_KEY } from "@/shared/utils/storage";
+} from "@tc.types";
+import { getServerUrl } from "@/shared/utilities/env";
+import { appStorage, APP_KEY } from "@/shared/utilities/storage";
 
 const MultiplayerContext = createContext<MultiplayerState | null>(null);
 

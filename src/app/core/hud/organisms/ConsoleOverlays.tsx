@@ -1,0 +1,37 @@
+import React from "react";
+import { GameStartOverlay } from "../atoms";
+import { RulesOverlay } from "./RulesOverlay";
+import { useConsoleLogic } from "@/shared/hooks/interface/useConsoleLogic";
+import type { GameStateHook } from "@tc.types";
+
+interface ConsoleOverlaysProps {
+  game: GameStateHook;
+  logic: ReturnType<typeof useConsoleLogic>;
+  children?: React.ReactNode;
+}
+
+export const ConsoleOverlays: React.FC<ConsoleOverlaysProps> = ({
+  game,
+  logic,
+  children,
+}) => {
+  return (
+    <>
+      {logic.showOverlay && (
+        <GameStartOverlay
+          isOnline={logic.isOnline}
+          isLocked={logic.isOnline ? logic.isMyPlayerLocked : false}
+          onLockIn={() => game.ready()}
+          onStart={() => {
+            game.ready();
+            game.startGame();
+          }}
+        />
+      )}
+
+      <RulesOverlay game={game} />
+
+      {children}
+    </>
+  );
+};

@@ -2,8 +2,8 @@ import React from "react";
 import { INITIAL_ARMY, unitColorMap, PIECES } from "@constants";
 import { UnitMovePreview } from "@/shared/components/molecules/UnitMovePreview";
 import { useRouteContext } from "@context";
-import type { TerrainDetail } from "@/shared/types/game";
-import type { PieceType } from "@/shared/types/game";
+import type { TerrainDetail } from "@tc.types/game";
+import type { PieceType } from "@tc.types/game";
 import { Shield, XCircle } from "lucide-react";
 
 interface TerrainUnitGridProps {

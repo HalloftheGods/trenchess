@@ -1,8 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useMemo } from "react";
-import type { RouteContextType, PreviewConfig } from "@/shared/types";
+import type { RouteContextType, PreviewConfig } from "@tc.types";
 
-export const RouteContext = createContext<RouteContextType | undefined>(undefined);
+export const RouteContext = createContext<RouteContextType | undefined>(
+  undefined,
+);
 
 export const RouteProvider: React.FC<{
   children: React.ReactNode;
@@ -55,7 +57,6 @@ export const RouteProvider: React.FC<{
     </RouteContext.Provider>
   );
 };
-
 
 export const useRouteContext = () => {
   const context = useContext(RouteContext);

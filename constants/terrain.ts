@@ -1,4 +1,4 @@
-import type { TerrainType, TerrainIntel } from "@/shared/types";
+import type { TerrainType, TerrainIntel } from "@tc.types";
 import { PIECES } from "./pieces";
 
 export const TERRAIN_TYPES: Record<string, TerrainType> = {

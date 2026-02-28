@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { placeTerrain } from "@/core/mechanics/moves/placeTerrain";
+import { placeTerrain } from "@/app/core/mechanics/moves/placeTerrain";
 import { PIECES, BOARD_SIZE, TERRAIN_TYPES } from "@constants";
-import type { TrenchessState, BoardPiece, TerrainType } from "@/shared/types";
+import type { TrenchessState, BoardPiece, TerrainType } from "@tc.types";
 import { INVALID_MOVE } from "boardgame.io/core";
 import type { Ctx } from "boardgame.io";
-import * as setupLogic from "@/core/setup/setupLogic";
-import * as coreHelpers from "@/core/setup/coreHelpers";
+import * as setupLogic from "@/app/core/setup/setupLogic";
+import * as coreHelpers from "@/app/core/setup/coreHelpers";
 
 vi.mock("@/core/setup/setupLogic", () => ({
   getPlayerCells: vi.fn(),

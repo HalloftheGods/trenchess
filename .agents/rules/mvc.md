@@ -12,14 +12,14 @@ Adhere strictly to the Model-View-Controller pattern to ensure separation of con
 - Never duplicate or mirror game state in local component state. Rely directly on the game state hook.
 
 ### View (The Composition)
-- The **View** is responsible for rendering the UI.
+- The **View/Screen** is the composition root for a specific route (found in `src/client/*`).
 - Use **Atomic Design** to build the UI: Atoms -> Molecules -> Organisms -> Templates -> Views.
-- **Views** (found in `src/client/*/game/`) are the **Composition Root**.
-- A View should be a clean map of the route. It composes a **Layout Template** with specific **Organisms** and **Molecules**.
-- Logic should be kept out of the View files as much as possible; they should describe *what* is seen, not *how* it works.
+- A **View/Screen** should be a clean orchestration layer. It uses **Controllers** (custom hooks) to fetch and prepare the necessary data and event handlers.
+- The **View/Screen** then passes this state and logic down to a **Template**, which handles the layout and rendering of organisms.
+- Logic should be kept out of the View files; they describe *what* is being composed, not *how* the logic is implemented.
 
 ### Controller (The Logic)
-- The **Controller** bridges the Model and the View.
-- Encapsulate all complex UI logic, derived state, and event handlers into **Custom Hooks** (e.g., `useConsoleLogic`, `useGameState`).
-- Views use these hooks to get the data and functions they need to pass down to organisms.
+- The **Controller** bridges the Model and the View, found in `@controllers` (e.g., `src/shared/hooks/controllers/*`).
+- Encapsulate all complex UI logic, derived state, and event handlers into **Custom Hooks**.
+- **Views/Screens** use these hooks to get the data and functions they need to pass down to **Templates**.
 - This ensures logic is testable and reusable across different view compositions.

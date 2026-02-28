@@ -1,4 +1,4 @@
-import type { PieceType } from "@/shared/types/game";
+import type { PieceType } from "@tc.types/game";
 
 export const PIECES: Record<string, PieceType> = {
   PAWN: "pawn",

@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import type { Ctx } from "boardgame.io";
-import type { TrenchessState } from "@/shared/types/game";
-import type { BgioClient, MultiplayerState } from "@/shared/types";
+import type { TrenchessState } from "@tc.types/game";
+import type { BgioClient, MultiplayerState } from "@tc.types";
 
 export interface GameContextValue {
   bgioState: { G: TrenchessState; ctx: Ctx } | null;

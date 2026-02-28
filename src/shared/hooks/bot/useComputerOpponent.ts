@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useAiDecision } from "./useAiDecision";
 import { PHASES } from "@constants/game";
-import type { GameMode, BoardPiece, TerrainType } from "@/shared/types/game";
+import type { GameMode, BoardPiece, TerrainType } from "@tc.types/game";
 
 interface UseComputerOpponentProps {
   gameState: string;
@@ -10,7 +10,13 @@ interface UseComputerOpponentProps {
   terrain: TerrainType[][];
   mode: GameMode;
   playerTypes: Record<string, "human" | "computer">;
-  executeMove: (fr: number, fc: number, tr: number, tc: number, isAi?: boolean) => void;
+  executeMove: (
+    fr: number,
+    fc: number,
+    tr: number,
+    tc: number,
+    isAi?: boolean,
+  ) => void;
   winner: string | null;
   setIsThinking: (thinking: boolean) => void;
 }
@@ -36,7 +42,10 @@ export function useComputerOpponent({
       timeoutRef.current = null;
     }
 
-    const shouldThink = gameState === PHASES.COMBAT && !winner && playerTypes[turn] === "computer";
+    const shouldThink =
+      gameState === PHASES.COMBAT &&
+      !winner &&
+      playerTypes[turn] === "computer";
 
     if (!shouldThink) {
       if (isThinkingRef.current) {
@@ -48,15 +57,15 @@ export function useComputerOpponent({
 
     const runAi = async () => {
       if (isThinkingRef.current) return;
-      
+
       isThinkingRef.current = true;
       setIsThinking(true);
-      
+
       const move = await getDecision(board, terrain, turn, mode);
 
       isThinkingRef.current = false;
       setIsThinking(false);
-      
+
       if (move) {
         executeMove(move.from[0], move.from[1], move.to[0], move.to[1], true);
       }
@@ -67,5 +76,16 @@ export function useComputerOpponent({
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [gameState, turn, board, terrain, mode, playerTypes, winner, executeMove, setIsThinking, getDecision]);
+  }, [
+    gameState,
+    turn,
+    board,
+    terrain,
+    mode,
+    playerTypes,
+    winner,
+    executeMove,
+    setIsThinking,
+    getDecision,
+  ]);
 }

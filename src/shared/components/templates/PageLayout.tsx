@@ -14,7 +14,7 @@ interface PageLayoutProps {
   footer?: React.ReactNode;
 }
 
-const PageLayout: React.FC<PageLayoutProps> = ({
+export const PageLayout: React.FC<PageLayoutProps> = ({
   darkMode,
   header,
   children,

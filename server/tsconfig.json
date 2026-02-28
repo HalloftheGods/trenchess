@@ -15,34 +15,43 @@
         "src/*"
       ],
       "@engine/*": [
-        "src/core/*"
+        "src/app/core/*"
+      ],
+      "@engine": [
+        "src/app/core"
       ],
       "@shared/*": [
         "src/shared/*"
       ],
+      "@shared": [
+        "src/shared"
+      ],
       "@logic/*": [
-        "src/core/mechanics/*"
+        "src/app/core/mechanics/*"
       ],
       "@ai/*": [
-        "src/core/bot/*"
+        "src/app/core/bot/*"
       ],
       "@setup/*": [
-        "src/core/setup/*"
+        "src/app/core/setup/*"
       ],
       "@mechanics/*": [
-        "src/core/mechanics/*"
+        "src/app/core/mechanics/*"
       ],
       "@primitives/*": [
-        "src/core/primitives/*"
+        "src/app/core/primitives/*"
       ],
       "@blueprints/*": [
-        "src/core/blueprints/*"
+        "src/app/core/blueprints/*"
       ],
       "@seeds/*": [
-        "src/core/setup/seeds/*"
+        "src/app/core/setup/seeds/*"
       ],
       "@engineTypes/*": [
         "src/shared/types/*"
+      ],
+      "@engineTypes": [
+        "src/shared/types"
       ],
       "@bionics/*": [
         "src/shared/components/*"
@@ -80,6 +89,12 @@
       "@hooks": [
         "src/shared/hooks"
       ],
+      "@controllers/*": [
+        "src/shared/hooks/controllers/*"
+      ],
+      "@controllers": [
+        "src/shared/hooks/controllers"
+      ],
       "@context/*": [
         "src/shared/context/*"
       ],
@@ -87,31 +102,37 @@
         "src/shared/context"
       ],
       "@utils/*": [
-        "src/shared/utils/*"
+        "src/shared/utilities/*"
       ],
       "@utils": [
-        "src/shared/utils"
+        "src/shared/utilities"
       ],
       "@types/*": [
         "src/shared/types/*"
       ],
+      "@types": [
+        "src/shared/types"
+      ],
       "@assets/*": [
-        "src/shared/assets/*"
+        "src/assets/*"
       ],
       "@game/*": [
-        "src/client/game/*"
+        "src/app/client/console/*"
+      ],
+      "@game": [
+        "src/app/client/console"
       ],
       "@gameHooks/*": [
-        "src/client/game/shared/hooks/*"
+        "src/app/client/console/shared/hooks/*"
       ],
       "@gameHooks": [
-        "src/client/game/shared/hooks"
+        "src/app/client/console/shared/hooks"
       ],
       "@gameUtils/*": [
-        "src/client/game/shared/utils/*"
+        "src/app/client/console/shared/utils/*"
       ],
       "@gameUtils": [
-        "src/client/game/shared/utils"
+        "src/app/client/console/shared/utils"
       ],
       "@constants": [
         "constants"
@@ -120,7 +141,10 @@
         "constants/*"
       ],
       "@client/*": [
-        "src/client/*"
+        "src/app/client/*"
+      ],
+      "@client": [
+        "src/app/client"
       ]
     }
   },

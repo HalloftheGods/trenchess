@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTerminal } from "@/shared/context/TerminalContext";
-import { ROUTES } from "@constants/routes";
-import type { GameStateHook, GameMode } from "@/shared/types";
+import { ROUTES } from "@/app/routes";
+import { buildRoute } from "@/shared/utilities/routes";
+import type { GameStateHook, GameMode } from "@tc.types";
 
 export const useCommandDispatcher = (game: GameStateHook) => {
   const { addLog, clearHistory } = useTerminal();
@@ -51,7 +52,7 @@ export const useCommandDispatcher = (game: GameStateHook) => {
               game.setShowRules(true);
               addLog("response", "Opening Master Protocol Console...");
             } else if (args[0] === "zen") {
-              navigate(ROUTES.GAME_CONSOLE.build({ style: "zen" }));
+              navigate(buildRoute(ROUTES.game.console, { style: "zen" }));
               addLog("response", "Entering Zen Garden...");
             } else {
               game.setPhase(args[0]);
@@ -71,7 +72,7 @@ export const useCommandDispatcher = (game: GameStateHook) => {
               game.setMode(style as GameMode);
               addLog("response", `Engine mode executed: SET_MODE to ${style}`);
             } else {
-              navigate(ROUTES.GAME_CONSOLE.build({ style: style }));
+              navigate(buildRoute(ROUTES.game.console, { style: style }));
               addLog("response", `Navigating to ${style} session...`);
             }
           } else {
@@ -166,16 +167,30 @@ export const useCommandDispatcher = (game: GameStateHook) => {
           addLog("response", "Board mirrored.");
           break;
         case "mmo":
-          navigate(ROUTES.GAME_MMO.path);
+          navigate(ROUTES.game.mmo);
           addLog("response", "Joining MMO...");
           break;
         case "zen":
-          navigate(ROUTES.GAME_CONSOLE.build({ style: "zen" }));
+          navigate(buildRoute(ROUTES.game.console, { style: "zen" }));
           addLog("response", "Entering Zen Garden...");
           break;
         case "master":
           game.setShowRules(true);
           addLog("response", "Opening Master Protocol Interface...");
+          break;
+        case "screen":
+          if (args[0]) {
+            const screenId = args[0].toLowerCase();
+            if (screenId === "none" || screenId === "clear") {
+              game.setActiveScreen?.(undefined);
+              addLog("response", "Screen override cleared.");
+            } else {
+              game.setActiveScreen?.(screenId);
+              addLog("response", `Loading screen: ${screenId}...`);
+            }
+          } else {
+            addLog("error", "Usage: screen <id|none>");
+          }
           break;
         case "goto":
           if (args[0]) {

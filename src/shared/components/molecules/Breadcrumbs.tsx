@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import { ChevronRight, Home } from "lucide-react";
 
-import { ROUTE_NAME_MAP } from "@constants/routes";
+import { ROUTE_NAME_MAP } from "@/app/routes";
 
 const Breadcrumbs = () => {
   const location = useLocation();

@@ -1,8 +1,8 @@
 import { useGameStats } from "../math/useGameStats";
 import { useInventoryCounts } from "../math/useInventoryCounts";
 import { useDeploymentMetrics } from "../math/useDeploymentMetrics";
-import { getServerUrl } from "@/shared/utils/env";
-import type { GameStateHook } from "@/shared/types";
+import { getServerUrl } from "@/shared/utilities/env";
+import type { GameStateHook } from "@tc.types";
 import { PHASES } from "@constants/game";
 
 export const useConsoleLogic = (game: GameStateHook) => {

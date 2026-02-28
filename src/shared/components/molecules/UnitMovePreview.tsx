@@ -8,9 +8,9 @@ import {
   BOARD_SIZE,
 } from "@constants";
 import { useRouteContext } from "@context";
-import { isUnitProtected, getValidMoves } from "@/core/mechanics";
-import { canUnitTraverseTerrain } from "@/core/setup/terrainCompat";
-import type { PieceType, TerrainType, BoardPiece } from "@/shared/types";
+import { isUnitProtected, getValidMoves } from "@/app/core/mechanics";
+import { canUnitTraverseTerrain } from "@/app/core/setup/terrainCompat";
+import type { PieceType, TerrainType, BoardPiece } from "@tc.types";
 
 interface UnitMovePreviewProps {
   unitType: string;

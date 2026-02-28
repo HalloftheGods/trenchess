@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { ConsoleActionBar } from "@/client/console/components/hud/organisms/ConsoleActionBar";
+import { ConsoleActionBar } from "@/app/core/hud/organisms/ConsoleActionBar";
 import { INITIAL_ARMY, PHASES } from "@constants";
-import type { GameStateHook } from "@/shared/types";
+import type { GameStateHook } from "@tc.types";
 import { useConsoleLogic } from "@/shared/hooks/interface/useConsoleLogic";
 
 describe("ConsoleActionBar", () => {

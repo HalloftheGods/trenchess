@@ -1,5 +1,5 @@
 import { MAX_TERRAIN_PER_PLAYER } from "./terrain";
-import type { TacticalConfig } from "@/shared/types/game";
+import type { TacticalConfig } from "@tc.types/game";
 
 export const TACTICAL_CONFIGS: Record<string, TacticalConfig> = {
   "2p-ns": {

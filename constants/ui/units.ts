@@ -22,13 +22,14 @@ import {
 } from "@shared/components/atoms/UnitIcons";
 import { PIECES, CORE_INITIAL_ARMY } from "../pieces";
 import { TERRAIN_TYPES } from "../terrain";
-import { UNIT_BLUEPRINTS } from "@/core/blueprints/units";
+import { UNIT_BLUEPRINTS } from "@/app/core/blueprints/units";
 import type {
   UnitColors,
   ArmyUnit,
   UnitDetails,
   TerrainType,
-} from "@/shared/types";
+  PieceType,
+} from "@tc.types";
 
 const { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN } = PIECES;
 const { FORESTS, MOUNTAINS, SWAMPS } = TERRAIN_TYPES;
@@ -245,6 +246,7 @@ const mapToUnitDetails = (acc: Record<string, UnitDetails>, key: string) => {
   const blueprint = UNIT_BLUEPRINTS[key];
   acc[key] = {
     ...intel,
+    type: key as PieceType,
     movePattern: blueprint.movePattern,
     newMovePattern: blueprint.newMovePattern,
     attackPattern: blueprint.attackPattern,

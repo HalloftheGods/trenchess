@@ -1,19 +1,14 @@
 import React, { memo } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { CornerControls } from "@/client/console/components";
+import { CornerControls } from "@/app/client/console/components";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 import { FileText, Trophy, AudioWaveform } from "lucide-react";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
 import { useRouteContext } from "@/shared/context/RouteContext";
 
 const RouteLayout: React.FC = memo(() => {
-  const {
-    darkMode,
-    pieceStyle,
-    toggleTheme,
-    togglePieceStyle,
-    onTutorial,
-  } = useRouteContext();
+  const { darkMode, pieceStyle, toggleTheme, togglePieceStyle, onTutorial } =
+    useRouteContext();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -71,4 +66,3 @@ const RouteLayout: React.FC = memo(() => {
 });
 
 export default RouteLayout;
-

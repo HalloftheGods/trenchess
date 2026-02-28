@@ -1,6 +1,6 @@
 import { INITIAL_ARMY, UNIT_POINTS } from "@constants";
 import { useSanctuaryBonuses } from "./useSanctuaryBonuses";
-import type { BoardPiece, TerrainType } from "@/shared/types/game";
+import type { BoardPiece, TerrainType } from "@tc.types/game";
 
 interface GameStatsProps {
   board: (BoardPiece | null)[][];
@@ -8,7 +8,11 @@ interface GameStatsProps {
   activePlayers: string[];
 }
 
-export function useGameStats({ board, terrain, activePlayers }: GameStatsProps) {
+export function useGameStats({
+  board,
+  terrain,
+  activePlayers,
+}: GameStatsProps) {
   const sanctuaryBonuses = useSanctuaryBonuses(board, terrain);
 
   // Derived inline for zero-lag synchronization with engine state
@@ -35,7 +39,8 @@ export function useGameStats({ board, terrain, activePlayers }: GameStatsProps) 
         }
       }
     }
-    teamPowerStats[pid].current = currentMaterial + (sanctuaryBonuses[pid] || 0);
+    teamPowerStats[pid].current =
+      currentMaterial + (sanctuaryBonuses[pid] || 0);
   });
 
   return { sanctuaryBonuses, teamPowerStats };

@@ -1,5 +1,5 @@
 import { useLocation, useParams } from "react-router-dom";
-import { ROUTE_NAME_MAP } from "@constants/routes";
+import { ROUTE_NAME_MAP } from "@/app/routes";
 
 export interface BreadcrumbItem {
   label: string;

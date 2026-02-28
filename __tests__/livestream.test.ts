@@ -4,9 +4,9 @@ import {
   createInitialState,
   applyClassicalFormation,
   generateElementalTerrain,
-} from "@/core/setup/setupLogic";
-import type { GameMode } from "@/shared/types/game";
-import { getBestMove } from "@/core/bot/aiLogic";
+} from "@/app/core/setup/setupLogic";
+import type { GameMode } from "@tc.types/game";
+import { getBestMove } from "@/app/core/bot/aiLogic";
 
 const SERVER_URL = "http://localhost:3001";
 const ROOM_ID =

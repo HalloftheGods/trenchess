@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { PlaySetupView } from "@/client/play/setup";
+import { PlaySetupView } from "@/app/client/play/setup";
 import { RouteContext } from "@context";
 import React from "react";
-import type { GameMode, RouteContextType } from "@/shared/types";
+import type { GameMode, RouteContextType } from "@tc.types";
 
 // Mocks
 const mockNavigate = vi.fn();

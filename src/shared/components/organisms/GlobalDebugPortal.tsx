@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Bug, X } from "lucide-react";
-import { ConsoleDebugPanel } from "@/client/console/components";
+import { ConsoleDebugPanel } from "@/app/client/console/components";
 import { useConsoleLogic } from "@/shared/hooks/interface/useConsoleLogic";
-import type { GameStateHook } from "@/shared/types";
+import type { GameStateHook } from "@tc.types";
 
 interface GlobalDebugPortalProps {
   game: GameStateHook;

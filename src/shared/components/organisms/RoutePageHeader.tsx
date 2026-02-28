@@ -31,7 +31,7 @@ import BackButton from "@/shared/components/molecules/BackButton";
 import JumpInButton from "@/shared/components/molecules/JumpInButton";
 import RouteBreadcrumbs from "./RouteBreadcrumbs";
 
-const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
+export const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
   label,
   color = "slate",
   className = "",

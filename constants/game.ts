@@ -1,6 +1,15 @@
 export const GAME_NAME = "Trenchess";
 export const BOARD_SIZE = 12;
 
+export const GAME = {
+  NAME: GAME_NAME,
+  BOARD_SIZE,
+  PLAYERS: {
+    MIN: 2,
+    MAX: 4,
+  },
+};
+
 export const PHASES = {
   GENESIS: "genesis",
   MAIN: "main",

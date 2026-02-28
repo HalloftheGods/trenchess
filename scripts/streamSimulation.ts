@@ -5,7 +5,7 @@ import {
 } from "@/core/setup/setupLogic";
 import { getBestMove } from "@/core/bot/aiLogic";
 import { getValidMoves, isPlayerInCheck } from "@/core/mechanics";
-import type { GameMode } from "@/shared/types";
+import type { GameMode } from "@tc.types";
 
 // Configuration
 const SERVER_URL = "http://localhost:3001";

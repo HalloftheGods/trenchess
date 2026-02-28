@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import type { TrenchessState } from "@/shared/types";
+import type { TrenchessState } from "@tc.types";
 import {
   randomizeTerrain,
   randomizeUnits,
   setClassicalFormation,
   applyChiGarden,
-} from "@/core/mechanics/moves/bulkSetup";
-import { createInitialState } from "@/core/setup/initialization";
+} from "@/app/core/mechanics/moves/bulkSetup";
+import { createInitialState } from "@/app/core/setup/initialization";
 import type { Ctx } from "boardgame.io";
 
 describe("Bulk Setup Reroll Logic", () => {

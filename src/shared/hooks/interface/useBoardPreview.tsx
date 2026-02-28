@@ -1,13 +1,13 @@
 import { PIECES } from "@constants";
 import { TERRAIN_TYPES } from "@constants";
-import { deserializeGame, adaptSeedToMode } from "@utils/gameUrl";
-import { TerraForm } from "@/core/setup/generateTrench";
+import { deserializeGame, adaptSeedToMode } from "@/shared/utilities/gameUrl";
+import { TerraForm } from "@/app/core/setup/generateTrench";
 import type {
   PieceType,
   TerrainType,
   ArmyUnit,
   UseBoardPreviewProps,
-} from "@/shared/types";
+} from "@tc.types";
 
 export function useBoardPreview({
   selectedMode,

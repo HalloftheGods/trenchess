@@ -1,5 +1,5 @@
 import { type LucideIcon } from "lucide-react";
-import { type PreviewConfig, type ArmyUnit } from "@/shared/types";
+import { type PreviewConfig, type ArmyUnit } from "@tc.types";
 import { useRouteContext } from "@context";
 
 type ColorVariant =
@@ -163,7 +163,7 @@ const COLOR_STYLES: Record<
   },
 };
 
-const RouteCard: React.FC<
+export const RouteCard: React.FC<
   MenuCardProps & { isSelected?: boolean; disabled?: boolean }
 > = ({
   title,

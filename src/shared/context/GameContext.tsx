@@ -6,12 +6,12 @@ import React, {
   useMemo,
 } from "react";
 import { SocketIO } from "boardgame.io/multiplayer";
-import { Trenchess } from "@/core/Trenchess";
-import { getServerUrl } from "@/shared/utils/env";
+import { Trenchess } from "@/app/core/Trenchess";
+import { getServerUrl } from "@/shared/utilities/env";
 
 import type { Ctx } from "boardgame.io";
-import type { TrenchessState } from "@/shared/types/game";
-import type { BgioClient, MultiplayerState } from "@/shared/types";
+import type { TrenchessState } from "@tc.types/game";
+import type { BgioClient, MultiplayerState } from "@tc.types";
 import { Client as BaseClient } from "boardgame.io/client";
 
 import { GameContext } from "./GameContextDef";

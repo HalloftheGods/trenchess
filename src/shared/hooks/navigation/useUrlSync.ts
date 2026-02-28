@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { serializeGame, deserializeGame } from "@utils/gameUrl";
+import { serializeGame, deserializeGame } from "@/shared/utilities/gameUrl";
 import { useUrlState } from "./useUrlState";
 import { PHASES } from "@constants/game";
 import type {
@@ -7,7 +7,7 @@ import type {
   GameState as GameStateType,
   TerrainType,
   BoardPiece,
-} from "@/shared/types/game";
+} from "@tc.types/game";
 
 interface UrlSyncDeps {
   mode: GameMode;
@@ -69,9 +69,9 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
       initFromSeed(urlSeed);
     } else if (
       urlView &&
-      ([PHASES.HOW_TO_PLAY, PHASES.LIBRARY, PHASES.ZEN_GARDEN] as string[]).includes(
-        urlView as string,
-      )
+      (
+        [PHASES.HOW_TO_PLAY, PHASES.LIBRARY, PHASES.ZEN_GARDEN] as string[]
+      ).includes(urlView as string)
     ) {
       setGameState(urlView as GameStateType);
     }
@@ -86,9 +86,9 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
     )
       return;
     if (
-      ([PHASES.HOW_TO_PLAY, PHASES.LIBRARY, PHASES.ZEN_GARDEN] as string[]).includes(
-        gameState as string,
-      )
+      (
+        [PHASES.HOW_TO_PLAY, PHASES.LIBRARY, PHASES.ZEN_GARDEN] as string[]
+      ).includes(gameState as string)
     ) {
       updateParams({ v: gameState, seed: null });
     } else if (gameState === PHASES.MENU) {

@@ -34,8 +34,8 @@ pnpm run dev
 
 ## Documentation
 
-- **`/docs` Library**: You can find detailed development documentation, FAQs, and API usage inside our `docs/` folder. Please refer to it before making major architectural decisions.
-- **Commentless Code**: We strive for clean code with commentless coding standards. Documentation lives in the `docs/*` library rather than in inline comments. Be sure to check there!
+- **`/.docs` Library**: You can find detailed development documentation, FAQs, and API usage inside our `.docs/` folder. Please refer to it before making major architectural decisions.
+- **Commentless Code**: We strive for clean code with commentless coding standards. Documentation lives in the `.docs/*` library rather than in inline comments. Be sure to check there!
 
 ---
 

@@ -6,7 +6,7 @@
  */
 import React from "react";
 import { useRouteContext } from "@context";
-import { BoardPreview } from "@/client/console/components";
+import { BoardPreview } from "@/app/client/console/components";
 
 interface MenuBoardPreviewProps {
   className?: string;

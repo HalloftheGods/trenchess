@@ -1,7 +1,7 @@
 // Theme controls component
 import { Sun, Moon, ChessKnight, Shell } from "lucide-react";
 import { QueenIcon as BattleKnightIcon } from "@/shared/components/atoms/UnitIcons";
-import type { PieceStyle } from "@/shared/types/game";
+import type { PieceStyle } from "@tc.types";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 interface ThemeControlsProps {
   darkMode: boolean;

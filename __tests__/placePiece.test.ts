@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { placePiece } from "@/core/mechanics/moves/placePiece";
+import { placePiece } from "@/app/core/mechanics/moves/placePiece";
 import { PIECES, BOARD_SIZE, TERRAIN_TYPES } from "@constants";
-import type { TrenchessState, BoardPiece, TerrainType } from "@/shared/types";
+import type { TrenchessState, BoardPiece, TerrainType } from "@tc.types";
 import { INVALID_MOVE } from "boardgame.io/core";
 import type { Ctx } from "boardgame.io";
-import * as setupLogic from "@/core/setup/setupLogic";
-import * as coreHelpers from "@/core/setup/coreHelpers";
+import * as setupLogic from "@/app/core/setup/setupLogic";
+import * as coreHelpers from "@/app/core/setup/coreHelpers";
 
 // Mock the helper functions to isolate `placePiece` logic
 vi.mock("@/core/setup/setupLogic", () => ({

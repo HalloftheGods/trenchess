@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { isPlayerInCheck } from "@/core/mechanics";
-import { serializeGame } from "@utils/gameUrl";
+import { isPlayerInCheck } from "@/app/core/mechanics";
+import { serializeGame } from "@/shared/utilities/gameUrl";
 import { PLAYER_CONFIGS } from "@constants";
 import type {
   BoardPiece,
@@ -9,7 +9,7 @@ import type {
   GameCore,
   GameMode,
   GameState,
-} from "@/shared/types";
+} from "@tc.types";
 import { useUrlSync } from "../navigation/useUrlSync";
 import { PHASES } from "@constants/game";
 

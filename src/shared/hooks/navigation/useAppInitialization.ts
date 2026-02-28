@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, matchPath } from "react-router-dom";
 import { useGameState } from "../engine/useGameState";
-import { ROUTES } from "@constants/routes";
-import { DEFAULT_SEEDS } from "@/core/setup/seeds";
+import { ROUTES } from "@/app/routes";
+import { DEFAULT_SEEDS } from "@/app/core/setup/seeds";
 import { PHASES } from "@constants/game";
-import type { SeedItem, GameMode } from "@/shared/types";
+import type { SeedItem, GameMode } from "@tc.types";
 
 export const useAppInitialization = () => {
   const game = useGameState();
@@ -20,8 +20,8 @@ export const useAppInitialization = () => {
     setPhase,
   } = game;
 
-  const match = matchPath(ROUTES.GAME_DETAIL.path, location.pathname);
-  const modeMatch = matchPath(ROUTES.GAME_MODE.path, location.pathname);
+  const match = matchPath(ROUTES.game.detail, location.pathname);
+  const modeMatch = matchPath(ROUTES.game.mode, location.pathname);
   const routeRoomId = match?.params.roomId;
   const routeMode = modeMatch?.params.mode as GameMode;
 
@@ -39,7 +39,7 @@ export const useAppInitialization = () => {
   }, [routeRoomId, multiplayer]);
 
   useEffect(() => {
-    const isGameRoute = location.pathname.startsWith(ROUTES.GAME.path);
+    const isGameRoute = location.pathname.startsWith(ROUTES.game.index);
     if (!isGameRoute) return;
 
     if (routeMode && gameState === PHASES.GAMEMASTER) {
@@ -51,7 +51,7 @@ export const useAppInitialization = () => {
       return;
     }
 
-    if (location.pathname === ROUTES.GAME_MMO.path) {
+    if (location.pathname === ROUTES.game.mmo) {
       if (gameState === PHASES.MENU) {
         const urlParams = new URLSearchParams(window.location.search);
         const seed = urlParams.get("seed");
@@ -63,8 +63,8 @@ export const useAppInitialization = () => {
     }
 
     const isZenOrMaster =
-      location.pathname === ROUTES.ZEN.path ||
-      location.pathname === ROUTES.GAMEMASTER.path;
+      location.pathname === ROUTES.zen ||
+      location.pathname === ROUTES.console.gamemaster;
     if (isZenOrMaster && gameState === PHASES.MENU) {
       initGameWithPreset("4p", "zen-garden");
       setTimeout(() => startGame(), 100);
@@ -79,10 +79,10 @@ export const useAppInitialization = () => {
   ]);
 
   useEffect(() => {
-    const isBaseGameRoute = location.pathname === ROUTES.GAME.path;
-    const isNotMmo = !location.pathname.startsWith(ROUTES.GAME_MMO.path);
+    const isBaseGameRoute = location.pathname === ROUTES.game.index;
+    const isNotMmo = !location.pathname.startsWith(ROUTES.game.mmo);
     if (isBaseGameRoute && isNotMmo && gameState === PHASES.MENU) {
-      navigate(ROUTES.HOME.url);
+      navigate(ROUTES.home);
     }
   }, [location.pathname, gameState, navigate]);
 
@@ -102,7 +102,7 @@ export const useAppInitialization = () => {
 
   const handleBackToMenu = () => {
     setPhase(PHASES.GAMEMASTER);
-    navigate(ROUTES.HOME.url);
+    navigate(ROUTES.home);
   };
 
   return {

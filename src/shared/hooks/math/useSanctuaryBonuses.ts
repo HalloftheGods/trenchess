@@ -1,5 +1,5 @@
-import { isUnitProtected } from "@/core/mechanics";
-import type { BoardPiece, TerrainType } from "@/shared/types/game";
+import { isUnitProtected } from "@/app/core/mechanics";
+import type { BoardPiece, TerrainType } from "@tc.types/game";
 
 export function useSanctuaryBonuses(
   board: (BoardPiece | null)[][],

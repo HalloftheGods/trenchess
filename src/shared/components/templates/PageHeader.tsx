@@ -16,7 +16,7 @@ interface PageHeaderProps {
   showTerrain?: boolean;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({
+export const PageHeader: React.FC<PageHeaderProps> = ({
   logoText,
   topText,
   onLogoClick,

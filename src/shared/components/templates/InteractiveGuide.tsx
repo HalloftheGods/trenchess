@@ -6,29 +6,7 @@ import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
 import ForwardButton from "@molecules/ForwardButton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import type { PreviewConfig } from "@/shared/types/game";
-
-export interface Slide {
-  id: string;
-  title: string;
-  subtitle?: string;
-  description?: React.ReactNode;
-  leftContent?: React.ReactNode;
-  icon: React.ReactNode | React.ElementType;
-  sideContent?: React.ReactNode;
-  infoContent?: React.ReactNode;
-  previewConfig: PreviewConfig;
-  color:
-    | "red"
-    | "blue"
-    | "emerald"
-    | "amber"
-    | "slate"
-    | "indigo"
-    | "purple"
-    | "orange";
-  topLabel?: string;
-}
+import type { Slide } from "@tc.types";
 
 interface InteractiveGuideProps {
   slides: Slide[];
@@ -148,12 +126,10 @@ const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
     }
   }, [currentSlide, setPreviewConfig]);
 
-
   // Cleanup only on unmount
   useEffect(() => {
     return () => setPreviewConfig({ mode: null });
   }, [setPreviewConfig]);
-
 
   const textColor = darkMode ? "text-slate-100" : "text-slate-800";
   const subtextColor = darkMode ? "text-slate-400" : "text-slate-500";

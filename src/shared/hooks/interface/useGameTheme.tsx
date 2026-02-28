@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { PIECE_STYLES } from "@constants";
-import type { GameTheme, PieceStyle, ArmyUnit } from "@/shared/types";
+import type { GameTheme, PieceStyle, ArmyUnit, IconProps } from "@tc.types";
 
 export function useGameTheme(): GameTheme {
   const [darkMode, setDarkMode] = useState(() => {
@@ -38,10 +38,18 @@ export function useGameTheme(): GameTheme {
 
   const getIcon: GameTheme["getIcon"] = (
     unit: ArmyUnit,
-    className?: string,
+    props?: IconProps | string,
     size?: number | string,
     filled?: boolean,
   ): React.ReactNode => {
+    const isPropsObject = props !== null && typeof props === "object";
+    const className = isPropsObject
+      ? props.className
+      : (props as string | undefined);
+    const finalSize = isPropsObject ? props.size : size;
+    const isFilled = isPropsObject ? props.filled : filled || false;
+    const color = isPropsObject ? props.color : undefined;
+
     const isComponentStyle = pieceStyle === "custom" || pieceStyle === "lucide";
     const IconComponent =
       pieceStyle === "custom"
@@ -49,14 +57,13 @@ export function useGameTheme(): GameTheme {
         : (unit.lucide as React.ElementType);
 
     const baseStyles = `${className || ""} inline-flex items-center justify-center transition-all duration-700`;
-    const iconSize = size || "100%";
-    const isFilled = filled || false;
+    const iconSize = finalSize || "100%";
 
     if (isComponentStyle) {
       return (
         <span
           className={baseStyles}
-          style={{ width: iconSize, height: iconSize }}
+          style={{ width: iconSize, height: iconSize, color }}
         >
           <IconComponent
             size="100%"
@@ -69,7 +76,7 @@ export function useGameTheme(): GameTheme {
     return (
       <span
         className={baseStyles}
-        style={{ fontSize: iconSize, width: iconSize, height: iconSize }}
+        style={{ fontSize: iconSize, width: iconSize, height: iconSize, color }}
       >
         {unit[pieceStyle as "emoji" | "bold" | "outlined"]}
       </span>

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { PIECES, BOARD_SIZE, TERRAIN_TYPES } from "@constants";
-import { getValidMoves } from "@/core/mechanics/movement";
-import type { BoardPiece, TerrainType } from "@/shared/types";
+import { getValidMoves } from "@/app/core/mechanics/movement";
+import type { BoardPiece, TerrainType } from "@tc.types";
 
 describe("King Movement Logic", () => {
   const terrain: TerrainType[][] = Array.from({ length: BOARD_SIZE }, () =>

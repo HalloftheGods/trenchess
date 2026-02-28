@@ -1,4 +1,4 @@
-import type { GameMode, TrenchessState, BgioClient } from "@/shared/types";
+import type { GameMode, TrenchessState, BgioClient } from "@tc.types";
 
 export function useEngineMoves(
   clientRef: React.RefObject<BgioClient | undefined>,
@@ -12,6 +12,8 @@ export function useEngineMoves(
     ready: (pid?: string) => clientRef.current?.moves.ready(pid),
     finishGamemaster: () => clientRef.current?.moves.finishGamemaster(),
     setTurn: (pid: string) => clientRef.current?.moves.setTurn(pid),
+    setActiveScreen: (screenId: string | undefined) =>
+      clientRef.current?.moves.setActiveScreen(screenId),
     forfeit: (pid?: string) => clientRef.current?.moves.forfeit(pid),
     toggleReady: () => clientRef.current?.moves.ready(),
   };

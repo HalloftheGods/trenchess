@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { HomeView } from "@/client/home";
+import { HomeView } from "@/app/client/home";
 import { RouteContext } from "@context";
 import React from "react";
-import type { RouteContextType } from "@/shared/types";
+import type { RouteContextType } from "@tc.types";
 
 // Mock the components that might cause issues due to missing context or complex structure
 vi.mock("@/shared/components/templates/RoutePageLayout", () => ({
@@ -62,8 +62,10 @@ describe("HomeView", () => {
   it("should navigate to /learn when 'How to Play' card is clicked", () => {
     renderHome();
     const learnCard = screen.getByText((_c, element) => {
-      const hasText = (node: Element) => node.textContent === 'Hello Trenchess' || node.textContent === 'HelloTrenchess';
-      const isH3 = element?.tagName.toLowerCase() === 'h3';
+      const hasText = (node: Element) =>
+        node.textContent === "Hello Trenchess" ||
+        node.textContent === "HelloTrenchess";
+      const isH3 = element?.tagName.toLowerCase() === "h3";
       return isH3 && hasText(element!);
     });
     fireEvent.click(learnCard.closest("button")!);
@@ -73,8 +75,10 @@ describe("HomeView", () => {
   it("should navigate to /play when 'Play Trenchess' card is clicked", () => {
     renderHome();
     const playCard = screen.getByText((_c, element) => {
-      const hasText = (node: Element) => node.textContent?.includes('Play') && node.textContent?.includes('Trenchess');
-      const isH3 = element?.tagName.toLowerCase() === 'h3';
+      const hasText = (node: Element) =>
+        node.textContent?.includes("Play") &&
+        node.textContent?.includes("Trenchess");
+      const isH3 = element?.tagName.toLowerCase() === "h3";
       return isH3 && hasText(element!);
     });
     fireEvent.click(playCard.closest("button")!);
@@ -84,8 +88,10 @@ describe("HomeView", () => {
   it("should call onZenGarden when 'Lay Trenchess' card is clicked", () => {
     renderHome();
     const zenCard = screen.getByText((_c, element) => {
-      const hasText = (node: Element) => node.textContent?.includes('Lay') && node.textContent?.includes('Trenchess');
-      const isH3 = element?.tagName.toLowerCase() === 'h3';
+      const hasText = (node: Element) =>
+        node.textContent?.includes("Lay") &&
+        node.textContent?.includes("Trenchess");
+      const isH3 = element?.tagName.toLowerCase() === "h3";
       return isH3 && hasText(element!);
     });
     fireEvent.click(zenCard.closest("button")!);
@@ -95,8 +101,10 @@ describe("HomeView", () => {
   it("should update hovered menu on mouse enter", () => {
     renderHome();
     const playCard = screen.getByText((_c, element) => {
-      const hasText = (node: Element) => node.textContent?.includes('Play') && node.textContent?.includes('Trenchess');
-      const isH3 = element?.tagName.toLowerCase() === 'h3';
+      const hasText = (node: Element) =>
+        node.textContent?.includes("Play") &&
+        node.textContent?.includes("Trenchess");
+      const isH3 = element?.tagName.toLowerCase() === "h3";
       return isH3 && hasText(element!);
     });
     fireEvent.mouseEnter(playCard.closest("button")!);

@@ -2,8 +2,8 @@ import { describe, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
 import { PIECES, TERRAIN_TYPES, BOARD_SIZE } from "@constants";
-import { getValidMoves } from "@/core/mechanics/movement";
-import type { BoardPiece, TerrainType, PieceType } from "@/shared/types/game";
+import { getValidMoves } from "@/app/core/mechanics/movement";
+import type { BoardPiece, TerrainType, PieceType } from "@tc.types/game";
 
 const ITERATIONS_PER_MATCHUP = 500_000;
 const MAX_TURNS = 10;
