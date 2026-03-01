@@ -65,6 +65,8 @@ export function useSetupActions(
       const client = getClient();
       if (!client) return;
 
+      console.log(`[INIT_PRESET] Mode: ${selectedMode}. Preset: ${preset}. Players: ${getPlayersForMode(selectedMode).join(", ")}`);
+
       if (newPlayerTypes) {
         setPlayerTypes((prev) => ({ ...prev, ...newPlayerTypes }));
       }

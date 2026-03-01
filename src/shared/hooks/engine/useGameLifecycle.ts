@@ -41,7 +41,6 @@ export function useGameLifecycle(
     layoutName,
     readyPlayers,
     inventory,
-    activePlayers,
   } = configState;
 
   // UI-only state (not managed by boardgame.io)
@@ -70,7 +69,6 @@ export function useGameLifecycle(
     mode,
     terrain,
     inventory,
-    activePlayers,
     perspectivePlayerId: turn,
   });
 

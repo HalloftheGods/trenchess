@@ -15,16 +15,20 @@ export const ready = (
   explicitPid?: string,
   isGM?: boolean,
 ) => {
+  const canOverride = isGM || gameState.isGamemaster;
   const playerId = resolvePlayerId(
     gameState,
     context,
     playerID,
     explicitPid,
-    isGM,
+    canOverride,
   );
 
   const hasPlayerId = !!playerId;
   if (hasPlayerId) {
+    console.log(`[READY] Player ${playerId} is ready.`);
     gameState.readyPlayers[playerId!] = true;
+  } else {
+    console.warn(`[READY] Could not resolve player ID for ready move. explicitPid: ${explicitPid}, playerID: ${playerID}, isGM: ${isGM}, G.isGamemaster: ${gameState.isGamemaster}`);
   }
 };

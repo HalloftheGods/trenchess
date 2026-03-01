@@ -48,7 +48,6 @@ export const useConsoleLogic = (game: GameStateHook) => {
       mode,
       terrain,
       inventory,
-      activePlayers,
       perspectivePlayerId,
     });
 

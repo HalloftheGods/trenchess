@@ -57,28 +57,28 @@ export const DeploymentTerrainPalette: React.FC<
           tileBg = isAlt ? "bg-red-950/60" : "bg-red-900/40";
         } else if (pColor === "brand-blue") {
           tileBg = isAlt ? "bg-blue-950/60" : "bg-blue-900/40";
-        } else if (pColor === "yellow") {
-          tileBg = isAlt ? "bg-yellow-950/60" : "bg-yellow-900/40";
         } else if (pColor === "green") {
           tileBg = isAlt ? "bg-emerald-950/60" : "bg-emerald-900/40";
         }
 
         const isActive = placementTerrain === tType;
+        const isDisallowed =
+          !isZen && (count === 0 || placedCount >= maxPlacement);
 
         return (
           <button
             key={tType}
-            disabled={(!isZen && count === 0) || placedCount >= maxPlacement}
+            disabled={isDisallowed}
             title={intel.label}
             onClick={() => {
               setPlacementTerrain(tType as TerrainType);
               setPlacementPiece(null);
               setSetupMode("terrain");
             }}
-            className={`relative aspect-square p-2 rounded-xl border transition-all flex flex-col items-center justify-center gap-0 ${isActive ? "border-white scale-105 z-10 shadow-xl" : "border-transparent opacity-80 hover:opacity-100 hover:scale-[1.02]"} ${tileBg} ${(!isZen && count === 0) || (isZen && placedCount >= maxPlacement) ? "cursor-not-allowed contrast-50" : "cursor-pointer"}`}
+            className={`relative aspect-square p-2 rounded-xl border transition-all flex flex-col items-center justify-center gap-0 ${isActive ? "border-white scale-105 z-10 shadow-xl" : "border-transparent opacity-80 hover:opacity-100 hover:scale-[1.02]"} ${tileBg} ${isDisallowed ? "cursor-not-allowed contrast-50" : "cursor-pointer"}`}
           >
             <div
-              className={`flex items-center justify-center w-full h-full ${(!isZen && count === 0) || (isZen && placedCount >= maxPlacement) ? "grayscale opacity-40" : ""}`}
+              className={`flex items-center justify-center w-full h-full ${isDisallowed ? "grayscale opacity-40" : ""}`}
             >
               <IconComp
                 size={48}

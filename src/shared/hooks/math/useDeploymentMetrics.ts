@@ -10,7 +10,6 @@ interface DeploymentMetricsProps {
   mode: GameMode;
   terrain: TerrainType[][];
   inventory: Record<string, PieceType[]>;
-  activePlayers: string[];
   perspectivePlayerId: string;
 }
 
@@ -18,14 +17,13 @@ export function useDeploymentMetrics({
   mode,
   terrain,
   inventory,
-  activePlayers,
   perspectivePlayerId,
 }: DeploymentMetricsProps) {
   // Derived inline for zero-lag synchronization with engine state
-  const maxPlacement =
-    activePlayers.length === 2
-      ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
-      : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
+  const isTwoPlayer = mode === "2p-ns" || mode === "2p-ew";
+  const maxPlacement = isTwoPlayer
+    ? MAX_TERRAIN_PER_PLAYER.TWO_PLAYER
+    : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
 
   let placedCount = 0;
   if (terrain && terrain.length) {

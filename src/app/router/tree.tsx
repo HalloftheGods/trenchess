@@ -156,12 +156,19 @@ export const APP_ROUTES: AppRoute[] = [
                   {
                     id: "learn.chess.chessmen",
                     path: "chessmen",
-                    element: <LearnChessmenIndexScreen />,
-                  },
-                  {
-                    id: "learn.chess.chessmenDetail",
-                    path: ":unitType",
-                    element: <ChessGuideWrapper />,
+                    name: "The Chessmen",
+                    children: [
+                      {
+                        id: "learn.chess.chessmen.index",
+                        index: true,
+                        element: <LearnChessmenIndexScreen />,
+                      },
+                      {
+                        id: "learn.chess.chessmenDetail",
+                        path: ":unitType",
+                        element: <ChessGuideWrapper />,
+                      },
+                    ],
                   },
                 ],
               },

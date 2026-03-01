@@ -127,7 +127,6 @@ export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
     mode,
     terrain,
     inventory,
-    activePlayers,
     perspectivePlayerId: perspectiveTurn,
   });
 

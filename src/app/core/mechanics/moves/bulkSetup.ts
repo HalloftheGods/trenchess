@@ -49,6 +49,8 @@ export const setMode = ({ G }: { G: TrenchessState }, mode: GameMode) => {
     playerMap[index.toString()] = pid;
   });
 
+  console.log(`[SET_MODE] Mode: ${mode}. Players: ${players.join(", ")}`);
+
   // Authoritative Reset
   G.mode = mode;
   G.activePlayers = players;

@@ -9,6 +9,8 @@ const onMove = ({ G, ctx }: { G: TrenchessState; ctx: Ctx }) => {
   const pid = G.playerMap[ctx.currentPlayer];
   if (!pid) return;
 
+  console.log(`[ON_MOVE] Player: ${pid}. Move: ${JSON.stringify(G.lastMove)}`);
+
   // Global move side-effects can be added here.
   
   // Apply Passive Terrain Events (Desert Rule)
