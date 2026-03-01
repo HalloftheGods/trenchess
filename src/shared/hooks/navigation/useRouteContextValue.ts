@@ -51,8 +51,6 @@ export const useRouteContextValue = ({
     getIcon,
     toggleTheme,
     togglePieceStyle,
-    initGameWithPreset,
-    startGame,
     selectedPreset,
     setSelectedPreset,
     playerTypes,
@@ -94,30 +92,20 @@ export const useRouteContextValue = ({
   const onZenGarden = useCallback(() => {
     setIsStarting(true);
     navigate(buildRoute(getPath("console.game"), { style: "zen" }));
-    setTimeout(() => {
-      initGameWithPreset("4p", "zen-garden");
-      startGame();
-      setTimeout(() => setIsStarting(false), 500);
-    }, 1000);
-  }, [navigate, initGameWithPreset, startGame]);
+    setTimeout(() => setIsStarting(false), 500);
+  }, [navigate]);
 
   const onGamemaster = useCallback(() => {
     setIsStarting(true);
     navigate(getPath("console.gamemaster"));
-    setTimeout(() => {
-      initGameWithPreset(activeMode || "4p", "zen-garden");
-      startGame();
-      setTimeout(() => setIsStarting(false), 500);
-    }, 1000);
-  }, [navigate, initGameWithPreset, startGame, activeMode]);
+    setTimeout(() => setIsStarting(false), 500);
+  }, [navigate]);
 
   const onStartGame = useCallback(
     (
       startGameMode: GameMode,
       preset: string | null,
       playerTypesConfig: Record<string, "human" | "computer">,
-      seed?: string,
-      isMercenary?: boolean,
     ) => {
       setIsStarting(true);
 
@@ -143,19 +131,9 @@ export const useRouteContextValue = ({
 
       navigate(target);
 
-      setTimeout(() => {
-        initGameWithPreset(
-          startGameMode,
-          preset,
-          playerTypesConfig,
-          seed || "",
-          isMercenary,
-        );
-        startGame();
-        setTimeout(() => setIsStarting(false), 500);
-      }, 1000);
+      setTimeout(() => setIsStarting(false), 500);
     },
-    [multiplayer, navigate, initGameWithPreset, startGame],
+    [multiplayer, navigate],
   );
 
   const onCtwGuide = useCallback(
