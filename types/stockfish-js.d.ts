@@ -1,4 +1,4 @@
-declare module "stockfish.js" {
+declare module "stockfish.js/stockfish.js" {
   export default function StockfishJs(): {
     addMessageListener?: (cb: (line: string) => void) => void;
     postMessage: (msg: string) => void;

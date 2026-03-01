@@ -22,6 +22,7 @@ RUN pnpm build
 
 # Production stage
 FROM nginx:stable-alpine AS prod
+ENV PORT=80
 COPY --from=build /app/dist /usr/share/nginx/html
-EXPOSE 80
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 CMD ["nginx", "-g", "daemon off;"]

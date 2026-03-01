@@ -26,6 +26,11 @@ server.app.middleware.unshift(async (ctx, next) => {
   ctx.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
   ctx.set("Access-Control-Allow-Credentials", "true");
 
+  // Essential for allowing cross-origin clients (like our COEP-enabled frontend) to connect
+  ctx.set("Cross-Origin-Resource-Policy", "cross-origin");
+  ctx.set("Cross-Origin-Embedder-Policy", "require-corp");
+  ctx.set("Cross-Origin-Opener-Policy", "same-origin");
+
   if (ctx.method === "OPTIONS") {
     ctx.status = 204;
     return;
@@ -37,6 +42,9 @@ server.app.middleware.unshift(async (ctx, next) => {
     // Ensure CORS headers persist even if an inner route throws an error (e.g. 404 match not found)
     ctx.set("Access-Control-Allow-Origin", origin || "*");
     ctx.set("Access-Control-Allow-Credentials", "true");
+    ctx.set("Cross-Origin-Resource-Policy", "cross-origin");
+    ctx.set("Cross-Origin-Embedder-Policy", "require-corp");
+    ctx.set("Cross-Origin-Opener-Policy", "same-origin");
     throw err;
   }
 });

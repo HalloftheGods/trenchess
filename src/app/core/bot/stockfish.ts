@@ -1,5 +1,5 @@
 import StockfishWasm from "fairy-stockfish-nnue.wasm/stockfish.js";
-import StockfishJs from "stockfish.js";
+import StockfishJs from "stockfish.js/stockfish.js";
 import type { BoardPiece } from "@tc.types/game";
 import { BOARD_SIZE } from "@constants";
 import { PIECES } from "@constants";
