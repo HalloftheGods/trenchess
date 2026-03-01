@@ -44,6 +44,7 @@ interface ReadyUpPanelProps {
   ) => React.ReactNode;
   alignment?: "left" | "right";
   inCheck?: boolean;
+  isOmegaMode?: boolean;
   onNextCommander?: () => void;
   onFinishDeployment?: () => void;
 }
@@ -75,6 +76,7 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
   getIcon,
   alignment = "left",
   inCheck = false,
+  isOmegaMode = false,
   onNextCommander,
   onFinishDeployment,
 }) => {
@@ -440,23 +442,25 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
             </div>
 
             {/* Ready Button for Local / Host */}
-            {!isReady && unitsReady && terrainReady && onReady && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onReady();
-                }}
-                className={`
+            {!isReady &&
+              (isOmegaMode || (unitsReady && terrainReady)) &&
+              onReady && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onReady();
+                  }}
+                  className={`
                 w-full py-4 text-center rounded-xl font-black text-[11px] uppercase tracking-[0.4em]
                 transition-all duration-500 border-2
                 bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-500/50
                 shadow-[0_0_20px_rgba(16,185,129,0.1)] hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]
                 animate-pulse
               `}
-              >
-                LOCK FORCES
-              </button>
-            )}
+                >
+                  LOCK FORCES
+                </button>
+              )}
 
             {gameState === PHASES.GAMEMASTER && isLocalTurn && (
               <div className="space-y-3 pt-2">

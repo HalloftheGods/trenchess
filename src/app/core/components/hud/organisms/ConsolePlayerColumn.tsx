@@ -13,6 +13,7 @@ interface ConsolePlayerColumnProps {
   playerIds: string[];
   isOnline: boolean;
   alignment: "left" | "right";
+  isOmegaMode?: boolean;
   onNextCommander?: () => void;
   onFinishDeployment?: () => void;
 }
@@ -21,6 +22,7 @@ export const ConsolePlayerColumn: React.FC<ConsolePlayerColumnProps> = ({
   playerIds,
   isOnline,
   alignment,
+  isOmegaMode,
   onNextCommander,
   onFinishDeployment,
 }) => {
@@ -112,6 +114,7 @@ export const ConsolePlayerColumn: React.FC<ConsolePlayerColumnProps> = ({
             getIcon={game.getIcon}
             alignment={alignment}
             inCheck={game.inCheck && game.turn === pid}
+            isOmegaMode={isOmegaMode}
             onNextCommander={
               onNextCommander ||
               (() => {

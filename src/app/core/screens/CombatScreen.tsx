@@ -43,6 +43,7 @@ const CombatScreenContent: React.FC<CombatScreenProps> = ({
           playerIds={["red", "green"]}
           isOnline={isOnline}
           alignment="left"
+          isOmegaMode={boardType === "omega"}
         />
       }
       rightPanel={
@@ -50,6 +51,7 @@ const CombatScreenContent: React.FC<CombatScreenProps> = ({
           playerIds={["yellow", "blue"]}
           isOnline={isOnline}
           alignment="right"
+          isOmegaMode={boardType === "omega"}
         />
       }
     >

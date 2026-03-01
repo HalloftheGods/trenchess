@@ -71,7 +71,7 @@ export const PreconfigSelection: React.FC<StyleSelectionProps> = ({
         />
       </ActionBarSlot>
 
-      {isExpanded && (
+      {(isExpanded || isOmega) && (
         <>
           <ActionBarSlot
             label="Alpha Mode"

@@ -10,11 +10,11 @@ export interface SetupActions {
     seed?: string,
     isMercenary?: boolean,
   ) => void;
-  randomizeTerrain: () => void;
-  generateElementalTerrain: () => void;
-  randomizeUnits: () => void;
-  setClassicalFormation: () => void;
-  applyChiGarden: () => void;
+  randomizeTerrain: (pids?: string[]) => void;
+  generateElementalTerrain: (pids?: string[]) => void;
+  randomizeUnits: (pids?: string[]) => void;
+  setClassicalFormation: (pids?: string[]) => void;
+  applyChiGarden: (pids?: string[]) => void;
   resetToOmega: () => void;
   mirrorBoard: () => void;
   resetTerrain: () => void;

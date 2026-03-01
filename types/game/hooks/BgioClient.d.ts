@@ -23,10 +23,13 @@ export interface BgioClient {
     ) => void;
     movePiece: (from: [number, number], to: [number, number]) => void;
     forfeit: (pid?: string) => void;
-    randomizeTerrain: (pid?: string) => void;
-    applyChiGarden: (pid?: string) => void;
-    randomizeUnits: (pid?: string) => void;
-    setClassicalFormation: (pid?: string, allowExplicit?: boolean) => void;
+    randomizeTerrain: (pids?: string | string[]) => void;
+    applyChiGarden: (pids?: string | string[]) => void;
+    randomizeUnits: (pids?: string | string[]) => void;
+    setClassicalFormation: (
+      pids?: string | string[],
+      allowExplicit?: boolean,
+    ) => void;
     resetToOmega: (pid?: string) => void;
     resetTerrain: (pid?: string) => void;
     resetUnits: (pid?: string) => void;

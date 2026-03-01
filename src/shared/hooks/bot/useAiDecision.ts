@@ -46,11 +46,23 @@ export function useAiDecision() {
           return null;
         }
 
-        const sfMove = await engineService.getBestMove(
-          board,
-          turn,
-          validUciMoves.join(" "),
-        );
+        let sfMove: {
+          from: [number, number];
+          to: [number, number];
+          score: number;
+        } | null = null;
+        try {
+          sfMove = await engineService.getBestMove(
+            board,
+            turn,
+            validUciMoves.join(" "),
+          );
+        } catch (e) {
+          console.warn(
+            "Stockfish failed or is not available. Falling back to random move.",
+            e,
+          );
+        }
 
         if (!sfMove) {
           // Fallback to random move if stockfish fails
@@ -74,7 +86,7 @@ export function useAiDecision() {
 
         return sfMove;
       } catch (e) {
-        console.error("Stockfish failed to calculate a move:", e);
+        console.error("Critical error in useAiDecision:", e);
         return null;
       }
     },

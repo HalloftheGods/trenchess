@@ -79,11 +79,14 @@ export function useSetupActions(
     [getClient, setPlayerTypes, setPlacementPiece, setPlacementTerrain],
   );
 
-  const randomizeTerrain = useCallback(() => {
-    const client = getClient();
-    if (client) client.moves.randomizeTerrain();
-    setPlacementTerrain(null);
-  }, [getClient, setPlacementTerrain]);
+  const randomizeTerrain = useCallback(
+    (pids?: string[]) => {
+      const client = getClient();
+      if (client) client.moves.randomizeTerrain(pids);
+      setPlacementTerrain(null);
+    },
+    [getClient, setPlacementTerrain],
+  );
 
   const generateElementalTerrain = useCallback(() => {
     const client = getClient();
@@ -91,27 +94,36 @@ export function useSetupActions(
     setPlacementTerrain(null);
   }, [getClient, setPlacementTerrain]);
 
-  const randomizeUnits = useCallback(() => {
-    const client = getClient();
-    if (client) client.moves.randomizeUnits();
-    setPlacementPiece(null);
-    setPreviewMoves([]);
-  }, [getClient, setPlacementPiece, setPreviewMoves]);
+  const randomizeUnits = useCallback(
+    (pids?: string[]) => {
+      const client = getClient();
+      if (client) client.moves.randomizeUnits(pids);
+      setPlacementPiece(null);
+      setPreviewMoves([]);
+    },
+    [getClient, setPlacementPiece, setPreviewMoves],
+  );
 
-  const setClassicalFormation = useCallback(() => {
-    const client = getClient();
-    if (client) client.moves.setClassicalFormation();
-    setPlacementPiece(null);
-    setPreviewMoves([]);
-  }, [getClient, setPlacementPiece, setPreviewMoves]);
+  const setClassicalFormation = useCallback(
+    (pids?: string[]) => {
+      const client = getClient();
+      if (client) client.moves.setClassicalFormation(pids);
+      setPlacementPiece(null);
+      setPreviewMoves([]);
+    },
+    [getClient, setPlacementPiece, setPreviewMoves],
+  );
 
-  const applyChiGarden = useCallback(() => {
-    const client = getClient();
-    if (client) client.moves.applyChiGarden();
-    setPlacementPiece(null);
-    setPlacementTerrain(null);
-    setPreviewMoves([]);
-  }, [getClient, setPlacementPiece, setPlacementTerrain, setPreviewMoves]);
+  const applyChiGarden = useCallback(
+    (pids?: string[]) => {
+      const client = getClient();
+      if (client) client.moves.applyChiGarden(pids);
+      setPlacementPiece(null);
+      setPlacementTerrain(null);
+      setPreviewMoves([]);
+    },
+    [getClient, setPlacementPiece, setPlacementTerrain, setPreviewMoves],
+  );
 
   const resetToOmega = useCallback(() => {
     const client = getClient();

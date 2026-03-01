@@ -1,4 +1,5 @@
-import Stockfish from "fairy-stockfish-nnue.wasm/stockfish.js";
+import StockfishWasm from "fairy-stockfish-nnue.wasm/stockfish.js";
+import StockfishJs from "stockfish.js";
 import type { BoardPiece } from "@tc.types/game";
 import { BOARD_SIZE } from "@constants";
 import { PIECES } from "@constants";
@@ -29,7 +30,7 @@ class StockfishEngine {
   private async init() {
     try {
       // @ts-expect-error: Stockfish is a WASM module with non-standard initialization
-      this.engine = await Stockfish({
+      this.engine = await StockfishWasm({
         mainScriptUrlOrBlob:
           (typeof window !== "undefined" ? window.location.origin : "") +
           "/stockfish.js",
@@ -78,8 +79,56 @@ class StockfishEngine {
         console.error("Failed to load variants.ini", err);
       }
     } catch (err) {
-      console.error("Stockfish initialization failed:", err);
-      this.engine = null;
+      console.warn(
+        "WASM Stockfish initialization failed, falling back to JS version:",
+        err,
+      );
+      try {
+        // Fallback to stockfish.js (which doesn't rely on SharedArrayBuffer)
+        this.engine = StockfishJs() as unknown as StockfishInstance;
+
+        if (!this.engine) return;
+
+        // Setup listener for fallback
+        this.engine.addMessageListener = (cb) => {
+          // stockfish.js works via postMessage for Web Workers, we need to adapt it
+          // or just wrap it if it conforms to the basic shape.
+          // @ts-expect-error: accessing internal postMessage
+          if (typeof this.engine?.onmessage !== "undefined") {
+            // @ts-expect-error: mapping onmessage to cb
+            this.engine.onmessage = (event: { data: string } | string) => {
+              const line = typeof event === "string" ? event : event.data;
+              cb(line);
+            };
+          } else {
+            // Basic implementation mock for pure JS instantiation
+            // @ts-expect-error: adding listener
+            this.engine.addMessageListener = cb;
+          }
+        };
+
+        // Redo initial setup for JS engine
+        this.engine.addMessageListener((line: string) => {
+          console.log("SF JS:", line);
+          if (line.startsWith("bestmove")) {
+            const moveStr = line.split(" ")[1];
+            if (this.onResolveBestMove) {
+              this.onResolveBestMove(moveStr);
+              this.onResolveBestMove = null;
+            }
+          }
+        });
+
+        this.engine.postMessage("uci");
+        this.engine.postMessage("setoption name Skill Level value 20");
+        this.engine.postMessage("isready");
+      } catch (fallbackErr) {
+        console.error(
+          "Both WASM and JS Stockfish initialization failed",
+          fallbackErr,
+        );
+        this.engine = null;
+      }
     }
   }
 

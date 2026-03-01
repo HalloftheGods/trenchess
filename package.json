@@ -1,7 +1,7 @@
 {
   "name": "battle-chess",
   "private": true,
-  "version": "v26.03.01.rc05",
+  "version": "v26.03.01.rc06",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -20,7 +20,8 @@
     "react-dom": "^19.2.4",
     "react-ga4": "^2.1.0",
     "react-router-dom": "^7.13.0",
-    "socket.io-client": "^4.8.3"
+    "socket.io-client": "^4.8.3",
+    "stockfish.js": "^10.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

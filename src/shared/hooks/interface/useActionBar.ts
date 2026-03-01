@@ -6,6 +6,7 @@ import {
   PLAYER_CONFIGS,
 } from "@constants";
 import { useWizardState } from "@/shared/hooks/interface/useWizardState";
+import { PHASES } from "@constants/game";
 import type { GameStateHook, GameMode, GameState } from "@tc.types";
 import type { StyleChoice } from "@/shared/hooks/interface/useWizardState";
 
@@ -100,7 +101,21 @@ export const useActionBar = ({ game, logic }: UseActionBarLogicProps) => {
 
   const handleStyleSelect = (style: StyleChoice) => {
     setStyleChoice(style);
-    if (style) dispatch(`board ${style}`);
+
+    // If we're setting up a blank canvas, let the interacting user only affect their side of the field
+    if (gameState === PHASES.GENESIS && style !== "omega" && turn) {
+      if (style === "pi") game.setClassicalFormation?.([turn]);
+      else if (style === "chi") game.applyChiGarden?.([turn]);
+      else if (style === "random") {
+        game.randomizeUnits?.([turn]);
+        game.randomizeTerrain?.([turn]);
+      } else if (style) {
+        dispatch(`board ${style}`);
+      }
+    } else {
+      // Global styles
+      if (style) dispatch(`board ${style}`);
+    }
   };
 
   const handleModeSelect = (selectedMode: GameMode | null) => {

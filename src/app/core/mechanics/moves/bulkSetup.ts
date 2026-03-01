@@ -141,21 +141,23 @@ export const randomizeTerrain = (
     ctx: Ctx;
     random: { Number: () => number };
   },
-  explicitPid?: string,
+  explicitPid?: string | string[],
   allowExplicit?: boolean,
 ) => {
   const pids =
     (allowExplicit || G.isGamemaster) && !explicitPid
       ? G.activePlayers
-      : ([
-          resolvePlayerId(
-            G,
-            ctx,
-            playerID,
-            explicitPid,
-            allowExplicit || G.isGamemaster,
-          ),
-        ].filter(Boolean) as string[]);
+      : Array.isArray(explicitPid)
+        ? explicitPid
+        : ([
+            resolvePlayerId(
+              G,
+              ctx,
+              playerID,
+              explicitPid as string | undefined,
+              allowExplicit || G.isGamemaster,
+            ),
+          ].filter(Boolean) as string[]);
 
   const noPlayersFound = pids.length === 0;
   if (noPlayersFound) return INVALID_MOVE;
@@ -185,21 +187,23 @@ export const randomizeUnits = (
     ctx: Ctx;
     random: { Number: () => number };
   },
-  explicitPid?: string,
+  explicitPid?: string | string[],
   allowExplicit?: boolean,
 ) => {
   const pids =
     (allowExplicit || G.isGamemaster) && !explicitPid
       ? G.activePlayers
-      : ([
-          resolvePlayerId(
-            G,
-            ctx,
-            playerID,
-            explicitPid,
-            allowExplicit || G.isGamemaster,
-          ),
-        ].filter(Boolean) as string[]);
+      : Array.isArray(explicitPid)
+        ? explicitPid
+        : ([
+            resolvePlayerId(
+              G,
+              ctx,
+              playerID,
+              explicitPid as string | undefined,
+              allowExplicit || G.isGamemaster,
+            ),
+          ].filter(Boolean) as string[]);
 
   const noPlayersFound = pids.length === 0;
   if (noPlayersFound) return INVALID_MOVE;
@@ -256,21 +260,23 @@ export const setClassicalFormation = (
     ctx: Ctx;
     random: { Number: () => number };
   },
-  explicitPid?: string,
+  explicitPid?: string | string[],
   allowExplicit?: boolean,
 ) => {
   const pids =
     (allowExplicit || G.isGamemaster) && !explicitPid
       ? G.activePlayers
-      : ([
-          resolvePlayerId(
-            G,
-            ctx,
-            playerID,
-            explicitPid,
-            allowExplicit || G.isGamemaster,
-          ),
-        ].filter(Boolean) as string[]);
+      : Array.isArray(explicitPid)
+        ? explicitPid
+        : ([
+            resolvePlayerId(
+              G,
+              ctx,
+              playerID,
+              explicitPid as string | undefined,
+              allowExplicit || G.isGamemaster,
+            ),
+          ].filter(Boolean) as string[]);
 
   const noPlayersFound = pids.length === 0;
   if (noPlayersFound) return INVALID_MOVE;
@@ -312,21 +318,23 @@ export const applyChiGarden = (
     ctx: Ctx;
     random: { Number: () => number };
   },
-  explicitPid?: string,
+  explicitPid?: string | string[],
   allowExplicit?: boolean,
 ) => {
   const pids =
     (allowExplicit || G.isGamemaster) && !explicitPid
       ? G.activePlayers
-      : ([
-          resolvePlayerId(
-            G,
-            ctx,
-            playerID,
-            explicitPid,
-            allowExplicit || G.isGamemaster,
-          ),
-        ].filter(Boolean) as string[]);
+      : Array.isArray(explicitPid)
+        ? explicitPid
+        : ([
+            resolvePlayerId(
+              G,
+              ctx,
+              playerID,
+              explicitPid as string | undefined,
+              allowExplicit || G.isGamemaster,
+            ),
+          ].filter(Boolean) as string[]);
 
   const noPlayersFound = pids.length === 0;
   if (noPlayersFound) return INVALID_MOVE;
