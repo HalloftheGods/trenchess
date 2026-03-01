@@ -78,7 +78,7 @@ export const APP_ROUTES: AppRoute[] = [
               { id: "play.lobby", path: "lobby", element: <PlayLobbyScreen /> },
               {
                 id: "play.setup",
-                path: ":playMode/players/:players/setup/:step?",
+                path: ":playMode/:players/setup/:step?",
                 element: <PlaySetupScreen />,
               },
             ],

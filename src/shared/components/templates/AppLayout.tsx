@@ -5,7 +5,7 @@ import { ScrollToTop } from "@atoms/ScrollToTop";
 import { AnalyticsTracker } from "@atoms/AnalyticsTracker";
 import { useRouteContextValue } from "@hooks/navigation/useRouteContextValue";
 import { useGameState } from "@hooks/engine/useGameState";
-import { GlobalDebugPortal } from "@organisms";
+import { GlobalDebugPortal, GlobalOnlinePortal } from "@organisms";
 import { LoadingScreen } from "@shared";
 import { ROUTES } from "@/app/router/router";
 import { PHASES } from "@constants/game";
@@ -54,6 +54,7 @@ const AppLayout = () => {
       {showGlobalLoader && <LoadingScreen />}
       <Outlet />
       <GlobalDebugPortal game={game} />
+      <GlobalOnlinePortal />
     </RouteProvider>
   );
 };

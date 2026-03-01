@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import trenchessLogo from "@assets/trenchess.png";
 import { useRouteContext } from "@context";
 import { useActionBar } from "@/shared/hooks/interface/useActionBar";
 import { PHASES } from "@constants/game";
@@ -7,7 +9,7 @@ import { TCFlex } from "@/shared/components/atoms/ui/TCFlex";
 import { TCDivider } from "@/shared/components/atoms/ui/TCDivider";
 import { TCText } from "@/shared/components/atoms/ui/TCTypography";
 import { ActionBarSlot } from "../atoms";
-import { Check } from "lucide-react";
+import { Check, Wifi, WifiOff } from "lucide-react";
 
 import { BoardSetup, TacticalSetup, ThemeSetup } from "../organisms";
 import { TerrainSelection, UnitSelection, PlayTurn, Pov } from "../molecules";
@@ -44,6 +46,8 @@ export const TopActionBar: React.FC = () => {
     turn,
     dispatch,
     getIcon,
+    isOnline,
+    isConnected,
   } = game;
   const { placedCount, maxPlacement } = logic;
   const showSetup = gameState !== PHASES.COMBAT;
@@ -154,6 +158,17 @@ export const TopActionBar: React.FC = () => {
     >
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent opacity-50" />
 
+      <Link
+        to="/"
+        className="absolute left-6 top-1/2 -translate-y-1/2 z-[60] hover:scale-110 hover:-rotate-12 transition-all duration-300"
+      >
+        <img
+          src={trenchessLogo}
+          alt="Trenchess Logo"
+          className="h-10 w-auto drop-shadow-lg"
+        />
+      </Link>
+
       <TCFlex
         align="center"
         justify="center"
@@ -188,6 +203,26 @@ export const TopActionBar: React.FC = () => {
           toggleTheme={toggleTheme ?? (() => {})}
           togglePieceStyle={togglePieceStyle ?? (() => {})}
         />
+
+        {isOnline && (
+          <>
+            <TCDivider className="h-10 mx-2 opacity-10" />
+            <TCFlex
+              align="center"
+              gap={2}
+              className={`px-3 py-1.5 rounded-full ${isConnected ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"} border ${isConnected ? "border-emerald-500/20" : "border-rose-500/20"} transition-colors duration-300`}
+            >
+              {isConnected ? (
+                <Wifi size={14} />
+              ) : (
+                <WifiOff size={14} className="animate-pulse" />
+              )}
+              <span className="text-xs font-bold uppercase tracking-widest">
+                {isConnected ? "Connected" : "Disconnected"}
+              </span>
+            </TCFlex>
+          </>
+        )}
 
         {showPlay && !wizard.isWizardActive && (
           <>

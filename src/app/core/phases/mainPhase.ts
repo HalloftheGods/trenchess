@@ -1,3 +1,9 @@
+import type {
+  TrenchessState,
+  BoardPiece,
+  PieceType,
+  TerrainType,
+} from "@tc.types";
 import {
   placePiece,
   placeTerrain,
@@ -10,7 +16,6 @@ import {
   resetTerrain,
   resetUnits,
   forfeit,
-  authorizeMasterProtocol,
   CORE_ADMIN_MOVES,
 } from "@mechanics/moves";
 import { mainPhaseEndIf } from "@engine/events";
@@ -22,7 +27,9 @@ import { PHASES } from "@constants/game";
  */
 export const mainPhase = {
   onBegin: ({ G }: { G: TrenchessState }) => {
-    console.log(`[PHASE_START] Main Phase starting. Mode: ${G.mode}. Active Players: ${G.activePlayers.join(", ")}`);
+    console.log(
+      `[PHASE_START] Main Phase starting. Mode: ${G.mode}. Active Players: ${G.activePlayers.join(", ")}`,
+    );
   },
   next: PHASES.COMBAT,
   moves: {
@@ -44,7 +51,20 @@ export const mainPhase = {
           resetTerrain,
           resetUnits,
           forfeit,
-          authorizeMasterProtocol,
+          syncLayout: (
+            game: { G: TrenchessState },
+            layout: {
+              board: (BoardPiece | null)[][];
+              terrain: TerrainType[][];
+              inventory: Record<string, PieceType[]>;
+              terrainInventory: Record<string, TerrainType[]>;
+            },
+          ) => {
+            game.G.board = layout.board;
+            game.G.terrain = layout.terrain;
+            game.G.inventory = layout.inventory;
+            game.G.terrainInventory = layout.terrainInventory;
+          },
           ...CORE_ADMIN_MOVES,
         },
       },

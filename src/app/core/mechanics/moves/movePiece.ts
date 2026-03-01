@@ -126,6 +126,9 @@ const handleCapture = (
   const isSelfCapture = capturedPiece.player === playerId;
   if (isSelfCapture) return INVALID_MOVE;
 
+  if (!gameState.capturedBy[playerId]) {
+    gameState.capturedBy[playerId] = [];
+  }
   gameState.capturedBy[playerId].push(capturedPiece);
 
   const isKingCaptured = capturedPiece.type === KING;

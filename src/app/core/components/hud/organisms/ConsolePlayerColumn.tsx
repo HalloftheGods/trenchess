@@ -112,8 +112,18 @@ export const ConsolePlayerColumn: React.FC<ConsolePlayerColumnProps> = ({
             getIcon={game.getIcon}
             alignment={alignment}
             inCheck={game.inCheck && game.turn === pid}
-            onNextCommander={onNextCommander}
-            onFinishDeployment={onFinishDeployment}
+            onNextCommander={
+              onNextCommander ||
+              (() => {
+                const currentIndex = game.activePlayers.indexOf(game.turn);
+                const nextIndex =
+                  (currentIndex + 1) % game.activePlayers.length;
+                game.setTurn?.(game.activePlayers[nextIndex]);
+              })
+            }
+            onFinishDeployment={
+              onFinishDeployment || (() => game.finishGamemaster())
+            }
           />
         );
       })}

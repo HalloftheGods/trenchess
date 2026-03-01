@@ -1,5 +1,6 @@
+import { getPath } from "@/app/router/router";
 import type { RouteConfig } from "@tc.types";
-import { ROUTES } from "@/app/router/router";
+
 import {
   GameMmoScreen,
   GameConsoleScreen,
@@ -15,14 +16,14 @@ export const getConsoleRoutes = (): RouteConfig[] => [
   {
     element: <ConsoleView />,
     children: [
-      { path: ROUTES.console.mmo, element: <GameMmoScreen /> },
-      { path: ROUTES.console.game, element: <GameConsoleScreen /> },
+      { path: getPath("console.mmo"), element: <GameMmoScreen /> },
+      { path: getPath("console.game"), element: <GameConsoleScreen /> },
       { path: "/console/game", element: <GameModeScreen /> },
-      { path: ROUTES.console.mode, element: <GameModeScreen /> },
-      { path: ROUTES.console.gamemaster, element: <GamemasterScreen /> },
-      { path: ROUTES.console.index, element: <GameScreen /> },
-      { path: ROUTES.console.detail, element: <GameScreen /> },
-      { path: ROUTES.console.library, element: <LibraryScreen /> },
+      { path: getPath("console.mode"), element: <GameModeScreen /> },
+      { path: getPath("console.gamemaster"), element: <GamemasterScreen /> },
+      { path: getPath("console.index"), element: <GameScreen /> },
+      { path: getPath("console.detail"), element: <GameScreen /> },
+      { path: getPath("console.library"), element: <LibraryScreen /> },
     ],
   },
 ];

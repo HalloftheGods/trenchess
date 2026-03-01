@@ -458,37 +458,34 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
               </button>
             )}
 
-            {gameState === PHASES.GAMEMASTER &&
-              isLocalTurn &&
-              unitsReady &&
-              terrainReady && (
-                <div className="space-y-3 pt-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onNextCommander?.();
-                    }}
-                    className="w-full py-4 flex items-center justify-center gap-3 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-900 dark:text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all border border-slate-200 dark:border-white/10 group"
-                  >
-                    <RotateCcw
-                      size={14}
-                      className="group-hover:rotate-180 transition-transform duration-500"
-                    />
-                    NEXT COMMANDER
-                  </button>
+            {gameState === PHASES.GAMEMASTER && isLocalTurn && (
+              <div className="space-y-3 pt-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNextCommander?.();
+                  }}
+                  className="w-full py-4 flex items-center justify-center gap-3 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-900 dark:text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all border border-slate-200 dark:border-white/10 group"
+                >
+                  <RotateCcw
+                    size={14}
+                    className="group-hover:rotate-180 transition-transform duration-500"
+                  />
+                  NEXT COMMANDER
+                </button>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onFinishDeployment?.();
-                    }}
-                    className="w-full py-5 flex items-center justify-center gap-3 bg-emerald-500 text-white border-2 border-emerald-400 rounded-xl font-black text-xs uppercase tracking-[0.3em] transition-all shadow-[0_0_30px_rgba(16,185,129,0.3)] animate-pulse"
-                  >
-                    <CheckCircle2 size={16} />
-                    FINISH DEPLOYMENT
-                  </button>
-                </div>
-              )}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onFinishDeployment?.();
+                  }}
+                  className="w-full py-5 flex items-center justify-center gap-3 bg-emerald-500 text-white border-2 border-emerald-400 rounded-xl font-black text-xs uppercase tracking-[0.3em] transition-all shadow-[0_0_30px_rgba(16,185,129,0.3)] animate-pulse"
+                >
+                  <CheckCircle2 size={16} />
+                  FINISH DEPLOYMENT
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

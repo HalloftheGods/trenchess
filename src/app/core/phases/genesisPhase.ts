@@ -1,5 +1,10 @@
 import type { Ctx } from "boardgame.io";
-import type { TrenchessState, PieceType, TerrainType } from "@tc.types";
+import type {
+  TrenchessState,
+  PieceType,
+  TerrainType,
+  BoardPiece,
+} from "@tc.types";
 import { PHASES } from "@constants/game";
 import {
   placePiece,
@@ -32,21 +37,21 @@ export const genesisPhase = {
       editing: {
         moves: {
           placePiece: (
-            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
+            game: { G: TrenchessState; ctx: Ctx; playerID?: string },
             row: number,
             col: number,
             type: PieceType,
             explicitPid?: string,
           ) => placePiece(game, row, col, type, explicitPid, true),
           placeTerrain: (
-            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
+            game: { G: TrenchessState; ctx: Ctx; playerID?: string },
             row: number,
             col: number,
             type: TerrainType,
             explicitPid?: string,
           ) => placeTerrain(game, row, col, type, explicitPid, true),
           ready: (
-            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
+            game: { G: TrenchessState; ctx: Ctx; playerID?: string },
             explicitPid?: string,
           ) => ready(game, explicitPid, true),
           randomizeTerrain: (
@@ -54,7 +59,7 @@ export const genesisPhase = {
               G: TrenchessState;
               ctx: Ctx;
               random: { Number: () => number };
-              playerID: string | null;
+              playerID?: string;
             },
             explicitPid?: string,
           ) => randomizeTerrain(game, explicitPid, true),
@@ -63,7 +68,7 @@ export const genesisPhase = {
               G: TrenchessState;
               ctx: Ctx;
               random: { Number: () => number };
-              playerID: string | null;
+              playerID?: string;
             },
             explicitPid?: string,
           ) => randomizeUnits(game, explicitPid, true),
@@ -72,7 +77,7 @@ export const genesisPhase = {
               G: TrenchessState;
               ctx: Ctx;
               random: { Number: () => number };
-              playerID: string | null;
+              playerID?: string;
             },
             explicitPid?: string,
           ) => setClassicalFormation(game, explicitPid, true),
@@ -81,28 +86,28 @@ export const genesisPhase = {
               G: TrenchessState;
               ctx: Ctx;
               random: { Number: () => number };
-              playerID: string | null;
+              playerID?: string;
             },
             explicitPid?: string,
           ) => applyChiGarden(game, explicitPid, true),
           resetToOmega: (
-            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
+            game: { G: TrenchessState; ctx: Ctx; playerID?: string },
             explicitPid?: string,
           ) => resetToOmega(game, explicitPid, true),
           resetTerrain: (
-            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
+            game: { G: TrenchessState; ctx: Ctx; playerID?: string },
             explicitPid?: string,
           ) => resetTerrain(game, explicitPid, true),
           resetUnits: (
-            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
+            game: { G: TrenchessState; ctx: Ctx; playerID?: string },
             explicitPid?: string,
           ) => resetUnits(game, explicitPid, true),
           forfeit: (
-            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
+            game: { G: TrenchessState; ctx: Ctx; playerID?: string },
             explicitPid?: string,
           ) => forfeit(game, explicitPid, true),
           mirrorBoard: (
-            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
+            game: { G: TrenchessState; ctx: Ctx; playerID?: string },
             explicitPid?: string,
           ) => mirrorBoard(game, explicitPid, true),
           syncLayout: (

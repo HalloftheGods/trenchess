@@ -39,28 +39,28 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({
     <TCFlex align="center" gap={2} className="transition-all duration-500">
       <ActionBarSlot
         label="North/South"
-        active={(mode as string) === "2p-ns"}
+        active={false}
         onClick={() => setMode("2p-ns")}
       >
         <DualToneNS size={20} />
       </ActionBarSlot>
       <ActionBarSlot
         label="East/West"
-        active={(mode as string) === "2p-ew"}
+        active={false}
         onClick={() => setMode("2p-ew")}
       >
         <DualToneEW size={20} />
       </ActionBarSlot>
       <ActionBarSlot
         label="4-Player"
-        active={(mode as string) === "4p"}
+        active={false}
         onClick={() => setMode("4p")}
       >
         <QuadTone size={20} />
       </ActionBarSlot>
       <ActionBarSlot
         label="Alliance"
-        active={(mode as string) === "2v2"}
+        active={false}
         onClick={() => setMode("2v2")}
       >
         <AllianceTone size={20} />

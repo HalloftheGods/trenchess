@@ -1,8 +1,9 @@
+import { getPath } from "@/app/router/router";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Bot, User, Users, UserPlus } from "lucide-react";
 import { useRouteContext } from "@context";
-import { ROUTES } from "@/app/router/router";
+
 import { buildRoute } from "@/shared/utilities/routes";
 
 // Shared Route Components
@@ -28,7 +29,7 @@ export const PlayLocalView: React.FC = () => {
         <RouteCard
           onClick={() =>
             navigate(
-              buildRoute(ROUTES.play.setup, {
+              buildRoute(getPath("play.setup"), {
                 playMode: "practice",
                 players: "1",
                 step: "1",
@@ -52,7 +53,7 @@ export const PlayLocalView: React.FC = () => {
         <RouteCard
           onClick={() =>
             navigate(
-              buildRoute(ROUTES.play.setup, {
+              buildRoute(getPath("play.setup"), {
                 playMode: "couch",
                 players: "2",
                 step: "1",
@@ -76,7 +77,7 @@ export const PlayLocalView: React.FC = () => {
         <RouteCard
           onClick={() =>
             navigate(
-              buildRoute(ROUTES.play.setup, {
+              buildRoute(getPath("play.setup"), {
                 playMode: "couch",
                 players: "3",
                 step: "1",
@@ -100,7 +101,7 @@ export const PlayLocalView: React.FC = () => {
         <RouteCard
           onClick={() =>
             navigate(
-              buildRoute(ROUTES.play.setup, {
+              buildRoute(getPath("play.setup"), {
                 playMode: "couch",
                 players: "4",
                 step: "1",

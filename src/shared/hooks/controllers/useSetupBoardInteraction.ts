@@ -2,7 +2,12 @@ import { useCallback } from "react";
 import * as SetupLogic from "@/app/core/setup";
 import { TERRAIN_TYPES } from "@constants";
 import type { BoardPiece, TerrainType, GameMode } from "@tc.types/game";
-import type { PlacementManager, BgioClient, GameConfigState } from "@tc.types";
+import type {
+  PlacementManager,
+  BgioClient,
+  GameConfigState,
+  PieceType,
+} from "@tc.types";
 
 interface SetupInteractionProps {
   localPlayer: string;
@@ -144,12 +149,7 @@ export function useSetupBoardInteraction({
           if (onPlacePiece) {
             onPlacePiece(row, col, null);
           } else if (bgioClientRef?.current) {
-            bgioClientRef.current.moves.placePiece(
-              row,
-              col,
-              null,
-              localPlayer,
-            );
+            bgioClientRef.current.moves.placePiece(row, col, null, localPlayer);
           }
         }
       }

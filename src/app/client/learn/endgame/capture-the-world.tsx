@@ -1,3 +1,4 @@
+import { getPath } from "@/app/router/router";
 import React, { useState } from "react";
 import { Earth, Crown, Replace, Swords } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -13,11 +14,11 @@ import {
   TroopConversionGraphic,
 } from "@/shared/components/molecules/CtwGraphics";
 
-import { ROUTES } from "@/app/router/router";
+
 
 export const LearnEndgameCtwView: React.FC = () => {
   const navigate = useNavigate();
-  const onBack = () => navigate(ROUTES.learn.endgame.index);
+  const onBack = () => navigate(getPath("learn.endgame.index"));
 
   const [randomSeed] = useState<string | undefined>(() => {
     const seeds = DEFAULT_SEEDS;

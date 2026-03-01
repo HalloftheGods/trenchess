@@ -1,3 +1,4 @@
+import { getPath } from "@/app/router/router";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { EyeOff, LayoutGrid, ShieldAlert, Swords } from "lucide-react";
@@ -7,11 +8,11 @@ import type { Slide } from "@shared";
 // Shared Route Components
 import { GuideListItem } from "@/shared/components/molecules/GuideListItem";
 
-import { ROUTES } from "@/app/router/router";
+
 
 export const LearnEndgameCtkView: React.FC = () => {
   const navigate = useNavigate();
-  const onBack = () => navigate(ROUTES.learn.endgame.index);
+  const onBack = () => navigate(getPath("learn.endgame.index"));
   const slides: Slide[] = [
     {
       id: "board",

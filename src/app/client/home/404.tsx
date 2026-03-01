@@ -1,7 +1,8 @@
+import { getPath } from "@/app/router/router";
 import { Skull } from "lucide-react";
 import { DesertIcon } from "@/shared/components/atoms/UnitIcons";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/app/router/router";
+
 
 const NotFoundView = ({ fullScreen = true }: { fullScreen?: boolean }) => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const NotFoundView = ({ fullScreen = true }: { fullScreen?: boolean }) => {
         </div>
 
         <button
-          onClick={() => navigate(ROUTES.home)}
+          onClick={() => navigate(getPath("home"))}
           className="px-6 py-3 bg-brand-red text-white rounded-xl font-bold uppercase tracking-wider hover:bg-red-700 transition-colors"
         >
           Return to HQ

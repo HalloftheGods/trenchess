@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ROUTES } from "@/app/router/router";
+import { getPath } from "@/app/router/router";
 import { buildRoute } from "@/shared/utilities/routes";
 import { PHASES } from "@constants/game";
 import type {
@@ -83,17 +83,17 @@ export const useRouteContextValue = ({
 
   const onTutorial = useCallback(() => {
     setPhase(PHASES.GENESIS);
-    navigate(ROUTES.tutorial);
+    navigate(getPath("tutorial"));
   }, [setPhase, navigate]);
 
   const onLogoClick = useCallback(() => {
     setPhase(PHASES.GENESIS);
-    navigate(ROUTES.home);
+    navigate(getPath("home"));
   }, [setPhase, navigate]);
 
   const onZenGarden = useCallback(() => {
     setIsStarting(true);
-    navigate(buildRoute(ROUTES.console.game as string, { style: "zen" }));
+    navigate(buildRoute(getPath("console.game"), { style: "zen" }));
     setTimeout(() => {
       initGameWithPreset("4p", "zen-garden");
       startGame();
@@ -103,7 +103,7 @@ export const useRouteContextValue = ({
 
   const onGamemaster = useCallback(() => {
     setIsStarting(true);
-    navigate(ROUTES.console.gamemaster);
+    navigate(getPath("console.gamemaster"));
     setTimeout(() => {
       initGameWithPreset(activeMode || "4p", "zen-garden");
       startGame();
@@ -128,11 +128,18 @@ export const useRouteContextValue = ({
       else if (preset === "terrainiffic") style = "chi";
       else if (preset) style = preset;
 
-      const target = multiplayer?.roomId
-        ? buildRoute(ROUTES.console.detail as string, {
+      let target = multiplayer?.roomId
+        ? buildRoute(getPath("console.detail"), {
             roomId: multiplayer.roomId,
           })
-        : `${buildRoute(ROUTES.console.game as string, { style })}?mode=${startGameMode}`;
+        : `${buildRoute(getPath("console.game"), { style })}?mode=${startGameMode}`;
+
+      if (!multiplayer?.roomId && playerTypesConfig) {
+        const typeParams = Object.entries(playerTypesConfig)
+          .map(([pid, type]) => `&${pid}=${type}`)
+          .join("");
+        target += typeParams;
+      }
 
       navigate(target);
 
@@ -152,24 +159,24 @@ export const useRouteContextValue = ({
   );
 
   const onCtwGuide = useCallback(
-    () => navigate(ROUTES.learn.endgame.captureTheWorld),
+    () => navigate(getPath("learn.endgame.captureTheWorld")),
     [navigate],
   );
   const onChessGuide = useCallback(
-    () => navigate(ROUTES.learn.chess.index),
+    () => navigate(getPath("learn.chess.index")),
     [navigate],
   );
   const onTrenchGuide = useCallback(
     (t?: string) =>
       navigate(
         t
-          ? buildRoute(ROUTES.learn.trench.detail, { terrain: t })
-          : ROUTES.learn.trench.index,
+          ? buildRoute(getPath("learn.trench.detail"), { terrain: t })
+          : getPath("learn.trench.index"),
       ),
     [navigate],
   );
   const onOpenLibrary = useCallback(
-    () => navigate(ROUTES.console.library as string),
+    () => navigate(getPath("console.library")),
     [navigate],
   );
 

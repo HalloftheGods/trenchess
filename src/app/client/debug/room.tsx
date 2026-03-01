@@ -48,13 +48,13 @@ const DebugRoomViewContent: React.FC = () => {
       // 3. Force everyone to be ready and jump to combat
       const timer = setTimeout(() => {
         // Call ready for all possible players to trigger mainPhaseEndIf
-        activePlayers.forEach((pid) => ready(pid));
+        activePlayers.forEach((pid) => ready?.(pid));
 
         // Also explicitly set phase just in case
-        setPhase(PHASES.COMBAT);
+        setPhase?.(PHASES.COMBAT);
 
         // Ensure it's red's turn to start
-        setTurn("red");
+        setTurn?.("red");
       }, 500);
 
       return () => clearTimeout(timer);
@@ -72,9 +72,9 @@ const DebugRoomViewContent: React.FC = () => {
 
   const handleForceCombat = () => {
     authorizeMasterProtocol?.();
-    activePlayers.forEach((pid) => ready(pid));
-    setPhase(PHASES.COMBAT);
-    setTurn("red");
+    activePlayers.forEach((pid) => ready?.(pid));
+    setPhase?.(PHASES.COMBAT);
+    setTurn?.("red");
   };
 
   return (
@@ -88,13 +88,13 @@ const DebugRoomViewContent: React.FC = () => {
           FORCE COMBAT PHASE
         </button>
         <button
-          onClick={() => setTurn("red")}
+          onClick={() => setTurn?.("red")}
           className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-md text-xs font-bold shadow-lg transition-colors border border-slate-600"
         >
           BE RED
         </button>
         <button
-          onClick={() => setTurn("blue")}
+          onClick={() => setTurn?.("blue")}
           className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-md text-xs font-bold shadow-lg transition-colors border border-slate-600"
         >
           BE BLUE

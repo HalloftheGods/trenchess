@@ -1,8 +1,9 @@
+import { getPath } from "@/app/router/router";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Sofa, GamepadDirectional, Joystick, PartyPopper } from "lucide-react";
 import { useRouteContext } from "@context";
-import { ROUTES } from "@/app/router/router";
+
 import { buildRoute } from "@/shared/utilities/routes";
 
 // Shared Route Components
@@ -20,12 +21,12 @@ export const PlayView: React.FC = () => {
     <RoutePageLayout>
       <RoutePageHeader
         label='"And so it begins..."'
-        onBackClick={() => navigate(ROUTES.home)}
+        onBackClick={() => navigate(getPath("home"))}
       />
 
       <RouteGrid cols={3} className="px-4">
         <RouteCard
-          onClick={() => navigate(ROUTES.play.local)}
+          onClick={() => navigate(getPath("play.local"))}
           onMouseEnter={() => setHoveredMenu("couch")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
@@ -43,14 +44,14 @@ export const PlayView: React.FC = () => {
         />
         <HeaderLobby
           multiplayer={multiplayer}
-          onClick={() => navigate(ROUTES.play.lobby)}
+          onClick={() => navigate(getPath("play.lobby"))}
           onMouseEnter={() => setHoveredMenu("worldwide")}
           onMouseLeave={() => setHoveredMenu(null)}
         />
         <RouteCard
           onClick={() =>
             navigate(
-              buildRoute(ROUTES.play.setup, {
+              buildRoute(getPath("play.setup"), {
                 playMode: "practice",
                 players: "1",
                 step: "1",

@@ -11,14 +11,11 @@ import { getServerUrl } from "@/shared/utilities/env";
 
 import type { Ctx } from "boardgame.io";
 import type { TrenchessState } from "@tc.types/game";
-import type { BgioClient, MultiplayerState } from "@tc.types";
+import type { BgioClient, MultiplayerState, ChatMessage } from "@tc.types";
 import { Client as BaseClient } from "boardgame.io/client";
 
 import { useTerminal } from "./TerminalContext";
-import {
-  useEngineDerivations,
-  usePlayerRole,
-} from "@/shared/hooks/engine";
+import { useEngineDerivations, usePlayerRole } from "@/shared/hooks/engine";
 import { GameContext } from "./GameContextDef";
 
 interface GameProviderProps {
@@ -35,6 +32,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     G: TrenchessState;
     ctx: Ctx;
   } | null>(null);
+  const [isConnected, setIsConnected] = useState(true);
+  const [isOnline, setIsOnline] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
   const derivations = useEngineDerivations(bgioState);
   const { currentTurn } = usePlayerRole(bgioState);
@@ -55,7 +55,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const hasModeChanged = mode && lastLoggedStateRef.current.mode !== mode;
     const hasTurnChanged =
       currentTurn && lastLoggedStateRef.current.turn !== currentTurn;
-    const hasWinnerChanged = winner && lastLoggedStateRef.current.winner !== winner;
+    const hasWinnerChanged =
+      winner && lastLoggedStateRef.current.winner !== winner;
 
     if (hasPhaseChanged) {
       addLog("game", `PHASE: ${gameState.toUpperCase()}`);
@@ -97,7 +98,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         ? multiplayer.playerIndex !== null
           ? String(multiplayer.playerIndex)
           : "0"
-        : "0";
+        : undefined;
 
       const currentRoomId = multiplayer.roomId || undefined;
       const local = lastClientParamsRef.current;
@@ -110,25 +111,33 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
       if (!needsReinit) return;
 
-      // We only inject 4p on the FIRST creation. The state will immediately sync to whatever the remote room or local storage dictates.
-      const clientConfig = {
+      const clientConfig: Record<string, unknown> = {
         game: Trenchess,
         numPlayers: 4,
         debug: showBgDebug,
-        playerID,
-      } as unknown as Parameters<typeof BaseClient>[0];
+      };
 
-      if (multiplayer.roomId && multiplayer.playerCredentials) {
+      if (playerID !== undefined) {
+        clientConfig.playerID = playerID;
+      }
+
+      if (isOnline && multiplayer.playerCredentials) {
+        setIsOnline(true);
         clientConfig.multiplayer = SocketIO({ server: getServerUrl() });
         clientConfig.matchID = multiplayer.roomId;
         clientConfig.credentials = multiplayer.playerCredentials;
+      } else {
+        setIsOnline(false);
+        setIsConnected(true);
       }
 
       if (clientRef.current) {
         clientRef.current.stop();
       }
 
-      const newClient = BaseClient(clientConfig) as unknown as BgioClient;
+      const newClient = BaseClient(
+        clientConfig as unknown as Parameters<typeof BaseClient>[0],
+      ) as unknown as BgioClient;
       clientRef.current = newClient;
 
       Promise.resolve().then(() => setClientInstance(newClient));
@@ -149,9 +158,52 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const isClientAvailable = !!clientInstance;
     if (!isClientAvailable) return;
 
-    const onStateUpdate = (state: { G: TrenchessState; ctx: Ctx } | null) => {
+    const onStateUpdate = (
+      state: { G: TrenchessState; ctx: Ctx; isConnected?: boolean } | null,
+    ) => {
       if (!state) return;
-      console.log(`[ENGINE_UPDATE] Phase: ${state.ctx.phase}. Turn: ${state.ctx.turn}. Mode: ${state.G.mode}. Active Players: ${state.G.activePlayers.length}`);
+      console.log(
+        `[ENGINE_UPDATE] Phase: ${state.ctx.phase}. Turn: ${state.ctx.turn}. Mode: ${state.G.mode}. Active Players: ${state.G.activePlayers.length}`,
+      );
+      if (state.isConnected !== undefined) {
+        setIsConnected(state.isConnected);
+      }
+      if (clientInstance.chatMessages) {
+        setChatMessages((prev) => {
+          if (clientInstance.chatMessages!.length !== prev.length) {
+            return clientInstance.chatMessages!.map(
+              (msg: {
+                id?: string;
+                sender?: string;
+                senderId?: string;
+                playerIndex?: number;
+                payload?: unknown;
+                text?: string;
+                timestamp?: number;
+              }) => {
+                const payloadText =
+                  typeof msg.payload === "object" && msg.payload !== null
+                    ? (msg.payload as { text?: string }).text
+                    : typeof msg.payload === "string"
+                      ? msg.payload
+                      : msg.text || "";
+
+                return {
+                  id: msg.id || String(Math.random()),
+                  senderId: msg.sender || msg.senderId || "0",
+                  playerIndex:
+                    msg.playerIndex !== undefined
+                      ? msg.playerIndex
+                      : Number(msg.sender || 0),
+                  text: payloadText || "",
+                  timestamp: msg.timestamp || Date.now(),
+                };
+              },
+            );
+          }
+          return prev;
+        });
+      }
       const stringified = JSON.stringify({ G: state.G, ctx: state.ctx });
       if (stringified !== lastBgioStateRef.current) {
         lastBgioStateRef.current = stringified;
@@ -171,14 +223,54 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     };
   }, []);
 
+  const sendChatMessage = useCallback(
+    (text: string) => {
+      if (!isOnline) {
+        // Simulate local reflection for offline hotseat since boardgame.io's DummyTransport discards chat
+        const id = String(Math.random());
+        const sender = lastClientParamsRef.current.playerID || "0";
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            id,
+            senderId: sender,
+            playerIndex: Number(sender),
+            text,
+            timestamp: Date.now(),
+          },
+        ]);
+        return;
+      }
+
+      if (clientInstance && clientInstance.sendChatMessage) {
+        if (typeof clientInstance.sendChatMessage === "function") {
+          // boardgame.io client.sendChatMessage takes a single `payload` argument.
+          clientInstance.sendChatMessage({ text });
+        }
+      }
+    },
+    [clientInstance, isOnline],
+  );
+
   const value = useMemo(
     () => ({
       bgioState,
       clientRef,
       isEngineActive: !!bgioState,
+      isConnected,
+      isOnline,
       initializeEngine,
+      chatMessages,
+      sendChatMessage,
     }),
-    [bgioState, initializeEngine],
+    [
+      bgioState,
+      isConnected,
+      isOnline,
+      initializeEngine,
+      chatMessages,
+      sendChatMessage,
+    ],
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

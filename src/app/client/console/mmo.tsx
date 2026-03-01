@@ -1,3 +1,4 @@
+import { getPath } from "@/app/router/router";
 import React from "react";
 import { BattlefieldLayout as TheBattlefield } from "@blueprints/layouts/BattlefieldLayout";
 import {
@@ -14,7 +15,7 @@ import {
 import { useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { PHASES } from "@constants/game";
-import { ROUTES } from "@/app/router/router";
+
 
 const MmoViewContent: React.FC = () => {
   const game = useMatchState();
@@ -43,7 +44,7 @@ const MmoViewContent: React.FC = () => {
 
   // Handle game initialization for MMO
   useEffect(() => {
-    if (location.pathname === ROUTES.console.mmo) {
+    if (location.pathname === getPath("console.mmo")) {
       if (gameState === PHASES.MENU) {
         const urlParams = new URLSearchParams(window.location.search);
         const seed = urlParams.get("seed");

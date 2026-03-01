@@ -1,3 +1,4 @@
+import { getPath } from "@/app/router/router";
 import React from "react";
 import { ShieldPlus } from "lucide-react";
 import InteractiveGuide from "@/shared/components/templates/InteractiveGuide";
@@ -8,7 +9,7 @@ import type { PreviewConfig } from "@tc.types";
 // Shared Route Components
 import { TerrainUnitGrid } from "@/shared/components/molecules/TerrainUnitGrid";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/app/router/router";
+
 
 interface TrenchGuideProps {
   initialTerrain?: string | null;
@@ -18,7 +19,7 @@ export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
   initialTerrain,
 }) => {
   const navigate = useNavigate();
-  const onBack = () => navigate(ROUTES.learn.trench.index);
+  const onBack = () => navigate(getPath("learn.trench.index"));
   const slides: Slide[] = (() => {
     const terrainSlides = TERRAIN_DETAILS.map(
       (terrain: (typeof TERRAIN_DETAILS)[number]) => {

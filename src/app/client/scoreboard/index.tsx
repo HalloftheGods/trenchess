@@ -1,3 +1,4 @@
+import { getPath } from "@/app/router/router";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -19,7 +20,7 @@ import type { GameMode } from "@tc.types/game";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import { useRouteContext } from "@context";
 import { analytics } from "@/shared/utilities/analytics";
-import { ROUTES } from "@/app/router/router";
+
 
 import { getServerUrl } from "@/shared/utilities/env";
 
@@ -103,7 +104,7 @@ export const ScoreboardView = () => {
 
   const handleSpectate = (roomId: string) => {
     analytics.trackEvent("Scoreboard", "Spectate", roomId);
-    navigate(`${ROUTES.play.lobby}?join=${roomId}`);
+    navigate(`${getPath("play.lobby")}?join=${roomId}`);
   };
 
   const sidebar = (
@@ -152,7 +153,7 @@ export const ScoreboardView = () => {
     <ScoreboardLayout darkMode={darkMode} sidebar={sidebar}>
       <RoutePageHeader
         label="Global Scoreboard"
-        onBackClick={() => navigate(ROUTES.home)}
+        onBackClick={() => navigate(getPath("home"))}
         hidePreview
       />
 

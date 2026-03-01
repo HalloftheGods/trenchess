@@ -74,7 +74,7 @@ export const RoutePageHeader: React.FC<RoutePageHeaderProps> = ({
 
   const handleResume = () => {
     if (roomId) {
-      navigate(`/game/${roomId}`);
+      navigate(`/console/${roomId}`);
     }
   };
 

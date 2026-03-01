@@ -9,6 +9,7 @@ import type {
   GameCore,
   BgioClient,
   PlacementManager,
+  PieceType,
 } from "@tc.types";
 import type { TrenchessState, BoardPiece, TerrainType } from "@tc.types/game";
 import type { Ctx } from "boardgame.io";

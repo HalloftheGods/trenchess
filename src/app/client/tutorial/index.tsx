@@ -1,3 +1,4 @@
+import { getPath } from "@/app/router/router";
 /*
  * Copyright (c) 2006 - 2026 Hall of the Gods, Inc.
  * All Rights Reserved.
@@ -31,12 +32,12 @@ interface SeedItem {
 
 import { useTheme } from "@shared/context/ThemeContext";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/app/router/router";
+
 
 export const LearnTutorialView: React.FC = () => {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
-  const onBack = () => navigate(ROUTES.home);
+  const onBack = () => navigate(getPath("home"));
   const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
   const [selectedTerrainIdx, setSelectedTerrainIdx] = useState<number>(-1);
   const [allSeeds] = useState<SeedItem[]>(() => {

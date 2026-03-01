@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useAiDecision } from "./useAiDecision";
 import { engineService } from "@/app/core/bot/stockfishLogic";
 import { PHASES } from "@constants/game";
-import type { GameMode, BoardPiece, TerrainType } from "@tc.types/game";
+import type { GameMode, BoardPiece, TerrainType, BgioClient } from "@tc.types";
 
 interface UseComputerOpponentProps {
   gameState: string;
@@ -20,6 +20,9 @@ interface UseComputerOpponentProps {
   ) => void;
   winner: string | null;
   setIsThinking: (thinking: boolean) => void;
+  activePlayers?: string[];
+  readyPlayers?: Record<string, boolean>;
+  clientRef?: React.RefObject<BgioClient | undefined>;
 }
 
 export function useComputerOpponent({
@@ -32,9 +35,11 @@ export function useComputerOpponent({
   executeMove,
   winner,
   setIsThinking,
+  activePlayers = [],
+  readyPlayers = {},
+  clientRef,
 }: UseComputerOpponentProps) {
   const { getDecision } = useAiDecision();
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isThinkingRef = useRef(false);
 
   useEffect(() => {
@@ -44,11 +49,9 @@ export function useComputerOpponent({
     }
   }, [playerTypes]);
 
+  // COMBAT Turn Handling
   useEffect(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
+    let isCancelled = false;
 
     const shouldThink =
       gameState === PHASES.COMBAT &&
@@ -71,6 +74,8 @@ export function useComputerOpponent({
 
       const move = await getDecision(board, terrain, turn, mode);
 
+      if (isCancelled) return;
+
       isThinkingRef.current = false;
       setIsThinking(false);
 
@@ -79,10 +84,11 @@ export function useComputerOpponent({
       }
     };
 
-    timeoutRef.current = setTimeout(runAi, 500);
+    // No setTimeout, we yield control purely by async Stockfish requests which run in Workers.
+    void runAi();
 
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      isCancelled = true;
     };
   }, [
     gameState,
@@ -96,4 +102,41 @@ export function useComputerOpponent({
     setIsThinking,
     getDecision,
   ]);
+
+  // GENESIS Deployment Handling
+  useEffect(() => {
+    if (gameState === PHASES.GENESIS) {
+      const client = clientRef?.current;
+      if (!client) return;
+
+      activePlayers.forEach((pid) => {
+        if (playerTypes[pid] === "computer" && !readyPlayers[pid]) {
+          console.log(`[GENESIS] Auto-deploying computer player: ${pid}`);
+          // Force apply classical deployment and mark explicitly ready
+          client.moves.setClassicalFormation(pid);
+          client.moves.ready(pid);
+        }
+      });
+    }
+  }, [gameState, activePlayers, playerTypes, readyPlayers, clientRef]);
+
+  // GAMEMASTER Deployment Handling
+  useEffect(() => {
+    if (gameState === PHASES.GAMEMASTER) {
+      const client = clientRef?.current;
+      if (!client) return;
+
+      if (playerTypes[turn] === "computer") {
+        console.log(`[GAMEMASTER] Auto-deploying computer player: ${turn}`);
+        // Force apply classical deployment and mark explicitly ready
+        client.moves.setClassicalFormation(turn);
+        client.moves.ready(turn);
+
+        // Advance turn automatically
+        const currentIndex = activePlayers.indexOf(turn);
+        const nextIndex = (currentIndex + 1) % activePlayers.length;
+        client.moves.setTurn(activePlayers[nextIndex]);
+      }
+    }
+  }, [gameState, turn, activePlayers, playerTypes, clientRef]);
 }

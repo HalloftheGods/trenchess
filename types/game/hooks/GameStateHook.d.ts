@@ -32,6 +32,8 @@ export interface GameStateHook
     ZenGardenInteraction,
     SetupActions {
   bgioState: { G: TrenchessState; ctx: Ctx } | null;
+  isConnected: boolean;
+  isOnline: boolean;
   board: BoardGrid;
   terrain: TerrainGrid;
   inventory: PieceInventory;

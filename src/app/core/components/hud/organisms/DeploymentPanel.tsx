@@ -25,7 +25,7 @@ import { ZenActions } from "../molecules/ZenActions";
 import { SeedLibraryList } from "../molecules/SeedLibraryList";
 import { CheckAlert } from "../../board/atoms/CheckAlert";
 import { ActiveFieldStrategy } from "../atoms/ActiveFieldStrategy";
-import { PHASES, FEATURES } from "@constants";
+import { PHASES } from "@constants";
 
 interface DeploymentPanelProps {
   mode: GameMode;

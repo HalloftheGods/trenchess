@@ -49,7 +49,7 @@ export const applyPiecePlacement = (
   row: number,
   col: number,
   type: PieceType | null,
-  mode: GameMode,
+  _mode: GameMode,
   isGM: boolean = false,
 ): PlacementState | typeof INVALID_MOVE => {
   const newState = {

@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTerminal } from "@/shared/context/TerminalContext";
-import { ROUTES } from "@/app/router/router";
+import { getPath } from "@/app/router/router";
 import { buildRoute } from "@/shared/utilities/routes";
 import { fromAlgebraic } from "@/shared/utilities/game";
-import { FEATURES } from "@constants";
+import { FEATURES } from "@constants/features";
 import type {
   GameStateHook,
   GameMode,
@@ -26,23 +26,68 @@ export const useCommandDispatcher = (game: GameStateHook) => {
         case "help":
           addLog("info", "--- TRENCHESS COMMAND REFERENCE ---");
           addLog("info", "GAME CONTROL:");
-          addLog("info", "  play <style>         - Start session (alpha, battle, pi, chi, omega, zen)");
-          addLog("info", "  start                - Transition to main gameplay phase");
-          addLog("info", "  init <mode> [preset] - Initialize engine with mode and layout");
-          addLog("info", "  seed <seed>          - Initialize from deterministic seed string");
-          addLog("info", "  status               - Show current engine phase, turn, and mode");
+          addLog(
+            "info",
+            "  play <style>         - Start session (alpha, battle, pi, chi, omega, zen)",
+          );
+          addLog(
+            "info",
+            "  start                - Transition to main gameplay phase",
+          );
+          addLog(
+            "info",
+            "  init <mode> [preset] - Initialize engine with mode and layout",
+          );
+          addLog(
+            "info",
+            "  seed <seed>          - Initialize from deterministic seed string",
+          );
+          addLog(
+            "info",
+            "  status               - Show current engine phase, turn, and mode",
+          );
           addLog("info", "BOARD OPERATIONS:");
-          addLog("info", "  move <from> <to>     - Move piece using algebraic notation (e.g. E2 E4)");
-          addLog("info", "  select <coord>       - Select a cell at the given coordinate");
-          addLog("info", "  board <layout>       - Apply layout (omega, pi, chi, random, mirror, clear)");
-          addLog("info", "  unit <type>          - Set active unit for placement");
-          addLog("info", "  terrain <type>       - Set active terrain for placement");
+          addLog(
+            "info",
+            "  move <from> <to>     - Move piece using algebraic notation (e.g. E2 E4)",
+          );
+          addLog(
+            "info",
+            "  select <coord>       - Select a cell at the given coordinate",
+          );
+          addLog(
+            "info",
+            "  board <layout>       - Apply layout (omega, pi, chi, random, mirror, clear)",
+          );
+          addLog(
+            "info",
+            "  unit <type>          - Set active unit for placement",
+          );
+          addLog(
+            "info",
+            "  terrain <type>       - Set active terrain for placement",
+          );
           addLog("info", "SYSTEM & NAVIGATION:");
-          addLog("info", "  mmo | zen | master   - Quick-jump to specific environments");
-          addLog("info", "  player <pid> <type>  - Set player controller (pid: red|..., type: human|ai)");
-          addLog("info", "  phase <name>         - Force engine into a specific phase");
-          addLog("info", "  goto <path>          - Navigate to a specific application route");
-          addLog("info", "  clear | exit         - Terminal session management");
+          addLog(
+            "info",
+            "  mmo | zen | master   - Quick-jump to specific environments",
+          );
+          addLog(
+            "info",
+            "  player <pid> <type>  - Set player controller (pid: red|..., type: human|ai)",
+          );
+          addLog(
+            "info",
+            "  phase <name>         - Force engine into a specific phase",
+          );
+          addLog(
+            "info",
+            "  goto <path>          - Navigate to a specific application route",
+          );
+          addLog(
+            "info",
+            "  clear | exit         - Terminal session management",
+          );
           break;
         case "move":
           if (args[0] && args[1]) {
@@ -155,9 +200,7 @@ export const useCommandDispatcher = (game: GameStateHook) => {
               game.setShowRules(true);
               addLog("response", "Opening Master Protocol Console...");
             } else if (args[0] === "zen") {
-              navigate(
-                buildRoute(ROUTES.console.game as string, { style: "zen" }),
-              );
+              navigate(buildRoute(getPath("console.game"), { style: "zen" }));
               addLog("response", "Entering Zen Garden...");
             } else {
               game.setPhase(args[0]);
@@ -177,9 +220,7 @@ export const useCommandDispatcher = (game: GameStateHook) => {
               game.setMode(style as GameMode);
               addLog("response", `Engine mode executed: SET_MODE to ${style}`);
             } else {
-              navigate(
-                buildRoute(ROUTES.console.game as string, { style: style }),
-              );
+              navigate(buildRoute(getPath("console.game"), { style: style }));
               addLog("response", `Navigating to ${style} session...`);
             }
           } else {
@@ -269,7 +310,10 @@ export const useCommandDispatcher = (game: GameStateHook) => {
           break;
         case "seed":
           if (!FEATURES.URL_SEEDS) {
-            addLog("error", "Seed string initialization is currently disabled via feature flag.");
+            addLog(
+              "error",
+              "Seed string initialization is currently disabled via feature flag.",
+            );
             break;
           }
           if (args[0]) {
@@ -305,11 +349,11 @@ export const useCommandDispatcher = (game: GameStateHook) => {
           addLog("response", "Board mirrored.");
           break;
         case "mmo":
-          navigate(ROUTES.console.mmo as string);
+          navigate(getPath("console.mmo"));
           addLog("response", "Joining MMO...");
           break;
         case "zen":
-          navigate(buildRoute(ROUTES.console.game as string, { style: "zen" }));
+          navigate(buildRoute(getPath("console.game"), { style: "zen" }));
           addLog("response", "Entering Zen Garden...");
           break;
         case "master":

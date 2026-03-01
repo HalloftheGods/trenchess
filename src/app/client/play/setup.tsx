@@ -1,3 +1,4 @@
+import { getPath } from "@/app/router/router";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -21,9 +22,8 @@ import {
   DualToneSwordsEw,
 } from "@/shared/components/atoms/RouteIcons";
 import type { GameMode } from "@tc.types/game";
-import { ROUTES } from "@/app/router/router";
+
 import { buildRoute } from "@/shared/utilities/routes";
-import { FEATURES } from "@constants";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
@@ -111,7 +111,7 @@ export const PlaySetupView: React.FC = () => {
   const handleBoardSelect = (mode: GameMode) => {
     setSelectedBoard(mode);
     navigate(
-      buildRoute(ROUTES.play.setup, {
+      buildRoute(getPath("play.setup"), {
         playMode: playMode || "couch",
         players: playersParam || "2",
         step: "2",
@@ -166,9 +166,12 @@ export const PlaySetupView: React.FC = () => {
     }
   };
 
-  const urlPlayerCount = playersParam
-    ? parseInt(playersParam, 10)
-    : (playerCount ?? 2);
+  const urlPlayerCount =
+    multiplayer?.roomId && multiplayer?.players.length > 0
+      ? multiplayer.players.length
+      : playersParam
+        ? parseInt(playersParam, 10)
+        : (playerCount ?? 2);
   const isFourPlayerRequested = urlPlayerCount >= 3;
 
   const isOnline = !!multiplayer?.roomId;
@@ -194,14 +197,14 @@ export const PlaySetupView: React.FC = () => {
           if (isOnline && !isHost) return;
           if (step === 2) {
             navigate(
-              buildRoute(ROUTES.play.setup, {
+              buildRoute(getPath("play.setup"), {
                 playMode: playMode || "couch",
                 players: playersParam || "2",
                 step: "1",
               }),
             );
           } else {
-            navigate(isOnline ? ROUTES.play.lobby : ROUTES.play.local);
+            navigate(isOnline ? getPath("play.lobby") : getPath("play.local"));
           }
         }}
         className={isOnline && !isHost ? "opacity-30 pointer-events-none" : ""}

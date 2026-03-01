@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
-import { useGameState } from "@hooks/engine/useGameState";
 import { PHASES } from "@constants/game";
 import type { GameMode } from "@tc.types";
+
+import { useMatchState } from "@/shared/context/MatchStateContext";
 
 /**
  * useAutoPreconfig — Auto-initializes the game board based on a preconfig style.
@@ -9,8 +10,8 @@ import type { GameMode } from "@tc.types";
  *
  * @param style - The preconfig style to load ('alpha' | 'pi' | 'chi' | 'omega')
  */
-export const useAutoPreconfig = (style: "alpha" | "pi" | "chi" | "omega") => {
-  const game = useGameState();
+export const useAutoPreconfig = (style?: "alpha" | "pi" | "chi" | "omega") => {
+  const game = useMatchState();
   const { gameState, mode, initGameWithPreset, isMercenary } = game;
   const hasInitializedRef = useRef(false);
 
@@ -21,7 +22,7 @@ export const useAutoPreconfig = (style: "alpha" | "pi" | "chi" | "omega") => {
       gameState === PHASES.GAMEMASTER ||
       gameState === PHASES.GENESIS;
 
-    if (isSetupPhase && !hasInitializedRef.current) {
+    if (isSetupPhase && !hasInitializedRef.current && style) {
       const urlParams = new URLSearchParams(window.location.search);
       const urlMode = urlParams.get("mode") as GameMode;
       const activeMode = urlMode || mode || "4p";
@@ -36,10 +37,20 @@ export const useAutoPreconfig = (style: "alpha" | "pi" | "chi" | "omega") => {
 
       const preset = styleMap[style] || style;
 
+      // Extract player configuration from URL if available
+      const newPlayerTypes: Record<string, "human" | "computer"> = {};
+      ["red", "blue", "yellow", "green"].forEach((pid) => {
+        const type = urlParams.get(pid);
+        if (type === "human" || type === "computer") {
+          newPlayerTypes[pid] = type;
+        }
+      });
+      const hasPlayerConfig = Object.keys(newPlayerTypes).length > 0;
+
       initGameWithPreset(
         activeMode,
         preset,
-        undefined,
+        hasPlayerConfig ? newPlayerTypes : undefined,
         undefined,
         !!isMercenary,
       );

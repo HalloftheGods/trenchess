@@ -1,3 +1,4 @@
+import { getPath } from "@/app/router/router";
 import React from "react";
 import { useParams } from "react-router-dom";
 import AlphaView from "./alpha";
@@ -13,7 +14,7 @@ import SpectatorView from "../spectate";
 import { useGameState } from "@hooks/engine/useGameState";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ROUTES } from "@/app/router/router";
+
 import { PHASES } from "@constants/game";
 
 /**
@@ -32,9 +33,9 @@ const ConsoleViewDispatcher: React.FC = () => {
 
   // 1. Redirect to home if on base game route and game hasn't started (MENU phase)
   useEffect(() => {
-    const isBaseGameRoute = location.pathname === ROUTES.console.index;
+    const isBaseGameRoute = location.pathname === getPath("console.index");
     const isNotMmo = !location.pathname.startsWith(
-      ROUTES.console.mmo as string,
+      getPath("console.mmo") as string,
     );
     const isNotOnlineMatch = !location.pathname.includes("/match/");
 
@@ -44,15 +45,15 @@ const ConsoleViewDispatcher: React.FC = () => {
       isNotOnlineMatch &&
       gameState === PHASES.MENU
     ) {
-      navigate(ROUTES.home);
+      navigate(getPath("home"));
     }
   }, [location.pathname, gameState, navigate]);
 
   // 2. Zen/Gamemaster specific initialization
   useEffect(() => {
     const isZenOrMaster =
-      location.pathname === (ROUTES.zen as string) ||
-      location.pathname === ROUTES.console.gamemaster;
+      location.pathname === (getPath("zen") as string) ||
+      location.pathname === getPath("console.gamemaster");
 
     if (isZenOrMaster && gameState === PHASES.MENU) {
       initGameWithPreset("4p", "zen-garden");

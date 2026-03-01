@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { TopActionBar as ConsoleActionBar } from "@/app/core/components/hud/templates/TopActionBar";
 import { INITIAL_ARMY, PHASES } from "@constants";
 import type { GameStateHook } from "@tc.types";
@@ -71,7 +72,11 @@ describe("ConsoleActionBar", () => {
   });
 
   it("should call dispatch with 'board pi' when Pi button is clicked", () => {
-    render(<ConsoleActionBar />);
+    render(
+      <MemoryRouter>
+        <ConsoleActionBar />
+      </MemoryRouter>
+    );
 
     const toggleButton = screen.getByTitle("Omega Mode");
     fireEvent.click(toggleButton);
@@ -83,7 +88,11 @@ describe("ConsoleActionBar", () => {
   });
 
   it("should call dispatch with 'board chi' when Chi button is clicked", () => {
-    render(<ConsoleActionBar />);
+    render(
+      <MemoryRouter>
+        <ConsoleActionBar />
+      </MemoryRouter>
+    );
 
     const toggleButton = screen.getByTitle("Omega Mode");
     fireEvent.click(toggleButton);
@@ -95,7 +104,11 @@ describe("ConsoleActionBar", () => {
   });
 
   it("should call dispatch with 'board random' when Random button is clicked", () => {
-    render(<ConsoleActionBar />);
+    render(
+      <MemoryRouter>
+        <ConsoleActionBar />
+      </MemoryRouter>
+    );
 
     const toggleButton = screen.getByTitle("Omega Mode");
     fireEvent.click(toggleButton);
@@ -107,7 +120,11 @@ describe("ConsoleActionBar", () => {
   });
 
   it("should call dispatch with 'board omega' when Omega button is clicked", () => {
-    render(<ConsoleActionBar />);
+    render(
+      <MemoryRouter>
+        <ConsoleActionBar />
+      </MemoryRouter>
+    );
 
     const omegaButton = screen.getByTitle("Omega Mode");
     fireEvent.click(omegaButton);
@@ -117,7 +134,11 @@ describe("ConsoleActionBar", () => {
 
   it("should respect locks for randomization", () => {
     // This test needs to handle the local lock state in MmoActionBar
-    render(<ConsoleActionBar />);
+    render(
+      <MemoryRouter>
+        <ConsoleActionBar />
+      </MemoryRouter>
+    );
 
     // Find the Lock buttons (Trench is first, Chess is second)
     const lockButtons = screen.getAllByTitle("Lock");

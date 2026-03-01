@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import { getBestMove } from "@/app/core/bot/aiLogic";
 import { getValidMoves } from "@/app/core/mechanics";
 import { engineService } from "@/app/core/bot/stockfishLogic";
+import { BOARD_SIZE } from "@constants";
 import type { GameMode, BoardPiece, TerrainType } from "@tc.types/game";
 
 export function useAiDecision() {
@@ -13,34 +13,69 @@ export function useAiDecision() {
       mode: GameMode,
     ) => {
       try {
-        const sfMove = await engineService.getBestMove(board, turn);
-        const piece = board[sfMove.from[0]][sfMove.from[1]];
+        // Collect all legal moves mapped to UCI format to restrict Stockfish.
+        // This solves the terrain limitation because Stockfish will only search
+        // moves that the JS engine has determined are legal by Trenchess rules.
+        const validUciMoves: string[] = [];
+        for (let r = 0; r < BOARD_SIZE; r++) {
+          for (let c = 0; c < BOARD_SIZE; c++) {
+            const piece = board[r][c];
+            if (piece && piece.player === turn) {
+              const pieceMoves = getValidMoves(
+                r,
+                c,
+                piece,
+                turn,
+                board,
+                terrain,
+                mode,
+              );
 
-        let isValid = false;
-        if (piece) {
-          const validMoves = getValidMoves(
-            sfMove.from[0],
-            sfMove.from[1],
-            piece,
-            turn,
-            board,
-            terrain,
-            mode,
-          );
-          isValid = validMoves.some(
-            (m: number[]) => m[0] === sfMove.to[0] && m[1] === sfMove.to[1],
-          );
+              for (const [tr, tc] of pieceMoves) {
+                // UCI Format: file(0-indexed from 'a') + rank(1-indexed from '1')
+                const fromUci = String.fromCharCode(97 + c) + (12 - r);
+                const toUci = String.fromCharCode(97 + tc) + (12 - tr);
+
+                validUciMoves.push(`${fromUci}${toUci}`);
+              }
+            }
+          }
         }
 
-        if (isValid) return sfMove;
+        if (validUciMoves.length === 0) {
+          return null;
+        }
 
-        console.log(
-          "Stockfish move was blocked by Trenchess Terrain! Falling back to backup JS Engine.",
+        const sfMove = await engineService.getBestMove(
+          board,
+          turn,
+          validUciMoves.join(" "),
         );
-        return getBestMove(board, terrain, turn, mode);
+
+        if (!sfMove) {
+          // Fallback to random move if stockfish fails
+          const randomUci =
+            validUciMoves[Math.floor(Math.random() * validUciMoves.length)];
+
+          const match = randomUci.match(/^([a-z])(\d+)([a-z])(\d+)([a-z]?)$/);
+          if (match) {
+            const fromFile = match[1].charCodeAt(0) - 97;
+            const fromRank = parseInt(match[2], 10);
+            const toFile = match[3].charCodeAt(0) - 97;
+            const toRank = parseInt(match[4], 10);
+            return {
+              from: [12 - fromRank, fromFile] as [number, number],
+              to: [12 - toRank, toFile] as [number, number],
+              score: 0,
+            };
+          }
+          return null;
+        }
+
+        return sfMove;
       } catch (e) {
-        console.warn("Stockfish failed, falling back to basic AI", e);
-        return getBestMove(board, terrain, turn, mode);
+        console.error("Stockfish failed to calculate a move:", e);
+        return null;
       }
     },
     [],

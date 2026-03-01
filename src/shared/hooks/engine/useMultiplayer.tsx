@@ -17,7 +17,8 @@ import type {
   MultiplayerPlayer,
 } from "@tc.types";
 import { getServerUrl } from "@/shared/utilities/env";
-import { appStorage, APP_KEY } from "@/shared/utilities/storage";
+import { appStorage } from "@/shared/utilities/storage";
+import { GAME_NAME } from "@constants/game";
 
 const MultiplayerContext = createContext<MultiplayerState | null>(null);
 
@@ -41,6 +42,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const [availableRooms, setAvailableRooms] = useState<RoomInfo[]>([]);
 
   const serverUrl = getServerUrl();
+  console.log(`[MULTIPLAYER] Connecting to server at: ${serverUrl}`);
   const lobbyClient = useMemo(
     () => new LobbyClient({ server: serverUrl }),
     [serverUrl],
@@ -48,7 +50,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const refreshRooms = useCallback(async () => {
     try {
-      const { matches } = await lobbyClient.listMatches(APP_KEY, {
+      const { matches } = await lobbyClient.listMatches(GAME_NAME, {
         isGameover: false,
       });
       setAvailableRooms(
@@ -70,10 +72,15 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [lobbyClient]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void refreshRooms();
+  }, [refreshRooms]);
+
+  useEffect(() => {
     if (!roomId) return;
     const fetchMatch = async () => {
       try {
-        const match = await lobbyClient.getMatch(APP_KEY, roomId);
+        const match = await lobbyClient.getMatch(GAME_NAME, roomId);
         setPlayers(
           match.players
             .filter((p: BgioMatchPlayer) => p.name)
@@ -81,6 +88,21 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({
         );
       } catch (e) {
         console.error(e);
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        if (errorMessage.includes("not found")) {
+          setRoomId(null);
+          setPlayerIndex(null);
+          setPlayerCredentials(null);
+          setPlayers([]);
+          setIsHost(false);
+          setIsConnected(false);
+          appStorage.clear([
+            "room-id",
+            "player-index",
+            "credentials",
+            "is-host",
+          ]);
+        }
       }
     };
     fetchMatch();
@@ -91,11 +113,11 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const joinGame = useCallback(
     async (id: string) => {
       try {
-        const match = await lobbyClient.getMatch(APP_KEY, id);
+        const match = await lobbyClient.getMatch(GAME_NAME, id);
         const slot = match.players.find((p: BgioMatchPlayer) => !p.name);
         if (!slot) return;
 
-        const res = await lobbyClient.joinMatch(APP_KEY, id, {
+        const res = await lobbyClient.joinMatch(GAME_NAME, id, {
           playerID: String(slot.id),
           playerName: `Player ${slot.id}`,
         });
@@ -118,10 +140,10 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const hostGame = useCallback(async () => {
     try {
-      const { matchID } = await lobbyClient.createMatch(APP_KEY, {
+      const { matchID } = await lobbyClient.createMatch(GAME_NAME, {
         numPlayers: 4,
       });
-      const res = await lobbyClient.joinMatch(APP_KEY, matchID, {
+      const res = await lobbyClient.joinMatch(GAME_NAME, matchID, {
         playerID: "0",
         playerName: "Operator",
       });
@@ -145,7 +167,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const leaveGame = useCallback(async () => {
     if (roomId && playerIndex !== null && playerCredentials) {
       try {
-        await lobbyClient.leaveMatch(APP_KEY, roomId, {
+        await lobbyClient.leaveMatch(GAME_NAME, roomId, {
           playerID: String(playerIndex),
           credentials: playerCredentials,
         });
@@ -201,7 +223,9 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   useEffect(() => {
-    console.log(`[MULTIPLAYER] Room: ${roomId || "Local"}. Index: ${playerIndex}. Connected: ${isConnected}`);
+    console.log(
+      `[MULTIPLAYER] Room: ${roomId || "Local"}. Index: ${playerIndex}. Connected: ${isConnected}`,
+    );
   }, [roomId, playerIndex, isConnected]);
 
   return (

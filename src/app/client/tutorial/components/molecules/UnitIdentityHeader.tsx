@@ -24,7 +24,7 @@ export const UnitIdentityHeader: React.FC<UnitIdentityHeaderProps> = ({
   textColor,
 }) => (
   <>
-    <SectionRibbon label={subtitle} bgClass={colors.ribbonBg} />
+    <SectionRibbon label={subtitle || ""} bgClass={colors.ribbonBg} />
 
     {subtitle && (
       <UnitSubtitle subtitle={role} Icon={Icon} colorClass={colors.text} />

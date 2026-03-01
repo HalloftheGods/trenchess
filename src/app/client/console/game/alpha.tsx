@@ -1,10 +1,7 @@
-import React from "react";
 import CombatScreen from "@/app/core/screens/CombatScreen";
-import { useAutoPreconfig } from "@controllers/useAutoPreconfig";
 
 const AlphaView: React.FC = () => {
-  useAutoPreconfig("alpha");
-  return <CombatScreen boardType="standard" />;
+  return <CombatScreen boardType="standard" preconfigStyle="alpha" />;
 };
 
 export default AlphaView;

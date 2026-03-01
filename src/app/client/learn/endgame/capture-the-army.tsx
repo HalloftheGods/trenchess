@@ -1,3 +1,4 @@
+import { getPath } from "@/app/router/router";
 import { useNavigate } from "react-router-dom";
 import { Users, RefreshCcw, Swords } from "lucide-react";
 import InteractiveGuide from "@/shared/components/templates/InteractiveGuide";
@@ -10,11 +11,11 @@ import {
   CtaTroopConversionGraphic,
 } from "@/shared/components/molecules/CtaGraphics";
 
-import { ROUTES } from "@/app/router/router";
+
 
 export const LearnEndgameCtaView: React.FC = () => {
   const navigate = useNavigate();
-  const onBack = () => navigate(ROUTES.learn.endgame.index);
+  const onBack = () => navigate(getPath("learn.endgame.index"));
   const slides: Slide[] = [
     {
       id: "multi",

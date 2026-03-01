@@ -22,7 +22,7 @@ const ZenGardenView: React.FC = () => {
   );
 
   const renderZenGardenSeedButton = () => {
-    if (!FEATURES.SEEDS) return null;
+    if (!FEATURES.URL_SEEDS) return null;
 
     return (
       <button
@@ -116,7 +116,7 @@ const ZenGardenView: React.FC = () => {
           localPlayerName={game.localPlayerName}
         />
       }
-      gameBoard={<ConnectedBoard game={game} />}
+      gameBoard={<ConnectedBoard />}
     />
   );
 };

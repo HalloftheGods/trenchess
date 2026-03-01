@@ -1,6 +1,6 @@
 import { getPlayerCells, getPlayersForMode } from "@/app/core/setup/territory";
-import { canPlaceUnit } from "@/app/core/setup/validation";
-import { TERRAIN_TYPES, INITIAL_ARMY, FEATURES } from "@constants";
+
+import { TERRAIN_TYPES, INITIAL_ARMY } from "@constants";
 import { DEFAULT_SEEDS } from "@/app/core/setup/seeds";
 import {
   deserializeGame,
@@ -346,32 +346,12 @@ export const applyChiGarden = (
     pids.forEach((playerId) => {
       const myCells = getPlayerCells(playerId, G.mode);
 
-      // Check if the configuration has any pieces for this player
-      let seedHasUnits = false;
-      for (const [row, col] of myCells) {
-        if (adapted.board[row][col]) {
-          seedHasUnits = true;
-          break;
-        }
-      }
-
-      // 2. Apply Terrain + Units (Units only if present in build)
+      // 2. Apply Terrain only. Players must layout their own pieces in the main phase.
       for (const [row, col] of myCells) {
         const newTerrain = adapted.terrain[row][col];
-        const existingPiece = G.board[row][col];
-
-        // If seed has units, we overwrite everything in our territory
-        if (seedHasUnits) {
-          G.terrain[row][col] = newTerrain;
-          G.board[row][col] = adapted.board[row][col];
-        } else {
-          // Garden Logic: Preserve existing pieces if compatible, otherwise clear tile
-          if (existingPiece && !canPlaceUnit(existingPiece.type, newTerrain)) {
-            G.terrain[row][col] = TERRAIN_TYPES.FLAT as TerrainType;
-          } else {
-            G.terrain[row][col] = newTerrain;
-          }
-        }
+        G.terrain[row][col] = newTerrain;
+        // We clear existing units in the territory to ensure a clean layout phase.
+        G.board[row][col] = null;
       }
 
       // Re-calculate inventories based on board state
@@ -449,9 +429,7 @@ export const initMatch = (
     }
   } else if (preset === "terrainiffic" || preset === "chi") {
     applyChiGarden({ G, random, ctx: {} as Ctx }, undefined, true);
-    for (const pid of getPlayersForMode(selectedMode)) {
-      G.readyPlayers[pid] = true;
-    }
+    // Removed auto-ready to ensure players must layout pieces in main phase
   } else if (preset === "omega" || preset === "custom") {
     G.board = createInitialState(
       selectedMode,

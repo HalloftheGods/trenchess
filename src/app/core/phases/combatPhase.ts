@@ -15,7 +15,6 @@ export const combatPhase = {
   onBegin: ({ G }: { G: TrenchessState }) => {
     console.log(`[PHASE_START] Combat Phase starting. Mode: ${G.mode}. Active Players: ${G.activePlayers.join(", ")}`);
   },
-  onMove,
   moves: {
     ...CORE_ADMIN_MOVES,
     movePiece,
@@ -23,6 +22,7 @@ export const combatPhase = {
   },
   turn: {
     onBegin: onTurnBegin,
+    onMove,
     minMoves: 1,
     maxMoves: 1,
     order: {

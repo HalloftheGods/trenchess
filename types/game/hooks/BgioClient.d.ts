@@ -6,7 +6,7 @@ import type { TrenchessState } from "../game/TrenchessState";
 
 export interface BgioClient {
   moves: {
-    ready: (pid?: string) => void;
+    ready: (pid?: string, isGM?: boolean) => void;
     placePiece: (
       r: number,
       c: number,
@@ -26,7 +26,7 @@ export interface BgioClient {
     randomizeTerrain: (pid?: string) => void;
     applyChiGarden: (pid?: string) => void;
     randomizeUnits: (pid?: string) => void;
-    setClassicalFormation: (pid?: string) => void;
+    setClassicalFormation: (pid?: string, allowExplicit?: boolean) => void;
     resetToOmega: (pid?: string) => void;
     resetTerrain: (pid?: string) => void;
     resetUnits: (pid?: string) => void;
@@ -53,4 +53,6 @@ export interface BgioClient {
   ) => () => void;
   playerID: string | null;
   matchID: string | null;
+  chatMessages?: import("../multiplayer/ChatMessage").ChatMessage[];
+  sendChatMessage?: (message: { text: string; playerName?: string }) => void;
 }

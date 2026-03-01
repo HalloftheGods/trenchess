@@ -23,10 +23,12 @@ import {
   AllianceTone,
   DualToneSwords,
 } from "../atoms/RouteIcons";
-import { ROUTES } from "@/app/router/router";
+import { getPath } from "@/app/router/router";
 import { buildRoute } from "@/shared/utilities/routes";
 
 type BreadcrumbColor = "red" | "blue" | "emerald" | "amber" | "slate";
+
+const ICON_SIZE = 42;
 
 export const RouteBreadcrumbs: React.FC = () => {
   const navigate = useNavigate();
@@ -47,8 +49,8 @@ export const RouteBreadcrumbs: React.FC = () => {
   } = useRouteContext();
 
   const isSelectionPage =
-    location.pathname === ROUTES.play.index ||
-    location.pathname === ROUTES.play.local;
+    location.pathname === getPath("play.index") ||
+    location.pathname === getPath("play.local");
 
   const effectivePlayerCount =
     urlPlayers && location.pathname.includes("/setup")
@@ -67,54 +69,54 @@ export const RouteBreadcrumbs: React.FC = () => {
           : playMode;
 
   const getPlayModeIcon = () => {
-    if (effectivePlayMode === "online") return <GlobeLock size={18} />;
+    if (effectivePlayMode === "online") return <GlobeLock size={ICON_SIZE} />;
     if (effectivePlayMode === "local" || effectivePlayMode === "practice")
-      return <Sofa size={18} />;
-    return <Sofa size={18} className="opacity-40" />;
+      return <Sofa size={ICON_SIZE} />;
+    return <Sofa size={ICON_SIZE} className="opacity-40" />;
   };
 
   const getPlayerCountIcon = () => {
     switch (effectivePlayerCount) {
       case 1:
-        return <Bot size={18} />;
+        return <Bot size={ICON_SIZE} />;
       case 2:
-        return <User size={18} />;
+        return <User size={ICON_SIZE} />;
       case 3:
-        return <Users size={18} />;
+        return <Users size={ICON_SIZE} />;
       case 4:
-        return <UserPlus size={18} />;
+        return <UserPlus size={ICON_SIZE} />;
       default:
-        return <Bot size={18} className="opacity-40" />;
+        return <Bot size={ICON_SIZE} className="opacity-40" />;
     }
   };
 
   const getBoardIcon = () => {
     switch (selectedBoard) {
       case "2p-ns":
-        return <DualToneNS size={18} />;
+        return <DualToneNS size={ICON_SIZE} />;
       case "2p-ew":
-        return <DualToneEW size={18} />;
+        return <DualToneEW size={ICON_SIZE} />;
       case "4p":
-        return <QuadTone size={18} />;
+        return <QuadTone size={ICON_SIZE} />;
       case "2v2":
-        return <AllianceTone size={18} />;
+        return <AllianceTone size={ICON_SIZE} />;
       default:
-        return <LayoutGrid size={18} className="opacity-40" />;
+        return <LayoutGrid size={ICON_SIZE} className="opacity-40" />;
     }
   };
 
   const getSetupIcon = () => {
     switch (selectedPreset) {
       case "classic":
-        return <Pizza size={18} />;
+        return <Pizza size={ICON_SIZE} />;
       case "terrainiffic":
-        return <Shell size={18} />;
+        return <Shell size={ICON_SIZE} />;
       case "quick":
-        return <Dices size={18} />;
+        return <Dices size={ICON_SIZE} />;
       case "custom":
-        return <Eye size={18} />;
+        return <Eye size={ICON_SIZE} />;
       default:
-        return <Omega size={18} className="opacity-40" />;
+        return <Omega size={ICON_SIZE} className="opacity-40" />;
     }
   };
 
@@ -137,16 +139,16 @@ export const RouteBreadcrumbs: React.FC = () => {
         : effectivePlayMode
           ? "red"
           : "slate") as BreadcrumbColor,
-      path: ROUTES.play.index,
+      path: getPath("play.index"),
       value: effectivePlayMode,
     },
     ...(effectivePlayMode === "online"
       ? [
           {
-            icon: <Key size={18} />,
+            icon: <Key size={ICON_SIZE} />,
             label: `Lobby: ${multiplayer?.roomId?.toUpperCase() || "CODE"}`,
             color: (multiplayer?.roomId ? "blue" : "slate") as BreadcrumbColor,
-            path: ROUTES.play.lobby,
+            path: getPath("play.lobby"),
             value: multiplayer?.roomId,
           },
         ]
@@ -166,7 +168,9 @@ export const RouteBreadcrumbs: React.FC = () => {
               ? "amber"
               : "slate") as BreadcrumbColor,
       path:
-        effectivePlayMode === "online" ? ROUTES.play.lobby : ROUTES.play.local,
+        effectivePlayMode === "online"
+          ? getPath("play.lobby")
+          : getPath("play.local"),
       value: effectivePlayerCount,
       badge:
         effectivePlayerCount !== null && effectivePlayerCount > 0
@@ -183,7 +187,7 @@ export const RouteBreadcrumbs: React.FC = () => {
           : selectedBoard
             ? "emerald"
             : "slate") as BreadcrumbColor,
-      path: buildRoute(ROUTES.play.setup, {
+      path: buildRoute(getPath("play.setup"), {
         playMode: currentPlayModeParam,
         players: currentPlayersParam,
         step: "1",
@@ -202,7 +206,7 @@ export const RouteBreadcrumbs: React.FC = () => {
             : selectedPreset
               ? "red"
               : "slate") as BreadcrumbColor,
-      path: buildRoute(ROUTES.play.setup, {
+      path: buildRoute(getPath("play.setup"), {
         playMode: currentPlayModeParam,
         players: currentPlayersParam,
         step: "2",
@@ -221,7 +225,7 @@ export const RouteBreadcrumbs: React.FC = () => {
     // if it's the container, let's just make sure it's complete.
     // If they click an icon, it should navigate instead.
     if (multiplayer?.roomId) {
-      navigate(`/game/${multiplayer.roomId}`);
+      navigate(`/console/${multiplayer.roomId}`);
       return;
     }
     if (isComplete && selectedBoard && selectedPreset) {
@@ -242,7 +246,7 @@ export const RouteBreadcrumbs: React.FC = () => {
     <div className="flex items-center gap-2 mt-4 animate-in fade-in slide-in-from-top-2 duration-500">
       <div
         className={`
-          flex items-center gap-1.5 p-1.5 px-3 rounded-full
+          flex items-center gap-2 p-2 px-4 rounded-full
           bg-slate-100/50 dark:bg-slate-900/40 backdrop-blur-md
           border border-slate-200/50 dark:border-white/5 shadow-inner
           transition-all
@@ -259,7 +263,7 @@ export const RouteBreadcrumbs: React.FC = () => {
           <React.Fragment key={idx}>
             <div
               className={`
-                relative flex items-center justify-center p-1.5 rounded-xl
+                relative group/item flex items-center justify-center p-2.5 rounded-2xl
                 ${item.color === "red" ? "bg-brand-red/10 text-brand-red border-brand-red/20" : ""}
                 ${item.color === "blue" ? "bg-brand-blue/10 text-brand-blue border-brand-blue/20" : ""}
                 ${item.color === "emerald" ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : ""}
@@ -267,21 +271,31 @@ export const RouteBreadcrumbs: React.FC = () => {
                 ${item.color === "slate" ? "bg-slate-500/10 text-slate-500 border-slate-500/20" : ""}
                 border shadow-sm transition-all hover:scale-110 cursor-pointer hover:bg-white/20 dark:hover:bg-white/10
               `}
-              title={`Change ${item.label}`}
               onClick={(e) => {
                 e.stopPropagation();
                 navigate(item.path);
               }}
             >
               {item.icon}
+
+              {/* Sexy Tooltip */}
+              <div className="absolute -bottom-10 px-3 py-1.5 bg-slate-900/90 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-black tracking-widest text-white whitespace-nowrap opacity-0 group-hover/item:opacity-100 group-hover/item:-bottom-12 transition-all pointer-events-none z-50 shadow-2xl flex flex-col items-center gap-0.5">
+                <span className="opacity-50 text-[8px] uppercase">
+                  {item.label}
+                </span>
+                <span className="text-white">
+                  {String(item.value || "Not Set").toUpperCase()}
+                </span>
+              </div>
+
               {item.badge !== undefined && (
-                <div className="absolute -top-1.5 -right-1.5 w-[14px] h-[14px] rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-[9px] font-bold text-white shadow-sm">
+                <div className="absolute -top-2 -right-2 w-[18px] h-[18px] rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
                   {item.badge}
                 </div>
               )}
             </div>
             {idx < items.length - 1 && (
-              <div className="text-slate-400 dark:text-slate-600 font-black text-xs mx-0.5">
+              <div className="text-slate-400 dark:text-slate-600 font-black text-lg mx-1">
                 +
               </div>
             )}
@@ -290,18 +304,22 @@ export const RouteBreadcrumbs: React.FC = () => {
 
         {canStart && (
           <>
-            <div className="text-slate-400 dark:text-slate-600 font-black text-xs mx-1">
+            <div className="text-slate-400 dark:text-slate-600 font-black text-lg mx-2">
               =
             </div>
             <div
-              className="flex items-center justify-center p-1.5 rounded-xl bg-slate-500/10 text-slate-500 border border-slate-500/20 shadow-sm cursor-pointer hover:scale-110 hover:bg-brand-blue/20 transition-all group/swords"
+              className="relative group/swords flex items-center justify-center p-2.5 rounded-2xl bg-slate-500/10 text-slate-500 border border-slate-500/20 shadow-sm cursor-pointer hover:scale-110 hover:bg-brand-blue/20 transition-all"
               onClick={handleStart}
-              title={multiplayer?.roomId ? "RESUME BATTLE" : "COMMENCE BATTLE"}
             >
               <DualToneSwords
-                size={18}
+                size={ICON_SIZE}
                 className="group-hover/swords:rotate-12 transition-transform"
               />
+
+              {/* Sexy Tooltip for Swords */}
+              <div className="absolute -bottom-10 px-3 py-1.5 bg-brand-blue/90 backdrop-blur-md border border-white/20 rounded-lg text-[10px] font-black tracking-widest text-white whitespace-nowrap opacity-0 group-hover/swords:opacity-100 group-hover/swords:-bottom-12 transition-all pointer-events-none z-50 shadow-2xl">
+                {multiplayer?.roomId ? "RESUME BATTLE" : "COMMENCE BATTLE"}
+              </div>
             </div>
           </>
         )}

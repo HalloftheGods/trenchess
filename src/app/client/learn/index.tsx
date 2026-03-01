@@ -1,3 +1,4 @@
+import { getPath } from "@/app/router/router";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -9,7 +10,7 @@ import {
   Wind,
 } from "lucide-react";
 import { useRouteContext } from "@context";
-import { ROUTES } from "@/app/router/router";
+
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
@@ -26,12 +27,12 @@ export const LearnView: React.FC = () => {
     <RoutePageLayout>
       <RoutePageHeader
         label='"There&apos;s a Prophecy on the wind..."'
-        onBackClick={() => navigate(ROUTES.home)}
+        onBackClick={() => navigate(getPath("home"))}
         color="amber"
       />
       <RouteGrid cols={3}>
         <RouteCard
-          onClick={() => navigate(ROUTES.learn.trench.index)}
+          onClick={() => navigate(getPath("learn.trench.index"))}
           onMouseEnter={() => {
             setHoveredMenu("how-to-play");
             setTerrainSeed(Math.random());
@@ -53,7 +54,7 @@ export const LearnView: React.FC = () => {
           className="h-full w-full"
         />
         <RouteCard
-          onClick={() => navigate(ROUTES.learn.chess.index)}
+          onClick={() => navigate(getPath("learn.chess.index"))}
           onMouseEnter={() => setHoveredMenu("chess")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
@@ -73,7 +74,7 @@ export const LearnView: React.FC = () => {
 
         {/* Do the math */}
         <RouteCard
-          onClick={() => navigate(ROUTES.learn.math)}
+          onClick={() => navigate(getPath("learn.math"))}
           onMouseEnter={() => setHoveredMenu("chess")}
           onMouseLeave={() => setHoveredMenu(null)}
           preview={{
@@ -92,7 +93,7 @@ export const LearnView: React.FC = () => {
         />
       </RouteGrid>
       <RoutePageFooter
-        onForwardClick={() => navigate(ROUTES.learn.trench.index)}
+        onForwardClick={() => navigate(getPath("learn.trench.index"))}
         forwardLabel="Open the Trench"
         forwardIcon={Wind}
       />

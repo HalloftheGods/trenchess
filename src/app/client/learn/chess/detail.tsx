@@ -1,3 +1,4 @@
+import { getPath } from "@/app/router/router";
 import React, { useState } from "react";
 import InteractiveGuide from "@/shared/components/templates/InteractiveGuide";
 import { PIECES, INITIAL_ARMY, UNIT_DETAILS, unitColorMap } from "@constants";
@@ -16,7 +17,7 @@ import { UnitMovePreview } from "@/shared/components/molecules/UnitMovePreview";
 import { MathOperator } from "@/shared/components/atoms/MathOperator";
 
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/app/router/router";
+
 
 interface ChessGuideProps {
   initialUnit?: string;
@@ -26,7 +27,7 @@ export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
   initialUnit,
 }) => {
   const navigate = useNavigate();
-  const onBack = () => navigate(ROUTES.learn.chess.chessmen);
+  const onBack = () => navigate(getPath("learn.chess.chessmen"));
   const { getIcon } = useRouteContext();
   const [selectedTerrain, setSelectedTerrain] = useState<string | null>(null);
 

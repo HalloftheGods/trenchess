@@ -18,12 +18,14 @@ export const router = createBrowserRouter(APP_ROUTES);
 /**
  * Helper to support navigate({ name: 'home' }) logic
  */
-export const getPath = (id: string) => {
+export const getPath = (id: string): string => {
   const parts = id.split(".");
-  let current = ROUTES;
+  let current: string | RoutesObject | undefined = ROUTES;
   for (const part of parts) {
+    if (typeof current === "string" || !current) return "/";
     current = current[part];
-    if (!current) return "/";
   }
-  return typeof current === "string" ? current : current.index || "/";
+  return (
+    typeof current === "string" ? current : current?.index || "/"
+  ) as string;
 };

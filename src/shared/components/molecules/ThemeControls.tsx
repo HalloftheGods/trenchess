@@ -10,6 +10,7 @@ interface ThemeControlsProps {
   togglePieceStyle: () => void;
   onZenGarden?: () => void;
   className?: string;
+  tooltipPosition?: "top" | "bottom";
 }
 
 const ThemeControls: React.FC<ThemeControlsProps> = ({
@@ -19,6 +20,7 @@ const ThemeControls: React.FC<ThemeControlsProps> = ({
   togglePieceStyle,
   onZenGarden,
   className = "",
+  tooltipPosition = "top",
 }) => {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
@@ -27,6 +29,7 @@ const ThemeControls: React.FC<ThemeControlsProps> = ({
           icon={<Shell size={20} className="text-emerald-500" />}
           label="Zen Garden Editor"
           onClick={onZenGarden}
+          tooltipPosition={tooltipPosition}
         />
       )}
       <IconButton
@@ -45,6 +48,7 @@ const ThemeControls: React.FC<ThemeControlsProps> = ({
           )
         }
         label={`Piece Style: ${pieceStyle}`}
+        tooltipPosition={tooltipPosition}
       />
       <IconButton
         onClick={toggleTheme}
@@ -56,6 +60,7 @@ const ThemeControls: React.FC<ThemeControlsProps> = ({
           )
         }
         label={darkMode ? "Light Mode" : "Dark Mode"}
+        tooltipPosition={tooltipPosition}
       />
     </div>
   );

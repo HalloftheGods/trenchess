@@ -7,23 +7,28 @@ import {
 import { TopActionBar } from "@/app/core/components/hud/templates";
 import { ConnectedBoard } from "@/app/core/components/board/organisms/ConnectedBoard";
 import { MatchStateProvider, MatchHUDProvider } from "@/shared/context";
+import { useAutoPreconfig } from "@/shared/hooks/controllers/useAutoPreconfig";
 import { TCFlex } from "@atoms/ui";
 
 export interface CombatScreenProps {
   isOnline?: boolean;
   boardType?: "omega" | "pi" | "chi" | "standard";
   initialLayout?: string; // e.g. "chaos", "classical"
+  preconfigStyle?: "alpha" | "pi" | "chi" | "omega";
 }
 
 const CombatScreenContent: React.FC<CombatScreenProps> = ({
   isOnline = false,
   boardType = "standard",
   initialLayout,
+  preconfigStyle,
 }) => {
   // Note: boardType and initialLayout are available for mode-specific logic
   // but we primarily rely on the authoritative game state 'game'.
   const _activeBoardType = boardType;
   const _activeLayout = initialLayout;
+
+  useAutoPreconfig(preconfigStyle);
 
   return (
     <BattlefieldLayout

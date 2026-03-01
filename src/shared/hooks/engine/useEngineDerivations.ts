@@ -1,7 +1,7 @@
 import { createInitialState } from "@/app/core/setup/setupLogic";
-import type { GameState, TrenchessState } from "@tc.types";
+import type { GameState, TrenchessState, TerrainType } from "@tc.types";
 import type { Ctx } from "boardgame.io";
-import { PHASES } from "@constants/game";
+import { PHASES, BOARD_SIZE, TERRAIN_TYPES } from "@constants";
 
 export function useEngineDerivations(
   bgioState: { G: TrenchessState; ctx: Ctx } | null,
@@ -11,10 +11,14 @@ export function useEngineDerivations(
   const ctx: Ctx = bgioState?.ctx || ({} as Ctx);
 
   const {
-    board,
-    terrain,
-    inventory,
-    terrainInventory,
+    board = Array(BOARD_SIZE)
+      .fill(null)
+      .map(() => Array(BOARD_SIZE).fill(null)),
+    terrain = Array(BOARD_SIZE)
+      .fill(null)
+      .map(() => Array(BOARD_SIZE).fill(TERRAIN_TYPES.FLAT as TerrainType)),
+    inventory = {},
+    terrainInventory = {},
     capturedBy,
     activePlayers,
     readyPlayers,

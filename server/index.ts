@@ -18,9 +18,28 @@ const server = Server({
   uuid: generateRoomCode,
 });
 
-// Mount the Lobby API router onto the main Koa app to serve both on the same port
-server.app.use(server.router.routes());
-server.app.use(server.router.allowedMethods());
+// Insert manual CORS middleware at the very beginning of the stack
+server.app.middleware.unshift(async (ctx, next) => {
+  const origin = ctx.get("Origin");
+  ctx.set("Access-Control-Allow-Origin", origin || "*");
+  ctx.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  ctx.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  ctx.set("Access-Control-Allow-Credentials", "true");
+
+  if (ctx.method === "OPTIONS") {
+    ctx.status = 204;
+    return;
+  }
+
+  try {
+    await next();
+  } catch (err) {
+    // Ensure CORS headers persist even if an inner route throws an error (e.g. 404 match not found)
+    ctx.set("Access-Control-Allow-Origin", origin || "*");
+    ctx.set("Access-Control-Allow-Credentials", "true");
+    throw err;
+  }
+});
 
 server.run(PORT, () => {
   console.log(`[Trenchess] Unified Server running at http://localhost:${PORT}`);

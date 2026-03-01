@@ -1,9 +1,10 @@
+import { getPath } from "@/app/router/router";
 import {
   TrenchGuideWrapper,
   ChessGuideWrapper,
 } from "./components/RouteWrappers";
 import type { RouteConfig } from "@tc.types";
-import { ROUTES } from "@/app/router/router";
+
 import {
   LearnIndexScreen,
   LearnEndgameIndexScreen,
@@ -17,45 +18,45 @@ import {
 } from "./screens";
 
 export const getLearnRoutes = (): RouteConfig[] => [
-  { path: ROUTES.learn.index, element: <LearnIndexScreen /> },
+  { path: getPath("learn.index"), element: <LearnIndexScreen /> },
   {
-    path: ROUTES.learn.endgame.index,
+    path: getPath("learn.endgame.index"),
     element: <LearnEndgameIndexScreen />,
   },
 
   {
-    path: ROUTES.learn.endgame.captureTheWorld,
+    path: getPath("learn.endgame.captureTheWorld"),
     element: <LearnEndgameWorldScreen />,
   },
 
   {
-    path: ROUTES.learn.endgame.captureTheKing,
+    path: getPath("learn.endgame.captureTheKing"),
     element: <LearnEndgameKingScreen />,
   },
 
   {
-    path: ROUTES.learn.endgame.captureTheArmy,
+    path: getPath("learn.endgame.captureTheArmy"),
     element: <LearnEndgameArmyScreen />,
   },
 
-  { path: ROUTES.learn.trench.index, element: <LearnTrenchIndexScreen /> },
+  { path: getPath("learn.trench.index"), element: <LearnTrenchIndexScreen /> },
 
   {
-    path: ROUTES.learn.trench.detail,
+    path: getPath("learn.trench.detail"),
     element: <TrenchGuideWrapper />,
   },
 
-  { path: ROUTES.learn.chess.index, element: <LearnChessIndexScreen /> },
+  { path: getPath("learn.chess.index"), element: <LearnChessIndexScreen /> },
 
   {
-    path: ROUTES.learn.chess.chessmen,
+    path: getPath("learn.chess.chessmen"),
     element: <LearnChessmenIndexScreen />,
   },
 
   {
-    path: ROUTES.learn.chess.chessmenDetail,
+    path: getPath("learn.chess.chessmenDetail"),
     element: <ChessGuideWrapper />,
   },
 
-  { path: ROUTES.learn.math, element: <LearnMathIndexScreen /> },
+  { path: getPath("learn.math"), element: <LearnMathIndexScreen /> },
 ];

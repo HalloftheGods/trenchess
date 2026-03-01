@@ -66,12 +66,13 @@ class StockfishEngine {
         // Write to virtual filesystem
         this.engine.FS.writeFile("/variants.ini", text);
 
-        // Initialize UCI
         this.engine.postMessage("uci");
         this.engine.postMessage(
-          "setoption name VariantsFile value /variants.ini",
+          "setoption name VariantPath value /variants.ini",
         );
-        this.engine.postMessage("setoption name MultiVariant value trenchess");
+        this.engine.postMessage("setoption name UCI_Variant value trenchess");
+        this.engine.postMessage("setoption name Skill Level value 20");
+        this.engine.postMessage("setoption name Hash value 64");
         this.engine.postMessage("isready");
       } catch (err) {
         console.error("Failed to load variants.ini", err);
@@ -85,7 +86,12 @@ class StockfishEngine {
   public async getBestMove(
     board: (BoardPiece | null)[][],
     turn: string,
-  ): Promise<{ from: [number, number]; to: [number, number]; score: number }> {
+    validMovesUci: string,
+  ): Promise<{
+    from: [number, number];
+    to: [number, number];
+    score: number;
+  } | null> {
     if (!this.ready) {
       this.ready = this.init();
     }
@@ -97,10 +103,20 @@ class StockfishEngine {
 
     const fen = this.boardToFen(board, turn);
     this.engine.postMessage(`position fen ${fen}`);
-    this.engine.postMessage("go depth 8");
+
+    // Default to searchmoves to restrict AI choices. Fallback to full search if not provided.
+    if (validMovesUci) {
+      this.engine.postMessage(`go depth 15 searchmoves ${validMovesUci}`);
+    } else {
+      this.engine.postMessage("go depth 15");
+    }
 
     return new Promise((resolve) => {
       this.onResolveBestMove = (moveStr: string) => {
+        if (!moveStr || moveStr === "(none)") {
+          resolve(null);
+          return;
+        }
         const move = this.uciToMove(moveStr);
         resolve({ ...move, score: 0 });
       };
@@ -111,10 +127,14 @@ class StockfishEngine {
     from: [number, number];
     to: [number, number];
   } {
-    const fromFile = uci.charCodeAt(0) - 97; // 'a'
-    const fromRank = parseInt(uci.substring(1, uci.length - 2));
-    const toFile = uci.charCodeAt(uci.length - 2) - 97;
-    const toRank = parseInt(uci.substring(uci.length - 1));
+    const match = uci.match(/^([a-z])(\d+)([a-z])(\d+)([a-z]?)$/);
+    if (!match) {
+      throw new Error("Invalid UCI format: " + uci);
+    }
+    const fromFile = match[1].charCodeAt(0) - 97; // 'a'
+    const fromRank = parseInt(match[2], 10);
+    const toFile = match[3].charCodeAt(0) - 97;
+    const toRank = parseInt(match[4], 10);
 
     return {
       from: [12 - fromRank, fromFile],

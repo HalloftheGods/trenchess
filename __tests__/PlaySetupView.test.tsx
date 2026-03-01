@@ -87,7 +87,7 @@ describe("PlaySetupView", () => {
     fireEvent.click(nsCard);
 
     expect(mockRouteContext.setSelectedBoard).toHaveBeenCalledWith("2p-ns");
-    expect(mockNavigate).toHaveBeenCalledWith("/play/couch/players/2/setup/2?");
+    expect(mockNavigate).toHaveBeenCalledWith("/play/couch/2/setup/2?");
   });
 
   it("should render Step 2 (Preset Selection) when step=2 in search params", () => {

@@ -22,7 +22,24 @@ vi.mock("@context", () => ({
     toggleTheme: vi.fn(),
     togglePieceStyle: vi.fn(),
   }),
-  useMatchState: () => vi.fn()(),
+  useMatchState: () => ({
+    gameState: "gamemaster",
+    mode: "4p",
+    activePlayers: ["red", "yellow", "green", "blue"],
+    inventory: {},
+    terrain: Array(12)
+      .fill(null)
+      .map(() => Array(12).fill(null)),
+    turn: "red",
+    dispatch: vi.fn(),
+    setIsFlipped: vi.fn(),
+    getIcon: vi.fn(),
+  }),
+  useMatchHUD: () => ({
+    placedCount: 0,
+    maxPlacement: 24,
+    teamPowerStats: {},
+  }),
   RouteProvider: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
   ),
@@ -78,8 +95,24 @@ vi.mock("@/app/client/console/components", () => ({
   GamemasterControls: () => <div data-testid="gamemaster-controls" />,
 }));
 
-vi.mock("@/app/core/hud/templates", () => ({
+vi.mock("@/app/core/components/hud/templates", () => ({
   TopActionBar: () => <div data-testid="top-action-bar" />,
+}));
+
+vi.mock("@/app/core/blueprints/layouts/GamemasterLayout", () => ({
+  GamemasterLayout: ({
+    gameBoard,
+    leftPanel,
+    rightPanel,
+    actionBar,
+  }: Record<string, React.ReactNode>) => (
+    <div data-testid="gamemaster-layout">
+      {gameBoard}
+      {leftPanel}
+      {rightPanel}
+      {actionBar}
+    </div>
+  ),
 }));
 
 vi.mock("@hooks/interface/useConsoleLogic", () => ({
@@ -117,6 +150,16 @@ vi.mock("lucide-react", () => {
     Trees: () => <div data-testid="icon-trees" />,
     Waves: () => <div data-testid="icon-waves" />,
     Mountain: () => <div data-testid="icon-mountain" />,
+    MountainSnow: () => <div data-testid="icon-mountain-snow" />,
+    Omega: () => <div data-testid="icon-omega" />,
+    Pi: () => <div data-testid="icon-pi" />,
+    Alpha: () => <div data-testid="icon-alpha" />,
+    Check: () => <div data-testid="icon-check" />,
+    Eye: () => <div data-testid="icon-eye" />,
+    Lock: () => <div data-testid="icon-lock" />,
+    LockOpen: () => <div data-testid="icon-lock-open" />,
+    Sun: () => <div data-testid="icon-sun" />,
+    Moon: () => <div data-testid="icon-moon" />,
   };
 });
 
@@ -129,8 +172,8 @@ import type {
   TerrainType,
   PlayerID,
   GameMode,
-} from "@/types";
-import type { TrenchessState } from "@/types/game/state";
+} from "@tc.types";
+import type { TrenchessState } from "@tc.types/game";
 
 // Helper to create a mock game object
 const createMockGame = (
@@ -174,8 +217,11 @@ const createMockGame = (
     capturedBy,
     bgioState: {
       G: { lostToDesert: [] } as unknown as TrenchessState,
-      ctx: { phase: PHASES.GAMEMASTER } as unknown,
-    },
+    } as unknown as NonNullable<GameStateHook["bgioState"]>,
+    ctx: { phase: PHASES.GAMEMASTER } as unknown,
+    client: {} as unknown,
+    isEngineActive: true,
+    initializeEngine: vi.fn(),
     setGameState: vi.fn(),
     setMode: vi.fn(),
     setTurn: vi.fn(),

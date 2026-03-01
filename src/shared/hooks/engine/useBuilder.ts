@@ -11,7 +11,6 @@ import type {
   PieceType,
   GameMode,
   BgioClient,
-  MultiplayerState,
 } from "@tc.types";
 
 import {
@@ -53,7 +52,6 @@ export function useBuilder(
   mode: GameMode | null,
   activePlayers: string[],
   isMercenary: boolean,
-  multiplayer: MultiplayerState,
   clientRef?: React.RefObject<BgioClient | undefined>,
 ): BuilderHook {
   const [board, setBoard] = useState<(BoardPiece | null)[][]>([]);
@@ -92,13 +90,12 @@ export function useBuilder(
     }
   }, [clientRef, gameState, board, terrain, inventory, terrainInventory]);
 
-  // Periodic sync in multiplayer
+  // Sync to engine only in GENESIS (local architect mode)
   useEffect(() => {
-    if (multiplayer.roomId && gameState === PHASES.GENESIS) {
-      const interval = setInterval(syncToEngine, 5000); // Sync every 5 seconds
-      return () => clearInterval(interval);
+    if (gameState === PHASES.GENESIS) {
+      syncToEngine();
     }
-  }, [multiplayer.roomId, gameState, syncToEngine]);
+  }, [gameState, syncToEngine]);
 
   const placePiece = useCallback(
     (
@@ -118,6 +115,7 @@ export function useBuilder(
         mode,
         isGM,
       );
+      if (next === "INVALID_MOVE") return;
       setBoard(next.board);
       setInventory(next.inventory);
     },
@@ -142,6 +140,7 @@ export function useBuilder(
         mode,
         isGM,
       );
+      if (next === "INVALID_MOVE") return;
       setTerrain(next.terrain);
       setTerrainInventory(next.terrainInventory);
     },
@@ -234,10 +233,15 @@ export function useBuilder(
         // return false; // Maybe still allow loading if they are compatible?
       }
 
-      setBoard(config.board);
-      setTerrain(config.terrain);
-      setInventory(config.inventory);
-      setTerrainInventory(config.terrainInventory);
+      const initial = createInitialState(
+        config.mode || mode || null,
+        [],
+        false,
+      );
+      setBoard(config.board || initial.board);
+      setTerrain(config.terrain || initial.terrain);
+      setInventory(config.inventory || initial.inventory);
+      setTerrainInventory(config.terrainInventory || initial.terrainInventory);
       return true;
     } catch (e) {
       console.error("Failed to load board config", e);

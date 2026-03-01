@@ -1,8 +1,11 @@
+import { getPath } from "@/app/router/router";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Globe, Key, GlobeLock } from "lucide-react";
 import { useRouteContext } from "@context";
-import { ROUTES } from "@/app/router/router";
+import { useGameState } from "@hooks/engine/useGameState";
+import { PHASES } from "@constants/game";
+
 import { buildRoute } from "@/shared/utilities/routes";
 import { Shoutbox } from "@/app/client/console/components";
 
@@ -16,8 +19,16 @@ import type { RoomInfo, MultiplayerPlayer } from "@tc.types";
 export const PlayLobbyView: React.FC = () => {
   const navigate = useNavigate();
   const { multiplayer, darkMode } = useRouteContext();
+  const { gameState } = useGameState();
   const [view, setView] = useState<"menu" | "join" | "host" | "global">("menu");
   const [joinLobbyCode, setJoinLobbyCode] = useState("");
+
+  // Auto-redirect to game when phase changes from MENU
+  useEffect(() => {
+    if (multiplayer?.roomId && gameState && gameState !== PHASES.MENU) {
+      navigate(`/console/${multiplayer.roomId}`);
+    }
+  }, [multiplayer?.roomId, gameState, navigate]);
 
   // Auto-refresh rooms when entering global view
   useEffect(() => {
@@ -112,8 +123,7 @@ export const PlayLobbyView: React.FC = () => {
         onClick={() => {
           if (joinLobbyCode) {
             multiplayer?.joinGame(joinLobbyCode);
-            navigate(`/game/${joinLobbyCode}`);
-            setView("host");
+            navigate(`/console/${joinLobbyCode}`);
           }
         }}
         disabled={!joinLobbyCode}
@@ -210,9 +220,9 @@ export const PlayLobbyView: React.FC = () => {
           className="flex-1 py-3 rounded-xl font-bold text-white bg-brand-blue hover:bg-brand-blue/80 transition-all shadow-lg"
           onClick={() => {
             navigate(
-              buildRoute(ROUTES.play.setup, {
+              buildRoute(getPath("play.setup"), {
                 playMode: "multiplayer",
-                players: "4",
+                players: (multiplayer?.players.length || 2).toString(),
                 step: "1",
               }),
             );
@@ -294,7 +304,7 @@ export const PlayLobbyView: React.FC = () => {
                       setView("join");
                     } else {
                       multiplayer.joinGame(room.id);
-                      setView("host");
+                      navigate(`/console/${room.id}`);
                     }
                   }}
                   className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-widest transition-all ${

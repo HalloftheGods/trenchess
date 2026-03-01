@@ -25,6 +25,7 @@ const RouteLayout: React.FC = memo(() => {
                 icon={<AudioWaveform size={20} />}
                 label="Interactive Guide"
                 onClick={onTutorial || (() => {})}
+                tooltipPosition="bottom"
               />
             )}
             {!isRules && (
@@ -32,6 +33,7 @@ const RouteLayout: React.FC = memo(() => {
                 icon={<FileText size={20} />}
                 label="Rules"
                 onClick={() => navigate("/rules")}
+                tooltipPosition="bottom"
               />
             )}
           </div>
@@ -43,6 +45,7 @@ const RouteLayout: React.FC = memo(() => {
               pieceStyle={pieceStyle}
               toggleTheme={toggleTheme || (() => {})}
               togglePieceStyle={togglePieceStyle || (() => {})}
+              tooltipPosition="bottom"
             />
           )
         }

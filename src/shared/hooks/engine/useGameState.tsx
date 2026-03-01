@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import {
   useGameTheme,
   useGameConfig,
@@ -31,7 +31,13 @@ export function useGameState(): GameStateHook {
   const multiplayer = useMultiplayer();
   const config = useGameConfig();
   const { addLog } = useTerminal();
-  const { bgioState, clientRef, initializeEngine } = useGameEngineContext();
+  const {
+    bgioState,
+    clientRef,
+    initializeEngine,
+    chatMessages,
+    sendChatMessage,
+  } = useGameEngineContext();
 
   useEffect(() => {
     initializeEngine(multiplayer, config.showBgDebug);
@@ -65,7 +71,6 @@ export function useGameState(): GameStateHook {
     mode,
     activePlayers,
     !!config.isMercenary,
-    multiplayer,
     clientRef,
   );
 
@@ -96,29 +101,29 @@ export function useGameState(): GameStateHook {
   );
   const placementManager = usePlacementManager(bgioState, core);
 
-  const handleMoveAnalytics = (move: {
-    from: [number, number];
-    to: [number, number];
-  }) => {
-    const attacker = board[move.from[0]]?.[move.from[1]];
-    const victim = board[move.to[0]]?.[move.to[1]];
-    const moveLog = victim
-      ? `${attacker?.type.toUpperCase()} CAPTURES ${victim.type.toUpperCase()} AT [${move.to}]`
-      : `${attacker?.type.toUpperCase()} MOVES TO [${move.to}]`;
+  const handleMoveAnalytics = useCallback(
+    (move: { from: [number, number]; to: [number, number] }) => {
+      const attacker = board[move.from[0]]?.[move.from[1]];
+      const victim = board[move.to[0]]?.[move.to[1]];
+      const moveLog = victim
+        ? `${attacker?.type.toUpperCase()} CAPTURES ${victim.type.toUpperCase()} AT [${move.to}]`
+        : `${attacker?.type.toUpperCase()} MOVES TO [${move.to}]`;
 
-    addLog("game", moveLog);
-    if (victim)
+      addLog("game", moveLog);
+      if (victim)
+        analytics.trackEvent(
+          "Game",
+          "Capture",
+          `${attacker?.type} takes ${victim.type}`,
+        );
       analytics.trackEvent(
-        "Game",
-        "Capture",
-        `${attacker?.type} takes ${victim.type}`,
+        "Game-Move",
+        "Move",
+        `${attacker?.type} to ${move.to}`,
       );
-    analytics.trackEvent(
-      "Game-Move",
-      "Move",
-      `${attacker?.type} to ${move.to}`,
-    );
-  };
+    },
+    [board, addLog],
+  );
 
   const moveExecution = useMoveExecution(core, clientRef, handleMoveAnalytics);
 
@@ -206,6 +211,10 @@ export function useGameState(): GameStateHook {
     startGame: () => engineMoves.setPhase(PHASES.GENESIS),
     multiplayer: {
       ...multiplayer,
+      chatMessages: chatMessages || [],
+      sendMessage: (text: string) => {
+        if (sendChatMessage) sendChatMessage(text);
+      },
       readyPlayers,
       toggleReady: () => {
         if (isGenesis) builder.syncToEngine();
@@ -230,6 +239,9 @@ export function useGameState(): GameStateHook {
     executeMove: moveExecution.executeMove,
     winner,
     setIsThinking: core.turnState.setIsThinking,
+    activePlayers,
+    readyPlayers,
+    clientRef,
   });
 
   useEffect(() => {
