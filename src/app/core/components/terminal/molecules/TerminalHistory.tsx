@@ -26,7 +26,7 @@ export const TerminalHistory: React.FC<TerminalHistoryProps> = ({
   return (
     <div
       ref={containerRef}
-      className="flex-1 overflow-y-auto px-6 py-4 space-y-1 custom-scrollbar bg-slate-900/40 backdrop-blur-sm border-b border-white/5"
+      className="flex-1 overflow-y-auto px-6 py-4 space-y-1 custom-scrollbar bg-[#282a36] backdrop-blur-sm border-b border-[#44475a]"
     >
       {history.map((item) => (
         <TerminalLine

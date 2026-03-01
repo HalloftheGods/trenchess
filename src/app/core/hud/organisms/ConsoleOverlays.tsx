@@ -2,6 +2,7 @@ import React from "react";
 import { GameStartOverlay } from "../atoms";
 import { RulesOverlay } from "./RulesOverlay";
 import { useConsoleLogic } from "@/shared/hooks/interface/useConsoleLogic";
+import { PHASES } from "@constants/game";
 import type { GameStateHook } from "@tc.types";
 
 interface ConsoleOverlaysProps {
@@ -23,13 +24,17 @@ export const ConsoleOverlays: React.FC<ConsoleOverlaysProps> = ({
           isLocked={logic.isOnline ? logic.isMyPlayerLocked : false}
           onLockIn={() => game.ready()}
           onStart={() => {
-            game.ready();
-            game.startGame();
+            if (game.gameState === PHASES.MAIN) {
+              game.setPhase(PHASES.COMBAT);
+            } else {
+              game.ready();
+              game.startGame();
+            }
           }}
         />
       )}
 
-      <RulesOverlay game={game} />
+      <RulesOverlay />
 
       {children}
     </>

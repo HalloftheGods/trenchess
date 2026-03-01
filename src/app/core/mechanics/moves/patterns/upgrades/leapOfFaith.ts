@@ -1,4 +1,5 @@
-import { Move as mv, defineMovePattern } from "@/app/core/mechanics/moves/base";
+import mv from "@/app/core/mechanics/moves/base/move";
+import { defineMovePattern } from "@/app/core/mechanics/moves/base/patterns";
 
 /** 2-step orthogonal jump (The Leap of Faith) */
 export const leapOfFaith = defineMovePattern((r, c) => [

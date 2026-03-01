@@ -38,6 +38,12 @@ export interface BgioClient {
     patchG: (patch: Partial<TrenchessState>) => void;
     setActiveScreen: (screenId: string | undefined) => void;
     authorizeMasterProtocol: () => void;
+    syncLayout: (config: {
+      board: (import("../game/BoardPiece").BoardPiece | null)[][];
+      terrain: TerrainType[][];
+      inventory: Record<string, PieceType[]>;
+      terrainInventory: Record<string, TerrainType[]>;
+    }) => void;
   };
   stop: () => void;
   start: () => void;

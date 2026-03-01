@@ -2,7 +2,7 @@ import React from "react";
 import { Trophy, Skull, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { PLAYER_CONFIGS, UNIT_POINTS, PHASES } from "@constants";
-import { ROUTES } from "@/app/routes";
+import { ROUTES } from "@/app/router/router";
 import { FinalBoardPreview } from "../../components/board/molecules/FinalBoardPreview";
 import {
   TCOverlay,
@@ -11,7 +11,12 @@ import {
   TCHeading,
   TCText,
 } from "@/shared/components/atoms/ui";
-import type { BoardPiece, TerrainType, GameMode, GameState } from "@tc.types/game";
+import type {
+  BoardPiece,
+  TerrainType,
+  GameMode,
+  GameState,
+} from "@tc.types/game";
 
 interface VictoryOverlayProps {
   winner: string;

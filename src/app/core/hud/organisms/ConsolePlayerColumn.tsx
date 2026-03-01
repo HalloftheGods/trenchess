@@ -27,8 +27,28 @@ export const ConsolePlayerColumn: React.FC<ConsolePlayerColumnProps> = ({
   onNextCommander,
   onFinishDeployment,
 }) => {
+  const activeInColumn = playerIds.filter((pid) =>
+    game.activePlayers.includes(pid),
+  );
+
+  const getPosition = () => {
+    if (activeInColumn.length === 2) return "between";
+    if (activeInColumn.length === 0) return "top";
+
+    const pid = activeInColumn[0];
+    if (pid === "red") return "top";
+    if (pid === "blue") return "bottom";
+    if (pid === "green" || pid === "yellow") return "center";
+    
+    return "between";
+  };
+
+  const position = getPosition();
+
   return (
-    <div className="flex flex-col justify-between gap-8 h-full">
+    <div className="flex flex-col gap-8 flex-1">
+      {(position === "bottom" || position === "center") && <div className="flex-1" />}
+      
       {playerIds.map((expectedPid: string) => {
         const pid = game.activePlayers.includes(expectedPid)
           ? expectedPid
@@ -96,6 +116,8 @@ export const ConsolePlayerColumn: React.FC<ConsolePlayerColumnProps> = ({
           />
         );
       })}
+
+      {(position === "top" || position === "center") && <div className="flex-1" />}
     </div>
   );
 };

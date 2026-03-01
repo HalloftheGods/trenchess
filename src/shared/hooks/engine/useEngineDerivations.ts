@@ -43,5 +43,6 @@ export function useEngineDerivations(
     winnerReason,
     gameState,
     activeMode,
+    isGamemaster: G.isGamemaster,
   };
 }

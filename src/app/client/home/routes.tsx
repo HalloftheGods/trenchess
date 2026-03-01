@@ -1,4 +1,4 @@
-import { ROUTES } from "@/app/routes";
+import { ROUTES } from "@/app/router/router";
 import type { RouteConfig } from "@tc.types";
 import { HomeScreen, NotFoundScreen } from "./screens";
 

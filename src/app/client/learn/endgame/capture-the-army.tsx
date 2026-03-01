@@ -10,11 +10,11 @@ import {
   CtaTroopConversionGraphic,
 } from "@/shared/components/molecules/CtaGraphics";
 
-interface CtaGuideProps {
-  onBack: () => void;
-}
+import { ROUTES } from "@/app/router/router";
 
-export const LearnEndgameCtaView: React.FC<CtaGuideProps> = ({ onBack }) => {
+export const LearnEndgameCtaView: React.FC = () => {
+  const navigate = useNavigate();
+  const onBack = () => navigate(ROUTES.learn.endgame.index);
   const slides: Slide[] = [
     {
       id: "multi",
@@ -64,8 +64,6 @@ export const LearnEndgameCtaView: React.FC<CtaGuideProps> = ({ onBack }) => {
       ),
     },
   ];
-
-  const navigate = useNavigate();
 
   return (
     <InteractiveGuide

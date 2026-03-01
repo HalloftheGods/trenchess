@@ -1,31 +1,25 @@
 import React from "react";
 import { BattlefieldLayout } from "../blueprints/layouts/BattlefieldLayout";
-import {
-  ConsoleActionBar,
-  ConsoleOverlays,
-  ConsolePlayerColumn,
-} from "@/app/core/hud/organisms";
+import { ConsoleOverlays, ConsolePlayerColumn } from "@/app/core/hud/organisms";
+import { TopActionBar } from "@/app/core/hud/templates";
 import { ConnectedBoard } from "@/app/core/components/board/organisms/ConnectedBoard";
-import { useRouteContext } from "@context";
 import { useConsoleLogic } from "@hooks/interface/useConsoleLogic";
-import type { GameStateHook } from "@tc.types";
+import { useGameState } from "@hooks/engine/useGameState";
 import { TCFlex } from "@atoms/ui";
 
 export interface CombatScreenProps {
-  game: GameStateHook;
   isOnline?: boolean;
   boardType?: "omega" | "pi" | "chi" | "standard";
   initialLayout?: string; // e.g. "chaos", "classical"
 }
 
 const CombatScreen: React.FC<CombatScreenProps> = ({
-  game,
   isOnline = false,
   boardType = "standard",
   initialLayout,
 }) => {
+  const game = useGameState();
   const logic = useConsoleLogic(game);
-  const ctx = useRouteContext();
 
   // Note: boardType and initialLayout are available for mode-specific logic
   // but we primarily rely on the authoritative game state 'game'.
@@ -34,13 +28,12 @@ const CombatScreen: React.FC<CombatScreenProps> = ({
 
   return (
     <BattlefieldLayout
-      darkMode={ctx.darkMode}
       gameBoard={
         <TCFlex center className="w-full h-full">
           <ConnectedBoard game={game} />
         </TCFlex>
       }
-      actionBar={<ConsoleActionBar game={game} logic={logic} />}
+      actionBar={<TopActionBar game={game} logic={logic} />}
       leftPanel={
         <ConsolePlayerColumn
           game={game}

@@ -14,6 +14,11 @@ import type { TrenchessState } from "@tc.types/game";
 import type { BgioClient, MultiplayerState } from "@tc.types";
 import { Client as BaseClient } from "boardgame.io/client";
 
+import { useTerminal } from "./TerminalContext";
+import {
+  useEngineDerivations,
+  usePlayerRole,
+} from "@/shared/hooks/engine";
 import { GameContext } from "./GameContextDef";
 
 interface GameProviderProps {
@@ -25,10 +30,57 @@ interface GameProviderProps {
  * It mounts once and holds the boardgame.io Client instance persistently.
  */
 export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
+  const { addLog } = useTerminal();
   const [bgioState, setBgioState] = useState<{
     G: TrenchessState;
     ctx: Ctx;
   } | null>(null);
+
+  const derivations = useEngineDerivations(bgioState);
+  const { currentTurn } = usePlayerRole(bgioState);
+
+  const { gameState, mode, winner, winnerReason } = derivations;
+
+  const lastLoggedStateRef = useRef({
+    phase: "",
+    mode: "",
+    turn: "",
+    winner: null as string | null,
+  });
+
+  useEffect(() => {
+    if (!bgioState) return;
+
+    const hasPhaseChanged = lastLoggedStateRef.current.phase !== gameState;
+    const hasModeChanged = mode && lastLoggedStateRef.current.mode !== mode;
+    const hasTurnChanged =
+      currentTurn && lastLoggedStateRef.current.turn !== currentTurn;
+    const hasWinnerChanged = winner && lastLoggedStateRef.current.winner !== winner;
+
+    if (hasPhaseChanged) {
+      addLog("game", `PHASE: ${gameState.toUpperCase()}`);
+      lastLoggedStateRef.current.phase = gameState;
+    }
+
+    if (hasModeChanged) {
+      addLog("game", `MODE: ${mode.toUpperCase()}`);
+      lastLoggedStateRef.current.mode = mode;
+    }
+
+    if (hasTurnChanged) {
+      addLog("game", `TURN: ${currentTurn.toUpperCase()}`);
+      lastLoggedStateRef.current.turn = currentTurn;
+    }
+
+    if (hasWinnerChanged) {
+      addLog(
+        "info",
+        `GAME OVER: ${winner.toUpperCase()} WON! (${winnerReason})`,
+      );
+      lastLoggedStateRef.current.winner = winner;
+    }
+  }, [bgioState, gameState, mode, currentTurn, winner, winnerReason, addLog]);
+
   const clientRef = useRef<BgioClient | undefined>(undefined);
   const [clientInstance, setClientInstance] = useState<BgioClient | null>(null);
 

@@ -4,22 +4,11 @@ import Header from "@organisms/Header";
 import { ConnectedBoard, DeploymentPanel } from "@game/components";
 import { Pencil } from "lucide-react";
 import { serializeGame } from "@/shared/utilities/gameUrl";
-import type { GameStateHook } from "@tc.types";
+import { useGameState } from "@hooks/engine/useGameState";
 import { PHASES } from "@constants/game";
 
-interface ZenGardenViewProps {
-  game: GameStateHook;
-  onMenuClick?: () => void;
-  onHowToPlayClick?: () => void;
-  onLibraryClick?: () => void;
-}
-
-const ZenGardenView: React.FC<ZenGardenViewProps> = ({
-  game,
-  onMenuClick,
-  onHowToPlayClick,
-  onLibraryClick,
-}) => {
+const ZenGardenView: React.FC = () => {
+  const game = useGameState();
   const renderZenGardenControls = () => (
     <div className="flex items-center gap-2 group">
       <input
@@ -59,9 +48,9 @@ const ZenGardenView: React.FC<ZenGardenViewProps> = ({
     <ZenGardenLayout
       header={
         <Header
-          onMenuClick={onMenuClick || (() => {})}
-          onHowToPlayClick={onHowToPlayClick || (() => {})}
-          onLibraryClick={onLibraryClick || (() => {})}
+          onMenuClick={() => {}}
+          onHowToPlayClick={() => {}}
+          onLibraryClick={() => {}}
           isFlipped={game.isFlipped}
           setIsFlipped={(v) => {
             game.setIsFlipped(v);

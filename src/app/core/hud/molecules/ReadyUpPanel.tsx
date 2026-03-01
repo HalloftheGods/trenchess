@@ -439,13 +439,6 @@ export const ReadyUpPanel: React.FC<ReadyUpPanelProps> = ({
               </div>
             </div>
 
-            {/* Not current turn indicator */}
-            {!isLocalTurn && !isReady && (
-              <div className="w-full py-4 text-center text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-600 border-2 border-dashed border-slate-200 dark:border-white/5 rounded-xl bg-slate-50/30 dark:bg-white/[0.01]">
-                Awaiting Command
-              </div>
-            )}
-
             {/* Ready Button for Local / Host */}
             {!isReady && unitsReady && terrainReady && onReady && (
               <button

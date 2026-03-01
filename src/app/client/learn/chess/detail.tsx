@@ -4,21 +4,29 @@ import { PIECES, INITIAL_ARMY, UNIT_DETAILS, unitColorMap } from "@constants";
 import { useRouteContext } from "@context";
 import type { Slide } from "@shared";
 import { MoveLegend } from "@shared";
-import type { PieceType, TerrainType, ArmyUnit, PreviewConfig } from "@tc.types";
+import type {
+  PieceType,
+  TerrainType,
+  ArmyUnit,
+  PreviewConfig,
+} from "@tc.types";
 // Shared Route Components
 import { TerrainIconBadge } from "@/shared/components/atoms/TerrainIconBadge";
 import { UnitMovePreview } from "@/shared/components/molecules/UnitMovePreview";
 import { MathOperator } from "@/shared/components/atoms/MathOperator";
 
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/app/router/router";
+
 interface ChessGuideProps {
-  onBack: () => void;
   initialUnit?: string;
 }
 
 export const LearnChessDetailView: React.FC<ChessGuideProps> = ({
-  onBack,
   initialUnit,
 }) => {
+  const navigate = useNavigate();
+  const onBack = () => navigate(ROUTES.learn.chess.chessmen);
   const { getIcon } = useRouteContext();
   const [selectedTerrain, setSelectedTerrain] = useState<string | null>(null);
 

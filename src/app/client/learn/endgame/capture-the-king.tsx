@@ -7,12 +7,11 @@ import type { Slide } from "@shared";
 // Shared Route Components
 import { GuideListItem } from "@/shared/components/molecules/GuideListItem";
 
-interface CtkGuideProps {
-  onBack: () => void;
-  // Others are ignored as we get them from MenuContext inside InteractiveGuide/MenuLayout.
-}
+import { ROUTES } from "@/app/router/router";
 
-export const LearnEndgameCtkView: React.FC<CtkGuideProps> = ({ onBack }) => {
+export const LearnEndgameCtkView: React.FC = () => {
+  const navigate = useNavigate();
+  const onBack = () => navigate(ROUTES.learn.endgame.index);
   const slides: Slide[] = [
     {
       id: "board",
@@ -108,8 +107,6 @@ export const LearnEndgameCtkView: React.FC<CtkGuideProps> = ({ onBack }) => {
       ),
     },
   ];
-
-  const navigate = useNavigate();
 
   return (
     <InteractiveGuide

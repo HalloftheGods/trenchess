@@ -14,31 +14,31 @@ export const TerminalLine: React.FC<TerminalLineProps> = ({
   const getLineStyle = () => {
     switch (type) {
       case "command":
-        return "text-brand-blue font-black";
+        return "text-[#8be9fd] font-bold";
       case "response":
-        return "text-slate-200";
+        return "text-[#f8f8f2] font-medium";
       case "error":
-        return "text-red-400 font-bold italic";
+        return "text-[#ff5555] font-bold italic";
       case "info":
-        return "text-emerald-400 opacity-80 text-xs tracking-wider";
+        return "text-[#bd93f9] text-xs tracking-wider";
       case "game":
-        return "text-purple-400 opacity-90 text-[11px]";
+        return "text-[#ff79c6] font-medium text-[11px]";
       default:
-        return "text-slate-400";
+        return "text-[#6272a4]";
     }
   };
 
   return (
     <div
-      className={`flex gap-3 py-1 font-mono text-sm leading-relaxed ${getLineStyle()}`}
+      className={`flex gap-3 py-1 font-mono text-sm leading-relaxed transition-colors ${getLineStyle()}`}
     >
       {timestamp && (
-        <span className="opacity-20 select-none text-[10px] self-center shrink-0">
+        <span className="text-[#6272a4] opacity-80 select-none text-[10px] self-center shrink-0">
           [{timestamp}]
         </span>
       )}
       {type === "command" && (
-        <span className="opacity-40 select-none shrink-0">❯</span>
+        <span className="text-[#50fa7b] select-none shrink-0 font-bold">❯</span>
       )}
       <span className="break-words w-full">{text}</span>
     </div>

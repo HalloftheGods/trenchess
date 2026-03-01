@@ -1,13 +1,10 @@
 import React from "react";
 import { TCOverlay } from "@/shared/components/atoms/ui";
 import { ProtocolEditor } from "@/app/client/dev/components/ProtocolEditor";
-import type { GameStateHook } from "@tc.types";
+import { useGameState } from "@hooks/engine/useGameState";
 
-interface RulesOverlayProps {
-  game: GameStateHook;
-}
-
-export const RulesOverlay: React.FC<RulesOverlayProps> = ({ game }) => {
+export const RulesOverlay: React.FC = () => {
+  const game = useGameState();
   if (!game.showRules) return null;
 
   return (
@@ -19,7 +16,7 @@ export const RulesOverlay: React.FC<RulesOverlayProps> = ({ game }) => {
       fullHeight
     >
       <div className="w-full h-full max-w-[90vw] flex flex-col pointer-events-auto">
-        <ProtocolEditor game={game} onClose={() => game.setShowRules(false)} />
+        <ProtocolEditor onClose={() => game.setShowRules(false)} />
       </div>
     </TCOverlay>
   );

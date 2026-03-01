@@ -13,7 +13,7 @@ export type WizardStep =
   | "terrain"
   | "chessmen"
   | "ready";
-export type StyleChoice = "omega" | "pi" | "chi" | "random" | null;
+export type StyleChoice = "omega" | "pi" | "chi" | "alpha" | "random" | null;
 
 interface WizardInput {
   gameState: GameState;

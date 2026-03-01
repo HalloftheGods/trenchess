@@ -444,13 +444,12 @@ export const applyClassicalFormation = (
   players.forEach((player) => {
     const myTerritoryCells = getPlayerCells(player, mode);
 
-    // Clear existing pieces belonging to this player
+    // Clear existing pieces in this player's territory
     for (const [row, col] of myTerritoryCells) {
       const pieceAtCell = nextBoardState[row][col];
-      const isPieceOccupied = !!pieceAtCell;
-      const isOwnPiece = isPieceOccupied && pieceAtCell!.player === player;
-
-      if (isOwnPiece) {
+      if (pieceAtCell) {
+        // If it was our own piece, it's logically returned to our pool
+        // (though formations typically replace the whole army)
         nextBoardState[row][col] = null;
       }
     }

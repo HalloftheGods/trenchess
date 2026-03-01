@@ -63,4 +63,5 @@ export interface RouteContextType {
   setBackAction: (
     action: { label?: string; onClick: () => void } | null,
   ) => void;
+  handleBackToMenu: () => void;
 }

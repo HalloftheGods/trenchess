@@ -7,14 +7,29 @@ import React from "react";
 import type { RouteContextType } from "@tc.types";
 
 // Mock the components that might cause issues due to missing context or complex structure
-vi.mock("@/shared/components/templates/RoutePageLayout", () => ({
-  default: ({ children }: { children: React.ReactNode }) => (
+vi.mock("@/shared/components/templates/RoutePageLayout", () => {
+  const Dummy = ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
-  ),
-}));
+  );
+  return { default: Dummy, RoutePageLayout: Dummy };
+});
 
-vi.mock("@/shared/components/organisms/RoutePageHeader", () => ({
-  default: ({ label }: { label: string }) => <h1>{label}</h1>,
+vi.mock("@/shared/components/organisms/RoutePageHeader", () => {
+  const Dummy = ({ label }: { label: string }) => <h1>{label}</h1>;
+  return { default: Dummy, RoutePageHeader: Dummy };
+});
+
+vi.mock("@/app/core/bot/stockfish", () => ({
+  engineService: {
+    init: vi.fn(),
+    evaluate: vi.fn().mockResolvedValue({ score: 0 }),
+    getBestMove: vi.fn().mockResolvedValue(null),
+  },
+  StockfishEngine: class {
+    init = vi.fn();
+    evaluate = vi.fn().mockResolvedValue({ score: 0 });
+    getBestMove = vi.fn().mockResolvedValue(null);
+  },
 }));
 
 // Mock useNavigate

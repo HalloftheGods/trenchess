@@ -7,16 +7,28 @@ import React from "react";
 import type { GameMode, RouteContextType } from "@tc.types";
 
 // Mocks
+vi.mock("@/app/core/bot/stockfish", () => ({
+  engineService: {
+    init: vi.fn(),
+    evaluate: vi.fn().mockResolvedValue({ score: 0 }),
+    getBestMove: vi.fn().mockResolvedValue(null),
+  },
+  StockfishEngine: class {
+    init = vi.fn();
+    evaluate = vi.fn().mockResolvedValue({ score: 0 });
+    getBestMove = vi.fn().mockResolvedValue(null);
+  },
+}));
+
 const mockNavigate = vi.fn();
-const mockSetSearchParams = vi.fn();
-let currentSearchParams = new URLSearchParams();
+let currentParams: Record<string, string> = {};
 
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
     ...actual,
     useNavigate: () => mockNavigate,
-    useSearchParams: () => [currentSearchParams, mockSetSearchParams],
+    useParams: () => currentParams,
   };
 });
 
@@ -36,16 +48,17 @@ const mockRouteContext = {
   previewConfig: {},
 };
 
-vi.mock("@/shared/components/templates/RoutePageLayout", () => ({
-  default: ({ children }: { children: React.ReactNode }) => (
+vi.mock("@/shared/components/templates/RoutePageLayout", () => {
+  const Dummy = ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
-  ),
-}));
+  );
+  return { default: Dummy, RoutePageLayout: Dummy };
+});
 
 describe("PlaySetupView", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    currentSearchParams = new URLSearchParams();
+    currentParams = {};
     mockRouteContext.selectedBoard = null;
     mockRouteContext.selectedPreset = null;
   });
@@ -74,13 +87,11 @@ describe("PlaySetupView", () => {
     fireEvent.click(nsCard);
 
     expect(mockRouteContext.setSelectedBoard).toHaveBeenCalledWith("2p-ns");
-    expect(mockSetSearchParams).toHaveBeenCalled();
-    const calledParams = mockSetSearchParams.mock.calls[0][0];
-    expect(calledParams.get("step")).toBe("2");
+    expect(mockNavigate).toHaveBeenCalledWith("/play/couch/players/2/setup/2?");
   });
 
   it("should render Step 2 (Preset Selection) when step=2 in search params", () => {
-    currentSearchParams.set("step", "2");
+    currentParams = { step: "2" };
     renderSetup();
 
     expect(
@@ -98,7 +109,7 @@ describe("PlaySetupView", () => {
   });
 
   it("should call onStartGame when a preset is selected in step 2", () => {
-    currentSearchParams.set("step", "2");
+    currentParams = { step: "2" };
     mockRouteContext.selectedBoard = "2p-ns" as GameMode;
     renderSetup();
 

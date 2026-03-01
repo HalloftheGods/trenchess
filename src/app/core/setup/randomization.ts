@@ -107,10 +107,15 @@ export const randomizeTerrain = (
         TERRAIN_TYPES.MOUNTAINS,
         TERRAIN_TYPES.DESERT,
       ];
-      // Generate enough pieces to meet the quota if needed
-      while (playerTerrainPool.length < terrainQuota + 4) {
-        playerTerrainPool.push(...terrainTypes);
-      }
+      // Generate full quota of each type if pool is empty/too small
+      terrainTypes.forEach((t) => {
+        const currentCount = playerTerrainPool.filter((p) => p === t).length;
+        if (currentCount < terrainQuota) {
+          for (let i = currentCount; i < terrainQuota; i++) {
+            playerTerrainPool.push(t);
+          }
+        }
+      });
     }
 
     // 2. Reclaim existing terrain
@@ -218,13 +223,13 @@ export const randomizeUnits = (
     const myTerritoryCells = getPlayerCells(player, mode);
     const playerUnitPool = [...(nextUnitInventory[player] || [])];
 
-    // 1. Reclaim units from the board
+    // 1. Clear territory and reclaim units from the board
     for (const [row, col] of myTerritoryCells) {
       const pieceAtCell = nextBoardState[row][col];
-      const isOwnPieceAtCell = pieceAtCell && pieceAtCell.player === player;
-
-      if (isOwnPieceAtCell) {
-        playerUnitPool.push(pieceAtCell!.type);
+      if (pieceAtCell) {
+        if (pieceAtCell.player === player) {
+          playerUnitPool.push(pieceAtCell.type);
+        }
         nextBoardState[row][col] = null;
       }
     }

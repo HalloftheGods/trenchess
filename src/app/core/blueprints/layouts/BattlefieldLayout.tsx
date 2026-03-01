@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 import { Glow } from "./battlefield/Glow";
 import { Column } from "./battlefield/Column";
 import { CenterHeader } from "./battlefield/CenterHeader";
+import { useTheme } from "@shared/context/ThemeContext";
 
 interface BattlefieldProps {
-  darkMode?: boolean;
   gameBoard: ReactNode;
   actionBar: ReactNode;
   leftPanel?: ReactNode;
@@ -18,7 +18,6 @@ interface BattlefieldProps {
  * BattlefieldLayout — full-viewport centered layout with no header.
  */
 export const BattlefieldLayout: React.FC<BattlefieldProps> = ({
-  darkMode = true,
   gameBoard,
   actionBar,
   leftPanel,
@@ -26,6 +25,8 @@ export const BattlefieldLayout: React.FC<BattlefieldProps> = ({
   centerHeader,
   children,
 }) => {
+  const { darkMode } = useTheme();
+
   return (
     <div
       className={`min-h-screen bg-slate-50 dark:bg-[#02030f] text-slate-800 dark:text-slate-100 flex flex-col items-center justify-center overflow-hidden relative ${darkMode ? "dark" : ""}`}

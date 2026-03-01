@@ -4,3 +4,4 @@ export * from "./useMultiplayer";
 export * from "./useEngineMoves";
 export * from "./useEngineDerivations";
 export * from "./useGameLifecycle";
+export * from "./useBuilder";

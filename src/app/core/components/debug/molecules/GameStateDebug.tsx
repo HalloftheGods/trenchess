@@ -140,6 +140,16 @@ const GameStateDebug: React.FC<GameStateDebugProps> = ({
             />
           </div>
         </AccordionSection>
+
+        <div className="pt-4 mt-4 border-t border-white/5">
+          <button
+            onClick={() => game.setShowRules(true)}
+            className="w-full py-3 px-4 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 border border-white/5 active:scale-95"
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+            Open Game Rules
+          </button>
+        </div>
       </div>
 
       {!isSheet && (

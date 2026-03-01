@@ -1,20 +1,12 @@
 import { GamemasterLayout } from "@/app/core/blueprints/layouts/GamemasterLayout";
-import {
-  ConsoleActionBar,
-  ConnectedBoard,
-  ConsolePlayerColumn,
-} from "./components";
-import { useRouteContext } from "@context";
+import { ConnectedBoard, ConsolePlayerColumn } from "./components";
+import { TopActionBar } from "@/app/core/hud/templates";
 import { useConsoleLogic } from "@hooks/interface/useConsoleLogic";
-import type { GameStateHook } from "@tc.types";
+import { useGameState } from "@hooks/engine/useGameState";
 
-interface GamemasterViewProps {
-  game: GameStateHook;
-}
-
-const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
+const GamemasterView: React.FC = () => {
+  const game = useGameState();
   const logic = useConsoleLogic(game);
-  const ctx = useRouteContext();
 
   const handleNextCommander = () => {
     const currentIndex = game.activePlayers.indexOf(game.turn);
@@ -28,9 +20,8 @@ const GamemasterView: React.FC<GamemasterViewProps> = ({ game }) => {
 
   return (
     <GamemasterLayout
-      darkMode={ctx.darkMode}
       gameBoard={<ConnectedBoard game={game} />}
-      actionBar={<ConsoleActionBar game={game} logic={logic} />}
+      actionBar={<TopActionBar game={game} logic={logic} />}
       leftPanel={
         <ConsolePlayerColumn
           game={game}

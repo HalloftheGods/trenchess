@@ -26,12 +26,10 @@ interface SeedItem {
   createdAt: string;
 }
 
-interface SeedLibraryProps {
-  onBack: () => void;
-  onLoadSeed: (seed: string) => void;
-  onEditInZen: (seed: string) => void;
-  activeMode?: GameMode | null;
-}
+import { useGameState } from "@hooks/engine/useGameState";
+import { useNavigate } from "react-router-dom";
+import { PHASES } from "@constants/game";
+import { ROUTES } from "@/app/router/router";
 
 import { TERRAIN_INTEL } from "@constants";
 
@@ -121,12 +119,21 @@ export const MiniBoard: React.FC<{
   );
 };
 
-const SeedLibrary: React.FC<SeedLibraryProps> = ({
-  onBack,
-  onLoadSeed,
-  onEditInZen,
-  activeMode,
-}) => {
+const SeedLibrary: React.FC = () => {
+  const game = useGameState();
+  const navigate = useNavigate();
+
+  const onBack = () => {
+    game.setPhase(PHASES.GAMEMASTER);
+    navigate(ROUTES.home);
+  };
+
+  const onLoadSeed = (seed: string) => game.initFromSeed(seed);
+
+  const onEditInZen = (seed: string) =>
+    game.initFromSeed(seed, PHASES.ZEN_GARDEN);
+
+  const activeMode = game.mode;
   const [seeds, setSeeds] = useState<SeedItem[]>(() => {
     const stored = localStorage.getItem("trenchess_seeds");
     if (stored) {

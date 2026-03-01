@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 import { isPlayerInCheck } from "@/app/core/mechanics";
 import { serializeGame } from "@/shared/utilities/gameUrl";
 import { PLAYER_CONFIGS } from "@constants";
+import { useDeploymentMetrics } from "@hooks/math/useDeploymentMetrics";
 import type {
+  PieceType,
   BoardPiece,
   TerrainType,
   GameConfigState,
@@ -23,12 +25,24 @@ export function useGameLifecycle(
     gameState: GameState;
     setMode: (m: GameMode) => void;
     setGameState: (p: string) => void;
+    readyPlayers: Record<string, boolean>;
+    inventory: Record<string, PieceType[]>;
+    activePlayers: string[];
   },
   board: (BoardPiece | null)[][],
   terrain: TerrainType[][],
   turn: string,
 ): GameCore {
-  const { mode, gameState, autoFlip, setIsFlipped, layoutName } = configState;
+  const {
+    mode,
+    gameState,
+    autoFlip,
+    setIsFlipped,
+    layoutName,
+    readyPlayers,
+    inventory,
+    activePlayers,
+  } = configState;
 
   // UI-only state (not managed by boardgame.io)
   const [playerTypes, setPlayerTypes] = useState<
@@ -52,12 +66,18 @@ export function useGameLifecycle(
     return PLAYER_CONFIGS[pid]?.name.toUpperCase() || pid.toUpperCase();
   }, []);
 
-  const isPlayerReady = useCallback(
-    (_p: string) => true, // Simplification: actual readiness is in G.readyPlayers
-    [],
-  );
+  const { isAllPlaced } = useDeploymentMetrics({
+    mode,
+    terrain,
+    inventory,
+    activePlayers,
+    perspectivePlayerId: turn,
+  });
 
-  const isAllPlaced = false; // Placeholder for UI compatibility
+  const isPlayerReady = useCallback(
+    (pid: string) => !!readyPlayers[pid],
+    [readyPlayers],
+  );
 
   useEffect(() => {
     if (!autoFlip || gameState !== PHASES.COMBAT) return;

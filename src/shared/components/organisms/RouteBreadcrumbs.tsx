@@ -23,7 +23,7 @@ import {
   AllianceTone,
   DualToneSwords,
 } from "../atoms/RouteIcons";
-import { ROUTES } from "@/app/routes";
+import { ROUTES } from "@/app/router/router";
 import { buildRoute } from "@/shared/utilities/routes";
 
 type BreadcrumbColor = "red" | "blue" | "emerald" | "amber" | "slate";

@@ -13,18 +13,21 @@ export const getQuota = (mode: GameMode) => {
 export const resolvePlayerId = (
   G: TrenchessState,
   ctx: Ctx,
-  playerID?: string,
+  playerID?: string | null,
   explicitPid?: string,
   allowExplicit: boolean = false,
 ): string | null => {
-  const pid =
-    (allowExplicit && explicitPid) ||
-    (playerID !== undefined
-      ? G.playerMap[playerID]
-      : G.playerMap[ctx.currentPlayer]);
+  // 1. Explicit override (used by UI to say "I am acting as Blue right now")
+  if (allowExplicit && explicitPid) return explicitPid;
 
-  // In GM mode, we allow moves for any potential player even if not in the active list yet
-  if (allowExplicit && pid) return pid;
+  // 2. Resolve pointers
+  const authPid =
+    playerID !== undefined && playerID !== null ? G.playerMap[playerID] : null;
+  const turnPid = G.playerMap[ctx.currentPlayer];
+
+  // 3. Prioritize Turn (Logical identity) over Auth (Session identity) 
+  // This ensures Local play turn-switching works correctly.
+  const pid = turnPid || authPid;
 
   const isActive = pid && G.activePlayers.includes(pid);
   return isActive ? pid : null;

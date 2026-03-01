@@ -34,7 +34,7 @@ export const useActionBar = ({ game, logic }: UseActionBarLogicProps) => {
 
   const [trenchLocked, setTrenchLocked] = useState(false);
   const [chessLocked, setChessLocked] = useState(false);
-  const [styleChoice, setStyleChoice] = useState<StyleChoice>(null);
+  const [styleChoice, setStyleChoice] = useState<StyleChoice>("omega");
 
   const bothLocked = trenchLocked && chessLocked;
   const wizard = useWizardState({

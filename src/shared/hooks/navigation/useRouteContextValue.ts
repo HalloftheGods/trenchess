@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ROUTES } from "@/app/routes";
+import { ROUTES } from "@/app/router/router";
 import { buildRoute } from "@/shared/utilities/routes";
 import { PHASES } from "@constants/game";
 import type {
@@ -18,6 +18,7 @@ interface UseRouteContextValueProps {
   seeds: SeedItem[];
   previewSeedIndex: number;
   setPreviewSeedIndex: (index: number) => void;
+  handleBackToMenu: () => void;
 }
 
 export const useRouteContextValue = ({
@@ -25,6 +26,7 @@ export const useRouteContextValue = ({
   seeds,
   previewSeedIndex,
   setPreviewSeedIndex,
+  handleBackToMenu,
 }: UseRouteContextValueProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -91,7 +93,7 @@ export const useRouteContextValue = ({
 
   const onZenGarden = useCallback(() => {
     setIsStarting(true);
-    navigate(buildRoute(ROUTES.game.console, { style: "zen" }));
+    navigate(buildRoute(ROUTES.console.game as string, { style: "zen" }));
     setTimeout(() => {
       initGameWithPreset("4p", "zen-garden");
       startGame();
@@ -127,8 +129,10 @@ export const useRouteContextValue = ({
       else if (preset) style = preset;
 
       const target = multiplayer?.roomId
-        ? buildRoute(ROUTES.game.detail, { roomId: multiplayer.roomId })
-        : buildRoute(ROUTES.game.console, { style });
+        ? buildRoute(ROUTES.console.detail as string, {
+            roomId: multiplayer.roomId,
+          })
+        : `${buildRoute(ROUTES.console.game as string, { style })}?mode=${startGameMode}`;
 
       navigate(target);
 
@@ -164,10 +168,17 @@ export const useRouteContextValue = ({
       ),
     [navigate],
   );
-  const onOpenLibrary = useCallback(() => navigate(ROUTES.library), [navigate]);
+  const onOpenLibrary = useCallback(
+    () => navigate(ROUTES.console.library as string),
+    [navigate],
+  );
+
+  const urlParams = new URLSearchParams(location.search);
+  const playersParam = urlParams.get("players");
+  const count = playersParam ? parseInt(playersParam, 10) : 2;
 
   const [selectedBoard, setSelectedBoardState] = useState<GameMode | null>(
-    game.mode || null,
+    count <= 2 ? "2p-ns" : "4p",
   );
 
   const setSelectedBoard = useCallback((mode: GameMode | null) => {
@@ -213,7 +224,10 @@ export const useRouteContextValue = ({
       setSelectedBoard,
       setSelectedPreset,
       setPreviewConfig,
+      setHoveredTerrain,
       setPreviewSeedIndex,
+      setTerrainSeed,
+      setBackAction,
     ],
   );
 
@@ -235,6 +249,8 @@ export const useRouteContextValue = ({
       previewConfig,
       seeds,
       previewSeedIndex,
+      setBackAction,
+      handleBackToMenu,
       terrainSeed,
       backAction,
     }),
@@ -256,6 +272,7 @@ export const useRouteContextValue = ({
       seeds,
       previewSeedIndex,
       terrainSeed,
+      handleBackToMenu,
       backAction,
     ],
   );

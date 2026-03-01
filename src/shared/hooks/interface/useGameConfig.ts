@@ -9,6 +9,7 @@ export function useGameConfig(): GameConfigState {
   const [layoutName, setLayoutName] = useState("Zen Garden Layout");
   const [showBgDebug, setShowBgDebug] = useState(false);
   const [showRules, setShowRules] = useState(false);
+  const [isMercenary, setIsMercenary] = useState(false);
 
   const [selectedPreset, setSelectedPreset] = usePersistentPreset();
 
@@ -27,5 +28,7 @@ export function useGameConfig(): GameConfigState {
     setShowBgDebug,
     showRules,
     setShowRules,
+    isMercenary,
+    setIsMercenary,
   };
 }

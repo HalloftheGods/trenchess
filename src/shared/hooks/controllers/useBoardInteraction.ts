@@ -35,6 +35,8 @@ export function useBoardInteraction(
   _multiplayer?: MultiplayerState,
   bgioClientRef?: React.RefObject<BgioClient | undefined>,
   playerID?: string,
+  onPlacePiece?: (row: number, col: number, type: PieceType | null) => void,
+  onPlaceTerrain?: (row: number, col: number, type: TerrainType) => void,
 ): BoardInteraction {
   const { configState } = core;
 
@@ -64,6 +66,8 @@ export function useBoardInteraction(
     configState,
     placementManager,
     bgioClientRef,
+    onPlacePiece,
+    onPlaceTerrain,
   });
 
   const { handlePlayHover, handlePlayClick } = usePlayBoardInteraction({

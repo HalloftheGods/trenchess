@@ -125,20 +125,20 @@ export const getValidMoves = (
   const isOuterSearch = recursionDepth === 0;
   if (isOuterSearch && !skipCheck) {
     const isSafeMove = ([moveRow, moveCol]: number[]) => {
-      // 1. Cache target state
-      const originalTargetPiece = board[moveRow][moveCol];
+      // 1. Create a shallow clone of the board to prevent mutating frozen state
+      const testBoard = board.map(r => [...r]);
 
-      // 2. Temporarily apply move
-      board[moveRow][moveCol] = piece;
-      board[row][col] = null;
+      // 2. Cache target state is no longer needed since we use a clone
+      // const originalTargetPiece = testBoard[moveRow][moveCol];
 
-      // 3. Check for threat
-      const isSafe = !isPlayerInCheck(player, board, terrain, mode);
+      // 3. Temporarily apply move
+      testBoard[moveRow][moveCol] = piece;
+      testBoard[row][col] = null;
 
-      // 4. Revert state
-      board[row][col] = piece;
-      board[moveRow][moveCol] = originalTargetPiece;
+      // 4. Check for threat
+      const isSafe = !isPlayerInCheck(player, testBoard, terrain, mode);
 
+      // Revert state is no longer needed as we throw away testBoard
       return isSafe;
     };
     return validMoves.filter(isSafeMove);

@@ -1,16 +1,13 @@
 import React from "react";
 import CombatScreen from "@/app/core/screens/CombatScreen";
-import type { GameStateHook } from "@tc.types";
-
-interface PiViewProps {
-  game: GameStateHook;
-}
+import { useAutoPreconfig } from "@controllers/useAutoPreconfig";
 
 /**
  * PiView — Classic Mode.
  */
-const PiView: React.FC<PiViewProps> = ({ game }) => {
-  return <CombatScreen game={game} boardType="pi" />;
+const PiView: React.FC = () => {
+  useAutoPreconfig("pi");
+  return <CombatScreen boardType="pi" />;
 };
 
 export default PiView;

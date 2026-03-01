@@ -21,7 +21,7 @@ import {
   DualToneSwordsEw,
 } from "@/shared/components/atoms/RouteIcons";
 import type { GameMode } from "@tc.types/game";
-import { ROUTES } from "@/app/routes";
+import { ROUTES } from "@/app/router/router";
 import { buildRoute } from "@/shared/utilities/routes";
 
 // Shared Route Components

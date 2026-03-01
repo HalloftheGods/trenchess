@@ -9,6 +9,7 @@ import type {
   PieceType,
   BgioClient,
 } from "@tc.types";
+import { getPlayersForMode } from "@/app/core/setup/territory";
 
 /**
  * useSetupActions — Authoritative setup maneuvers.
@@ -68,17 +69,31 @@ export function useSetupActions(
         setPlayerTypes((prev) => ({ ...prev, ...newPlayerTypes }));
       }
 
-      client.moves.setMode(selectedMode);
+      if (core.mode !== selectedMode) {
+        client.moves.setMode(selectedMode);
+      }
 
-      if (preset === "quick") {
+      if (preset === "quick" || preset === "alpha") {
         client.moves.randomizeTerrain();
         client.moves.randomizeUnits();
+        getPlayersForMode(selectedMode).forEach((pid) =>
+          client.moves.ready(pid),
+        );
         client.moves.setPhase(PHASES.MAIN);
-      } else if (preset === "classic") {
+      } else if (preset === "classic" || preset === "pi") {
         client.moves.setClassicalFormation();
+        getPlayersForMode(selectedMode).forEach((pid) =>
+          client.moves.ready(pid),
+        );
         client.moves.setPhase(PHASES.MAIN);
-      } else if (preset === "terrainiffic") {
+      } else if (preset === "terrainiffic" || preset === "chi") {
         client.moves.applyChiGarden();
+        getPlayersForMode(selectedMode).forEach((pid) =>
+          client.moves.ready(pid),
+        );
+        client.moves.setPhase(PHASES.MAIN);
+      } else if (preset === "omega" || preset === "custom") {
+        client.moves.resetToOmega();
         client.moves.setPhase(PHASES.MAIN);
       } else if (preset === "zen-garden") {
         client.moves.patchG({ isGamemaster: true });
@@ -92,7 +107,13 @@ export function useSetupActions(
       setPlacementTerrain(null);
       analytics.trackEvent("Setup", "Init Preset", preset || "custom");
     },
-    [getClient, setPlayerTypes, setPlacementPiece, setPlacementTerrain],
+    [
+      getClient,
+      setPlayerTypes,
+      setPlacementPiece,
+      setPlacementTerrain,
+      core.mode,
+    ],
   );
 
   const randomizeTerrain = useCallback(() => {

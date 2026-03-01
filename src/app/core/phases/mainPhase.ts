@@ -12,8 +12,8 @@ import {
   forfeit,
   authorizeMasterProtocol,
   CORE_ADMIN_MOVES,
-} from "@/app/core/mechanics/moves";
-import type { TrenchessState } from "@tc.types/game";
+} from "@mechanics/moves";
+import { mainPhaseEndIf } from "@engine/events";
 import { PHASES } from "@constants/game";
 
 /**
@@ -42,11 +42,10 @@ export const mainPhase = {
           resetUnits,
           forfeit,
           authorizeMasterProtocol,
+          ...CORE_ADMIN_MOVES,
         },
       },
     },
   },
-  endIf: ({ G }: { G: TrenchessState }) => {
-    return G.activePlayers.every((p: string) => G.readyPlayers[p]);
-  },
+  endIf: mainPhaseEndIf,
 };

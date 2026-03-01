@@ -11,6 +11,7 @@ import {
   usePlayerRole,
   useEngineMoves,
   useEngineDerivations,
+  useBuilder,
 } from "@hooks/engine";
 import { useComputerOpponent } from "@hooks/bot";
 import { useGameEngineContext } from "@shared/context/useGameEngineContext";
@@ -44,10 +45,10 @@ export function useGameState(): GameStateHook {
   const engineMoves = useEngineMoves(clientRef);
 
   const {
-    board,
-    terrain,
-    inventory,
-    terrainInventory,
+    board: bgioBoard,
+    terrain: bgioTerrain,
+    inventory: bgioInventory,
+    terrainInventory: bgioTerrainInventory,
     capturedBy,
     activePlayers,
     readyPlayers,
@@ -59,16 +60,22 @@ export function useGameState(): GameStateHook {
     activeMode,
   } = derivations;
 
-  useEffect(() => {
-    addLog("game", `PHASE: ${gameState.toUpperCase()}`);
-    if (mode) addLog("game", `MODE: ${mode.toUpperCase()}`);
-    if (currentTurn) addLog("game", `TURN: ${currentTurn.toUpperCase()}`);
-    if (winner)
-      addLog(
-        "info",
-        `GAME OVER: ${winner.toUpperCase()} WON! (${winnerReason})`,
-      );
-  }, [gameState, mode, currentTurn, winner, winnerReason, addLog]);
+  const builder = useBuilder(
+    gameState,
+    mode,
+    activePlayers,
+    !!config.isMercenary,
+    multiplayer,
+    clientRef,
+  );
+
+  const isGenesis = gameState === PHASES.GENESIS;
+
+  const board = isGenesis ? builder.board : bgioBoard;
+  const terrain = isGenesis ? builder.terrain : bgioTerrain;
+  const inventory = isGenesis ? builder.inventory : bgioInventory;
+  const terrainInventory =
+    isGenesis ? builder.terrainInventory : bgioTerrainInventory;
 
   const core = useGameLifecycle(
     {
@@ -77,7 +84,11 @@ export function useGameState(): GameStateHook {
       gameState,
       setMode: engineMoves.setMode,
       setGameState: engineMoves.setPhase as (phase: string) => void,
+      readyPlayers,
+      inventory,
+      activePlayers,
     },
+
     board,
     terrain,
     currentTurn,
@@ -109,6 +120,17 @@ export function useGameState(): GameStateHook {
   };
 
   const moveExecution = useMoveExecution(core, clientRef, handleMoveAnalytics);
+
+  const onPlacePiece = isGenesis
+    ? (row: number, col: number, type: PieceType | null) =>
+        builder.placePiece(row, col, type, localPlayer)
+    : undefined;
+
+  const onPlaceTerrain = isGenesis
+    ? (row: number, col: number, type: TerrainType) =>
+        builder.placeTerrain(row, col, type, localPlayer)
+    : undefined;
+
   const boardInteraction = useBoardInteraction(
     bgioState,
     core,
@@ -117,6 +139,8 @@ export function useGameState(): GameStateHook {
     multiplayer,
     clientRef,
     playerID,
+    onPlacePiece,
+    onPlaceTerrain,
   );
   const zenGardenInteraction = useZenGardenInteraction(
     bgioState,
@@ -134,6 +158,17 @@ export function useGameState(): GameStateHook {
     terrain,
   );
 
+  const overriddenSetupActions = isGenesis
+    ? {
+        ...setupActions,
+        randomizeTerrain: () => builder.randomizeTerrain(activePlayers),
+        randomizeUnits: () => builder.randomizeUnits(activePlayers),
+        setClassicalFormation: () => builder.setClassicalFormation(activePlayers),
+        resetTerrain: () => builder.reset(), // Basic reset for now
+        resetUnits: () => builder.reset(),
+      }
+    : setupActions;
+
   const gameContext = {
     ...theme,
     ...config,
@@ -143,8 +178,9 @@ export function useGameState(): GameStateHook {
     ...moveExecution,
     ...boardInteraction,
     ...zenGardenInteraction,
-    ...setupActions,
+    ...overriddenSetupActions,
     ...engineMoves,
+    ...builder,
     setPhase: engineMoves.setPhase,
     setGameState: engineMoves.setPhase,
     bgioState,
@@ -164,12 +200,19 @@ export function useGameState(): GameStateHook {
     mode,
     activeMode,
     lastMove,
-    isStarted: true,
-    startGame: () => {},
+    isStarted: gameState !== PHASES.MENU,
+    startGame: () => engineMoves.setPhase(PHASES.GENESIS),
     multiplayer: {
       ...multiplayer,
       readyPlayers,
-      toggleReady: engineMoves.toggleReady,
+      toggleReady: () => {
+        if (isGenesis) builder.syncToEngine();
+        engineMoves.toggleReady();
+      },
+    },
+    ready: (pid?: string) => {
+      if (isGenesis) builder.syncToEngine();
+      engineMoves.toggleReady(pid);
     },
   } as unknown as GameStateHook;
 

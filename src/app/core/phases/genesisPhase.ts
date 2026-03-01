@@ -15,7 +15,7 @@ import {
   forfeit,
   mirrorBoard,
   CORE_ADMIN_MOVES,
-} from "@/app/core/mechanics/moves";
+} from "@mechanics/moves";
 
 /**
  * Genesis Phase: The "Creation" stage.
@@ -33,21 +33,21 @@ export const genesisPhase = {
       editing: {
         moves: {
           placePiece: (
-            game: { G: TrenchessState; ctx: Ctx },
+            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
             row: number,
             col: number,
             type: PieceType,
             explicitPid?: string,
           ) => placePiece(game, row, col, type, explicitPid, true),
           placeTerrain: (
-            game: { G: TrenchessState; ctx: Ctx },
+            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
             row: number,
             col: number,
             type: TerrainType,
             explicitPid?: string,
           ) => placeTerrain(game, row, col, type, explicitPid, true),
           ready: (
-            game: { G: TrenchessState; ctx: Ctx },
+            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
             explicitPid?: string,
           ) => ready(game, explicitPid, true),
           randomizeTerrain: (
@@ -55,6 +55,7 @@ export const genesisPhase = {
               G: TrenchessState;
               ctx: Ctx;
               random: { Number: () => number };
+              playerID: string | null;
             },
             explicitPid?: string,
           ) => randomizeTerrain(game, explicitPid, true),
@@ -63,6 +64,7 @@ export const genesisPhase = {
               G: TrenchessState;
               ctx: Ctx;
               random: { Number: () => number };
+              playerID: string | null;
             },
             explicitPid?: string,
           ) => randomizeUnits(game, explicitPid, true),
@@ -71,6 +73,7 @@ export const genesisPhase = {
               G: TrenchessState;
               ctx: Ctx;
               random: { Number: () => number };
+              playerID: string | null;
             },
             explicitPid?: string,
           ) => setClassicalFormation(game, explicitPid, true),
@@ -79,29 +82,44 @@ export const genesisPhase = {
               G: TrenchessState;
               ctx: Ctx;
               random: { Number: () => number };
+              playerID: string | null;
             },
             explicitPid?: string,
           ) => applyChiGarden(game, explicitPid, true),
           resetToOmega: (
-            game: { G: TrenchessState; ctx: Ctx },
+            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
             explicitPid?: string,
           ) => resetToOmega(game, explicitPid, true),
           resetTerrain: (
-            game: { G: TrenchessState; ctx: Ctx },
+            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
             explicitPid?: string,
           ) => resetTerrain(game, explicitPid, true),
           resetUnits: (
-            game: { G: TrenchessState; ctx: Ctx },
+            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
             explicitPid?: string,
           ) => resetUnits(game, explicitPid, true),
           forfeit: (
-            game: { G: TrenchessState; ctx: Ctx },
+            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
             explicitPid?: string,
           ) => forfeit(game, explicitPid, true),
           mirrorBoard: (
-            game: { G: TrenchessState; ctx: Ctx },
+            game: { G: TrenchessState; ctx: Ctx; playerID: string | null },
             explicitPid?: string,
           ) => mirrorBoard(game, explicitPid, true),
+          syncLayout: (
+            game: { G: TrenchessState },
+            layout: {
+              board: (BoardPiece | null)[][];
+              terrain: TerrainType[][];
+              inventory: Record<string, PieceType[]>;
+              terrainInventory: Record<string, TerrainType[]>;
+            },
+          ) => {
+            game.G.board = layout.board;
+            game.G.terrain = layout.terrain;
+            game.G.inventory = layout.inventory;
+            game.G.terrainInventory = layout.terrainInventory;
+          },
           ...CORE_ADMIN_MOVES,
           beginTrenchCraft: ({
             events,

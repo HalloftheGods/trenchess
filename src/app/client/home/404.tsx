@@ -1,7 +1,7 @@
 import { Skull } from "lucide-react";
 import { DesertIcon } from "@/shared/components/atoms/UnitIcons";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/app/routes";
+import { ROUTES } from "@/app/router/router";
 
 const NotFoundView = ({ fullScreen = true }: { fullScreen?: boolean }) => {
   const navigate = useNavigate();

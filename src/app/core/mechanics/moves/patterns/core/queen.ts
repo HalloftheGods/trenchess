@@ -1,4 +1,4 @@
-import { defineMovePattern } from "@/app/core/mechanics/moves/base";
+import { defineMovePattern } from "@/app/core/mechanics/moves/base/patterns";
 import movePatternRook from "./rook";
 import movePatternBishop from "./bishop";
 

@@ -8,7 +8,7 @@ interface ColumnProps {
 
 export const Column: React.FC<ColumnProps> = ({ children, alignment }) => (
   <div
-    className={`hidden lg:flex w-72 flex-col flex-shrink-0 h-full ${
+    className={`hidden lg:flex w-72 flex-col flex-shrink-0 ${
       alignment === "left" ? "order-1" : "order-3"
     }`}
   >

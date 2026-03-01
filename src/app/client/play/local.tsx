@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Bot, User, Users, UserPlus } from "lucide-react";
 import { useRouteContext } from "@context";
-import { ROUTES } from "@/app/routes";
+import { ROUTES } from "@/app/router/router";
 import { buildRoute } from "@/shared/utilities/routes";
 
 // Shared Route Components

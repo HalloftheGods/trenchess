@@ -24,10 +24,10 @@ import {
   Lock,
 } from "lucide-react";
 import { PHASES } from "@constants/game";
-import type { GameStateHook, GameMode, TrenchessState } from "@tc.types";
+import type { GameMode, TrenchessState } from "@tc.types";
+import { useGameState } from "@hooks/engine/useGameState";
 
 interface ProtocolEditorProps {
-  game: GameStateHook;
   onClose?: () => void;
 }
 
@@ -122,10 +122,8 @@ const SegmentedPicker: React.FC<{
   </div>
 );
 
-export const ProtocolEditor: React.FC<ProtocolEditorProps> = ({
-  game,
-  onClose,
-}) => {
+export const ProtocolEditor: React.FC<ProtocolEditorProps> = ({ onClose }) => {
+  const game = useGameState();
   if (!game) return null;
 
   const { gameState, mode, turn, activePlayers, bgioState, dispatch, patchG } =

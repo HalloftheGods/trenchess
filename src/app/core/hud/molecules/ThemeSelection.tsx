@@ -1,17 +1,15 @@
-import React from "react";
 import { TCFlex } from "@/shared/components/atoms/ui/TCFlex";
-import { TCText } from "@/shared/components/atoms/ui/TCTypography";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
 import type { PieceStyle } from "@constants";
 
-interface ConsoleThemeMoleculeProps {
+interface ThemeSelectionProps {
   darkMode: boolean;
   pieceStyle: PieceStyle;
   toggleTheme: () => void;
   togglePieceStyle: () => void;
 }
 
-export const ConsoleThemeMolecule: React.FC<ConsoleThemeMoleculeProps> = ({
+export const ThemeSelection: React.FC<ThemeSelectionProps> = ({
   darkMode,
   pieceStyle,
   toggleTheme,
@@ -25,12 +23,12 @@ export const ConsoleThemeMolecule: React.FC<ConsoleThemeMoleculeProps> = ({
         toggleTheme={toggleTheme}
         togglePieceStyle={togglePieceStyle}
       />
-      <TCText
+      {/* <TCText
         variant="muted"
         className="text-[9px] font-black uppercase tracking-[0.25em] opacity-40 mt-1"
       >
         Theme
-      </TCText>
+      </TCText> */}
     </TCFlex>
   );
 };

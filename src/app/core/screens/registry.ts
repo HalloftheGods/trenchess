@@ -17,7 +17,7 @@ export type ScreenId =
   | "main";
 
 export interface BaseScreenProps {
-  game: GameStateHook;
+  game?: GameStateHook;
   isOnline?: boolean;
   onMenuClick?: () => void;
   onHowToPlayClick?: () => void;

@@ -1,28 +1,69 @@
 import React from "react";
 import { BattlefieldLayout as TheBattlefield } from "@blueprints/layouts/BattlefieldLayout";
 import {
-  ConsoleActionBar,
   ConnectedBoard,
   ConsoleOverlays,
   ConsolePlayerColumn,
 } from "./components";
-import { useRouteContext } from "@context";
+import { TopActionBar } from "@/app/core/hud/templates";
 import { useConsoleLogic } from "@hooks/interface/useConsoleLogic";
-import type { GameStateHook } from "@tc.types";
+import { useGameState } from "@hooks/engine/useGameState";
+import { useEffect } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { PHASES } from "@constants/game";
+import { ROUTES } from "@/app/router/router";
 
-interface MmoViewProps {
-  game: GameStateHook;
-}
-
-const MmoView: React.FC<MmoViewProps> = ({ game }) => {
+const MmoView: React.FC = () => {
+  const game = useGameState();
   const logic = useConsoleLogic(game);
-  const ctx = useRouteContext();
+  const location = useLocation();
+  const { roomId } = useParams<{ roomId?: string }>();
+
+  const {
+    gameState,
+    multiplayer,
+    initFromSeed,
+    initGameWithPreset,
+    startGame,
+  } = game;
+
+  // Handle joining game from URL roomId
+  useEffect(() => {
+    const isSpecialMode =
+      roomId === "mmo" || roomId === PHASES.GAMEMASTER || roomId === "board";
+    const shouldJoin =
+      roomId && !isSpecialMode && multiplayer.roomId !== roomId;
+
+    if (shouldJoin) {
+      multiplayer.joinGame(roomId);
+    }
+  }, [roomId, multiplayer]);
+
+  // Handle game initialization for MMO
+  useEffect(() => {
+    if (location.pathname === ROUTES.console.mmo) {
+      if (gameState === PHASES.MENU) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const seed = urlParams.get("seed");
+        if (seed) initFromSeed(seed);
+        else initGameWithPreset("2p-ns", null);
+
+        const timer = setTimeout(() => startGame(), 100);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [
+    gameState,
+    location.pathname,
+    initFromSeed,
+    initGameWithPreset,
+    startGame,
+  ]);
 
   return (
     <TheBattlefield
-      darkMode={ctx.darkMode}
       gameBoard={<ConnectedBoard game={game} />}
-      actionBar={<ConsoleActionBar game={game} logic={logic} />}
+      actionBar={<TopActionBar game={game} logic={logic} />}
       leftPanel={
         <ConsolePlayerColumn
           game={game}

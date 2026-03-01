@@ -24,9 +24,10 @@ export const UnitIdentityHeader: React.FC<UnitIdentityHeaderProps> = ({
   textColor,
 }) => (
   <>
-    <SectionRibbon label={role} bgClass={colors.ribbonBg} />
+    <SectionRibbon label={subtitle} bgClass={colors.ribbonBg} />
+
     {subtitle && (
-      <UnitSubtitle subtitle={subtitle} Icon={Icon} colorClass={colors.text} />
+      <UnitSubtitle subtitle={role} Icon={Icon} colorClass={colors.text} />
     )}
     <UnitTitle title={title} textColor={textColor} glowBg={colors.bg} />
   </>

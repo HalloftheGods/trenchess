@@ -9,7 +9,7 @@ import {
   Wind,
 } from "lucide-react";
 import { useRouteContext } from "@context";
-import { ROUTES } from "@/app/routes";
+import { ROUTES } from "@/app/router/router";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";

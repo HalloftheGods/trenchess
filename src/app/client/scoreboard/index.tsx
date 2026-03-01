@@ -14,11 +14,12 @@ import {
 } from "lucide-react";
 import ScoreboardLayout from "@/app/core/blueprints/layouts/ScoreboardLayout";
 import { RouteBoardPreview } from "@/shared/components/organisms/RouteBoardPreview";
+import { useTheme } from "@shared/context/ThemeContext";
 import type { GameMode } from "@tc.types/game";
 import RoutePageHeader from "@/shared/components/organisms/RoutePageHeader";
 import { useRouteContext } from "@context";
 import { analytics } from "@/shared/utilities/analytics";
-import { ROUTES } from "@/app/routes";
+import { ROUTES } from "@/app/router/router";
 
 import { getServerUrl } from "@/shared/utilities/env";
 
@@ -38,11 +39,8 @@ interface ScoreboardData {
   history: Match[];
 }
 
-interface ScoreboardProps {
-  darkMode: boolean;
-}
-
-export const ScoreboardView = ({ darkMode }: ScoreboardProps) => {
+export const ScoreboardView = () => {
+  const { darkMode } = useTheme();
   const { setPreviewConfig, setTerrainSeed } = useRouteContext();
   const [data, setData] = useState<ScoreboardData>({ active: [], history: [] });
   const [loading, setLoading] = useState(true);

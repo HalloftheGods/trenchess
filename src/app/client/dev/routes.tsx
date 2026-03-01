@@ -1,8 +1,8 @@
-import type { RouteConfig, GameStateHook } from "@tc.types";
-import { ROUTES } from "@/app/routes";
+import type { RouteConfig } from "@tc.types";
+import { ROUTES } from "@/app/router/router";
 import { DevCliScreen, DevRuleSetScreen } from "./screens";
 
-export const getDevRoutes = (game: GameStateHook): RouteConfig[] => [
-  { path: ROUTES.dev.cli, element: <DevCliScreen game={game} /> },
-  { path: ROUTES.dev.ruleset, element: <DevRuleSetScreen game={game} /> },
+export const getDevRoutes = (): RouteConfig[] => [
+  { path: ROUTES.dev.cli, element: <DevCliScreen /> },
+  { path: ROUTES.dev.ruleset, element: <DevRuleSetScreen /> },
 ];

@@ -1,4 +1,5 @@
-import { Move as mv, defineMovePattern } from "@/app/core/mechanics/moves/base";
+import mv from "@/app/core/mechanics/moves/base/move";
+import { defineMovePattern } from "@/app/core/mechanics/moves/base/patterns";
 
 /** 3-step orthogonal jump (Triple Bar Jump) */
 export const tripleBarJump = defineMovePattern((r, c) => [

@@ -1,19 +1,18 @@
 import React from "react";
 import { TCFlex } from "@/shared/components/atoms/ui/TCFlex";
-import { TCText } from "@/shared/components/atoms/ui/TCTypography";
 import { TCDivider, TCDot } from "@/shared/components/atoms/ui";
 import { ActionBarSlot } from "../atoms";
 import { PLAYER_CONFIGS } from "@constants";
 
-interface PovMoleculeProps {
-  perspective?: string;
-  onPerspectiveChange?: (pid: string) => void;
+interface PovProps {
+  perspective: string;
+  onPerspectiveChange: (p: string) => void;
   activePlayers: string[];
-  side?: string;
-  onSideChange?: (side: string) => void;
+  side: string;
+  onSideChange: (s: string) => void;
 }
 
-export const PovMolecule: React.FC<PovMoleculeProps> = ({
+export const Pov: React.FC<PovProps> = ({
   perspective,
   onPerspectiveChange,
   activePlayers,
@@ -52,12 +51,6 @@ export const PovMolecule: React.FC<PovMoleculeProps> = ({
           </ActionBarSlot>
         ))}
       </TCFlex>
-      <TCText
-        variant="muted"
-        className="text-[9px] font-black uppercase tracking-[0.25em] opacity-40 mt-1"
-      >
-        POV
-      </TCText>
     </TCFlex>
   );
 };

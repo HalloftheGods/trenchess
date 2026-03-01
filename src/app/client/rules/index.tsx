@@ -32,10 +32,8 @@ import PageLayout from "@/shared/components/templates/PageLayout";
 import PageHeader from "@/shared/components/templates/PageHeader";
 import SectionDivider from "@molecules/SectionDivider";
 
-interface RulesPageProps {
-  onBack: () => void;
-  darkMode: boolean;
-}
+import { useNavigate } from "react-router-dom";
+import { useTheme } from "@shared/context/ThemeContext";
 
 interface RuleCardProps {
   title: string;
@@ -150,7 +148,10 @@ const RuleCard = ({
   );
 };
 
-export const RulesView: React.FC<RulesPageProps> = ({ onBack, darkMode }) => {
+export const RulesView: React.FC = () => {
+  const { darkMode } = useTheme();
+  const navigate = useNavigate();
+  const onBack = () => navigate(-1);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const textColor = darkMode ? "text-slate-100" : "text-slate-900";

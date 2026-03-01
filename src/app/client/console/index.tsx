@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import { TerminalOverlay } from "./components";
-import type { GameStateHook } from "@tc.types";
 import { useTerminal } from "@/shared/context/TerminalContext";
 import { useCommandDispatcher } from "@/shared/hooks/interface/useCommandDispatcher";
+import { useGameState } from "@hooks/engine/useGameState";
 
-interface ConsoleViewProps {
-  game: GameStateHook;
-}
-
-const ConsoleView: React.FC<ConsoleViewProps> = ({ game }) => {
+const ConsoleView: React.FC = () => {
+  const game = useGameState();
   const [isOpen, setIsOpen] = useState(false);
   const { history, addLog } = useTerminal();
   const { dispatch } = useCommandDispatcher(game);
@@ -45,7 +42,11 @@ const ConsoleView: React.FC<ConsoleViewProps> = ({ game }) => {
   // Initial welcome log
   useEffect(() => {
     if (history.length === 0) {
-      addLog("info", "TRENCHESS TERMINAL READY. Press ` to toggle.");
+      addLog("info", "--- TRENCHESS TERMINAL V1.0 ---");
+      addLog("info", "Welcome to the Master Protocol Interface.");
+      addLog("info", "Type 'help' to see a list of available commands.");
+      addLog("info", "Use 'play <style>' to start a session or 'status' to check the engine.");
+      addLog("info", "Press ` to toggle this console.");
     }
   }, [addLog, history.length]);
 
@@ -56,7 +57,6 @@ const ConsoleView: React.FC<ConsoleViewProps> = ({ game }) => {
       </div>
 
       <TerminalOverlay
-        game={game}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onCommand={handleCommand}

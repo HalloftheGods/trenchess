@@ -4,38 +4,38 @@ import { ActionBarSlot } from "../atoms";
 import { ActionBarPalette, type PaletteItem } from ".";
 import { TCFlex } from "@/shared/components/atoms/ui/TCFlex";
 
-interface TrenchMoleculeProps {
-  trenchLocked: boolean;
-  setTrenchLocked: (locked: boolean) => void;
-  placedCount: number;
-  maxPlacement: number;
+interface UnitSelectionProps {
+  chessLocked: boolean;
+  setChessLocked: (locked: boolean) => void;
+  unitsPlaced: number;
+  totalUnits: number;
   items: PaletteItem[];
   hideTitle?: boolean;
 }
 
-export const TrenchMolecule: React.FC<TrenchMoleculeProps> = ({
-  trenchLocked,
-  setTrenchLocked,
-  placedCount,
-  maxPlacement,
+export const UnitSelection: React.FC<UnitSelectionProps> = ({
+  chessLocked,
+  setChessLocked,
+  unitsPlaced,
+  totalUnits,
   items,
   hideTitle,
 }) => {
   return (
     <TCFlex align="start" gap={1}>
       <ActionBarSlot
-        label={trenchLocked ? "Unlock" : "Lock"}
-        active={trenchLocked}
-        onClick={() => setTrenchLocked(!trenchLocked)}
+        label={chessLocked ? "Unlock" : "Lock"}
+        active={chessLocked}
+        onClick={() => setChessLocked(!chessLocked)}
       >
-        {trenchLocked ? (
+        {chessLocked ? (
           <Lock size={20} className="text-amber-400" />
         ) : (
           <LockOpen size={20} className="text-slate-400" />
         )}
       </ActionBarSlot>
       <ActionBarPalette
-        title={hideTitle ? "" : `Trench ${placedCount}/${maxPlacement}`}
+        title={hideTitle ? "" : `Chessmen ${unitsPlaced}/${totalUnits}`}
         items={items}
       />
     </TCFlex>

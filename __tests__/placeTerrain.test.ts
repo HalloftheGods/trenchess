@@ -4,15 +4,24 @@ import { PIECES, BOARD_SIZE, TERRAIN_TYPES } from "@constants";
 import type { TrenchessState, BoardPiece, TerrainType } from "@tc.types";
 import { INVALID_MOVE } from "boardgame.io/core";
 import type { Ctx } from "boardgame.io";
-import * as setupLogic from "@/app/core/setup/setupLogic";
+import * as validationLogic from "@/app/core/setup/validation";
+import * as territoryLogic from "@/app/core/setup/territory";
 import * as coreHelpers from "@/app/core/setup/coreHelpers";
+import * as baseTerritory from "@/app/core/mechanics/moves/base/territory";
 
-vi.mock("@/core/setup/setupLogic", () => ({
-  getPlayerCells: vi.fn(),
+vi.mock("@/app/core/setup/validation", () => ({
   canPlaceUnit: vi.fn(),
 }));
 
-vi.mock("@/core/setup/coreHelpers", () => ({
+vi.mock("@/app/core/setup/territory", () => ({
+  getPlayerCells: vi.fn(),
+}));
+
+vi.mock("@/app/core/mechanics/moves/base/territory", () => ({
+  isWithinTerritory: vi.fn(),
+}));
+
+vi.mock("@/app/core/setup/coreHelpers", () => ({
   resolvePlayerId: vi.fn(),
   getQuota: vi.fn(),
 }));
@@ -54,12 +63,18 @@ describe("placeTerrain", () => {
 
     vi.mocked(coreHelpers.resolvePlayerId).mockReturnValue("red");
     vi.mocked(coreHelpers.getQuota).mockReturnValue(2);
-    vi.mocked(setupLogic.getPlayerCells).mockReturnValue([
+    vi.mocked(territoryLogic.getPlayerCells).mockReturnValue([
       [0, 0],
       [0, 1],
       [0, 2],
     ]);
-    vi.mocked(setupLogic.canPlaceUnit).mockReturnValue(true);
+    vi.mocked(validationLogic.canPlaceUnit).mockReturnValue(true);
+    vi.mocked(baseTerritory.isWithinTerritory).mockImplementation(
+      (_pid, _mode, [r, c]) => {
+        // Return false for [5,5] to match test expectations
+        return !(r === 5 && c === 5);
+      },
+    );
   });
 
   it("should fail if player ID cannot be resolved", () => {
@@ -107,7 +122,7 @@ describe("placeTerrain", () => {
   describe("Placing terrain", () => {
     it("should fail if existing unit on cell is incompatible with new terrain", () => {
       G.board[0][0] = { type: PIECES.KNIGHT, player: "red" };
-      vi.mocked(setupLogic.canPlaceUnit).mockReturnValue(false);
+      vi.mocked(validationLogic.canPlaceUnit).mockReturnValue(false);
 
       const result = placeTerrain(
         { G, ctx, playerID: "0" },

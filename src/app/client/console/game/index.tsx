@@ -5,19 +5,16 @@ import BattleView from "./battle";
 import PiView from "./pi";
 import ChiView from "./chi";
 import OmegaView from "./omega";
+import PlayView from "./play";
 import MmoView from "../mmo";
 import ZenView from "../design/zen";
 import GamemasterView from "../gamemaster";
 import SpectatorView from "../spectate";
+import { useGameState } from "@hooks/engine/useGameState";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ROUTES } from "@/app/router/router";
 import { PHASES } from "@constants/game";
-import type { GameStateHook } from "@tc.types";
-
-interface ConsoleViewDispatcherProps {
-  game: GameStateHook;
-  onMenuClick?: () => void;
-  onHowToPlayClick?: () => void;
-  onLibraryClick?: () => void;
-}
 
 /**
  * ConsoleViewDispatcher — Picks the correct playstyle view based on the :style route param.
@@ -25,14 +22,44 @@ interface ConsoleViewDispatcherProps {
 import { SCREEN_REGISTRY } from "@/app/core/screens/registry";
 import type { ScreenId } from "@/app/core/screens/registry";
 
-const ConsoleViewDispatcher: React.FC<ConsoleViewDispatcherProps> = ({
-  game,
-  onMenuClick,
-  onHowToPlayClick,
-  onLibraryClick,
-}) => {
+const ConsoleViewDispatcher: React.FC = () => {
+  const game = useGameState();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { style } = useParams<{ style: string }>();
-  const viewProps = { game, onMenuClick, onHowToPlayClick, onLibraryClick };
+
+  const { gameState, initGameWithPreset, startGame } = game;
+
+  // 1. Redirect to home if on base game route and game hasn't started (MENU phase)
+  useEffect(() => {
+    const isBaseGameRoute = location.pathname === ROUTES.console.index;
+    const isNotMmo = !location.pathname.startsWith(
+      ROUTES.console.mmo as string,
+    );
+    const isNotOnlineMatch = !location.pathname.includes("/match/");
+
+    if (
+      isBaseGameRoute &&
+      isNotMmo &&
+      isNotOnlineMatch &&
+      gameState === PHASES.MENU
+    ) {
+      navigate(ROUTES.home);
+    }
+  }, [location.pathname, gameState, navigate]);
+
+  // 2. Zen/Gamemaster specific initialization
+  useEffect(() => {
+    const isZenOrMaster =
+      location.pathname === (ROUTES.zen as string) ||
+      location.pathname === ROUTES.console.gamemaster;
+
+    if (isZenOrMaster && gameState === PHASES.MENU) {
+      initGameWithPreset("4p", "zen-garden");
+      const timer = setTimeout(() => startGame(), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [gameState, location.pathname, initGameWithPreset, startGame]);
 
   // Prioritize activeScreen override from engine state
   const activeScreenId = game.bgioState?.G?.activeScreen as ScreenId;
@@ -41,30 +68,32 @@ const ConsoleViewDispatcher: React.FC<ConsoleViewDispatcherProps> = ({
     : null;
 
   if (OverrideScreen) {
-    return <OverrideScreen {...viewProps} />;
+    return <OverrideScreen />;
   }
 
   switch (style) {
     case "alpha":
-      return <AlphaView game={game} />;
+      return <AlphaView />;
     case "battle":
-      return <BattleView game={game} />;
+      return <BattleView />;
     case "pi":
-      return <PiView game={game} />;
+      return <PiView />;
     case "chi":
-      return <ChiView game={game} />;
+      return <ChiView />;
     case "omega":
-      return <OmegaView game={game} />;
+      return <OmegaView />;
+    case "play":
+      return <PlayView />;
     case "mmo":
-      return <MmoView game={game} />;
+      return <MmoView />;
     case "zen":
-      return <ZenView {...viewProps} />;
+      return <ZenView />;
     case PHASES.GAMEMASTER:
-      return <GamemasterView game={game} />;
+      return <GamemasterView />;
     case "spectator":
-      return <SpectatorView {...viewProps} />;
+      return <SpectatorView />;
     default:
-      return <MmoView game={game} />;
+      return <MmoView />;
   }
 };
 

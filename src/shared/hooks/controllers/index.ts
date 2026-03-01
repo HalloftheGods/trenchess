@@ -6,3 +6,4 @@ export * from "./usePlayBoardInteraction";
 export * from "./useSetupActions";
 export * from "./useSetupBoardInteraction";
 export * from "./useZenGardenInteraction";
+export * from "./useAutoPreconfig";

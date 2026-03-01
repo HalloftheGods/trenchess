@@ -15,7 +15,8 @@ export interface GameConfigState {
     | "quick"
     | "terrainiffic"
     | "custom"
-    | "zen-garden" | null;
+    | "zen-garden"
+    | null;
   setSelectedPreset: React.Dispatch<
     React.SetStateAction<
       "classic" | "quick" | "terrainiffic" | "custom" | "zen-garden" | null
@@ -25,4 +26,6 @@ export interface GameConfigState {
   setShowBgDebug: React.Dispatch<React.SetStateAction<boolean>>;
   showRules: boolean;
   setShowRules: React.Dispatch<React.SetStateAction<boolean>>;
+  isMercenary?: boolean;
+  setIsMercenary?: React.Dispatch<React.SetStateAction<boolean>>;
 }

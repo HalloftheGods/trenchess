@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Copy, Check } from "lucide-react";
 import { TerminalInput } from "../atoms/TerminalInput";
 import { TerminalHistory } from "../molecules/TerminalHistory";
 import TrenchessText from "@/shared/components/atoms/TrenchessText";
-import type { GameStateHook } from "@tc.types";
+import { useGameState } from "@hooks/engine/useGameState";
 
 interface TerminalOverlayProps {
-  game: GameStateHook;
   isOpen: boolean;
   onClose: () => void;
   onCommand: (command: string) => void;
@@ -18,12 +18,13 @@ interface TerminalOverlayProps {
 }
 
 export const TerminalOverlay: React.FC<TerminalOverlayProps> = ({
-  game,
   isOpen,
   onCommand,
   history,
 }) => {
+  const game = useGameState();
   const [input, setInput] = useState("");
+  const [copied, setCopied] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = () => {
@@ -31,6 +32,15 @@ export const TerminalOverlay: React.FC<TerminalOverlayProps> = ({
       onCommand(input.trim());
       setInput("");
     }
+  };
+
+  const handleCopy = () => {
+    const text = history
+      .map((line) => `[${line.timestamp}] ${line.type.toUpperCase()}: ${line.text}`)
+      .join("\n");
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   useEffect(() => {
@@ -46,9 +56,9 @@ export const TerminalOverlay: React.FC<TerminalOverlayProps> = ({
       className={`
         absolute top-0 left-0 z-[100] 
         w-full h-[60vh] 
-        bg-slate-950/90 
-        shadow-2xl backdrop-blur-2xl 
-        border-b border-brand-blue/30 
+        bg-[#282a36] 
+        shadow-2xl backdrop-blur-xl 
+        border-b border-[#44475a] 
         transition-all duration-300 ease-in-out transform 
         flex flex-col 
         pointer-events-auto 
@@ -57,18 +67,37 @@ export const TerminalOverlay: React.FC<TerminalOverlayProps> = ({
         }`}
     >
       <div className="flex-1 overflow-hidden flex flex-col p-4">
-        <div className="flex justify-between items-center mb-4 px-6 opacity-30 select-none">
-          <span className="font-mono text-[10px] tracking-[0.2em] text-brand-blue uppercase font-black">
-            Battle Chess v2 // Console Overlay
+        <div className="flex justify-between items-center mb-4 px-6 select-none">
+          <span className="font-mono text-[10px] tracking-[0.2em] text-[#8be9fd] uppercase font-black">
+            Battle Chess v2 // Master Protocol Interface
           </span>
-          <span className="font-mono text-[10px] text-slate-500">
-            PID: {game.multiplayer.socketId || "OFFLINE"} | MODE: {game.mode}
-          </span>
+          <div className="flex items-center gap-4">
+            <span className="font-mono text-[10px] text-[#6272a4]">
+              PID: {game.multiplayer.socketId || "OFFLINE"} | MODE: {game.mode}
+            </span>
+            <button
+              onClick={handleCopy}
+              className="flex items-center gap-1 font-mono text-[10px] text-[#8be9fd] hover:text-[#50fa7b] transition-colors cursor-pointer"
+              title="Copy terminal history"
+            >
+              {copied ? (
+                <>
+                  <Check size={12} className="text-[#50fa7b]" />
+                  <span className="text-[#50fa7b]">COPIED</span>
+                </>
+              ) : (
+                <>
+                  <Copy size={12} />
+                  <span>COPY</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         <TerminalHistory history={history} />
 
-        <div className="px-6 py-4 border-t border-brand-blue/10 bg-slate-950 flex items-center justify-between">
+        <div className="px-6 py-4 border-t border-[#44475a] bg-[#21222c] flex items-center justify-between">
           <div className="flex-1">
             <TerminalInput
               value={input}
@@ -77,7 +106,7 @@ export const TerminalOverlay: React.FC<TerminalOverlayProps> = ({
               autoFocus={isOpen}
             />
           </div>
-          <div className="opacity-20 hover:opacity-100 transition-opacity select-none pointer-events-none">
+          <div className="opacity-20 hover:opacity-100 transition-opacity select-none pointer-events-none grayscale brightness-200">
             <TrenchessText className="text-xl" />
           </div>
         </div>

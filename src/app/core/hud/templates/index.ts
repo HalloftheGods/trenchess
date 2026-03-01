@@ -1,2 +1,1 @@
-// Templates for HUD
-export {};
+export * from "./TopActionBar";

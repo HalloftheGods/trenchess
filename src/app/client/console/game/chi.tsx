@@ -1,16 +1,13 @@
 import React from "react";
 import CombatScreen from "@/app/core/screens/CombatScreen";
-import type { GameStateHook } from "@tc.types";
-
-interface ChiViewProps {
-  game: GameStateHook;
-}
+import { useAutoPreconfig } from "@controllers/useAutoPreconfig";
 
 /**
  * ChiView — Terrainiffic Mode.
  */
-const ChiView: React.FC<ChiViewProps> = ({ game }) => {
-  return <CombatScreen game={game} boardType="chi" />;
+const ChiView: React.FC = () => {
+  useAutoPreconfig("chi");
+  return <CombatScreen boardType="chi" />;
 };
 
 export default ChiView;

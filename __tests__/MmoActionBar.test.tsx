@@ -1,9 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { ConsoleActionBar } from "@/app/core/hud/organisms/ConsoleActionBar";
+import { TopActionBar as ConsoleActionBar } from "@/app/core/hud/templates/TopActionBar";
 import { INITIAL_ARMY, PHASES } from "@constants";
 import type { GameStateHook } from "@tc.types";
 import { useConsoleLogic } from "@/shared/hooks/interface/useConsoleLogic";
+
+vi.mock("@/shared/hooks/engine", () => ({
+  useGameState: vi.fn(),
+}));
+
+vi.mock("@/shared/context", () => ({
+  useRouteContext: vi.fn(),
+  useGameEngineContext: vi.fn(),
+}));
+
+import { useGameState } from "@/shared/hooks/engine";
+import { useRouteContext, useGameEngineContext } from "@/shared/context";
 
 describe("ConsoleActionBar", () => {
   const mockDispatch = vi.fn();
@@ -15,6 +27,7 @@ describe("ConsoleActionBar", () => {
     turn: "red",
     activePlayers: ["red", "blue"],
     inventory: { red: INITIAL_ARMY.map((u) => u.type), blue: [] },
+    terrain: Array(12).fill(Array(12).fill("flat")),
     placementPiece: null,
     placementTerrain: null,
     setPlacementPiece: vi.fn(),
@@ -46,12 +59,25 @@ describe("ConsoleActionBar", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    (useGameState as ReturnType<typeof vi.fn>).mockReturnValue(mockGame);
+    (useRouteContext as ReturnType<typeof vi.fn>).mockReturnValue({
+      darkMode: false,
+      pieceStyle: "lucide",
+      toggleTheme: vi.fn(),
+      togglePieceStyle: vi.fn(),
+    });
+    (useGameEngineContext as ReturnType<typeof vi.fn>).mockReturnValue({
+      clientRef: { current: {} },
+    });
   });
 
   it("should call dispatch with 'board pi' when Pi button is clicked", () => {
     render(<ConsoleActionBar {...mockProps} />);
 
-    const piButton = screen.getByTitle("Pi");
+    const toggleButton = screen.getByTitle("Omega Mode");
+    fireEvent.click(toggleButton);
+
+    const piButton = screen.getByTitle("Pi Mode");
     fireEvent.click(piButton);
 
     expect(mockDispatch).toHaveBeenCalledWith("board pi");
@@ -60,7 +86,10 @@ describe("ConsoleActionBar", () => {
   it("should call dispatch with 'board chi' when Chi button is clicked", () => {
     render(<ConsoleActionBar {...mockProps} />);
 
-    const chiButton = screen.getByTitle("Chi");
+    const toggleButton = screen.getByTitle("Omega Mode");
+    fireEvent.click(toggleButton);
+
+    const chiButton = screen.getByTitle("Chi Mode");
     fireEvent.click(chiButton);
 
     expect(mockDispatch).toHaveBeenCalledWith("board chi");
@@ -69,7 +98,10 @@ describe("ConsoleActionBar", () => {
   it("should call dispatch with 'board random' when Random button is clicked", () => {
     render(<ConsoleActionBar {...mockProps} />);
 
-    const randomButton = screen.getByTitle("Random");
+    const toggleButton = screen.getByTitle("Omega Mode");
+    fireEvent.click(toggleButton);
+
+    const randomButton = screen.getByTitle("Randomize");
     fireEvent.click(randomButton);
 
     expect(mockDispatch).toHaveBeenCalledWith("board random");
@@ -78,7 +110,7 @@ describe("ConsoleActionBar", () => {
   it("should call dispatch with 'board omega' when Omega button is clicked", () => {
     render(<ConsoleActionBar {...mockProps} />);
 
-    const omegaButton = screen.getByTitle("Omega");
+    const omegaButton = screen.getByTitle("Omega Mode");
     fireEvent.click(omegaButton);
 
     expect(mockDispatch).toHaveBeenCalledWith("board omega");

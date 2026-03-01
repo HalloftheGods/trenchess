@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Globe, Key, GlobeLock } from "lucide-react";
 import { useRouteContext } from "@context";
-import { ROUTES } from "@/app/routes";
+import { ROUTES } from "@/app/router/router";
 import { buildRoute } from "@/shared/utilities/routes";
 import { Shoutbox } from "@/app/client/console/components";
 

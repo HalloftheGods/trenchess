@@ -79,7 +79,7 @@ export const UnitPortfolio: React.FC<UnitPortfolioProps> = ({
   return (
     <div className="h-full flex flex-col relative group/panel">
       <PanelCard
-        className={`p-8 ${panelBorderStyle} ${cardBg} ${colors.border} gap-6`}
+        className={`p-8 ${panelBorderStyle} ${cardBg} ${colors.border} gap-2`}
       >
         {/* Background decoration */}
         <div

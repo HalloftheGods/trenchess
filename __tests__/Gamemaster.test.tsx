@@ -1,59 +1,84 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { PHASES } from "@constants/game";
-import GamemasterView from "@/app/client/console/gamemaster";
 import React from "react";
-import { TERRAIN_TYPES } from "@constants";
-import type { GameStateHook, BoardPiece, PieceType, TerrainType } from "@tc.types";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { vi, describe, it, expect, beforeEach } from "vitest";
+import GamemasterView from "@/app/client/console/gamemaster";
+import { useGameState } from "@hooks/engine/useGameState";
 
-// Mock dependencies
-vi.mock("@/shared/hooks/core/useDeployment", () => ({
-  useDeployment: vi.fn(() => ({
-    placedCount: 0,
-    maxPlacement: 10,
-    maxUnits: 16,
-    unitsPlaced: 0,
-  })),
+// Mock the components used in GamemasterView
+vi.mock("@/shared/hooks/engine/useGameState");
+vi.mock("@/app/client/console/components", () => ({
+  CornerControls: ({
+    topLeft,
+    topRight,
+    bottomLeft,
+    bottomRight,
+  }: {
+    topLeft: React.ReactNode;
+    topRight: React.ReactNode;
+    bottomLeft: React.ReactNode;
+    bottomRight: React.ReactNode;
+  }) => (
+    <div data-testid="corner-controls">
+      {topLeft}
+      {topRight}
+      {bottomLeft}
+      {bottomRight}
+    </div>
+  ),
+  BoardView: ({
+    onCellClick,
+  }: {
+    onCellClick: (r: number, c: number) => void;
+  }) => (
+    <div data-testid="board-view" onClick={() => onCellClick(0, 0)}>
+      <div data-testid="cell-0-0" onClick={() => onCellClick(0, 0)} />
+    </div>
+  ),
+  PlayerPanel: ({ pid, isActive }: { pid: string; isActive: boolean }) => (
+    <div
+      data-testid={`player-panel-${pid}`}
+      className={isActive ? "active" : ""}
+    />
+  ),
+  GamemasterControls: () => <div data-testid="gamemaster-controls" />,
 }));
 
-// Mock RouteContext
-vi.mock("@/shared/context/RouteContext", () => ({
-  useRouteContext: vi.fn(() => ({
-    darkMode: true,
-    pieceStyle: "classic",
-    onLogoClick: vi.fn(),
-    toggleTheme: vi.fn(),
-    togglePieceStyle: vi.fn(),
-  })),
-  RouteProvider: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
+vi.mock("@/shared/components/atoms/IconButton", () => ({
+  IconButton: ({ label, onClick }: { label: string; onClick: () => void }) => (
+    <button onClick={onClick}>{label}</button>
   ),
 }));
 
-// Mock Lucide icons to avoid rendering issues in tests
-vi.mock("lucide-react", async () => {
-  const actual = await vi.importActual("lucide-react");
+vi.mock("lucide-react", () => {
   return {
-    ...actual,
-    RotateCcw: () => <div data-testid="icon-rotate" />,
-    CheckCircle2: () => <div data-testid="icon-check" />,
-    User: () => <div data-testid="icon-user" />,
-    Monitor: () => <div data-testid="icon-monitor" />,
-    Zap: () => <div data-testid="icon-zap" />,
-    Mountain: () => <div data-testid="icon-mountain" />,
+    Settings: () => <div data-testid="icon-settings" />,
+    Maximize: () => <div data-testid="icon-maximize" />,
     Target: () => <div data-testid="icon-target" />,
     EyeOff: () => <div data-testid="icon-eye-off" />,
   };
 });
 
+import type { GameStateHook } from "@tc.types";
+import { PHASES, TERRAIN_TYPES } from "@constants/game";
+import type {
+  BoardPiece,
+  PieceType,
+  TerrainType,
+  PlayerID,
+  GameMode,
+} from "@/types";
+import type { TrenchessState } from "@/types/game/state";
+
 // Helper to create a mock game object
-const createMockGame = (overrides = {}) => {
-  const activePlayers = (overrides as Partial<GameStateHook>).activePlayers || [
+const createMockGame = (
+  overrides: Partial<GameStateHook> = {},
+): GameStateHook => {
+  const activePlayers = (overrides.activePlayers || [
     "red",
     "yellow",
     "green",
     "blue",
-  ];
+  ]) as PlayerID[];
   const readyPlayers: Record<string, boolean> = {};
   const playerTypes: Record<string, "human" | "computer"> = {};
   const inventory: Record<string, PieceType[]> = {};
@@ -68,10 +93,10 @@ const createMockGame = (overrides = {}) => {
     capturedBy[pid] = [];
   });
 
-  return {
+  const mockGame = {
     gameState: PHASES.GAMEMASTER,
-    mode: "4p",
-    turn: "red",
+    mode: "4p" as GameMode,
+    turn: "red" as PlayerID,
     activePlayers,
     board: Array(12)
       .fill(null)
@@ -84,7 +109,10 @@ const createMockGame = (overrides = {}) => {
     readyPlayers,
     playerTypes,
     capturedBy,
-    bgioState: { G: { lostToDesert: [] }, ctx: { phase: PHASES.GAMEMASTER } },
+    bgioState: {
+      G: { lostToDesert: [] } as unknown as TrenchessState,
+      ctx: { phase: PHASES.GAMEMASTER } as unknown,
+    },
     setGameState: vi.fn(),
     setMode: vi.fn(),
     setTurn: vi.fn(),
@@ -93,7 +121,7 @@ const createMockGame = (overrides = {}) => {
     setHoveredCell: vi.fn(),
     setPreviewMoves: vi.fn(),
     getIcon: vi.fn(() => <div data-testid="piece-icon" />),
-    getPlayerDisplayName: (pid: string) => pid,
+    getPlayerDisplayName: (pid: PlayerID) => pid,
     finishGamemaster: vi.fn(),
     randomizeTerrain: vi.fn(),
     randomizeUnits: vi.fn(),
@@ -112,12 +140,12 @@ const createMockGame = (overrides = {}) => {
     previewMoves: [],
     placementPiece: null,
     placementTerrain: null,
-    setupMode: "pieces",
+    setupMode: "pieces" as unknown,
     winner: null,
     winnerReason: null,
     inCheck: false,
     lastMove: null,
-    pieceStyle: "classic",
+    pieceStyle: "classic" as unknown,
     isFlipped: false,
     localPlayerName: "red",
     multiplayer: {
@@ -127,9 +155,17 @@ const createMockGame = (overrides = {}) => {
       joinGame: vi.fn(),
       leaveGame: vi.fn(),
       toggleReady: vi.fn(),
+      readyPlayers: readyPlayers as unknown,
     },
+    dispatch: vi.fn(),
+    patchG: vi.fn(),
+    authorizeMasterProtocol: vi.fn(),
+    setActiveScreen: vi.fn(),
+    setLocalPlayerName: vi.fn(),
     ...overrides,
   };
+
+  return mockGame as unknown as GameStateHook;
 };
 
 describe("GamemasterView", () => {
@@ -139,10 +175,11 @@ describe("GamemasterView", () => {
 
   it("renders all 4 player panels in 4p mode", () => {
     const game = createMockGame({
-      mode: "4p",
-      activePlayers: ["red", "yellow", "green", "blue"],
+      mode: "4p" as GameMode,
+      activePlayers: ["red", "yellow", "green", "blue"] as PlayerID[],
     });
-    render(<GamemasterView game={game as unknown as GameStateHook} />);
+    vi.mocked(useGameState).mockReturnValue(game);
+    render(<GamemasterView />);
 
     expect(screen.getByTestId("player-panel-red")).toBeDefined();
     expect(screen.getByTestId("player-panel-yellow")).toBeDefined();
@@ -152,10 +189,11 @@ describe("GamemasterView", () => {
 
   it("renders only red and blue panels in 2p-ns mode", () => {
     const game = createMockGame({
-      mode: "2p-ns",
-      activePlayers: ["red", "blue"],
+      mode: "2p-ns" as GameMode,
+      activePlayers: ["red", "blue"] as PlayerID[],
     });
-    render(<GamemasterView game={game as unknown as GameStateHook} />);
+    vi.mocked(useGameState).mockReturnValue(game);
+    render(<GamemasterView />);
 
     expect(screen.getByTestId("player-panel-red")).toBeDefined();
     expect(screen.getByTestId("player-panel-blue")).toBeDefined();
@@ -165,10 +203,11 @@ describe("GamemasterView", () => {
 
   it("renders only green and yellow panels in 2p-ew mode", () => {
     const game = createMockGame({
-      mode: "2p-ew",
-      activePlayers: ["green", "yellow"],
+      mode: "2p-ew" as GameMode,
+      activePlayers: ["green", "yellow"] as PlayerID[],
     });
-    render(<GamemasterView game={game as unknown as GameStateHook} />);
+    vi.mocked(useGameState).mockReturnValue(game);
+    render(<GamemasterView />);
 
     expect(screen.getByTestId("player-panel-green")).toBeDefined();
     expect(screen.getByTestId("player-panel-yellow")).toBeDefined();
@@ -178,7 +217,8 @@ describe("GamemasterView", () => {
 
   it("calls handleZenGardenClick when board cell is clicked", () => {
     const game = createMockGame();
-    render(<GamemasterView game={game as unknown as GameStateHook} />);
+    vi.mocked(useGameState).mockReturnValue(game);
+    render(<GamemasterView />);
 
     const cell = screen.getByTestId("cell-0-0");
     fireEvent.click(cell);
@@ -187,8 +227,9 @@ describe("GamemasterView", () => {
   });
 
   it("allows selecting a player and switching turns", () => {
-    const game = createMockGame({ turn: "red" });
-    render(<GamemasterView game={game as unknown as GameStateHook} />);
+    const game = createMockGame({ turn: "red" as PlayerID });
+    vi.mocked(useGameState).mockReturnValue(game);
+    render(<GamemasterView />);
 
     const bluePanel = screen.getByTestId("player-panel-blue");
     fireEvent.click(bluePanel);
@@ -198,7 +239,8 @@ describe("GamemasterView", () => {
 
   it("triggers finishGamemaster when the finish button is clicked", () => {
     const game = createMockGame();
-    render(<GamemasterView game={game as unknown as GameStateHook} />);
+    vi.mocked(useGameState).mockReturnValue(game);
+    render(<GamemasterView />);
 
     // There are multiple finish buttons (one per panel), but they all do the same thing in GM mode
     const finishBtns = screen.getAllByText("FINISH DEPLOYMENT");

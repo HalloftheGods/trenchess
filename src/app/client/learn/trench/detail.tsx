@@ -7,15 +7,18 @@ import type { PreviewConfig } from "@tc.types";
 
 // Shared Route Components
 import { TerrainUnitGrid } from "@/shared/components/molecules/TerrainUnitGrid";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/app/router/router";
+
 interface TrenchGuideProps {
-  onBack: () => void;
   initialTerrain?: string | null;
 }
 
 export const LearnTrenchDetailView: React.FC<TrenchGuideProps> = ({
-  onBack,
   initialTerrain,
 }) => {
+  const navigate = useNavigate();
+  const onBack = () => navigate(ROUTES.learn.trench.index);
   const slides: Slide[] = (() => {
     const terrainSlides = TERRAIN_DETAILS.map(
       (terrain: (typeof TERRAIN_DETAILS)[number]) => {

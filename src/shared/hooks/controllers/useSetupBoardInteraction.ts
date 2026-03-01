@@ -12,6 +12,8 @@ interface SetupInteractionProps {
   configState: GameConfigState;
   placementManager: PlacementManager;
   bgioClientRef?: React.RefObject<BgioClient | undefined>;
+  onPlacePiece?: (row: number, col: number, type: PieceType | null) => void;
+  onPlaceTerrain?: (row: number, col: number, type: TerrainType) => void;
 }
 
 export function useSetupBoardInteraction({
@@ -22,6 +24,8 @@ export function useSetupBoardInteraction({
   configState,
   placementManager,
   bgioClientRef,
+  onPlacePiece,
+  onPlaceTerrain,
 }: SetupInteractionProps) {
   const {
     setHoveredCell,
@@ -87,9 +91,6 @@ export function useSetupBoardInteraction({
 
   const handleSetupClick = useCallback(
     (row: number, col: number) => {
-      const client = bgioClientRef?.current;
-      if (!client) return;
-
       const myCells = SetupLogic.getPlayerCells(localPlayer, mode);
       const isMyTerritory = myCells.some(([r, c]) => r === row && c === col);
 
@@ -102,22 +103,60 @@ export function useSetupBoardInteraction({
         const isNotFlat = currentTerrain !== TERRAIN_TYPES.FLAT;
 
         if (isNotFlat) {
-          client.moves.placeTerrain(row, col, TERRAIN_TYPES.FLAT, localPlayer);
+          if (onPlaceTerrain) {
+            onPlaceTerrain(row, col, TERRAIN_TYPES.FLAT as TerrainType);
+          } else if (bgioClientRef?.current) {
+            bgioClientRef.current.moves.placeTerrain(
+              row,
+              col,
+              TERRAIN_TYPES.FLAT,
+              localPlayer,
+            );
+          }
         } else if (placementTerrain && !board[row][col]) {
-          client.moves.placeTerrain(row, col, placementTerrain, localPlayer);
+          if (onPlaceTerrain) {
+            onPlaceTerrain(row, col, placementTerrain);
+          } else if (bgioClientRef?.current) {
+            bgioClientRef.current.moves.placeTerrain(
+              row,
+              col,
+              placementTerrain,
+              localPlayer,
+            );
+          }
         }
       } else {
         const pieceAtCell = board[row][col];
         const isMyPiece = pieceAtCell?.player === localPlayer;
 
         if (placementPiece) {
-          client.moves.placePiece(row, col, placementPiece, localPlayer);
+          if (onPlacePiece) {
+            onPlacePiece(row, col, placementPiece);
+          } else if (bgioClientRef?.current) {
+            bgioClientRef.current.moves.placePiece(
+              row,
+              col,
+              placementPiece,
+              localPlayer,
+            );
+          }
         } else if (isMyPiece) {
-          client.moves.placePiece(row, col, null, localPlayer);
+          if (onPlacePiece) {
+            onPlacePiece(row, col, null);
+          } else if (bgioClientRef?.current) {
+            bgioClientRef.current.moves.placePiece(
+              row,
+              col,
+              null,
+              localPlayer,
+            );
+          }
         }
       }
     },
     [
+      onPlacePiece,
+      onPlaceTerrain,
       bgioClientRef,
       localPlayer,
       mode,

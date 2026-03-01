@@ -2,8 +2,8 @@ import {
   movePiece,
   forfeit,
   CORE_ADMIN_MOVES,
-} from "@/app/core/mechanics/moves";
-import { onMove } from "@/app/core/events";
+} from "@mechanics/moves";
+import { onMove, onTurnBegin } from "@engine/events";
 import type { TrenchessState } from "@tc.types/game";
 import type { Ctx } from "boardgame.io";
 
@@ -19,6 +19,7 @@ export const combatPhase = {
     forfeit,
   },
   turn: {
+    onBegin: onTurnBegin,
     minMoves: 1,
     maxMoves: 1,
     order: {

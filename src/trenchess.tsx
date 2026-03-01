@@ -4,7 +4,7 @@ import { ErrorBoundary } from "@organisms/ErrorBoundary";
 import { MultiplayerProvider } from "@hooks/engine/useMultiplayer";
 import { StrictMode } from "react";
 import App from "@/app/App";
-import { router } from "@/app/router";
+import { router } from "@/app/router/router";
 import "@/styles/index.css";
 
 createRoot(document.getElementById("trenchess-root")!).render(

@@ -41,6 +41,14 @@ export function useDeploymentMetrics({
   );
   const unitsPlaced =
     totalUnitCount - (inventory[perspectivePlayerId] || []).length;
+  const isAllPlaced =
+    unitsPlaced === totalUnitCount && placedCount === maxPlacement;
 
-  return { maxPlacement, placedCount, unitsPlaced, maxUnits: totalUnitCount };
+  return {
+    maxPlacement,
+    placedCount,
+    unitsPlaced,
+    maxUnits: totalUnitCount,
+    isAllPlaced,
+  };
 }

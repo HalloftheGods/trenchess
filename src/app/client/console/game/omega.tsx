@@ -1,16 +1,13 @@
 import React from "react";
 import CombatScreen from "@/app/core/screens/CombatScreen";
-import type { GameStateHook } from "@tc.types";
-
-interface OmegaViewProps {
-  game: GameStateHook;
-}
+import { useAutoPreconfig } from "@controllers/useAutoPreconfig";
 
 /**
  * OmegaView — Gamemaster/Blank Canvas Mode.
  */
-const OmegaView: React.FC<OmegaViewProps> = ({ game }) => {
-  return <CombatScreen game={game} boardType="omega" />;
+const OmegaView: React.FC = () => {
+  useAutoPreconfig("omega");
+  return <CombatScreen boardType="omega" />;
 };
 
 export default OmegaView;

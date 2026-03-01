@@ -13,13 +13,12 @@ import {
   TroopConversionGraphic,
 } from "@/shared/components/molecules/CtwGraphics";
 
-interface CaptureTheWorldGuideProps {
-  onBack: () => void;
-}
+import { ROUTES } from "@/app/router/router";
 
-export const LearnEndgameCtwView: React.FC<CaptureTheWorldGuideProps> = ({
-  onBack,
-}) => {
+export const LearnEndgameCtwView: React.FC = () => {
+  const navigate = useNavigate();
+  const onBack = () => navigate(ROUTES.learn.endgame.index);
+
   const [randomSeed] = useState<string | undefined>(() => {
     const seeds = DEFAULT_SEEDS;
     if (seeds.length > 0) {
@@ -120,8 +119,6 @@ export const LearnEndgameCtwView: React.FC<CaptureTheWorldGuideProps> = ({
       ),
     },
   ];
-
-  const navigate = useNavigate();
 
   return (
     <InteractiveGuide

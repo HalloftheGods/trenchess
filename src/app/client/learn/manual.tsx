@@ -4,7 +4,6 @@ import { useRouteContext } from "@context";
 import { PIECES, INITIAL_ARMY } from "@constants";
 import { DesertIcon } from "@/shared/components/atoms/UnitIcons";
 import { UNIT_DETAILS, unitColorMap } from "@constants";
-import type { PieceStyle } from "@tc.types";
 import type { TerrainType } from "@tc.types";
 
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";
@@ -14,17 +13,13 @@ import { TerrainIconBadge } from "@/shared/components/atoms/TerrainIconBadge";
 import { GuideBullet } from "@/shared/components/atoms/GuideBullet";
 import SectionDivider from "@/shared/components/molecules/SectionDivider";
 import { TerrainIntelTool } from "@/app/client/console/components";
+import { useTheme } from "@shared/context/ThemeContext";
+import { useNavigate } from "react-router-dom";
 
-interface LearnManualViewProps {
-  onBack: () => void;
-  darkMode: boolean;
-  pieceStyle: PieceStyle;
-}
-
-export const LearnManualView: React.FC<LearnManualViewProps> = ({
-  onBack,
-  darkMode,
-}) => {
+export const LearnManualView: React.FC = () => {
+  const { darkMode } = useTheme();
+  const navigate = useNavigate();
+  const onBack = () => navigate(-1);
   const { setTerrainSeed, setPreviewConfig } = useRouteContext();
   const [selectedTerrain, setSelectedTerrain] = React.useState<string | null>(
     null,

@@ -1,5 +1,6 @@
 import { type Coords } from "@tc.types";
-import { Move as mv, defineMovePattern } from "@/app/core/mechanics/moves/base";
+import mv from "@/app/core/mechanics/moves/base/move";
+import { defineMovePattern } from "@/app/core/mechanics/moves/base/patterns";
 
 /** Sliding moves (Full distance) */
 export const movePatternBishop = defineMovePattern((r, c) => {

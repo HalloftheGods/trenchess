@@ -9,7 +9,6 @@ import Move, {
 import { PIECES } from "@constants";
 import type { TrenchessState, BoardPiece } from "@tc.types";
 import type { Ctx } from "boardgame.io";
-import { applyDesertRule } from "@/app/core/events";
 import { resolvePlayerId } from "@/app/core/setup/coreHelpers";
 
 const { KING, QUEEN, PAWN } = PIECES;
@@ -199,7 +198,4 @@ export const movePiece = (
     );
     if (captureResult === INVALID_MOVE) return INVALID_MOVE;
   }
-
-  // 5. Apply Passive Terrain Events
-  applyDesertRule(gameState, playerId, { r: toRow, c: toCol });
 };

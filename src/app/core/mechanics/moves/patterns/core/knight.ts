@@ -1,4 +1,5 @@
-import { Move as mv, defineMovePattern } from "@/app/core/mechanics/moves/base";
+import mv from "@/app/core/mechanics/moves/base/move";
+import { defineMovePattern } from "@/app/core/mechanics/moves/base/patterns";
 
 /** Standard Knight L-jump */
 export const movePatternKnight = defineMovePattern((r, c) => [

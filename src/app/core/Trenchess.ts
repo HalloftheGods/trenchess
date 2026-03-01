@@ -6,6 +6,7 @@ import { mainPhase } from "@engine/phases/mainPhase";
 import { combatPhase } from "@engine/phases/combatPhase";
 import { CORE_ADMIN_MOVES } from "@engine/mechanics/moves";
 import { GAME, PHASES } from "@constants/game";
+import { gameEndIf } from "@engine/events";
 
 export const Trenchess: Game<TrenchessState> = {
   name: GAME.NAME,
@@ -51,10 +52,5 @@ export const Trenchess: Game<TrenchessState> = {
     [PHASES.COMBAT]: combatPhase,
   },
 
-  endIf: ({ G }) => {
-    if (G.activePlayers.length === 1) {
-      const winner = G.activePlayers[0];
-      return { winner, reason: G.winnerReason || "checkmate" };
-    }
-  },
+  endIf: gameEndIf,
 };

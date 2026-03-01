@@ -6,7 +6,7 @@ export const UnitTitle: React.FC<{
   glowBg: string;
 }> = ({ title, textColor, glowBg }) => (
   <h3
-    className={`text-5xl font-black uppercase tracking-tighter ${textColor} mb-6 relative group`}
+    className={`text-5xl font-black uppercase tracking-tighter ${textColor} mb-4 relative group`}
   >
     <span className="relative z-10 drop-shadow-sm">{title}</span>
     <div

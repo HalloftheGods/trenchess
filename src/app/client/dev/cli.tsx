@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { GlassPanel, Text } from "@/shared/components/atoms";
 import { useTerminal } from "@/shared/context/TerminalContext";
-import type { GameStateHook } from "@tc.types";
+import { useGameState } from "@hooks/engine/useGameState";
 
-interface DevCliProps {
-  game: GameStateHook;
-}
-
-const DevCli: React.FC<DevCliProps> = ({ game }) => {
+const DevCli: React.FC = () => {
+  const game = useGameState();
   const { history, addLog } = useTerminal();
   const [input, setInput] = useState("");
 

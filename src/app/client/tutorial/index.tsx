@@ -29,15 +29,14 @@ interface SeedItem {
   createdAt: string;
 }
 
-interface LearnTutorialViewProps {
-  onBack: () => void;
-  darkMode: boolean;
-}
+import { useTheme } from "@shared/context/ThemeContext";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/app/router/router";
 
-export const LearnTutorialView: React.FC<LearnTutorialViewProps> = ({
-  onBack,
-  darkMode,
-}) => {
+export const LearnTutorialView: React.FC = () => {
+  const navigate = useNavigate();
+  const { darkMode } = useTheme();
+  const onBack = () => navigate(ROUTES.home);
   const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
   const [selectedTerrainIdx, setSelectedTerrainIdx] = useState<number>(-1);
   const [allSeeds] = useState<SeedItem[]>(() => {

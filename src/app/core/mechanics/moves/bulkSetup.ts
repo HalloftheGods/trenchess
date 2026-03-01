@@ -6,9 +6,15 @@ import {
   deserializeGame,
   adaptSeedToMode,
 } from "@/shared/utilities/serialization";
-import type { TrenchessState, TerrainType, PieceType, GameMode } from "@tc.types";
+import type {
+  TrenchessState,
+  TerrainType,
+  PieceType,
+  GameMode,
+  BoardPiece,
+} from "@tc.types";
 import type { Ctx } from "boardgame.io";
-import { resolvePlayerId } from "@/app/core/setup/coreHelpers";
+import { resolvePlayerId, getQuota } from "@/app/core/setup/coreHelpers";
 import { INVALID_MOVE } from "boardgame.io/core";
 import {
   randomizeTerrain as randomizeTerrainLogic,
@@ -18,6 +24,21 @@ import { applyClassicalFormation as applyClassicalFormationLogic } from "@/app/c
 import M from "./base/move";
 
 import { createInitialState } from "@/app/core/setup/setupLogic";
+
+export const syncLayout = (
+  { G }: { G: TrenchessState },
+  layout: {
+    board: (BoardPiece | null)[][];
+    terrain: TerrainType[][];
+    inventory: Record<string, PieceType[]>;
+    terrainInventory: Record<string, TerrainType[]>;
+  },
+) => {
+  G.board = layout.board;
+  G.terrain = layout.terrain;
+  G.inventory = layout.inventory;
+  G.terrainInventory = layout.terrainInventory;
+};
 
 export const setMode = ({ G }: { G: TrenchessState }, mode: GameMode) => {
   const players = getPlayersForMode(mode);
@@ -119,14 +140,20 @@ export const randomizeTerrain = (
     random: { Number: () => number };
   },
   explicitPid?: string,
-  isGM?: boolean,
+  allowExplicit?: boolean,
 ) => {
   const pids =
-    isGM && !explicitPid
+    (allowExplicit || G.isGamemaster) && !explicitPid
       ? G.activePlayers
-      : ([resolvePlayerId(G, ctx, playerID, explicitPid, isGM)].filter(
-          Boolean,
-        ) as string[]);
+      : ([
+          resolvePlayerId(
+            G,
+            ctx,
+            playerID,
+            explicitPid,
+            allowExplicit || G.isGamemaster,
+          ),
+        ].filter(Boolean) as string[]);
 
   const noPlayersFound = pids.length === 0;
   if (noPlayersFound) return INVALID_MOVE;
@@ -157,14 +184,20 @@ export const randomizeUnits = (
     random: { Number: () => number };
   },
   explicitPid?: string,
-  isGM?: boolean,
+  allowExplicit?: boolean,
 ) => {
   const pids =
-    isGM && !explicitPid
+    (allowExplicit || G.isGamemaster) && !explicitPid
       ? G.activePlayers
-      : ([resolvePlayerId(G, ctx, playerID, explicitPid, isGM)].filter(
-          Boolean,
-        ) as string[]);
+      : ([
+          resolvePlayerId(
+            G,
+            ctx,
+            playerID,
+            explicitPid,
+            allowExplicit || G.isGamemaster,
+          ),
+        ].filter(Boolean) as string[]);
 
   const noPlayersFound = pids.length === 0;
   if (noPlayersFound) return INVALID_MOVE;
@@ -222,14 +255,20 @@ export const setClassicalFormation = (
     random: { Number: () => number };
   },
   explicitPid?: string,
-  isGM?: boolean,
+  allowExplicit?: boolean,
 ) => {
   const pids =
-    isGM && !explicitPid
+    (allowExplicit || G.isGamemaster) && !explicitPid
       ? G.activePlayers
-      : ([resolvePlayerId(G, ctx, playerID, explicitPid, isGM)].filter(
-          Boolean,
-        ) as string[]);
+      : ([
+          resolvePlayerId(
+            G,
+            ctx,
+            playerID,
+            explicitPid,
+            allowExplicit || G.isGamemaster,
+          ),
+        ].filter(Boolean) as string[]);
 
   const noPlayersFound = pids.length === 0;
   if (noPlayersFound) return INVALID_MOVE;
@@ -272,14 +311,20 @@ export const applyChiGarden = (
     random: { Number: () => number };
   },
   explicitPid?: string,
-  isGM?: boolean,
+  allowExplicit?: boolean,
 ) => {
   const pids =
-    isGM && !explicitPid
+    (allowExplicit || G.isGamemaster) && !explicitPid
       ? G.activePlayers
-      : ([resolvePlayerId(G, ctx, playerID, explicitPid, isGM)].filter(
-          Boolean,
-        ) as string[]);
+      : ([
+          resolvePlayerId(
+            G,
+            ctx,
+            playerID,
+            explicitPid,
+            allowExplicit || G.isGamemaster,
+          ),
+        ].filter(Boolean) as string[]);
 
   const noPlayersFound = pids.length === 0;
   if (noPlayersFound) return INVALID_MOVE;
@@ -327,10 +372,49 @@ export const applyChiGarden = (
         }
       }
 
-      if (seedHasUnits) {
-        G.inventory[playerId] = [];
-      }
-      G.terrainInventory[playerId] = [];
+      // Re-calculate inventories based on board state
+      const myUnitsOnBoard: Record<string, number> = {};
+      const myTerrainOnBoard: Record<string, number> = {};
+
+      myCells.forEach(([r, c]) => {
+        const piece = G.board[r][c];
+        const terr = G.terrain[r][c];
+        if (piece && piece.player === playerId) {
+          myUnitsOnBoard[piece.type] = (myUnitsOnBoard[piece.type] || 0) + 1;
+        }
+        if (terr !== TERRAIN_TYPES.FLAT) {
+          myTerrainOnBoard[terr] = (myTerrainOnBoard[terr] || 0) + 1;
+        }
+      });
+
+      // Update unit inventory
+      const initialUnitList = INITIAL_ARMY.flatMap((unit) =>
+        Array(unit.count).fill(unit.type),
+      );
+      const remainingUnits = [...initialUnitList];
+      Object.entries(myUnitsOnBoard).forEach(([type, count]) => {
+        for (let i = 0; i < count; i++) {
+          const idx = remainingUnits.indexOf(type as PieceType);
+          if (idx !== -1) remainingUnits.splice(idx, 1);
+        }
+      });
+      G.inventory[playerId] = remainingUnits;
+
+      // Update terrain inventory
+      const initialTerrainList = [
+        ...Array(getQuota(G.mode)).fill(TERRAIN_TYPES.FORESTS),
+        ...Array(getQuota(G.mode)).fill(TERRAIN_TYPES.SWAMPS),
+        ...Array(getQuota(G.mode)).fill(TERRAIN_TYPES.MOUNTAINS),
+        ...Array(getQuota(G.mode)).fill(TERRAIN_TYPES.DESERT),
+      ] as TerrainType[];
+      const remainingTerrain = [...initialTerrainList];
+      Object.entries(myTerrainOnBoard).forEach(([type, count]) => {
+        for (let i = 0; i < count; i++) {
+          const idx = remainingTerrain.indexOf(type as TerrainType);
+          if (idx !== -1) remainingTerrain.splice(idx, 1);
+        }
+      });
+      G.terrainInventory[playerId] = remainingTerrain;
     });
   }
 };

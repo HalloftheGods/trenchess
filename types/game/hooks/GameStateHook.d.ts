@@ -81,4 +81,6 @@ export interface GameStateHook
   mode: GameMode;
   activeMode: GameMode;
   gameState: GameState;
+  saveConfig: () => void;
+  loadConfig: () => boolean;
 }

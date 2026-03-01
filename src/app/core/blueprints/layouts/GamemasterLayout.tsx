@@ -2,9 +2,9 @@ import React from "react";
 import type { ReactNode } from "react";
 import { TCFlex } from "@atoms/ui/TCFlex";
 import { Box } from "@atoms/Box";
+import { useTheme } from "@shared/context/ThemeContext";
 
 interface GamemasterLayoutProps {
-  darkMode?: boolean;
   gameBoard: ReactNode;
   actionBar: ReactNode;
   leftPanel?: ReactNode;
@@ -16,12 +16,12 @@ interface GamemasterLayoutProps {
  * 3-Column layout with Architect aesthetic.
  */
 export const GamemasterLayout: React.FC<GamemasterLayoutProps> = ({
-  darkMode = true,
   gameBoard,
   actionBar,
   leftPanel,
   rightPanel,
 }) => {
+  const { darkMode } = useTheme();
   return (
     <TCFlex
       direction="col"
@@ -62,10 +62,7 @@ export const GamemasterLayout: React.FC<GamemasterLayoutProps> = ({
         </TCFlex>
 
         {/* Right Column */}
-        <TCFlex
-          direction="col"
-          className="w-full lg:w-80 shrink-0 order-3"
-        >
+        <TCFlex direction="col" className="w-full lg:w-80 shrink-0 order-3">
           {rightPanel}
         </TCFlex>
       </TCFlex>

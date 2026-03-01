@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { useMultiplayer } from "@/shared/hooks/engine/useMultiplayer";
+import {
+  useMultiplayer,
+  MultiplayerProvider,
+} from "@/shared/hooks/engine/useMultiplayer";
 
 // Mock boardgame.io LobbyClient
 const mockLobbyMethods = {
@@ -27,6 +30,10 @@ describe("useMultiplayer", () => {
     },
   ];
 
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <MultiplayerProvider>{children}</MultiplayerProvider>
+  );
+
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
@@ -40,7 +47,7 @@ describe("useMultiplayer", () => {
   });
 
   it("should fetch available rooms on mount", async () => {
-    const { result } = renderHook(() => useMultiplayer());
+    const { result } = renderHook(() => useMultiplayer(), { wrapper });
 
     await act(async () => {
       await result.current.refreshRooms();
@@ -52,7 +59,7 @@ describe("useMultiplayer", () => {
   });
 
   it("should handle hosting a game", async () => {
-    const { result } = renderHook(() => useMultiplayer());
+    const { result } = renderHook(() => useMultiplayer(), { wrapper });
 
     let matchId;
     await act(async () => {
@@ -66,7 +73,7 @@ describe("useMultiplayer", () => {
   });
 
   it("should handle joining a game", async () => {
-    const { result } = renderHook(() => useMultiplayer());
+    const { result } = renderHook(() => useMultiplayer(), { wrapper });
 
     await act(async () => {
       await result.current.joinGame("room-1");

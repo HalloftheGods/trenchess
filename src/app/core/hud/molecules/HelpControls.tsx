@@ -1,5 +1,5 @@
 import React from "react";
-import { Calculator, FileText, Trophy } from "lucide-react";
+import { Calculator, Trophy } from "lucide-react";
 import { IconButton } from "@/shared/components/atoms";
 import { useNavigate } from "react-router-dom";
 
@@ -27,13 +27,6 @@ const HelpControls: React.FC<HelpControlsProps> = ({
           onClick={onTutorial}
         />
       )}
-      <IconButton
-        onClick={() => navigate("/rules")}
-        icon={
-          <FileText size={20} className="text-slate-600 dark:text-slate-300" />
-        }
-        label="Rules"
-      />
     </div>
   );
 };

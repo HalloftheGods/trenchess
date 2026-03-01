@@ -1,5 +1,5 @@
 import type { RouteConfig } from "@tc.types";
-import { ROUTES } from "@/app/routes";
+import { ROUTES } from "@/app/router/router";
 import {
   PlayScreen,
   PlayLocalScreen,
