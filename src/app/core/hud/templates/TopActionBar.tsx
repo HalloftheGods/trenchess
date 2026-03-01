@@ -1,10 +1,8 @@
 import React from "react";
 import { useRouteContext } from "@context";
-import { useConsoleLogic } from "@/shared/hooks/interface/useConsoleLogic";
 import { useActionBar } from "@/shared/hooks/interface/useActionBar";
 import { PHASES } from "@constants/game";
 import { PLAYER_CONFIGS, INITIAL_ARMY, PIECES } from "@constants";
-import type { GameStateHook } from "@tc.types";
 import { TCFlex } from "@/shared/components/atoms/ui/TCFlex";
 import { TCDivider } from "@/shared/components/atoms/ui/TCDivider";
 import { TCText } from "@/shared/components/atoms/ui/TCTypography";
@@ -12,16 +10,13 @@ import { ActionBarSlot } from "../atoms";
 import { Check } from "lucide-react";
 
 import { BoardSetup, TacticalSetup, ThemeSetup } from "../organisms";
-
 import { TerrainSelection, UnitSelection, PlayTurn, Pov } from "../molecules";
+import { useMatchState, useMatchHUD } from "@/shared/context";
 
-interface TopActionBarProps {
-  game: GameStateHook;
-  logic: ReturnType<typeof useConsoleLogic>;
-}
-
-export const TopActionBar: React.FC<TopActionBarProps> = ({ game, logic }) => {
+export const TopActionBar: React.FC = () => {
   const ctx = useRouteContext();
+  const game = useMatchState();
+  const logic = useMatchHUD();
   const { darkMode, pieceStyle, toggleTheme, togglePieceStyle } = ctx;
 
   const actionBarLogic = useActionBar({ game, logic });

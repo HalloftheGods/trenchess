@@ -1,14 +1,11 @@
 import React from "react";
 import { GameBoard } from "../templates/GameBoard";
 import { PHASES } from "@constants/game";
-import type { GameStateHook } from "@tc.types";
+import { useMatchState } from "@/shared/context";
 import type { BoardProps } from "@tc.types/game/ux/BoardProps";
 
-interface ConnectedBoardProps {
-  game: GameStateHook;
-}
-
-export const ConnectedBoard: React.FC<ConnectedBoardProps> = ({ game }) => {
+export const ConnectedBoard: React.FC = () => {
+  const game = useMatchState();
   const isGM = game.gameState === PHASES.GAMEMASTER;
 
   const {

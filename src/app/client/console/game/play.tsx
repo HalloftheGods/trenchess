@@ -2,8 +2,11 @@ import React, { useEffect } from "react";
 import { BattlefieldLayout } from "@/app/core/blueprints/layouts/BattlefieldLayout";
 import { ConsoleOverlays, ConsolePlayerColumn } from "@/app/core/hud/organisms";
 import { ConnectedBoard } from "@/app/core/components/board/organisms/ConnectedBoard";
-import { useConsoleLogic } from "@hooks/interface/useConsoleLogic";
-import { useGameState } from "@hooks/engine/useGameState";
+import {
+  useMatchState,
+  MatchStateProvider,
+  MatchHUDProvider,
+} from "@/shared/context";
 import { TCFlex } from "@atoms/ui";
 import { PHASES } from "@constants/game";
 
@@ -11,9 +14,8 @@ import { PHASES } from "@constants/game";
  * PlayView — The game in action (Combat Phase).
  * A minimal, immersive view without the top action bar.
  */
-const PlayView: React.FC = () => {
-  const game = useGameState();
-  const logic = useConsoleLogic(game);
+const PlayViewContent: React.FC = () => {
+  const game = useMatchState();
   const { gameState, initGameWithPreset, multiplayer } = game;
 
   // Auto-start a random game if reached from MENU phase (standalone entry)
@@ -46,34 +48,38 @@ const PlayView: React.FC = () => {
     <BattlefieldLayout
       gameBoard={
         <TCFlex center className="w-full h-full">
-          <ConnectedBoard game={game} />
+          <ConnectedBoard />
         </TCFlex>
       }
       actionBar={null} // Minimalist view, no action bar
       leftPanel={
         <ConsolePlayerColumn
-          game={game}
           playerIds={["red", "green"]}
-          teamPowerStats={logic.teamPowerStats}
           isOnline={!!multiplayer.roomId}
           alignment="left"
         />
       }
       rightPanel={
         <ConsolePlayerColumn
-          game={game}
           playerIds={["yellow", "blue"]}
-          teamPowerStats={logic.teamPowerStats}
           isOnline={!!multiplayer.roomId}
           alignment="right"
         />
       }
     >
       <TCFlex center className="absolute inset-0 pointer-events-none z-[130]">
-        <ConsoleOverlays game={game} logic={logic} />
+        <ConsoleOverlays />
       </TCFlex>
     </BattlefieldLayout>
   );
 };
+
+const PlayView: React.FC = () => (
+  <MatchStateProvider>
+    <MatchHUDProvider>
+      <PlayViewContent />
+    </MatchHUDProvider>
+  </MatchStateProvider>
+);
 
 export default PlayView;

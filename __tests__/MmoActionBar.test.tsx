@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { TopActionBar as ConsoleActionBar } from "@/app/core/hud/templates/TopActionBar";
 import { INITIAL_ARMY, PHASES } from "@constants";
 import type { GameStateHook } from "@tc.types";
-import { useConsoleLogic } from "@/shared/hooks/interface/useConsoleLogic";
 
 vi.mock("@/shared/hooks/engine", () => ({
   useGameState: vi.fn(),
@@ -12,10 +11,17 @@ vi.mock("@/shared/hooks/engine", () => ({
 vi.mock("@/shared/context", () => ({
   useRouteContext: vi.fn(),
   useGameEngineContext: vi.fn(),
+  useMatchState: vi.fn(),
+  useMatchHUD: vi.fn(),
 }));
 
 import { useGameState } from "@/shared/hooks/engine";
-import { useRouteContext, useGameEngineContext } from "@/shared/context";
+import {
+  useRouteContext,
+  useGameEngineContext,
+  useMatchState,
+  useMatchHUD,
+} from "@/shared/context";
 
 describe("ConsoleActionBar", () => {
   const mockDispatch = vi.fn();
@@ -48,15 +54,6 @@ describe("ConsoleActionBar", () => {
     isOnline: false,
   };
 
-  const mockProps = {
-    game: mockGame,
-    logic: mockLogic as unknown as ReturnType<typeof useConsoleLogic>,
-    darkMode: false,
-    pieceStyle: "lucide" as const,
-    toggleTheme: vi.fn(),
-    togglePieceStyle: vi.fn(),
-  };
-
   beforeEach(() => {
     vi.clearAllMocks();
     (useGameState as ReturnType<typeof vi.fn>).mockReturnValue(mockGame);
@@ -69,10 +66,12 @@ describe("ConsoleActionBar", () => {
     (useGameEngineContext as ReturnType<typeof vi.fn>).mockReturnValue({
       clientRef: { current: {} },
     });
+    (useMatchState as ReturnType<typeof vi.fn>).mockReturnValue(mockGame);
+    (useMatchHUD as ReturnType<typeof vi.fn>).mockReturnValue(mockLogic);
   });
 
   it("should call dispatch with 'board pi' when Pi button is clicked", () => {
-    render(<ConsoleActionBar {...mockProps} />);
+    render(<ConsoleActionBar />);
 
     const toggleButton = screen.getByTitle("Omega Mode");
     fireEvent.click(toggleButton);
@@ -84,7 +83,7 @@ describe("ConsoleActionBar", () => {
   });
 
   it("should call dispatch with 'board chi' when Chi button is clicked", () => {
-    render(<ConsoleActionBar {...mockProps} />);
+    render(<ConsoleActionBar />);
 
     const toggleButton = screen.getByTitle("Omega Mode");
     fireEvent.click(toggleButton);
@@ -96,7 +95,7 @@ describe("ConsoleActionBar", () => {
   });
 
   it("should call dispatch with 'board random' when Random button is clicked", () => {
-    render(<ConsoleActionBar {...mockProps} />);
+    render(<ConsoleActionBar />);
 
     const toggleButton = screen.getByTitle("Omega Mode");
     fireEvent.click(toggleButton);
@@ -108,7 +107,7 @@ describe("ConsoleActionBar", () => {
   });
 
   it("should call dispatch with 'board omega' when Omega button is clicked", () => {
-    render(<ConsoleActionBar {...mockProps} />);
+    render(<ConsoleActionBar />);
 
     const omegaButton = screen.getByTitle("Omega Mode");
     fireEvent.click(omegaButton);
@@ -118,7 +117,7 @@ describe("ConsoleActionBar", () => {
 
   it("should respect locks for randomization", () => {
     // This test needs to handle the local lock state in MmoActionBar
-    render(<ConsoleActionBar {...mockProps} />);
+    render(<ConsoleActionBar />);
 
     // Find the Lock buttons (Trench is first, Chess is second)
     const lockButtons = screen.getAllByTitle("Lock");

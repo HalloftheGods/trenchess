@@ -45,8 +45,8 @@ export function useSetupActions(
       }
 
       client.moves.setMode(selectedMode);
-      client.moves.resetToOmega();
       client.moves.setPhase(PHASES.MAIN);
+      client.moves.resetToOmega();
 
       setPlacementPiece(null);
       setPlacementTerrain(null);
@@ -74,31 +74,31 @@ export function useSetupActions(
       }
 
       if (preset === "quick" || preset === "alpha") {
-        client.moves.randomizeTerrain();
+        client.moves.setPhase(PHASES.MAIN);
         client.moves.randomizeUnits();
+        client.moves.randomizeTerrain();
         getPlayersForMode(selectedMode).forEach((pid) =>
           client.moves.ready(pid),
         );
-        client.moves.setPhase(PHASES.MAIN);
       } else if (preset === "classic" || preset === "pi") {
+        client.moves.setPhase(PHASES.MAIN);
         client.moves.setClassicalFormation();
         getPlayersForMode(selectedMode).forEach((pid) =>
           client.moves.ready(pid),
         );
-        client.moves.setPhase(PHASES.MAIN);
       } else if (preset === "terrainiffic" || preset === "chi") {
+        client.moves.setPhase(PHASES.MAIN);
         client.moves.applyChiGarden();
         getPlayersForMode(selectedMode).forEach((pid) =>
           client.moves.ready(pid),
         );
-        client.moves.setPhase(PHASES.MAIN);
       } else if (preset === "omega" || preset === "custom") {
-        client.moves.resetToOmega();
         client.moves.setPhase(PHASES.MAIN);
+        client.moves.resetToOmega();
       } else if (preset === "zen-garden") {
         client.moves.patchG({ isGamemaster: true });
-        client.moves.resetToOmega();
         client.moves.setPhase(PHASES.GAMEMASTER);
+        client.moves.resetToOmega();
       } else {
         client.moves.setPhase(PHASES.MAIN);
       }

@@ -1,21 +1,18 @@
 import React from "react";
 import { GameStartOverlay } from "../atoms";
 import { RulesOverlay } from "./RulesOverlay";
-import { useConsoleLogic } from "@/shared/hooks/interface/useConsoleLogic";
+import { useMatchState, useMatchHUD } from "@/shared/context";
 import { PHASES } from "@constants/game";
-import type { GameStateHook } from "@tc.types";
 
 interface ConsoleOverlaysProps {
-  game: GameStateHook;
-  logic: ReturnType<typeof useConsoleLogic>;
   children?: React.ReactNode;
 }
 
 export const ConsoleOverlays: React.FC<ConsoleOverlaysProps> = ({
-  game,
-  logic,
   children,
 }) => {
+  const game = useMatchState();
+  const logic = useMatchHUD();
   return (
     <>
       {logic.showOverlay && (

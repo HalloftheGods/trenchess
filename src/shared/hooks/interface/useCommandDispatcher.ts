@@ -228,8 +228,8 @@ export const useCommandDispatcher = (game: GameStateHook) => {
                 addLog("response", "Board set to Chi (Zen).");
                 break;
               case "random":
-                game.randomizeTerrain();
                 game.randomizeUnits();
+                game.randomizeTerrain();
                 addLog("response", "Board randomized.");
                 break;
               case "random_terrain":
@@ -291,8 +291,8 @@ export const useCommandDispatcher = (game: GameStateHook) => {
           addLog("response", "Board set to Chi (Zen).");
           break;
         case "random":
-          game.randomizeTerrain();
           game.randomizeUnits();
+          game.randomizeTerrain();
           addLog("response", "Board randomized.");
           break;
         case "mirror":

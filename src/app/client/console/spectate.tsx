@@ -2,13 +2,17 @@ import React from "react";
 import { SpectatorLayout } from "@blueprints/layouts/SpectatorLayout";
 import Header from "@organisms/Header";
 import { ConnectedBoard, Shoutbox } from "@game/components";
-import { useGameState } from "@hooks/engine/useGameState";
+import {
+  useMatchState,
+  MatchStateProvider,
+  MatchHUDProvider,
+} from "@/shared/context";
 
 /**
  * Spectator view: read-only game observation with chat.
  */
-const SpectatorView: React.FC = () => {
-  const game = useGameState();
+const SpectatorViewContent: React.FC = () => {
+  const game = useMatchState();
   return (
     <SpectatorLayout
       header={
@@ -31,12 +35,20 @@ const SpectatorView: React.FC = () => {
           togglePieceStyle={game.togglePieceStyle}
         />
       }
-      gameBoard={<ConnectedBoard game={game} />}
+      gameBoard={<ConnectedBoard />}
       shoutbox={
         <Shoutbox multiplayer={game.multiplayer} darkMode={game.darkMode} />
       }
     />
   );
 };
+
+const SpectatorView: React.FC = () => (
+  <MatchStateProvider>
+    <MatchHUDProvider>
+      <SpectatorViewContent />
+    </MatchHUDProvider>
+  </MatchStateProvider>
+);
 
 export default SpectatorView;

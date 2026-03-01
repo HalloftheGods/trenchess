@@ -5,15 +5,17 @@ import {
   ConnectedBoard,
   DeploymentPanel,
 } from "@/app/client/console/components";
-import { useGameState } from "@hooks/engine/useGameState";
 import { PHASES } from "@constants/game";
 import { TCFlex } from "@atoms/ui";
-import { useConsoleLogic } from "@/shared/hooks/interface/useConsoleLogic";
+import {
+  useMatchState,
+  MatchStateProvider,
+  MatchHUDProvider,
+} from "@/shared/context";
 import { ConsoleOverlays } from "../hud/organisms";
 
-const MainLoadoutScreen: React.FC = () => {
-  const game = useGameState();
-  const logic = useConsoleLogic(game);
+const MainLoadoutScreenContent: React.FC = () => {
+  const game = useMatchState();
 
   return (
     <>
@@ -85,16 +87,24 @@ const MainLoadoutScreen: React.FC = () => {
         }
         gameBoard={
           <TCFlex center className="w-full h-full min-h-[600px]">
-            <ConnectedBoard game={game} />
+            <ConnectedBoard />
           </TCFlex>
         }
         intelPanel={null} // Intel panel for drafting?
       />
       <TCFlex center className="absolute inset-0 pointer-events-none z-[130]">
-        <ConsoleOverlays game={game} logic={logic} />
+        <ConsoleOverlays />
       </TCFlex>
     </>
   );
 };
+
+const MainLoadoutScreen: React.FC = () => (
+  <MatchStateProvider>
+    <MatchHUDProvider>
+      <MainLoadoutScreenContent />
+    </MatchHUDProvider>
+  </MatchStateProvider>
+);
 
 export default MainLoadoutScreen;

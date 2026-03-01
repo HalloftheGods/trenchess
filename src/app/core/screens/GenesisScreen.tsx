@@ -5,16 +5,18 @@ import {
   ConnectedBoard,
   DeploymentPanel,
 } from "@/app/client/console/components";
-import { useGameState } from "@hooks/engine/useGameState";
 import { PHASES } from "@constants/game";
 import { TCFlex, TCButton, TCStack } from "@atoms/ui";
-import { useConsoleLogic } from "@/shared/hooks/interface/useConsoleLogic";
+import {
+  useMatchState,
+  MatchStateProvider,
+  MatchHUDProvider,
+} from "@/shared/context";
 import { ConsoleOverlays } from "../hud/organisms";
 import { Save, FolderInput } from "lucide-react";
 
-const GenesisScreen: React.FC = () => {
-  const game = useGameState();
-  const logic = useConsoleLogic(game);
+const GenesisScreenContent: React.FC = () => {
+  const game = useMatchState();
   const [hasStoredConfig, setHasStoredConfig] = useState(
     !!localStorage.getItem("trenchess_board_config"),
   );
@@ -100,11 +102,11 @@ const GenesisScreen: React.FC = () => {
         }
         gameBoard={
           <TCFlex center className="w-full h-full min-h-[600px]">
-            <ConnectedBoard game={game} />
+            <ConnectedBoard />
           </TCFlex>
         }
       />
-      
+
       {/* Quick FAB Buttons */}
       <TCStack
         className="fixed bottom-8 right-8 z-[140]"
@@ -132,10 +134,18 @@ const GenesisScreen: React.FC = () => {
       </TCStack>
 
       <TCFlex center className="absolute inset-0 pointer-events-none z-[130]">
-        <ConsoleOverlays game={game} logic={logic} />
+        <ConsoleOverlays />
       </TCFlex>
     </>
   );
 };
+
+const GenesisScreen: React.FC = () => (
+  <MatchStateProvider>
+    <MatchHUDProvider>
+      <GenesisScreenContent />
+    </MatchHUDProvider>
+  </MatchStateProvider>
+);
 
 export default GenesisScreen;

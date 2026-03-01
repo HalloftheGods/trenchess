@@ -86,7 +86,7 @@ export const APP_ROUTES: AppRoute[] = [
           {
             id: "learn",
             path: "learn",
-            name: "Academy",
+            name: "The Prophecy",
             children: [
               { id: "learn.index", index: true, element: <LearnIndexScreen /> },
               {
@@ -102,6 +102,7 @@ export const APP_ROUTES: AppRoute[] = [
               {
                 id: "learn.endgame",
                 path: "endgame",
+                name: "The Endgame",
                 children: [
                   {
                     id: "learn.endgame.index",
@@ -128,6 +129,7 @@ export const APP_ROUTES: AppRoute[] = [
               {
                 id: "learn.trench",
                 path: "trench",
+                name: "The Trench",
                 children: [
                   {
                     id: "learn.trench.index",
@@ -144,6 +146,7 @@ export const APP_ROUTES: AppRoute[] = [
               {
                 id: "learn.chess",
                 path: "chess",
+                name: "The Chess",
                 children: [
                   {
                     id: "learn.chess.index",
@@ -195,6 +198,7 @@ export const APP_ROUTES: AppRoute[] = [
       {
         id: "console",
         path: "console",
+        name: "Console",
         element: <ConsoleLayoutWrapper />,
         children: [
           { id: "console.index", index: true, element: <GameScreen /> },

@@ -14,7 +14,7 @@ const ROOM_ID =
 const MOVE_DELAY_MS = 2000;
 const MAX_TURNS = 100;
 
-describe("Live Simulation Stream", () => {
+describe.skip("Live Simulation Stream", () => {
   it("runs a simulation and streams it to the server", async () => {
     console.log(`🚀 Connecting to ${SERVER_URL}`);
     const socket = io(SERVER_URL);

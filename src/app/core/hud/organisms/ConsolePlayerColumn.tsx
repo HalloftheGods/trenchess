@@ -6,12 +6,11 @@ import {
   MAX_TERRAIN_PER_PLAYER,
   INITIAL_ARMY,
 } from "@constants";
-import type { GameStateHook, BoardPiece } from "@tc.types";
+import type { BoardPiece } from "@tc.types";
+import { useMatchState, useMatchHUD } from "@/shared/context";
 
 interface ConsolePlayerColumnProps {
-  game: GameStateHook;
   playerIds: string[];
-  teamPowerStats: Record<string, { current: number; max: number }>;
   isOnline: boolean;
   alignment: "left" | "right";
   onNextCommander?: () => void;
@@ -19,14 +18,14 @@ interface ConsolePlayerColumnProps {
 }
 
 export const ConsolePlayerColumn: React.FC<ConsolePlayerColumnProps> = ({
-  game,
   playerIds,
-  teamPowerStats,
   isOnline,
   alignment,
   onNextCommander,
   onFinishDeployment,
 }) => {
+  const game = useMatchState();
+  const logic = useMatchHUD();
   const activeInColumn = playerIds.filter((pid) =>
     game.activePlayers.includes(pid),
   );
@@ -39,7 +38,7 @@ export const ConsolePlayerColumn: React.FC<ConsolePlayerColumnProps> = ({
     if (pid === "red") return "top";
     if (pid === "blue") return "bottom";
     if (pid === "green" || pid === "yellow") return "center";
-    
+
     return "between";
   };
 
@@ -47,8 +46,10 @@ export const ConsolePlayerColumn: React.FC<ConsolePlayerColumnProps> = ({
 
   return (
     <div className="flex flex-col gap-8 flex-1">
-      {(position === "bottom" || position === "center") && <div className="flex-1" />}
-      
+      {(position === "bottom" || position === "center") && (
+        <div className="flex-1" />
+      )}
+
       {playerIds.map((expectedPid: string) => {
         const pid = game.activePlayers.includes(expectedPid)
           ? expectedPid
@@ -96,8 +97,8 @@ export const ConsolePlayerColumn: React.FC<ConsolePlayerColumnProps> = ({
             maxPlacement={pMaxPlacement}
             unitsPlaced={pUnitsPlaced}
             maxUnits={totalUnitCount}
-            currentPower={teamPowerStats[pid].current}
-            maxPower={teamPowerStats[pid].max}
+            currentPower={logic.teamPowerStats[pid].current}
+            maxPower={logic.teamPowerStats[pid].max}
             onResetTerrain={game.resetTerrain}
             onResetUnits={game.resetUnits}
             onForfeit={() => game.forfeit(pid)}
@@ -117,7 +118,9 @@ export const ConsolePlayerColumn: React.FC<ConsolePlayerColumnProps> = ({
         );
       })}
 
-      {(position === "top" || position === "center") && <div className="flex-1" />}
+      {(position === "top" || position === "center") && (
+        <div className="flex-1" />
+      )}
     </div>
   );
 };

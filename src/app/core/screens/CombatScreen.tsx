@@ -3,8 +3,7 @@ import { BattlefieldLayout } from "../blueprints/layouts/BattlefieldLayout";
 import { ConsoleOverlays, ConsolePlayerColumn } from "@/app/core/hud/organisms";
 import { TopActionBar } from "@/app/core/hud/templates";
 import { ConnectedBoard } from "@/app/core/components/board/organisms/ConnectedBoard";
-import { useConsoleLogic } from "@hooks/interface/useConsoleLogic";
-import { useGameState } from "@hooks/engine/useGameState";
+import { MatchStateProvider, MatchHUDProvider } from "@/shared/context";
 import { TCFlex } from "@atoms/ui";
 
 export interface CombatScreenProps {
@@ -13,14 +12,11 @@ export interface CombatScreenProps {
   initialLayout?: string; // e.g. "chaos", "classical"
 }
 
-const CombatScreen: React.FC<CombatScreenProps> = ({
+const CombatScreenContent: React.FC<CombatScreenProps> = ({
   isOnline = false,
   boardType = "standard",
   initialLayout,
 }) => {
-  const game = useGameState();
-  const logic = useConsoleLogic(game);
-
   // Note: boardType and initialLayout are available for mode-specific logic
   // but we primarily rely on the authoritative game state 'game'.
   const _activeBoardType = boardType;
@@ -30,31 +26,27 @@ const CombatScreen: React.FC<CombatScreenProps> = ({
     <BattlefieldLayout
       gameBoard={
         <TCFlex center className="w-full h-full">
-          <ConnectedBoard game={game} />
+          <ConnectedBoard />
         </TCFlex>
       }
-      actionBar={<TopActionBar game={game} logic={logic} />}
+      actionBar={<TopActionBar />}
       leftPanel={
         <ConsolePlayerColumn
-          game={game}
           playerIds={["red", "green"]}
-          teamPowerStats={logic.teamPowerStats}
           isOnline={isOnline}
           alignment="left"
         />
       }
       rightPanel={
         <ConsolePlayerColumn
-          game={game}
           playerIds={["yellow", "blue"]}
-          teamPowerStats={logic.teamPowerStats}
           isOnline={isOnline}
           alignment="right"
         />
       }
     >
       <TCFlex center className="absolute inset-0 pointer-events-none z-[130]">
-        <ConsoleOverlays game={game} logic={logic} />
+        <ConsoleOverlays />
       </TCFlex>
       {/* Hidden trackers to satisfy linter for now */}
       <div
@@ -65,5 +57,13 @@ const CombatScreen: React.FC<CombatScreenProps> = ({
     </BattlefieldLayout>
   );
 };
+
+const CombatScreen: React.FC<CombatScreenProps> = (props) => (
+  <MatchStateProvider>
+    <MatchHUDProvider>
+      <CombatScreenContent {...props} />
+    </MatchHUDProvider>
+  </MatchStateProvider>
+);
 
 export default CombatScreen;

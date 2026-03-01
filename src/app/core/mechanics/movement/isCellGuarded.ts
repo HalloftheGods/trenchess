@@ -18,6 +18,15 @@ export const isCellGuarded = (
   terrain: TerrainType[][],
   mode: GameMode,
 ): boolean => {
+  if (
+    targetRow < 0 ||
+    targetRow >= BOARD_SIZE ||
+    targetCol < 0 ||
+    targetCol >= BOARD_SIZE
+  ) {
+    return false;
+  }
+
   // 1. Find King/Defender details if relevant
   const pieceAtTarget = board[targetRow][targetCol];
   const targetTerrain = terrain[targetRow][targetCol];

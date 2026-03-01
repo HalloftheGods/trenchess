@@ -6,16 +6,18 @@ import {
   ConsolePlayerColumn,
 } from "./components";
 import { TopActionBar } from "@/app/core/hud/templates";
-import { useConsoleLogic } from "@hooks/interface/useConsoleLogic";
-import { useGameState } from "@hooks/engine/useGameState";
+import {
+  useMatchState,
+  MatchStateProvider,
+  MatchHUDProvider,
+} from "@/shared/context";
 import { useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { PHASES } from "@constants/game";
 import { ROUTES } from "@/app/router/router";
 
-const MmoView: React.FC = () => {
-  const game = useGameState();
-  const logic = useConsoleLogic(game);
+const MmoViewContent: React.FC = () => {
+  const game = useMatchState();
   const location = useLocation();
   const { roomId } = useParams<{ roomId?: string }>();
 
@@ -62,30 +64,34 @@ const MmoView: React.FC = () => {
 
   return (
     <TheBattlefield
-      gameBoard={<ConnectedBoard game={game} />}
-      actionBar={<TopActionBar game={game} logic={logic} />}
+      gameBoard={<ConnectedBoard />}
+      actionBar={<TopActionBar />}
       leftPanel={
         <ConsolePlayerColumn
-          game={game}
           playerIds={["red", "green"]}
-          teamPowerStats={logic.teamPowerStats}
-          isOnline={logic.isOnline}
+          isOnline={false}
           alignment="left"
         />
       }
       rightPanel={
         <ConsolePlayerColumn
-          game={game}
           playerIds={["yellow", "blue"]}
-          teamPowerStats={logic.teamPowerStats}
-          isOnline={logic.isOnline}
+          isOnline={false}
           alignment="right"
         />
       }
     >
-      <ConsoleOverlays game={game} logic={logic} />
+      <ConsoleOverlays />
     </TheBattlefield>
   );
 };
+
+const MmoView: React.FC = () => (
+  <MatchStateProvider>
+    <MatchHUDProvider>
+      <MmoViewContent />
+    </MatchHUDProvider>
+  </MatchStateProvider>
+);
 
 export default MmoView;

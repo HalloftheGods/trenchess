@@ -1,12 +1,14 @@
 import { GamemasterLayout } from "@/app/core/blueprints/layouts/GamemasterLayout";
 import { ConnectedBoard, ConsolePlayerColumn } from "./components";
 import { TopActionBar } from "@/app/core/hud/templates";
-import { useConsoleLogic } from "@hooks/interface/useConsoleLogic";
-import { useGameState } from "@hooks/engine/useGameState";
+import {
+  useMatchState,
+  MatchStateProvider,
+  MatchHUDProvider,
+} from "@/shared/context";
 
-const GamemasterView: React.FC = () => {
-  const game = useGameState();
-  const logic = useConsoleLogic(game);
+const GamemasterViewContent: React.FC = () => {
+  const game = useMatchState();
 
   const handleNextCommander = () => {
     const currentIndex = game.activePlayers.indexOf(game.turn);
@@ -20,13 +22,11 @@ const GamemasterView: React.FC = () => {
 
   return (
     <GamemasterLayout
-      gameBoard={<ConnectedBoard game={game} />}
-      actionBar={<TopActionBar game={game} logic={logic} />}
+      gameBoard={<ConnectedBoard />}
+      actionBar={<TopActionBar />}
       leftPanel={
         <ConsolePlayerColumn
-          game={game}
           playerIds={["red", "green"]}
-          teamPowerStats={logic.teamPowerStats}
           isOnline={false}
           alignment="left"
           onNextCommander={handleNextCommander}
@@ -35,9 +35,7 @@ const GamemasterView: React.FC = () => {
       }
       rightPanel={
         <ConsolePlayerColumn
-          game={game}
           playerIds={["yellow", "blue"]}
-          teamPowerStats={logic.teamPowerStats}
           isOnline={false}
           alignment="right"
           onNextCommander={handleNextCommander}
@@ -47,5 +45,13 @@ const GamemasterView: React.FC = () => {
     />
   );
 };
+
+const GamemasterView: React.FC = () => (
+  <MatchStateProvider>
+    <MatchHUDProvider>
+      <GamemasterViewContent />
+    </MatchHUDProvider>
+  </MatchStateProvider>
+);
 
 export default GamemasterView;
