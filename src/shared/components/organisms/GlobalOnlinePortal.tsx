@@ -10,14 +10,8 @@ export const GlobalOnlinePortal: React.FC = () => {
   const game = useGameState();
   const { multiplayer, darkMode } = useRouteContext();
 
-  // Render the portal even if we don't have socket connection active, because we want it available
-  // if the user is in worldwide mode, or if they have the portal open to check things.
-  // Actually, we should probably only show it if multiplayer exists and there's a reason to show it.
-  // But wait, what if they aren't in a multiplayer match? Let's check `multiplayer?.roomId`
-  // Wait, if they are just in the lobby menu, they might not have a roomId yet.
-  // Let's hide it completely if `!multiplayer` exists.
-
-  if (!multiplayer) return null;
+  // Only show the online portal if we are actually in a room
+  if (!multiplayer || !multiplayer.roomId) return null;
 
   const togglePanel = (e: React.MouseEvent) => {
     e.stopPropagation();

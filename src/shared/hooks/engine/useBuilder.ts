@@ -80,7 +80,11 @@ export function useBuilder(
   }, [gameState, mode, activePlayers, isMercenary]);
 
   const syncToEngine = useCallback(() => {
-    if (clientRef?.current && gameState === PHASES.GENESIS) {
+    if (
+      clientRef?.current &&
+      gameState === PHASES.GENESIS &&
+      isInitializedRef.current
+    ) {
       clientRef.current.moves.syncLayout({
         board,
         terrain,
