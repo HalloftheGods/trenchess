@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { APP_ROUTES } from "./tree";
+import { APP_ROUTES } from "./routes";
 import { buildRouterMetadata, type RoutesObject } from "./helpers";
 
 /**

@@ -77,7 +77,7 @@ const BackButton: React.FC<BackButtonProps> = ({
       <div className="flex items-center text-slate-300 dark:text-slate-800">
         <ChevronRight size={12} />
       </div>
-      <span className="px-1.5 py-1 text-brand-blue font-black text-[11px] whitespace-nowrap capitalize">
+      <span className="px-1.5 py-1 text-brand-blue font-black text-[11px] whitespace-nowrap capitalize border-b border-transparent">
         {currentCrumb.label}
       </span>
     </div>

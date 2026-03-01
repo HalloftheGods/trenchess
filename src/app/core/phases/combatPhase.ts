@@ -12,6 +12,9 @@ import type { Ctx } from "boardgame.io";
  * Tactical battle where armies clash and kings are pursued.
  */
 export const combatPhase = {
+  onBegin: ({ G }: { G: TrenchessState }) => {
+    console.log(`[PHASE_START] Combat Phase starting. Mode: ${G.mode}. Active Players: ${G.activePlayers.join(", ")}`);
+  },
   onMove,
   moves: {
     ...CORE_ADMIN_MOVES,

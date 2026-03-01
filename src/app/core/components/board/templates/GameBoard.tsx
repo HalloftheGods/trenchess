@@ -1,7 +1,7 @@
 import React from "react";
 import { BoardGrid } from "../organisms/BoardGrid";
 import { CheckAlert } from "../atoms";
-import { VictoryOverlay } from "../../../hud";
+import { VictoryOverlay } from "../../hud";
 import { PHASES } from "@constants";
 import type { BoardProps } from "@tc.types/game/ux/BoardProps";
 

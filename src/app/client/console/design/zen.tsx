@@ -5,7 +5,7 @@ import { ConnectedBoard, DeploymentPanel } from "@game/components";
 import { Pencil } from "lucide-react";
 import { serializeGame } from "@/shared/utilities/gameUrl";
 import { useGameState } from "@hooks/engine/useGameState";
-import { PHASES } from "@constants/game";
+import { PHASES, FEATURES } from "@constants";
 
 const ZenGardenView: React.FC = () => {
   const game = useGameState();
@@ -21,28 +21,32 @@ const ZenGardenView: React.FC = () => {
     </div>
   );
 
-  const renderZenGardenSeedButton = () => (
-    <button
-      onClick={() => {
-        const seed = serializeGame(
-          game.mode,
-          game.board,
-          game.terrain,
-          game.layoutName,
-        );
-        if (typeof window !== "undefined") {
-          const url = new URL(window.location.href);
-          url.searchParams.set("seed", seed);
-          window.history.pushState({}, "", url.toString());
-          navigator.clipboard.writeText(url.toString());
-        }
-      }}
-      className="absolute right-0 top-20 xl:top-auto xl:static px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-slate-900/20 cursor-pointer z-50 mr-4 xl:mr-0"
-    >
-      <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-      Seed
-    </button>
-  );
+  const renderZenGardenSeedButton = () => {
+    if (!FEATURES.SEEDS) return null;
+
+    return (
+      <button
+        onClick={() => {
+          const seed = serializeGame(
+            game.mode,
+            game.board,
+            game.terrain,
+            game.layoutName,
+          );
+          if (typeof window !== "undefined") {
+            const url = new URL(window.location.href);
+            url.searchParams.set("seed", seed);
+            window.history.pushState({}, "", url.toString());
+            navigator.clipboard.writeText(url.toString());
+          }
+        }}
+        className="absolute right-0 top-20 xl:top-auto xl:static px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-slate-900/20 cursor-pointer z-50 mr-4 xl:mr-0"
+      >
+        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        Seed
+      </button>
+    );
+  };
 
   return (
     <ZenGardenLayout

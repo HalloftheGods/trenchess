@@ -23,9 +23,9 @@ import { MultiplayerFooterControls } from "../molecules/MultiplayerFooterControl
 import { ArmyRoster } from "../molecules/ArmyRoster";
 import { ZenActions } from "../molecules/ZenActions";
 import { SeedLibraryList } from "../molecules/SeedLibraryList";
-import { CheckAlert } from "../../components/board/atoms/CheckAlert";
+import { CheckAlert } from "../../board/atoms/CheckAlert";
 import { ActiveFieldStrategy } from "../atoms/ActiveFieldStrategy";
-import { PHASES } from "@constants/game";
+import { PHASES, FEATURES } from "@constants";
 
 interface DeploymentPanelProps {
   mode: GameMode;

@@ -5,7 +5,7 @@ import {
   ConsoleOverlays,
   ConsolePlayerColumn,
 } from "./components";
-import { TopActionBar } from "@/app/core/hud/templates";
+import { TopActionBar } from "@/app/core/components/hud/templates";
 import {
   useMatchState,
   MatchStateProvider,

@@ -22,7 +22,6 @@ import {
  * Used for initial match configuration and standalone Architect (Zen Garden) mode.
  */
 export const genesisPhase = {
-  start: true,
   next: PHASES.MAIN,
   moves: {
     ...CORE_ADMIN_MOVES,

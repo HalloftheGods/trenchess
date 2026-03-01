@@ -1,6 +1,7 @@
 import type { Game } from "boardgame.io";
 import { createInitialState } from "@engine/setup/setupLogic";
 import type { TrenchessState } from "@tc.types/game";
+import { menuPhase } from "@engine/phases/menuPhase";
 import { genesisPhase } from "@engine/phases/genesisPhase";
 import { mainPhase } from "@engine/phases/mainPhase";
 import { combatPhase } from "@engine/phases/combatPhase";
@@ -31,7 +32,7 @@ export const Trenchess: Game<TrenchessState> = {
       lostToDesert: [],
       lastMove: null,
       mode: null,
-      activePlayers: ["red", "yellow", "green", "blue"],
+      activePlayers: [],
       readyPlayers: {},
       playerMap: {
         "0": "red",
@@ -47,6 +48,7 @@ export const Trenchess: Game<TrenchessState> = {
   },
 
   phases: {
+    [PHASES.MENU]: menuPhase,
     [PHASES.GENESIS]: genesisPhase,
     [PHASES.MAIN]: mainPhase,
     [PHASES.COMBAT]: combatPhase,

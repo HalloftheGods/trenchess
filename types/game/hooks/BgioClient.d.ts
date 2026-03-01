@@ -37,6 +37,7 @@ export interface BgioClient {
     setPhase: (phase: string) => void;
     patchG: (patch: Partial<TrenchessState>) => void;
     setActiveScreen: (screenId: string | undefined) => void;
+    initMatch: (mode: GameMode, preset: string | null) => void;
     authorizeMasterProtocol: () => void;
     syncLayout: (config: {
       board: (import("../game/BoardPiece").BoardPiece | null)[][];

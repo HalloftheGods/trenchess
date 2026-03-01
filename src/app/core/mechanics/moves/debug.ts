@@ -1,7 +1,7 @@
 import type { TrenchessState } from "@tc.types";
 import { INVALID_MOVE } from "boardgame.io/core";
 import type { FnContext } from "boardgame.io";
-import { setMode } from "./bulkSetup";
+import { setMode, initMatch } from "./bulkSetup";
 
 /**
  * Debug moves for direct state manipulation.
@@ -60,6 +60,7 @@ export const CORE_ADMIN_MOVES = {
   setTurn,
   setPhase,
   setMode,
+  initMatch,
   setActiveScreen,
   authorizeMasterProtocol,
 };

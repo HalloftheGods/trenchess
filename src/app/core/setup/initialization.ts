@@ -9,6 +9,23 @@ import type {
   SetupResult,
 } from "@tc.types";
 
+export const UNCONFIGURED_STATE: SetupResult = {
+  mode: null,
+  board: Array(BOARD_SIZE)
+    .fill(null)
+    .map(() => Array(BOARD_SIZE).fill(null)),
+  terrain: Array(BOARD_SIZE)
+    .fill(null)
+    .map(() => Array(BOARD_SIZE).fill(TERRAIN_TYPES.FLAT as TerrainType)),
+  inventory: {},
+  terrainInventory: {},
+  mercenaryPoints: {},
+  capturedBy: {},
+  activePlayers: [],
+  readyPlayers: {},
+  lastMove: null,
+};
+
 /**
  * createInitialState (Molecule)
  * Scaffolds the starting state for a match, including empty boards and player inventories.
@@ -37,19 +54,10 @@ export const createInitialState = (
     : MAX_TERRAIN_PER_PLAYER.FOUR_PLAYER;
 
   if (isUnconfigured) {
-    return {
-      mode,
-      board,
-      terrain,
-      inventory: {},
-      terrainInventory: {},
-      mercenaryPoints: {},
-      capturedBy: {},
-      activePlayers: [],
-      readyPlayers: {},
-      lastMove: null,
-    };
+    return UNCONFIGURED_STATE;
   }
+
+  console.log(`[INIT] Mode: ${mode}. Players: ${players.join(", ")}`);
 
   players.forEach((player) => {
     // Map initial army to flat list of types

@@ -24,7 +24,7 @@ import {
 } from "@controllers";
 import { analytics } from "@/shared/utilities/analytics";
 import { PHASES } from "@constants/game";
-import type { GameStateHook } from "@tc.types";
+import type { GameStateHook, PieceType, TerrainType } from "@tc.types";
 
 export function useGameState(): GameStateHook {
   const theme = useGameTheme();
@@ -74,8 +74,9 @@ export function useGameState(): GameStateHook {
   const board = isGenesis ? builder.board : bgioBoard;
   const terrain = isGenesis ? builder.terrain : bgioTerrain;
   const inventory = isGenesis ? builder.inventory : bgioInventory;
-  const terrainInventory =
-    isGenesis ? builder.terrainInventory : bgioTerrainInventory;
+  const terrainInventory = isGenesis
+    ? builder.terrainInventory
+    : bgioTerrainInventory;
 
   const core = useGameLifecycle(
     {
@@ -163,7 +164,8 @@ export function useGameState(): GameStateHook {
         ...setupActions,
         randomizeTerrain: () => builder.randomizeTerrain(activePlayers),
         randomizeUnits: () => builder.randomizeUnits(activePlayers),
-        setClassicalFormation: () => builder.setClassicalFormation(activePlayers),
+        setClassicalFormation: () =>
+          builder.setClassicalFormation(activePlayers),
         resetTerrain: () => builder.reset(), // Basic reset for now
         resetUnits: () => builder.reset(),
       }

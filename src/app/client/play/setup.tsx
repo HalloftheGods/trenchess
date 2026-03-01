@@ -23,6 +23,7 @@ import {
 import type { GameMode } from "@tc.types/game";
 import { ROUTES } from "@/app/router/router";
 import { buildRoute } from "@/shared/utilities/routes";
+import { FEATURES } from "@constants";
 
 // Shared Route Components
 import RoutePageLayout from "@/shared/components/templates/RoutePageLayout";

@@ -12,7 +12,7 @@ import {
   MatchStateProvider,
   MatchHUDProvider,
 } from "@/shared/context";
-import { ConsoleOverlays } from "../hud/organisms";
+import { ConsoleOverlays } from "../components/hud/organisms";
 
 const MainLoadoutScreenContent: React.FC = () => {
   const game = useMatchState();

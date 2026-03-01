@@ -68,8 +68,11 @@ const ConsoleViewDispatcher: React.FC = () => {
     : null;
 
   if (OverrideScreen) {
+    console.log(`[DISPATCHER] Rendering override screen: ${activeScreenId}`);
     return <OverrideScreen />;
   }
+
+  console.log(`[DISPATCHER] Style: ${style}. Phase: ${gameState}`);
 
   switch (style) {
     case "alpha":

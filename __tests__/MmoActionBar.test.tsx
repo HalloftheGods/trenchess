@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { TopActionBar as ConsoleActionBar } from "@/app/core/hud/templates/TopActionBar";
+import { TopActionBar as ConsoleActionBar } from "@/app/core/components/hud/templates/TopActionBar";
 import { INITIAL_ARMY, PHASES } from "@constants";
 import type { GameStateHook } from "@tc.types";
 

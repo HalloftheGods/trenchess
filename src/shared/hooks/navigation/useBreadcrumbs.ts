@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { APP_ROUTES } from "@/app/router/tree";
+import { APP_ROUTES } from "@/app/router/routes";
 import type { AppRoute } from "@/app/router/helpers";
 
 export interface BreadcrumbItem {

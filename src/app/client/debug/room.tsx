@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import { BattlefieldLayout } from "@/app/core/blueprints/layouts/BattlefieldLayout";
-import { ConsoleOverlays, ConsolePlayerColumn } from "@/app/core/hud/organisms";
+import {
+  ConsoleOverlays,
+  ConsolePlayerColumn,
+} from "@/app/core/components/hud/organisms";
 import { ConnectedBoard } from "@/app/core/components/board/organisms/ConnectedBoard";
 import {
   useMatchState,

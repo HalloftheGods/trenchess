@@ -156,7 +156,7 @@ export const TopActionBar: React.FC = () => {
 
       <TCFlex
         align="center"
-        justify="around"
+        justify="center"
         gap={8}
         className="w-full max-w-[1800px] mx-auto px-10 relative z-10"
       >
@@ -180,34 +180,7 @@ export const TopActionBar: React.FC = () => {
           </>
         )}
 
-        {showPlay && !wizard.isWizardActive && (
-          <TCFlex direction="col" align="center" gap={1}>
-            <PlayTurn
-              activePlayers={activePlayers}
-              turn={turn}
-              getIcon={(pid) => {
-                const kingUnit = INITIAL_ARMY.find(
-                  (u) => u.type === PIECES.KING,
-                );
-                return kingUnit
-                  ? getIcon?.(
-                      kingUnit,
-                      `${PLAYER_CONFIGS[pid]?.text || ""} drop-shadow-md`,
-                      24,
-                    )
-                  : null;
-              }}
-            />
-            <TCText
-              variant="muted"
-              className="text-[9px] font-black uppercase tracking-[0.25em] opacity-40 mt-1"
-            >
-              Turn
-            </TCText>
-          </TCFlex>
-        )}
-
-        <TCDivider className="h-10 mx-2 opacity-10" />
+        {showSetup && <TCDivider className="h-10 mx-2 opacity-10" />}
 
         <ThemeSetup
           darkMode={darkMode}
@@ -215,6 +188,36 @@ export const TopActionBar: React.FC = () => {
           toggleTheme={toggleTheme ?? (() => {})}
           togglePieceStyle={togglePieceStyle ?? (() => {})}
         />
+
+        {showPlay && !wizard.isWizardActive && (
+          <>
+            <TCDivider className="h-10 mx-2 opacity-10" />
+            <TCFlex direction="col" align="center" gap={1}>
+              <PlayTurn
+                activePlayers={activePlayers}
+                turn={turn}
+                getIcon={(pid) => {
+                  const kingUnit = INITIAL_ARMY.find(
+                    (u) => u.type === PIECES.KING,
+                  );
+                  return kingUnit
+                    ? getIcon?.(
+                        kingUnit,
+                        `${PLAYER_CONFIGS[pid]?.text || ""} drop-shadow-md`,
+                        24,
+                      )
+                    : null;
+                }}
+              />
+              <TCText
+                variant="muted"
+                className="text-[9px] font-black uppercase tracking-[0.25em] opacity-40 mt-1"
+              >
+                Turn
+              </TCText>
+            </TCFlex>
+          </>
+        )}
 
         {showPov && (
           <>

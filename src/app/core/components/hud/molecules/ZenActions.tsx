@@ -1,7 +1,7 @@
 import React from "react";
 import { Copy, Save } from "lucide-react";
 
-import { PHASES } from "@constants/game";
+import { PHASES } from "@constants";
 import type { GameState } from "@tc.types/game";
 
 interface ZenActionsProps {

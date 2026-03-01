@@ -200,6 +200,10 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({
     ],
   );
 
+  useEffect(() => {
+    console.log(`[MULTIPLAYER] Room: ${roomId || "Local"}. Index: ${playerIndex}. Connected: ${isConnected}`);
+  }, [roomId, playerIndex, isConnected]);
+
   return (
     <MultiplayerContext.Provider value={value}>
       {children}

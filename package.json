@@ -1,7 +1,7 @@
 {
   "name": "battle-chess",
   "private": true,
-  "version": "v26.02.28.rc06",
+  "version": "v26.03.01.rc01",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -37,7 +37,7 @@
     "glob": "^13.0.6",
     "globals": "^17.3.0",
     "husky": "^9.1.7",
-    "jsdom": "^28.1.0",
+    "jsdom": "^24.0.0",
     "tailwindcss": "^4.2.1",
     "tsx": "^4.21.0",
     "typescript": "~5.9.3",

@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 import { analytics } from "@/shared/utilities/analytics";
-import { PHASES } from "@constants/game";
 import type {
   SetupActions,
   GameCore,
@@ -44,9 +43,7 @@ export function useSetupActions(
         window.history.pushState({}, "", url.toString());
       }
 
-      client.moves.setMode(selectedMode);
-      client.moves.setPhase(PHASES.MAIN);
-      client.moves.resetToOmega();
+      client.moves.initMatch(selectedMode, "omega");
 
       setPlacementPiece(null);
       setPlacementTerrain(null);
@@ -65,57 +62,21 @@ export function useSetupActions(
       const client = getClient();
       if (!client) return;
 
-      console.log(`[INIT_PRESET] Mode: ${selectedMode}. Preset: ${preset}. Players: ${getPlayersForMode(selectedMode).join(", ")}`);
+      console.log(
+        `[INIT_PRESET] Mode: ${selectedMode}. Preset: ${preset}. Players: ${getPlayersForMode(selectedMode).join(", ")}`,
+      );
 
       if (newPlayerTypes) {
         setPlayerTypes((prev) => ({ ...prev, ...newPlayerTypes }));
       }
 
-      if (core.mode !== selectedMode) {
-        client.moves.setMode(selectedMode);
-      }
-
-      if (preset === "quick" || preset === "alpha") {
-        client.moves.setPhase(PHASES.MAIN);
-        client.moves.randomizeUnits();
-        client.moves.randomizeTerrain();
-        getPlayersForMode(selectedMode).forEach((pid) =>
-          client.moves.ready(pid),
-        );
-      } else if (preset === "classic" || preset === "pi") {
-        client.moves.setPhase(PHASES.MAIN);
-        client.moves.setClassicalFormation();
-        getPlayersForMode(selectedMode).forEach((pid) =>
-          client.moves.ready(pid),
-        );
-      } else if (preset === "terrainiffic" || preset === "chi") {
-        client.moves.setPhase(PHASES.MAIN);
-        client.moves.applyChiGarden();
-        getPlayersForMode(selectedMode).forEach((pid) =>
-          client.moves.ready(pid),
-        );
-      } else if (preset === "omega" || preset === "custom") {
-        client.moves.setPhase(PHASES.MAIN);
-        client.moves.resetToOmega();
-      } else if (preset === "zen-garden") {
-        client.moves.patchG({ isGamemaster: true });
-        client.moves.setPhase(PHASES.GAMEMASTER);
-        client.moves.resetToOmega();
-      } else {
-        client.moves.setPhase(PHASES.MAIN);
-      }
+      client.moves.initMatch(selectedMode, preset || "custom");
 
       setPlacementPiece(null);
       setPlacementTerrain(null);
       analytics.trackEvent("Setup", "Init Preset", preset || "custom");
     },
-    [
-      getClient,
-      setPlayerTypes,
-      setPlacementPiece,
-      setPlacementTerrain,
-      core.mode,
-    ],
+    [getClient, setPlayerTypes, setPlacementPiece, setPlacementTerrain],
   );
 
   const randomizeTerrain = useCallback(() => {

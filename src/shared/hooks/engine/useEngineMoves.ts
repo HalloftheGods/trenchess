@@ -15,6 +15,6 @@ export function useEngineMoves(
     setActiveScreen: (screenId: string | undefined) =>
       clientRef.current?.moves.setActiveScreen(screenId),
     forfeit: (pid?: string) => clientRef.current?.moves.forfeit(pid),
-    toggleReady: () => clientRef.current?.moves.ready(),
+    toggleReady: (pid?: string) => clientRef.current?.moves.ready(pid),
   };
 }

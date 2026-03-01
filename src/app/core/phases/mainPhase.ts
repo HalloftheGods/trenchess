@@ -21,6 +21,9 @@ import { PHASES } from "@constants/game";
  * Players strategically deploy units and terrain within their territories.
  */
 export const mainPhase = {
+  onBegin: ({ G }: { G: TrenchessState }) => {
+    console.log(`[PHASE_START] Main Phase starting. Mode: ${G.mode}. Active Players: ${G.activePlayers.join(", ")}`);
+  },
   next: PHASES.COMBAT,
   moves: {
     ...CORE_ADMIN_MOVES,

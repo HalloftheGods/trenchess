@@ -4,6 +4,7 @@ import { useTerminal } from "@/shared/context/TerminalContext";
 import { ROUTES } from "@/app/router/router";
 import { buildRoute } from "@/shared/utilities/routes";
 import { fromAlgebraic } from "@/shared/utilities/game";
+import { FEATURES } from "@constants";
 import type {
   GameStateHook,
   GameMode,
@@ -267,6 +268,10 @@ export const useCommandDispatcher = (game: GameStateHook) => {
           }
           break;
         case "seed":
+          if (!FEATURES.URL_SEEDS) {
+            addLog("error", "Seed string initialization is currently disabled via feature flag.");
+            break;
+          }
           if (args[0]) {
             const success = game.initFromSeed(args[0]);
             if (success) {

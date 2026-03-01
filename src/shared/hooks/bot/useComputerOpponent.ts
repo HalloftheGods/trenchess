@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useAiDecision } from "./useAiDecision";
+import { engineService } from "@/app/core/bot/stockfishLogic";
 import { PHASES } from "@constants/game";
 import type { GameMode, BoardPiece, TerrainType } from "@tc.types/game";
 
@@ -35,6 +36,13 @@ export function useComputerOpponent({
   const { getDecision } = useAiDecision();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isThinkingRef = useRef(false);
+
+  useEffect(() => {
+    const hasComputer = Object.values(playerTypes).includes("computer");
+    if (hasComputer) {
+      engineService.preload();
+    }
+  }, [playerTypes]);
 
   useEffect(() => {
     if (timeoutRef.current) {

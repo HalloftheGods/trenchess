@@ -13,11 +13,17 @@ interface StockfishInstance {
 
 class StockfishEngine {
   private engine: StockfishInstance | null = null;
-  private ready: Promise<void>;
+  private ready: Promise<void> | null = null;
   private onResolveBestMove: ((move: string) => void) | null = null;
 
   constructor() {
-    this.ready = this.init();
+    // Lazy initialization; don't allocate stockfish until requested.
+  }
+
+  public preload(): void {
+    if (!this.ready) {
+      this.ready = this.init();
+    }
   }
 
   private async init() {
@@ -80,6 +86,9 @@ class StockfishEngine {
     board: (BoardPiece | null)[][],
     turn: string,
   ): Promise<{ from: [number, number]; to: [number, number]; score: number }> {
+    if (!this.ready) {
+      this.ready = this.init();
+    }
     await this.ready;
 
     if (!this.engine) {

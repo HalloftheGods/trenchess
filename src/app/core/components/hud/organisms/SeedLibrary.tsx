@@ -14,7 +14,7 @@ import {
   Bomb,
 } from "lucide-react";
 import { deserializeGame, adaptSeedToMode } from "@/shared/utilities/gameUrl";
-import { PLAYER_CONFIGS } from "@constants";
+import { PLAYER_CONFIGS, FEATURES, PHASES } from "@constants";
 import { INITIAL_ARMY } from "@constants";
 import type { GameMode } from "@tc.types/game";
 
@@ -28,7 +28,6 @@ interface SeedItem {
 
 import { useGameState } from "@hooks/engine/useGameState";
 import { useNavigate } from "react-router-dom";
-import { PHASES } from "@constants/game";
 import { ROUTES } from "@/app/router/router";
 
 import { TERRAIN_INTEL } from "@constants";
@@ -163,12 +162,18 @@ const SeedLibrary: React.FC = () => {
   };
 
   const handleCopyLink = (seed: string, id: string) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("seed", seed);
-    navigator.clipboard.writeText(url.toString()).then(() => {
+    if (FEATURES.URL_SEEDS) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("seed", seed);
+      navigator.clipboard.writeText(url.toString()).then(() => {
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+      });
+    } else {
+      // Just notify it's selected/ready if we can't share via URL
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 2000);
-    });
+    }
   };
 
   const filteredSeeds = seeds.filter(
@@ -285,11 +290,11 @@ const SeedLibrary: React.FC = () => {
                   >
                     {copiedId === item.id ? (
                       <>
-                        <Play size={14} /> Copied
+                        <Play size={14} /> {FEATURES.URL_SEEDS ? "Copied" : "Ready"}
                       </>
                     ) : (
                       <>
-                        <Share2 size={14} /> Share
+                        <Share2 size={14} /> {FEATURES.URL_SEEDS ? "Share" : "Select"}
                       </>
                     )}
                   </button>

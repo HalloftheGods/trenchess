@@ -1,6 +1,6 @@
 import { getPlayerCells, getPlayersForMode } from "@/app/core/setup/territory";
 import { canPlaceUnit } from "@/app/core/setup/validation";
-import { TERRAIN_TYPES, INITIAL_ARMY } from "@constants";
+import { TERRAIN_TYPES, INITIAL_ARMY, FEATURES } from "@constants";
 import { DEFAULT_SEEDS } from "@/app/core/setup/seeds";
 import {
   deserializeGame,
@@ -13,7 +13,7 @@ import type {
   GameMode,
   BoardPiece,
 } from "@tc.types";
-import type { Ctx } from "boardgame.io";
+import type { Ctx, FnContext } from "boardgame.io";
 import { resolvePlayerId, getQuota } from "@/app/core/setup/coreHelpers";
 import { INVALID_MOVE } from "boardgame.io/core";
 import {
@@ -418,5 +418,76 @@ export const applyChiGarden = (
       });
       G.terrainInventory[playerId] = remainingTerrain;
     });
+  }
+};
+
+export const initMatch = (
+  { G, events, random }: FnContext<TrenchessState>,
+  selectedMode: GameMode,
+  preset: string | null,
+  _newPlayerTypes?: Record<string, "human" | "computer">,
+) => {
+  // Apply mode
+  if (G.mode !== selectedMode) {
+    setMode({ G }, selectedMode);
+  }
+
+  // Update AI types
+  // Note: playerTypes is managed outside G conceptually in our codebase but let's assume it's external or we don't need it here. Wait, turnState manages playerTypes locally in the React context, not in G. So we skip newPlayerTypes here.
+
+  if (preset === "quick" || preset === "alpha") {
+    // We pass explicitPid true to bypass Gamemaster check in the internal methods
+    randomizeUnits({ G, random, ctx: {} as Ctx }, undefined, true);
+    randomizeTerrain({ G, random, ctx: {} as Ctx }, undefined, true);
+    for (const pid of getPlayersForMode(selectedMode)) {
+      G.readyPlayers[pid] = true;
+    }
+  } else if (preset === "classic" || preset === "pi") {
+    setClassicalFormation({ G, random, ctx: {} as Ctx }, undefined, true);
+    for (const pid of getPlayersForMode(selectedMode)) {
+      G.readyPlayers[pid] = true;
+    }
+  } else if (preset === "terrainiffic" || preset === "chi") {
+    applyChiGarden({ G, random, ctx: {} as Ctx }, undefined, true);
+    for (const pid of getPlayersForMode(selectedMode)) {
+      G.readyPlayers[pid] = true;
+    }
+  } else if (preset === "omega" || preset === "custom") {
+    G.board = createInitialState(
+      selectedMode,
+      getPlayersForMode(selectedMode),
+      G.isMercenary,
+    ).board;
+    // resetToOmega internal equivalent
+    G.activePlayers.forEach((pid) => {
+      G.inventory[pid] = [
+        ...Array(1).fill("king"),
+        ...Array(1).fill("queen"),
+        ...Array(2).fill("rook"),
+        ...Array(2).fill("bishop"),
+        ...Array(2).fill("knight"),
+        ...Array(8).fill("pawn"),
+      ];
+      G.terrainInventory[pid] = [
+        ...Array(4).fill("forests"),
+        ...Array(4).fill("mountains"),
+        ...Array(4).fill("swamps"),
+        ...Array(4).fill("desert"),
+      ];
+    });
+  } else if (preset === "zen-garden") {
+    G.isGamemaster = true;
+    events.setPhase!("gamemaster");
+    return;
+  }
+
+  // Check if all players ready to jump to combat
+  const players = getPlayersForMode(selectedMode);
+  const allReady = players.every((p) => G.readyPlayers[p]);
+
+  if (allReady) {
+    events.setPhase!("combat");
+  } else {
+    events.setPhase!("main");
   }
 };

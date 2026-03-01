@@ -12,7 +12,7 @@ import {
   MatchStateProvider,
   MatchHUDProvider,
 } from "@/shared/context";
-import { ConsoleOverlays } from "../hud/organisms";
+import { ConsoleOverlays } from "../components/hud/organisms";
 import { Save, FolderInput } from "lucide-react";
 
 const GenesisScreenContent: React.FC = () => {

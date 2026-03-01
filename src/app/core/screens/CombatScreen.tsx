@@ -1,7 +1,10 @@
 import React from "react";
 import { BattlefieldLayout } from "../blueprints/layouts/BattlefieldLayout";
-import { ConsoleOverlays, ConsolePlayerColumn } from "@/app/core/hud/organisms";
-import { TopActionBar } from "@/app/core/hud/templates";
+import {
+  ConsoleOverlays,
+  ConsolePlayerColumn,
+} from "@/app/core/components/hud/organisms";
+import { TopActionBar } from "@/app/core/components/hud/templates";
 import { ConnectedBoard } from "@/app/core/components/board/organisms/ConnectedBoard";
 import { MatchStateProvider, MatchHUDProvider } from "@/shared/context";
 import { TCFlex } from "@atoms/ui";

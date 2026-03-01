@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { serializeGame, deserializeGame } from "@/shared/utilities/gameUrl";
 import { useUrlState } from "./useUrlState";
-import { PHASES } from "@constants/game";
+import { PHASES, FEATURES } from "@constants";
 import type {
   GameMode,
   GameState as GameStateType,
@@ -43,14 +43,20 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
   } = deps;
 
   const { seed: urlSeed, view: urlView, updateParams } = useUrlState();
+  const lastPublishedSeedRef = useRef<string | null>(null);
+  const hasInitializedRef = useRef(false);
 
   const publishSeed = useCallback(() => {
+    if (!FEATURES.URL_SEEDS) return;
+
     const seed = serializeGame(mode, board, terrain, layoutName);
+    lastPublishedSeedRef.current = seed;
     updateParams({ seed });
   }, [mode, board, terrain, layoutName, updateParams]);
 
   const initFromSeed = useCallback(
     (seed: string, targetState?: GameStateType) => {
+      // Manual/Internal calls are allowed, only URL auto-loading is restricted by the effect below
       const data = deserializeGame(seed);
       if (!data) return false;
 
@@ -63,10 +69,20 @@ export function useUrlSync(deps: UrlSyncDeps): UrlSync {
     [setMode, setLocalPlayerName, setLayoutName, setGameState],
   );
 
-  // Sync from URL on Mount
+  // Sync from URL on Mount or when navigating history
   useEffect(() => {
-    if (urlSeed) {
-      initFromSeed(urlSeed);
+    // Prevent reacting to our own just-published seed
+    if (urlSeed && urlSeed === lastPublishedSeedRef.current) return;
+
+    if (urlSeed && !hasInitializedRef.current) {
+      if (FEATURES.URL_SEEDS) {
+        initFromSeed(urlSeed);
+      } else {
+        console.warn(
+          "[SEEDS] Automatic URL seed loading is disabled via feature flag.",
+        );
+      }
+      hasInitializedRef.current = true;
     } else if (
       urlView &&
       (

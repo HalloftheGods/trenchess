@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { isPlayerInCheck } from "@/app/core/mechanics";
 import { serializeGame } from "@/shared/utilities/gameUrl";
-import { PLAYER_CONFIGS } from "@constants";
+import { PLAYER_CONFIGS, FEATURES, PHASES } from "@constants";
 import { useDeploymentMetrics } from "@hooks/math/useDeploymentMetrics";
 import type {
   PieceType,
@@ -13,7 +13,6 @@ import type {
   GameState,
 } from "@tc.types";
 import { useUrlSync } from "../navigation/useUrlSync";
-import { PHASES } from "@constants/game";
 
 /**
  * useGameLifecycle — UI-side lifecycle management.
@@ -94,7 +93,7 @@ export function useGameLifecycle(
 
   // Publish Seed on Game Start
   const publishSeed = useCallback(() => {
-    if (typeof window === "undefined") return;
+    if (!FEATURES.URL_SEEDS || typeof window === "undefined") return;
     const seed = serializeGame(mode, board, terrain, layoutName);
     const url = new URL(window.location.href);
     url.searchParams.set("seed", seed);

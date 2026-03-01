@@ -12,5 +12,5 @@ export const GamemasterScreen = lazy(
 );
 export const GameScreen = lazy(() => import("@/app/core/screens/GameScreen"));
 export const LibraryScreen = lazy(
-  () => import("@/app/core/hud/organisms/SeedLibrary"),
+  () => import("@/app/core/components/hud/organisms/SeedLibrary"),
 );

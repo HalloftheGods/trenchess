@@ -151,6 +151,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
     const onStateUpdate = (state: { G: TrenchessState; ctx: Ctx } | null) => {
       if (!state) return;
+      console.log(`[ENGINE_UPDATE] Phase: ${state.ctx.phase}. Turn: ${state.ctx.turn}. Mode: ${state.G.mode}. Active Players: ${state.G.activePlayers.length}`);
       const stringified = JSON.stringify({ G: state.G, ctx: state.ctx });
       if (stringified !== lastBgioStateRef.current) {
         lastBgioStateRef.current = stringified;

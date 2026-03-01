@@ -3,7 +3,7 @@ import type { GameMode, GameState } from "@tc.types";
 import { IconButton } from "@/shared/components/atoms/IconButton";
 import { SegmentedControl } from "@/shared/components/molecules/SegmentedControl";
 import { PlayerBadge } from "@/shared/components/atoms";
-import { PLAYER_CONFIGS, PHASES } from "@constants";
+import { PLAYER_CONFIGS, PHASES, FEATURES } from "@constants";
 import GameLogo from "@/shared/components/molecules/GameLogo";
 import ThemeControls from "@/shared/components/molecules/ThemeControls";
 import type { PieceStyle } from "@tc.types";
