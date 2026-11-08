@@ -15,6 +15,9 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: "./__tests__/setup.ts",
+    // Matches CI (`vitest run --testTimeout=20000`): the GameFlow integration
+    // test legitimately takes 7-9s, over vitest's 5s default.
+    testTimeout: 20000,
     server: {
       deps: {
         inline: ["@exodus/bytes", "html-encoding-sniffer"],

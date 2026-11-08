@@ -1,7 +1,7 @@
 {
   "name": "battle-chess",
   "private": true,
-  "version": "v26.11.07.rc05",
+  "version": "v26.11.07.rc06",
   "type": "module",
   "scripts": {
     "dev": "vite",
