@@ -1,0 +1,11 @@
+{
+  "pillars": {
+    "lineBudgets": true,
+    "zeroRawDom": true,
+    "tableOfContentsViews": true,
+    "composableContracts": true,
+    "verificationFirst": true,
+    "astQueryFirst": true,
+    "swarmBacklog": true
+  }
+}

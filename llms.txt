@@ -1,0 +1,16 @@
+# battle-chess
+
+> Agent directives for this project, built on the Chemical X architecture toolkit.
+
+AGENTS.md is the canonical rulebook. Every architectural rule and threshold lives there; this generated file only points at it. Regenerate with `npx chemx pillars --write` instead of editing it.
+
+Active pillars: Molecular Line Budgets, Strict Component Tiers & Zero-Raw-DOM, Table-of-Contents Views, Molecular Composable Contracts, AST Codebase Query Engine.
+
+## Rules
+- [AGENTS.md](./AGENTS.md): canonical architecture rules and thresholds.
+
+## Invocation
+- MCP: one tool, `chemx({ action, params })`. Mutating actions need `params.projectRoot`.
+- CLI: `chemx verify`, `chemx audit --json`, `chemx q "<query>"` (AST), `chemx q -g "<pattern>"` (literal), `chemx d` (diff), `chemx read <path> --outline`.
+
+<!-- chemx:generated pillars -->

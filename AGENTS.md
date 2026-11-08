@@ -1,0 +1,620 @@
+# Chemical X Molecular Architecture Directives
+
+> *"Clean, literate code that reads like poetry to both humans and AI."*
+> Mandatory architectural directives for AI agents operating on this repository. Strictly enforce these standards on every code generation, refactor, and review pass.
+
+---
+
+## ⚡ Quick Agent Reflex Table (Token-Bounded Commands)
+| Standard Reflex | `chemx` Equivalent | Token & Architecture Advantage |
+| :--- | :--- | :--- |
+| `grep -rn "pattern" .` | `chemx q -g "pattern" --bare` or `chemx q -g "pattern" -C 3 --bare` | Fixed-string search matching rg token-for-token (57 chars / 14 tokens per hit); add `-C <N>` to inspect surrounding code in a single turn without a second read call. `a\|b` is literal text: add `--regex` for alternation (RE2 subset). `-l` prints the matching files once, `-o --unique` prints the distinct matched text (a `--gs-[a-z-]+` token list in one call), paths after the pattern scope it (`--glob <path>` is `--dir`; `--max <N>` is `-n`), dot-directories such as `.github` and `.claude` are searched (only git-ignored paths are left out; `--hidden` adds them), and `chemx q <text>` with no symbol hit runs this search for you. See [docs/search.md](docs/search.md). |
+| `sed -n 'N,Mp' <file>` | `chemx read <file>:N-M --bare` (or `--lines a-b`, `--lines=a-b`, `--start=N --end=M`; `--full` for whole file) | Verbatim slice matching sed byte-for-byte; 0 header, box or line number tokens. `--bare` never substitutes an outline on long files. `--full` returns the whole file without truncation. |
+| `git diff` | `chemx d` | Zero-context (`-U0`), auto-collapses to `--stat` if > 80 lines, micro-syncs index. |
+| Editing `docs/CHANGELOG.md` for your change | write `docs/changelog.d/<ticket>.md` (first line `### Fixed`, `### Added` or a title with the ticket id, then bullets); `chemx changelog --check` validates, `chemx changelog` folds the fragments into Unreleased and deletes them | One file per change, so parallel tickets never edit the same lines. Never edit `docs/CHANGELOG.md` directly. See [docs/changelog.d/README.md](docs/changelog.d/README.md). |
+| `git log` | `chemx log -n 5` | One-line commit history (5 commits measured about 140 tokens on 2026-10-09, roughly 28 per commit). |
+| `find . -name "*.vue"` | `chemx f "*.vue"` | Strictly filters by `.gitignore` and ignored dirs. |
+| `cat package.json` | `chemx p -s` / `chemx p <script>` | Single script or dep extraction (`p -s` listing 15 scripts measured about 240 tokens on 2026-10-09). |
+| `cat <data.json>` | `chemx j <file.json>` | Structural schema shape only; collapses repeating arrays. |
+| `cat <file>` / `head <file>` | `chemx read <file> --outline` | AST signatures only (outline of `cli/reader.js` measured about 300 tokens against about 4,800 for the file, 2026-10-09; other targets in `benchmarks/README.md`). |
+| `npm test` / `tsc` | `chemx test` / `chemx verify` | Prints a summary on success and the failing diffs on failure. |
+| `eslint <paths>` / `npm run lint` | `chemx lint <paths> [--fix]` | ESLint grouped by file, plus the `chemx check` hazards of those paths in the same pass (inline booleans, dispatch switches), so there is no second pass. With no ESLint config or package.json (a WordPress plugin dir) it says so in one line and runs `chemx check` on the files instead. |
+| `node tests/run-tests.mjs` (a repo's own harness runner, e.g. the WordPress plugins) | `chemx test` / `chemx test tests/x.test.mjs` | One file through a generated copy of the runner, failures only and one summary line, one run at a time on the machine (shared database). `.chemxrc` `guard.allow` (or its alias `test.runners`) lists a raw runner the guard should leave alone. |
+| `cat .chemx/history.json` | `chemx audit --feed=scopes` / MCP `audit_feed` | Recorded audit results as flat rows (per scope, per run or per pillar) without re-running the audit; `--json` for every row. |
+| Auditing each package by hand | `chemx audit --each=submodules` | One scoped audit per submodule or workspace package, then a one-line-per-package summary. |
+| `cd ../other-repo && <command>` / `git -C ../other-repo log` | `chemx <command> --root=../other-repo` (any command: `log`, `d`, `status`, `q -g`, `read`, `team ...`; or `CHEMX_PROJECT_ROOT=<dir>`) | Runs as if started in that project, from any cwd; the shell never changes directory. `chemx read /abs/path/in/another/chemx/project` picks that project's index too. |
+| `cd ../other-repo && chemx team task show 12` | `chemx team task show ../other-repo#12` or `--board=../other-repo` | A task number belongs to a board; this names it. A `team task list`/`show` footer says when you hold a claim on a different board. |
+| `gh pr checks <n>`, `gh pr view <n> --json mergeStateStatus`, `sleep 120; gh pr checks <n>` | `chemx ci <n>` or `chemx ci <n> --wait` | One line per check (state, duration, name) and one merge-state line; exit 0 all passed, 1 a check failed, 3 pending or no checks reported yet, 2 could not read. `--wait` polls every 30 s and prints only what changed. `chemx ci --protection` warns (exit 1) when the default branch requires no status checks, because `gh pr merge --auto` then merges at once. See [docs/ci.md](docs/ci.md). |
+| Adding up task costs by hand | `chemx team tokens --epic <id>` | Prompt, completion and cached tokens, cost and wall time over an epic's children (recursively), one line each and a total; a child that never recorded usage is a dash and counted unknown, not zero. See [docs/team-tokens.md](docs/team-tokens.md). |
+| A shell loop of `team task add` to file an epic and its children | `chemx task add --from tasks.yaml` (`--dry-run` first) | Rows with `ref`, `parent_ref` and `deps` by ref, one transaction, one `#<id> added` line per row and a `refs:` map; any wrong row writes nothing. `chemx task` is `chemx team task`. |
+| A 7 KB design contract in `--desc`, or in a `.md` file agents cat | `chemx team brief <id> --file design.md` (read: `task show <id> --full`) | The brief is stored on the task apart from its description; `task show` prints only its length. |
+| `sleep`/poll loops for a peer's report | `chemx wait --post-matching "K9 merged" --from=@sonnet-k9` | Resolves when a feed post (any case, no lock events) matches; exit 0 / 2 on timeout. |
+| `chemx test ... &` then a `sleep` or `kill -0` loop until it ends | `chemx test ... & chemx wait --job=$!` | Resolves when that chemx process has ended and exits with the job's own code (0 pass, 1 fail, 3 inconclusive); 2 on timeout. See [docs/test-lanes.md](docs/test-lanes.md). |
+| A one-off script in a scratchpad other agents also write to (`/tmp/one.mjs`) | `chemx scratch one.mjs` (the directory: `chemx scratch`) | Prints `<project>/.chemx/scratch/<handle>/one.mjs` and makes the folder: one directory per handle, git-ignored, so another agent's `one.mjs` never replaces yours. See [docs/agent-workspace.md](docs/agent-workspace.md). |
+| `git worktree add ../w -b fix/x origin/main` then a hand-made `node_modules` symlink; later `git worktree remove` and `git branch -d` | `chemx worktree add <path> -b <branch> [--link-modules\|--install]` / `chemx worktree remove <path>` | Branches from the remote default branch, gives the worktree a real `node_modules` of symlinks into the main checkout's (so an install in it never writes into the main checkout) or installs, and prints the path first plus the reminder that `chemx team` runs from the main checkout or with `--board`. `remove` deletes the branch when it is merged, squash merges included, into the default branch or the branch it was cut from (recorded at `add`), and refuses an unmerged one without `--force`. See [docs/agent-workspace.md](docs/agent-workspace.md). |
+| `cp f f.bak; sed -i ... f; <test>; cp -i f.bak f` (a mutation check) | `chemx mutate f --apply 's/a/b/' --then "<test>"` | Applies a sed substitution or a diff file, runs the command like `chemx run`, always restores the original byte for byte (a copy sits in your scratch directory; `--keep` retains it) and exits with the command's code (125 = chemx stopped, e.g. nothing changed or a lease is held). See [docs/agent-workspace.md](docs/agent-workspace.md). |
+| Multiple CLI actions | `chemx do "<cmd1>" "<cmd2>"` | Executes sequentially in a single warm Node process. |
+| Multiple MCP tool calls | `chemx({ commands: [...] })` | Executes multiple sub-operations in a single agent turn. |
+
+---
+
+## 1. The Molecular Architecture Protocol
+
+### A. Structural Weight, Cognitive Cohesion & Profile Architecture
+- **The Pragmatic Staff Engineer Paradigm (Default)**: Chemical X audits **Structural Weight and Responsibility Density**, not arbitrary mechanical line caps. A cohesive 140-line table, modal, or canvas wrapper where state and layout are naturally co-located is far cleaner and more reliable for LLMs to edit than six fractured micro-files connected by prop-drilling. Slicing cohesive logic into artificial files just to appease a counter is an anti-pattern: *indirection masquerading as modularity*.
+- **Structural Weight Limits (Pragmatic Default)**:
+  - **Cyclomatic Complexity**: Max 12 decision points per component/hook.
+  - **Hook & State Density**: Max 4 independent hooks/state setters before extracting into a domain hook or reducer.
+  - **Render Tree Depth**: Max 4 nesting levels in JSX/templates; nested ternaries are strictly banned in favor of computed descriptor objects.
+  - **Prop Surface Area**: Max 7 flat props before grouping into a typed domain entity model.
+  - **Line Budget**: Soft warning at 250 lines only if cyclomatic complexity is high. Any file above 500 lines is a monolith warning (HIGH at 1,000, CRITICAL at 2,000). View entry templates (1.B) warn above 200 template lines. Type files follow the same budget (2.A). Lines are counted like `wc -l`. Tier globs for molecules and views are configurable in `.chemxrc` (`tiers: { molecule: ["**/prefabs/**"] }`).
+- **Atomic-Strict Profile (`--profile=atomic-strict`)**: Opt-in strict mode enforcing 100-line capsule caps and mandatory atomization for teams building foundational design system component primitives.
+- **The Rule of Three for Abstractions**: Premature abstraction is worse than duplication. Do NOT extract an atom or molecule until a pattern is reused across 3+ distinct features, or until it encapsulates isolated behavioral/accessibility requirements.
+
+### B. Table-of-Contents Views
+- Top-level page views MUST NEVER contain hundreds of lines of nested DOM scaffolding.
+- A view template MUST read like a clean, 10 to 20 line declarative Table of Contents assembling self-contained molecules and organisms via named slot templates (`#header`, `#default`, `#modals`).
+
+### C. Crystalline Molecule Capsules
+- Every molecule and organism lives in an isolated, self-contained directory capsule:
+  ```
+  m-<feature>-card/
+  ├── m-<feature>-card.<ext>          (declarative layout & bindings; line budget per 1.A)
+  ├── m-<feature>-card.controller.ts  (pure reactive state & 2-stage booleans)
+  ├── _m-<feature>-card.scss          (mixin-only glass styling)
+  ├── types.d.ts                      (pure Props & Emits declarations)
+  └── index.ts                        (clean public entrypoint)
+  ```
+
+### D. Anti-Prop-Drilling & Domain State
+- Never pass 10+ props or chained event bubbles across component tiers.
+- Encapsulate shared feature state in dedicated domain composables/hooks, scoped stores, or typed provide/inject.
+- Child components consume state directly from the domain composable and emit minimal, intention-revealing semantic events.
+
+### E. Idiomatic Shorthand Binding
+Use same-name shorthand across all languages; eliminate redundant `key: key` duplication:
+- **JS / TS / Rust Data Structures**: `{ foo, bar }` over `{ foo: foo, bar: bar }`.
+- **Vue 3.4+ & Svelte 5 Templates**: `<Comp :prop />` or `<Comp {prop} />` over `:prop="prop"`.
+- **React / JSX Exception**: Explicit `prop={prop}` (bare `<Comp prop />` coerces to boolean `true`).
+
+### F. Pre-Split Pattern Discovery & Harmonization Protocol
+- **Survey Before Slicing**: Before decomposing any monolithic file or collection of files, the AI must first conduct a cross-file pattern discovery audit across all candidate monoliths.
+- **Identify Recurring Structures**: Map shared UI layouts, duplicate controllers, repeated predicates, common state machines, and mirrored type definitions across files before writing any split code.
+- **Map to Existing Foundations**: Check the design system, shared atom catalog (`x-*`), central composables, and core utilities first. Never invent a bespoke one-off atom or utility if an equivalent foundation exists.
+- **Canonical Extraction First**: Consolidate and extract shared atoms, molecules, or composables once into canonical capsules before splitting consumer monoliths.
+- **Zero Bespoke Pattern Proliferation**: Decompose consumer monoliths by binding directly to the extracted canonical capsules, preventing the proliferation of duplicate, slightly divergent patterns across spliced views.
+
+### G. Component Encapsulation, Semantic Integrity & The Zero-Raw-DOM Scope
+- **Pragmatic Profile (Default)**: Wrapping every native `<button>`, `<input>`, or `<a>` in a trivial single-line atom creates pointless wrapper boilerplate. In Pragmatic mode, native semantic elements are permitted, provided they maintain:
+  1. *Design Token Integrity*: Styled using design tokens, theme utilities, or scoped classes (no hardcoded hex colors or raw style objects).
+  2. *Accessibility Standard*: Native semantic interactive elements (never clickable `<div>` without keyboard roles), valid `type` on buttons, and `aria-label`/alt tags.
+  3. *Security Sanitization*: DOMPurify sanitization on dynamic HTML; no `javascript:` pseudo-protocols.
+- **Atomic-Strict Profile (`--profile=atomic-strict`)**: When building standalone design system libraries, the strict Zero-Raw-DOM rule applies: raw DOM elements are restricted strictly to the Atom tier (`a-*`).
+- **Tab List & Complex Pattern Harmonization**:
+  - When repeated elements accumulate behavioral logic, accessibility handling, or styling variants across 3+ places (Rule of Three), extract into a canonical capsule (`m-tab-button`).
+
+### H. AI Agent Codebase Query Machine Protocol
+- **AST & Literal Search First Rule**: AI agents should invoke `chemx q "<query>"` for AST symbols or `chemx q -g "<pattern>"` for literal text before running broad unthrottled grep. AST answers cover only the index scope they print (`index: scope . (...)`). The default scope is the project scope: the `scope` key of `.chemx/config.json` when set, else the whole root. In a git repo it holds the git-tracked source files plus untracked files `.gitignore` allows, minus generated and vendored dirs (`node_modules`, `dist`, `coverage`...); outside git, every source file outside those dirs. A git-ignored dir is indexed only when passed explicitly with `--dir=<path>`; `chemx q -g` searches text across the repo. An answer with `status: inconclusive` (exit 3) is not a negative result.
+- **AST Architecture Intelligence**: Always leverage `pnpm chemx q` to inspect component tiers, exported symbols, props, and hooks with minimal token burn.
+- **Mandatory Blast Radius Pre-Refactor Check**: Prior to modifying any foundational atom (`a-*`), shared molecule, or central composable (`use*`), agents MUST calculate the transitive blast radius (`pnpm chemx q <target> --blast-radius --json` or `chemx({ action: 'q', params: { query: '<target>', blastRadius: true } })`). Never perform blind refactors without mapping direct consumers, transitive dependents, and impacted tiers.
+- **Hybrid Discovery**: When looking for components, controllers, or state machines without an exact symbol name, try hybrid search (`pnpm chemx q "<words>" --hybrid --json` or `chemx({ action: 'q', params: { query: '<words>', hybrid: true } })`). It fuses BM25 keyword ranking with feature-hash similarity via Reciprocal Rank Fusion (RRF). Both halves are lexical: they match names, tokens and trigrams, not meaning, so a miss is not proof of absence. Follow up with `chemx q -g` for the words you expect in the code.
+- **Feature-hash similarity (`--semantic`)**: `pnpm chemx q "<words>" --semantic --json` ranks exported names by 128-dim hashed name/trigram vectors. It is fuzzy lexical matching (useful for spelling variants such as `useTabs`/`useTabBar`), not a learned embedding: it will not connect `login` to `authentication`.
+- **Inspect Mode**: Use `pnpm chemx q "<capsule-name>" --inspect` to examine props and hooks without reading entire source files into context.
+- **JSON & Columnar Mode**: Use `pnpm chemx q "<query>" --json` for zero-overhead, machine-readable agent lookups in token-compact columnar format (`cols` and `rows`).
+- **Tier Filtering**: Use `pnpm chemx q "<query>" --tier=molecule` (or `atom`, `organism`, `hook`) to narrow scope.
+
+### I. Capsule Trust-Tier Classification & Audit Escalation
+- **Tier 1 (Pure / Stateless)**: Atoms, formatters, pure validators, and API client wrappers. Agents may trust exported interface contracts without inspecting internal implementation details.
+- **Tier 2 (Stateful / Side-Effecting)**: Auth, payments, data mutation, session lifecycle, and transactional service layers. Declared explicitly in capsule `index.ts` metadata or capsule frontmatter (`trustTier: 2`).
+- **Exemption from Shallow Interface Trust**: Tier 2 capsules are strictly exempted from "agent trusts interface, never reads implementation". Agents must inspect implementation details for state invariants and side-effect guarantees.
+- **Automated Audit Escalation**: Query tools and audits automatically escalate review strictness for Tier 2 capsules, requiring deep verification of state transitions, mutation boundaries, and failure recoverability.
+
+### J. Stateful Class & Shared Instance State Carve-Out
+- **Atomic Unit Protection**: Stateful classes and services holding shared instance state across methods are treated as a single atomic unit.
+- **Prohibition on Method Slicing**: Never split methods sharing internal instance state into isolated files or micro-functions. Atomization must not destroy the cohesive state machine.
+- **Decomposition Protocol**: When approaching file line limits, decompose exclusively by extracting pure, stateless helper functions, mathematical derivations, and boundary validators out of the class into standalone utility capsules, preserving the class methods and instance state together.
+
+### K. The Verification-First Protocol & Compact Verification Pipeline
+- **Verification First Rule**: AI agents MUST NEVER execute raw, unthrottled `npm test`, `pnpm test`, `vitest`, `tsc --noEmit`, or `npm run build` directly in a bash subshell. Raw shell executions flood the context window with hundreds of lines of passing checkmarks, compiler noise, and bundle asset tables, burning thousands of tokens and causing premature context exhaustion.
+- **MCP Verification Tools First**: Agents MUST invoke the dedicated Chemical X MCP tools or CLI wrappers (`pnpm chemx <subcommand>` or `npx chemx <subcommand>`):
+  1. `chemx_verify` (or `pnpm chemx verify --json` / `npx chemx verify --json`): Runs the full verification pipeline (AST Audit + Typecheck + Tests) and returns a short status card when green (size not benchmarked).
+  2. `chemx_typecheck` (or `pnpm chemx typecheck --json` / `npx chemx typecheck --json`): Runs silent TypeScript typecheck; returns structured diagnostics only if errors exist.
+  3. `chemx_test` (or `pnpm chemx test --json` / `npx chemx test --json`): Runs silent project tests; suppresses passing tests and returns ONLY failing test assertions and stack diffs.
+  4. `chemx_audit_build` (or `pnpm chemx build --json` / `npx chemx build --json`): Runs silent production builds; catalogs diagnostics into TypeScript, Rollup, and style budgets.
+- **Actionable Failure Focus**: If a verification step fails, agents consume the exact failure line and diff, fix the code surgically, and re-verify without ever paying the token penalty of passing checks.
+
+### L. Database-First Swarm Coordination & The Zero-Markdown-Monolith Directive
+- **Database as the Master Source of Truth**: The multi-agent orchestrator and subagents MUST record all milestones, task assignments, status changes, file locks, and architectural contracts directly in `.chemx/index.db` (`agent_tasks`, `file_lock_queue`, `agent_feed`) rather than creating monolithic, multi-thousand-token markdown specification files.
+- **Prohibition on Monolithic Project Markdown Parsing**: Subagents MUST NOT load giant monolithic `PROJECT.md` or status markdown files into context. Subagents query only their assigned task slice and dependencies via `pnpm chemx team task list --agent=@my-id` or MCP `chemx_team_task`.
+- **Leases and handoff**: A file lock is a 5-minute lease that any chemx command run as the holder extends (from a git worktree too, once the holder has claimed a task) and that lapses after 5 minutes without activity; a lapse of at most 10 minutes is undone by the holder's next chemx command while the task is in_progress and nobody took or queued for the file. Wrap a long non-chemx command (a plugin's test runner, a script) as `chemx run -- <command>` and it renews your leases every minute while it runs (`docs/team-locks.md`). The commit hook refuses staged files another handle leases live. Claude's native `Edit`/`Write` are refused on a file another handle leases, but a lease held by a handle you named in an earlier chemx call (`--as`, `CHEMX_AGENT_ID`) this session is yours: name your handle on your lock and claim calls (`docs/hooks.md`, "Native edits and file locks"). `chemx team task handoff <id> @<to> --as=@<from>` passes a task on (assignee or task creator only); it keeps the task `in_progress`, records from/to/by in the feed, moves the board pointer to the new owner (their next `chemx commit` finds the task's board without `--board`), and does not move file locks, so the old holder releases and the new owner acquires. `chemx team lock a.js b.js c.js --as=@<you>` takes several paths in one call and answers one line per path (`granted until HH:MM`, `queued behind @x`, or `refused: <reason>`); an absolute path in a sibling repo works from any directory under the board root.
+- **Project Markdown as a Generated Read-Only Projection**: If a human-readable `PROJECT.md` is requested, it MUST be generated on-demand as a read-only projection compiled from the database state via `pnpm chemx team status` or export tools.
+
+### M. The Master MCP Tool Protocol & Single-Permission Dispatch
+- **Master Gateway Rule**: When operating inside environments with per-tool permission controls (e.g. Antigravity, Claude Desktop, Cursor), AI agents MUST invoke the unified master MCP tool `chemx` (or `chemx({ action, params })`) rather than invoking fragmented tool names or dropping down to bash subshells.
+- **Antigravity Tool Mapping**: In Google Antigravity, `chemx` is registered under server name `chemical-x` (`call_mcp_tool` with `ServerName: "chemical-x"`, `ToolName: "chemx"`). Always prioritize this tool for all AST reading, querying, testing, verification, and file operations.
+- **Strict Ban on Fragmented Sub-Tool Calls**: Agents are strictly prohibited from calling individual tool names (such as `chemx_read`, `chemx_audit`, or `chemx_write`) directly when the master gateway tool is available. Every distinct tool name triggers a separate permission confirmation dialog for the user, resulting in severe prompt fatigue. Calling `chemx({ action, params })` or `chemx({ command })` routes through a single authorization point.
+- **One-Time Approval Advantage**: The `chemx` master tool provides a single authorization point for the user. Once approved, all operations (`test`, `build`, `verify`, `typecheck`, `audit`, `check`, `patch`, `write`, `read`, `team`, `q`, `autofix`, `issue`) run in-process through one tool, so the host asks for one approval for the tool instead of one per action (hosts that prompt per call still may).
+- **In-Band JSON-RPC Communication (Zero Disk Dumps)**: All query, inspection, and verification tools must communicate strictly in-band via MCP `CallToolResult` objects (`content: [{ type: "text", text: "..." }]`). Tools must never dump intermediate text files (.txt/.md) or scratch files to disk for AI consumption.
+- **Command Forwarding Syntax**: Agents may invoke either structured action objects (`chemx({ action: 'test' })`, `chemx({ action: 'build' })`, `chemx({ action: 'audit', params: { path: 'src' } })`) or CLI command strings (`chemx({ command: 'test' })`, `chemx({ command: 'build' })`, `chemx({ command: 'audit src' })`).
+- **Master Action & Parameter Dispatch Matrix**:
+  ```typescript
+  // Fast Token-Bounded Wrappers & Multi-Action Batching
+  chemx({ commands: ['d', 'p -s', 'test'] }); // Multi-command batch in single turn
+  chemx({ action: 'd' });                      // Zero-context diff (-U0), auto-stat if > 80 lines
+  chemx({ action: 'log', params: { limit: 5 } }); // Compact single-line commit history
+  chemx({ action: 'p', params: { command: '-s' } }); // Read scripts from package.json
+  chemx({ action: 'j', params: { path: 'data.json' } }); // Structural JSON schema shape
+  chemx({ action: 'q', params: { query: 'theme', literal: true } }); // Repo-wide fixed-string search (-g)
+
+  // Discovery & Impact Analysis
+  chemx({ action: 'q', params: { query: 'a-button', blastRadius: true } });
+  chemx({ action: 'q', params: { query: 'button state', semantic: true } }); // feature-hash name similarity
+  chemx({ action: 'q', params: { query: 'useAttentionCardController', hybrid: true } });
+
+  // Surgical AST Reading & Connections
+  chemx({ action: 'read', params: { path: 'src/...', symbol: 'ButtonVariant', connections: true } });
+  chemx({ action: 'read', params: { path: 'src/...', outline: true } });
+  // Component capsules only: outline + logic skeleton in one call (procedural modules: outline or symbol)
+  chemx({ action: 'read', params: { path: 'src/...', outline: true, enrich: true } });
+  // Component capsules: outline + logic + forward call trace card
+  chemx({ action: 'read', params: { path: 'src/...', outline: true, enrich: true, traceSymbol: 'handleCheckout' } });
+  // Component capsules: outline + logic + reverse caller chain card
+  chemx({ action: 'read', params: { path: 'src/...', outline: true, enrich: true, backtraceSymbol: 'handleCheckout' } });
+
+  // Surgical Modification & Rules Check
+  // Preview first: dryRun returns the unified diff and writes nothing (CLI: --dry-run or -n)
+  chemx({ action: 'patch', params: { path: 'src/...', target: 'oldCode', replacement: 'newCode', dryRun: true } });
+  chemx({ action: 'patch', params: { path: 'src/...', target: 'oldCode', replacement: 'newCode' } });
+  // Several edits to one file go in ONE call (CLI: SEARCH/REPLACE blocks in a heredoc; API: blocks: [{ search, replace }]): all-or-nothing,
+  // and a block that does not match or trips a guard fails the call as "Block 2 of 3: ..." with the file untouched
+  // Removing a top-level declaration (renames included) is refused unless named (CLI: --allow-remove=oldName)
+  chemx({ action: 'patch', params: { path: 'src/...', target: 'oldName', replacement: 'newName', allowRemoved: ['oldName'] } });
+  // write creates; replacing an existing file needs overwrite (CLI: --overwrite)
+  chemx({ action: 'write', params: { path: 'src/...', content: '...' } });
+  chemx({ action: 'write', params: { path: 'src/...', content: '...', overwrite: true } });
+  chemx({ action: 'check', params: { path: 'src/...' } });
+
+  // Deterministic Parameterized Scaffolding (Programmatic Jig; token saving not benchmarked)
+  chemx({ action: 'generate', params: { jig: true, kind: 'service', name: 'payment-gateway', methods: [{ name: 'charge', params: 'amount: number' }] } });
+  chemx({ action: 'generate', params: { jig: true, kind: 'route', name: 'api-orders', routes: ['GET /orders', 'POST /orders'] } });
+  chemx({ action: 'generate', params: { jig: true, kind: 'store', name: 'session-store' } });
+
+  // Verification, Targeted Testing & Multi-Agent Swarm
+  chemx({ action: 'test', params: { target: 'src/services/payment-gateway.spec.ts' } });
+  chemx({ action: 'test', params: { target: 'cli/generator.spec.js', filter: 'jig' } });
+  chemx({ action: 'verify' });
+  chemx({ action: 'team', params: { action: 'task', subAction: 'claim', taskId: 1, as: '@agent' } });
+  chemx({ action: 'team', params: { action: 'task', subAction: 'done', taskId: 1, as: '@agent', force: true } });
+  chemx({ action: 'team', params: { action: 'lock', subAction: 'acquire', filePath: 'src/...', agentId: '@agent' } });
+  ```
+- **Strict Prohibition on Bash Escalation**: Agents MUST NOT spawn bash subshells (`run_command` with `pnpm chemx ...` or `node cli/...`) when an equivalent in-process `chemx` MCP action exists.
+
+### N. Database-First Navigation, Symbol Connections & The Zero-Native-File-Dump Directive
+- **Database Master Index First**: Before inspecting or modifying any file, AI agents MUST query the SQLite database (`.chemx/index.db`) or the AST Query Machine (`chemx({ action: 'team', params: { action: 'list' } })`, `chemx({ action: 'q', params: { query } })`) rather than exploring the filesystem with broad find or ripgrep commands.
+- **Targeted Symbol-Only Extraction**: AI agents MUST NEVER dump entire source files into context. When an agent needs to inspect a function, hook, interface, or class, it MUST request only that specific symbol: `chemx({ action: 'read', params: { path, symbol: '<name>' } })`.
+- **Read Window Auto-Outline**: Files longer than the chemx read window (100 lines by default), read without a target symbol or slice, automatically render an AST outline to prevent token exhaustion and host buffer spillovers (such as IDE `output.txt` dumps). A file with nothing to outline (yaml, json, txt, shell, or Markdown without headings) reads as its first window of text with the next range named, not an empty outline. The read window is a tool budget, not an architecture rule; file size is governed by 1.A.
+- **Enrich Mode (Component Capsules Only)**: When an agent needs both exported signatures AND logic flow for a component capsule, use `enrich: true` with `outline: true`: one response card holds the outline and a compacted logic skeleton, optionally with a forward trace or reverse caller chain (`traceSymbol`, `backtraceSymbol`). The skeleton generator is tuned for components; on procedural modules (services, CLI code, utilities) enrich saves only a few percent over reading the whole file, so use plain `outline: true` or `symbol: '<name>'` there.
+- **Symbol Connection Graph Over Multi-File Dumps**: Rather than reading multiple files to understand imports and consumers, agents MUST request symbol connections: `chemx({ action: 'read', params: { path, symbol: '<name>', connections: true } })` or `chemx({ action: 'q', params: { query, connections: true } })`. This returns the definition, imported dependencies, and caller references. Size grows with the symbol: `q <symbol> --connections` measured about 140 tokens and `read --symbol --connections` about 2,400 for `readTokenOptimized` on 2026-10-09.
+- **Token-First File Inspection & Native Fallback**: AI agents should prioritize Chemical X AST readers (`chemx read --outline` or `chemx read --symbol`) to conserve tokens. Dumping raw files burns thousands of tokens and causes premature context exhaustion. If an agent requires exact raw verification or unformatted bytes, native tools (`view_file`, `grep`, `cat`) are permitted as an intentional fallback.
+
+### O. Programmatic File Jig & Closed-Loop Execution Protocol
+- **Deterministic Parameterized Synthesis**: When creating non-UI files (services, API route handlers, state stores, database repositories, utilities, or test specs), AI agents MUST NOT emit hundreds of lines of mechanical boilerplate via raw file writing tools. Agents MUST invoke `chemx generate --jig=<kind>` or `chemx({ action: 'generate', params: { jig: true, kind, name, ... } })`.
+- **The Output Token Thesis (not benchmarked)**: A short structured parameter set stands in for repetitive TypeScript, imports, error tuples, and test boilerplate. No measurement of the saving exists in this repo; prefer the jig for consistency of the output, not for a promised saving.
+- **The Closed-Loop ChemX Execution Cycle**:
+  1. *Generate (Jig)*: Stamp out compliant architecture via `chemx({ action: 'generate', params: { jig: true, ... } })`.
+  2. *Read (Outline)*: Inspect AST shape via `chemx({ action: 'read', params: { path, outline: true } })`.
+  3. *Patch (Surgical Edit)*: Ingest domain logic via `chemx({ action: 'patch', params: { path, target, replacement } })`.
+  4. *Test (Targeted Slice)*: Run isolated unit tests for the spec path via `chemx({ action: 'test', params: { target: '<spec-path>' } })`.
+  5. *Verify (Full Guard)*: Validate AST score and types via `chemx({ action: 'verify' })`.
+
+---
+
+## 2. Domain-Based Type Architecture & Data Integrity
+
+### A. The Anti-Type-Monolith Rule & Domain-Scoped Capsules
+- Strictly prohibit dumping thousands of unrelated entity types into a single monolithic `types.ts` or `global.d.ts`.
+- Co-locate granular `types/*.d.ts` declaration files directly inside each molecule, organism, or feature directory capsule.
+- Split type files by domain, not by line count: once a file declares entities from more than one domain, decompose it into granular domain files (`session.d.ts`, `auth.d.ts`, `billing.d.ts`). File length follows 1.A; there is no separate type-file line cap.
+- Root `types/*.d.ts` is reserved strictly for universal system primitives (`ResultTuple<T>`, `AsyncDataState<T>`, base envelopes). It never contains domain entity models.
+- Zero runtime logic in type files. Zero implicit `any`.
+
+### B. Discriminated State Unions (Zero Impossible States)
+- Model component and session state as strict discriminated/disjoint unions in domain `types/*.d.ts` rather than multiple conflicting booleans:
+  ```typescript
+  export type SessionState =
+    | { readonly status: 'idle' }
+    | { readonly status: 'loading'; readonly progress: number }
+    | { readonly status: 'active';  readonly sessionId: string }
+    | { readonly status: 'fault';   readonly faultMessage: string };
+  ```
+
+### C. Result Tuple Pattern (`toResult`)
+- Avoid nested `try/catch` blocks in async flows. Return Go/Rust-style `[data, error]` tuples with top-of-function early guard clauses:
+  ```typescript
+  const [data, fetchError] = await toResult(api.fetchEntity(id));
+  if (fetchError) {
+    handleError(fetchError);
+    return;
+  }
+  initializeEntity(data);
+  ```
+
+### D. Zero Synthetic or Mock Data
+- Never generate fake names, synthetic emails (`@gmail.com`), random phone numbers (`555-xxx`), mock license numbers, or fake entity arrays.
+- Return genuine live API data or explicit empty states (`No records found`).
+
+### E. Immutable State Action Boundaries
+- Never mutate deep nested store properties inside child components. State transitions occur strictly through named, traceable store actions.
+
+### F. Runtime API Boundary Guards
+- External API and network payloads must be verified through pure, atomic runtime type guards before ingestion into reactive state.
+
+### G. Backend Schema Ground-Truth Hierarchy
+- **Schema as Single Source of Truth**: Backend database schemas (SQL/Prisma/migrations) and OpenAPI specifications constitute ground truth: domain types are strictly derived views.
+- **Bidirectional Schema Validation**: Domain types and boundary interfaces must be validated against the active schema or OpenAPI contract rather than treated as independently authoritative.
+- **Drift Prevention**: Never hand-craft unvalidated entity definitions. Mismatches in nullability, default values, or field mutations must fail compile-time checks or contract test suites before ingestion.
+
+### H. Swallowed Exceptions (No Silent Catch)
+- A `catch` must propagate (`throw`), return a value (`return [null, error]`), report (a logger, notifier or handler call), or record the failure in state that outlives the catch (`state.error = err`, a fallback assigned to an outer binding). An empty catch is HIGH; a body that still discards the error is MEDIUM (`ERROR_SWALLOWED_EXCEPTION`).
+- An intentional best-effort catch says so on the catch line, inside the block, or on the line above, with a mandatory reason: `catch { // chemx-allow: best-effort cache warmup is optional }`. The same annotation with a rule id (`// chemx-allow: RULE_ID <reason>`) suppresses that one rule on that line.
+
+### I. Data Leveling (No Optional-Chaining Churn)
+- Level an incoming payload once at the boundary (2.F) with sentinels or `normalizeArray`, instead of chaining three or more `?.` through every consumer (`DATA_FLOW_OPTIONAL_CHAINING_CHURN`).
+
+---
+
+## 3. Control Flow & Self-Documenting Logic
+
+### A. Named Conditions & Two-Stage Composition
+> The `if` never asks a question. The question is asked and named before the branch, and the `if` reads the answer.
+
+- Every conditional test is a named boolean: an identifier, its negation, a bare property read (`sale.ok`, `items.length`), or a call whose name states an assertion or a predicate (3.F: `hasItems(cart)`, `map.has(key)`, `fs.existsSync(p)`). A raw comparison (`x === y`, `n >= 5`), inline compound logic (`a && b`), or a call whose name states no predicate (`RE.test(s)`, `user.getName()`) inside the test is a violation.
+- Naming is the point, not the ceremony: it forces the question inline code hides (why `<= 0` and not `=== -1`?), and an edit to a named condition changes its definition without touching the branch.
+- **Stage 1** names each atomic concept. **Stage 2** names the decision, only when 2 or more concepts compose; a single comparison gets one name and no wrapper. Guard with early returns.
+  ```typescript
+  if (hookCount > 5) return;                  // ❌ the if asks
+  const exceedsHookBudget = hookCount > 5;    // ✅ the question, named
+  if (exceedsHookBudget) return;              //    the if reads the answer
+
+  const handleCheckout = () => {
+    // Stage 1: atomic concepts (Layer 1/2 predicates from 3.B where they exist)
+    const hasSufficientFunds = userBalance >= totalCost;
+    const isFormComplete = isAddressValid && hasAcceptedTerms;
+    // Stage 2: the decision
+    const canCheckout = hasItems(cart) && isFormComplete && hasSufficientFunds && !isProcessing;
+    if (!canCheckout) return;
+    processPayment();
+  };
+  ```
+- In React, booleans are pure in-render derivations: never use `useEffect` for computed/derived state.
+
+### B. The Predicate Lexicon & Higher-Order Filter Extraction
+- Named conditions come from three layers. A raw comparison belongs in a named declaration (3.A) or inside a Layer 1 or Layer 2 predicate body, never in a conditional test.
+  1. **Structural primitives** (`lib/is/`: `value`, `collection`, `text`, `fs`, `type`): subject-agnostic and finite (`isAbsent`, `hasItems`, `isNonEmptyString`, `pathExists`). They import nothing, and the set does not grow. Every primitive is a TypeScript type predicate (`(x: unknown): x is string`), never a plain `boolean`, or callers lose narrowing.
+  2. **Domain vocabulary** (`<subsystem>/<domain>-predicates.<ext>`, colocated with the subsystem it describes): built from Layer 1. A condition earns a domain predicate at its 2nd use; a threshold duplicated across files (`score >= 90`) silently disagrees the day one copy changes, so name it once (`isGradeA`). Promote threshold literals in predicate bodies to named constants (`score >= GRADE_A_THRESHOLD`).
+  3. **Decisions**: single-use composites declared at the call site per 3.A. Never extract them: extracting every condition is *indirection masquerading as modularity* (1.A).
+- A bare property read (`sale.ok`, `items.length`) or a predicate-method call (`map.has(key)`, `fs.existsSync(p)`) is already a named condition; 3.A does not ask for a const alias of it.
+- Before naming a new predicate, search for an existing one: `chemx q -g "<likely words>"` for the literal names, plus `chemx({ action: 'q', params: { query: '<concept>', hybrid: true } })` for spelling variants. Neither finds pure synonyms (`hasNoItems` vs `isEmpty`), so also scan the predicates module of the domain. A synonym beside an existing predicate is lexicon rot.
+- Repeated filter conditions are Layer 2 candidates: extract the predicate, compose a named higher-order filter, and keep derivations declarative:
+  ```typescript
+  // ❌ Bad: inlined multi-clause predicate, repeated per derivation
+  const viewsFiles = computed(() => filteredFiles.value.filter(f => f.path.startsWith("src/") && (f.path.includes("views/") || f.tier === "views")));
+
+  // ✅ Good: domain predicate + named higher-order filter + declarative derivations
+  const isTierFile = (file: Capsule, tier: string): boolean => {
+    const isSrc = file.path.startsWith("src/");
+    if (!isSrc) return false;
+    return file.path.includes(`${tier}/`) || file.tier === tier;
+  };
+  const filterFiles = (tier: string) => filteredFiles.value.filter(f => isTierFile(f, tier));
+  const viewsFiles = computed(() => filterFiles("views"));
+  const organismsFiles = computed(() => filterFiles("organisms"));
+  ```
+
+### C. Single-Action Command Handlers
+- Event handlers are linear, unnested orchestrations of pure atomic verbs:
+  ```typescript
+  const handleAction = async (id: string) => {
+    if (!canProceed.value) return;
+    triggerHapticFeedback();
+    recordTelemetryMetric('action:trigger', { id });
+    await executeServiceCall(id);
+    dismissActiveModal();
+  };
+  ```
+
+### D. Ban on Nested Ternaries in Templates
+- Never use nested ternaries in templates (`a ? (b ? 'x' : 'y') : 'z'`).
+- Extract complex UI display states into dedicated computed descriptor objects returning `{ text: string, color: string }`.
+
+### E. Keyed Map Dispatch Over Monolithic Switch Statements
+- Prohibit monolithic `switch` statements used as procedural dispatch tables or value lookups.
+- When branching performs uniform operations (e.g. mapping string keys to action handlers, CSS classes, prompt builders, or payload converters), extract into an O(1) keyed dictionary or method map (`const Registry = { ... }; Registry[key](...)`).
+- **Branch Chains**: An `if` / `else if` chain of 3 or more branches testing the same subject is a lookup, not a series of decisions. Use a keyed map; do not hoist a named boolean per branch (3.A does not apply to such chains).
+- **Prototype Pollution Guardrail**: Always guard dynamic object key access using `Object.hasOwn(Registry, key)` or `Object.prototype.hasOwnProperty.call(Registry, key)` before invoking mapped methods.
+- **Architectural Benefits**: O(1) lookup over O(N) string branching, eliminates boilerplate syntax duplication, complies with OCP, and isolates unit testing.
+
+### F. Name Quality, Assertion Prefixes & Adjacency
+- **Assertion Prefixes**: A condition name starts with `is`, `are`, `has`, `have`, `can`, `could`, `should`, `would`, `does`, `did`, `needs`, `must`, `allows`, `enables`, `contains`, `includes`, `supports`, `requires`, `exceeds`, `matches`, or `wants`, followed by its subject (`isEscapeChar`, `exceedsHookBudget`). A bare verb callee (`test`, `existsSync`, `includes`, `startsWith`) is not a name: bind its result to one first.
+- **Reject Restatements**: A name built only from the words of its own expression teaches nothing. `isChEqualsBackslash = ch === '\\'` and `isCountGreaterThanFive = count > 5` are rejected; `isEscapeChar = ch === '\\'` adds a domain term and passes. If a condition cannot be named in words absent from the condition itself, it is not yet understood: find out before branching on it.
+- **Adjacency**: Declare a single-use named boolean on the statement immediately before its `if`. Hoist it only when it is referenced 2 or more times in the enclosing function, and then only to a point before its first use. A wall of `const is*` declarations at function top is a readability regression.
+- **No Double Negation**: `if (!isNotFound)` names the wrong side. Name the positive and negate at the point of use.
+
+### G. Explicit Guardrail Aborts (No Silent Failures)
+- Guard clauses in event handlers, mutations, and async flows must never fail silently via bare `return;`.
+- Halting execution requires an explicit contract: return a `ResultTuple` (`return [null, error]`), emit diagnostic logging (`logger.warn(...)`), update a user-facing error state (`state.error = '...'`), or throw a domain invariant.
+- **Exemptions**: Benign lifecycle no-ops (`abortSignal.aborted`, `!isMounted`), optional prop callbacks (`!props.onClick`), debounce/throttle timers, and pure query predicates.
+
+### H. Domain Validator Functions & Lazy Rule Trees
+- When a decision or validation sequence requires 3 or more conditions, cascading early returns at the call site fragment linear control flow and obscure decision logic (`CONTROL_FLOW_CASCADE_GUARDS`).
+- Extract multi-condition validation sequences into a pure **Domain Validator Function** utilizing the canonical `ruleTree` atom (inline the gate in the handler, or extract it into a `validate<Action>` function):
+  - **Stage 1 (Atomic Primitives & Thunks)**: Raw facts or lazy thunks (`() => !user.isVerified`). With `{ failFast: true }`, thunks are skipped once an earlier rule has failed, so later rules can rely on earlier ones. Plain values (`missing: !user`) are evaluated eagerly, and without `failFast` every thunk runs.
+  - **Stage 2 (Domain Rule Tree)**: Categorized tree object (`user: { ... }, cart: { ... }`) evaluated via `ruleTree` or `assertRuleTree`.
+  - **Stage 3 (1-Line Guard Return with Callback)**: Single-line early return accompanied by a diagnostic callback (`if (!gate.ok) return logger.warn(gate.first);`), satisfying Directive 3.G without multiline block ceremonies.
+- **2-Stage Booleans vs Rule Trees**:
+  - Use 2-Stage Booleans (3.A) for 1 or 2 atomic conditions at the call site.
+  - Use `ruleTree` for 3 or more conditions (`CONTROL_FLOW_CASCADE_GUARDS`).
+  ```typescript
+  // ❌ Bad: Cascading early returns at call site (>= 3 guards)
+  const handleCheckout = (cart: Cart, user: User | null, totalCost: number) => {
+    if (!user) return;
+    if (!user.isVerified) return;
+    if (cart.items.length === 0) return;
+    if (user.balance < totalCost) return;
+    processPayment(cart);
+  };
+
+  // ✅ Good: Literate Lazy Rule Tree with 1-line callback return
+  import { ruleTree } from '@chemx/x-atoms';
+
+  const handleCheckout = (cart: Cart, user: User | null, totalCost: number) => {
+    const gate = ruleTree({
+      user: {
+        missing: !user,
+        unverified: () => !user?.isVerified
+      },
+      cart: {
+        empty: cart.items.length === 0
+      },
+      payment: {
+        insufficient_funds: () => (user?.balance ?? 0) < totalCost
+      }
+    }, { failFast: true });
+
+    // Single-line early return with diagnostic callback
+    if (!gate.ok) return logger.warn(`Checkout blocked: ${gate.first}`);
+
+    processPayment(cart);
+  };
+  ```
+
+---
+
+## 4. Reactivity, Composables & Hooks
+
+### A. The Molecular Composable Destructuring Contract
+1. **Safe Destructuring**: Composables must always return plain objects containing individual `ref()`, `computed()`, and pure functions. Never return a raw `reactive()` object.
+2. **The Shape-Classification Contract**: Return values must classify strictly into three canonical buckets: State (domain data), Status (lifecycle/health info), and Actions (verb-prefixed functions flat at top level). No arbitrary property count ceiling applies. Unclassifiable properties (raw DOM refs, intermediate values, non-verb callbacks), nested action wrappers (`actions: {}`), and cross-hook naming inconsistencies are strictly prohibited. (Note: For stateful service classes holding shared instance state, refer to the Section 1.J carve-out).
+3. **Standardized Aliasing**: Use standardized names (`data`, `isLoading`, `error`, `execute`) to enable clean concurrent destructuring.
+4. **Autonomous Lifecycle Teardown**: Side effects (listeners, timers, observers) must be cleaned up automatically using `onScopeDispose()` or effect cleanup functions.
+5. **Flexible Input Ergonomics**: Accept raw values, refs, or getters interchangeably via `toValue()` / `MaybeRefOrGetter<T>`.
+
+### B. Clean 3-State Async Pipelines
+- Every asynchronous operation follows a predictable state container (`data`, `isLoading`, `error`, `execute`):
+  ```typescript
+  const { data: items, isLoading, error, execute: loadItems } = useAsyncData(fetchItemsApi);
+  const hasItems = computed(() => items.value.length > 0);
+  const shouldShowEmptyState = computed(() => !isLoading.value && !hasItems.value && !error.value);
+  const shouldShowErrorState = computed(() => !isLoading.value && Boolean(error.value));
+  ```
+
+### C. Strict Lexical Declaration Order (TDZ Prevention)
+To eliminate Temporal Dead Zone (TDZ) ReferenceErrors, `<script setup>` and controllers strictly follow this lexical declaration order:
+1. Composables & Stores (`useRouter()`, `useStore()`)
+2. Reactive Primitives (`ref()`, `reactive()`)
+3. Computed State (`computed()`)
+4. Helper Methods & Actions (`const handleClick = () => { ... }`)
+5. Watchers (`watch()`, `watchEffect()`)
+6. Lifecycle Hooks (`onMounted()`, `onUnmounted()`)
+*Mandatory Rule*: Never reference a reactive value, computed property, or helper in an immediate watcher callback before its declaration.
+
+---
+
+## 5. Design System, Styling & UI Performance
+
+### A. The 4-Tier Zero-Inline-Style Rule
+Raw inline `style="..."` attributes are strictly prohibited. Visual styling flows through the standardized 4-tier hierarchy:
+1. **Level 1 (Atom Props)**: Semantic props on atoms (`:color="brandColor"`, `variant="glass"`, `size="lg"`).
+2. **Level 2 (Mixins & Utilities)**: Centralized SCSS mixins (`@include glass;`, `@include glass-hover;`) and utility classes.
+3. **Level 3 (Scoped BEM Classes)**: Scoped classes in component stylesheets referencing design tokens or encapsulating shorthand via `@apply`.
+4. **Level 4 (Dynamic Root Variables)**: Dynamic runtime coordinates passed exclusively as root CSS custom properties (`:style="{ '--win-x': \`${x}px\`, '--win-y': \`${y}px\` }"`).
+
+### B. The Anti-Tailwind-Soup Directive (Class Decoupling)
+- Prohibit monolithic utility class chains (> 4-5 classes per element) directly inside HTML templates.
+- Long strings of utility shorthand recreate the exact cognitive noise and AI context degradation of inline styles.
+- Decouple visual styling into scoped classes via `@apply` or centralized SCSS mixins (`@include glass;`).
+- Templates must read like a clean, semantic outline rather than an unreadable wall of styling shorthand.
+- Class strings must stay where Tailwind looks (`TAILWIND_UNSCANNED_CLASS_STRING`): in a Tailwind v3 project, a string of 3 or more utility classes in a `.js`, `.ts`, `.mjs` or `.cjs` file that no `content` glob of `tailwind.config` matches is purged from production CSS. Move it into a template or a file the globs scan, or add the file pattern to `content`. The rule reads the config as text and stays silent for Tailwind v4 or a config whose `content` list is not literal.
+
+### C. Wrapper Atoms & Explicit Slot Forwarding
+- Never use dynamic slot iteration with `v-for="(_, slot) in $slots"` in wrapper components.
+- Explicitly forward named slots: `<template #<slot-name>="scope"><slot :name="<slot-name>" v-bind="scope || {}" /></template>`.
+- Always wrap default slot in `<template #default="scope"><slot v-bind="scope || {}" /></template>`.
+
+### D. Flat CSS Specificity & Icon Safety
+- Single-depth BEM semantic class naming. Never use `!important` overrides.
+- **FontAwesome SVG Compliance**: Never attach `text-*` utility classes to FontAwesome icons (breaks SVG rendering). Use native `:color` prop or inline CSS.
+
+### E. 60 FPS Non-Blocking UI Offloading
+- Heavy computational operations (parsing, sorting, cryptographic hashing) must be offloaded to Web Workers or chunked micro-batches via `requestIdleCallback`.
+
+---
+
+## 6. Timer & Macro-Task Discipline
+
+### A. Zero `setInterval` in Component & Business Logic
+- Polling with `setInterval` is strictly prohibited.
+- Use `requestAnimationFrame` for animations and physics.
+- Use `videoElement.requestVideoFrameCallback()` for camera/video streams.
+- Use a single shared system clock composable (`useSystemClock()`) for time displays.
+- Use Server-Sent Events or WebSockets for server state sync.
+
+### B. Zero Render-Hack `setTimeout` (Mandatory `nextTick`)
+- Never use `setTimeout(() => { ... }, 0)` to wait for DOM elements to render. Use `await nextTick()` or `watch(..., { flush: 'post' })`.
+
+### C. Self-Cleaning Timer Composables
+- Timers for real-world delays must be managed through self-cleaning composables (`useTimeoutFn`, `useDebounceFn`) that cancel automatically on component unmount via `onScopeDispose` or effect teardown.
+
+### D. Listener Disposal
+- Every `addEventListener` has a matching teardown in the same module: `removeEventListener` with the same event and handler (for example in `onBeforeUnmount`, `onUnmounted`, `onScopeDispose` or an effect cleanup), an `AbortController` `{ signal }`, or `{ once: true }` (`LIFECYCLE_ORPHANED_LISTENER`).
+
+---
+
+## 7. Infrastructure, Extensibility & Global Hygiene
+
+### A. Zero-Conditional `debug.log` Proxy
+- Never use `if (import.meta.env.DEV)` or `if (isProd)` checks around logging statements. Use a central `debug` proxy that automatically silences in production while preserving errors.
+
+### B. Typography Hygiene
+- Never use em dashes anywhere in code, copy, markdown, or documentation. Use standard hyphens or colons.
+
+---
+
+## 8. Accessibility & Semantic Integrity
+
+### A. Semantic HTML First
+- Never reach for a generic `<div>` or `<span>` with a click handler where a native element (`<button>`, `<a>`, `<label>`, `<nav>`) already carries the correct behavior and semantics for free.
+- Interactive elements must be genuinely interactive elements. A clickable `<div>` requires manually re-implementing keyboard focus, Enter/Space activation, and role semantics that native elements provide automatically.
+
+### B. Keyboard & Focus Management
+- Every interactive element must be reachable and operable via keyboard alone: Tab to focus, Enter/Space to activate, Esc to dismiss modals and overlays.
+- Modals, drawers, and dropdowns must trap focus while open and return focus to the triggering element on close.
+- Never remove default focus outlines (`outline: none`) without providing a visible, equivalent custom focus state.
+
+### C. ARIA as a Last Resort, Not a First Layer
+- Use ARIA attributes (`aria-label`, `aria-expanded`, `role`) only to fill genuine gaps semantic HTML cannot cover, not as a substitute for correct markup.
+- Every image conveying meaning requires alt text; purely decorative images use `alt=""`.
+- Form inputs require an associated `<label>`, not a placeholder alone.
+
+### D. Color & Motion Safety
+- Text and interactive elements must meet WCAG AA contrast ratios in both light and dark modes; verify new color tokens against both themes, not just one.
+- Respect `prefers-reduced-motion` for non-essential animations and transitions.
+
+---
+
+## 9. Security & Content Safety
+
+### A. Zero Unsanitized HTML Injection
+- Never render user-supplied or externally-fetched content via `v-html`, `dangerouslySetInnerHTML`, or equivalent raw-HTML injection without passing it through a sanitizer (e.g. DOMPurify) first.
+- Treat all externally-fetched content (API responses, user uploads, third-party embeds) as untrusted by default.
+
+### B. Output Encoding & Injection Boundaries
+- Never interpolate user input directly into constructed HTML strings, SQL queries, or shell commands. Use parameterized queries and framework-native escaping.
+- Never build URLs for redirects or API calls by concatenating unvalidated user input; validate against an allowlist.
+
+### C. Secrets & Credential Hygiene
+- Never hardcode API keys, tokens, or credentials in source files, even temporarily during development. Use environment variables or a secrets manager.
+- Never log full request/response payloads that may contain auth tokens, passwords, or PII.
+
+### D. CSRF & Auth Boundaries
+- State-changing requests (POST/PUT/DELETE) must carry CSRF protection appropriate to the framework's convention, not be assumed safe because they're behind a login.
+- Never trust client-side role or permission checks as the sole gate for sensitive actions; the server must re-verify authorization independently.
+
+---
+
+## 10. Testing Discipline
+
+### A. Co-located Test Files
+- Test files live alongside the capsule they cover (`m-<feature>-card.spec.ts` inside the capsule directory), not in a separate parallel test tree that drifts from the source structure.
+
+### B. What Must Be Covered
+- Every exported pure function, composable, and domain type guard requires at least one test exercising its primary path and one exercising a failure/edge path.
+- UI components require at least a render smoke test; interactive components require a test covering their primary user action.
+
+### C. Refactor Discipline
+- When decomposing a file per Section 1, existing tests move and are updated to match the new file boundaries in the same pass; a refactor is not complete until its tests pass against the new structure.
+- Never delete or skip a failing test to unblock a commit; fix the code or the test, or flag the failure explicitly.
+
+### D. No Fake Green
+- Never write a test that trivially passes without exercising real logic (e.g. asserting `true === true`, mocking away the exact behavior under test).
+
+### E. Silent Verification & No Passing Noise
+- AI agents executing tests or verifying code MUST invoke `chemx_test` (or `npx chemx test --json`) and `chemx_verify` (or `npx chemx verify --json`).
+- Strictly prohibit executing verbose raw `npm test` or `pnpm test` in the shell: hundreds of passing test markers pollute context. If tests pass, agents get a short green summary; if tests fail, they get the failing test names, assertion messages, and diffs.
+- **Test loop, in order of cost** (details: `docs/test-lanes.md`):
+  1. `chemx test --changed --depth=3`: only the specs within 3 import hops of your change. Fastest, and NOT proof: the report lists how many deeper specs were skipped.
+  2. `chemx test --changed`: every spec the import graph says your change can reach, plus the meta specs that scan the whole repo (`test-lanes.json` `meta`), fast lane only. On a clean tree it compares with the merge base of origin/main (or origin/master) and prints the base it chose. Slow-lane specs that it reaches are named as not run. A line `widened by cli/x.js (computed import without open-ok): +N specs` names a file whose computed `import()` put N specs into the run; declare a real entry point with `// chemx: open-ok` or an `openImports` rule in `test-lanes.json` instead of paying for it.
+  3. `chemx test --changed --all`: the same affected set, both lanes. CI runs both lanes, so run this (not step 2) before you push.
+  4. `chemx test`: the whole fast lane. `chemx test --all` adds the slow lane (specs that spawn the CLI or MCP server, stress and timing specs); that is what CI's `npm test` runs. `chemx test --slow` runs only the slow lane.
+  5. `chemx test --profile [--all] [--top=<n>]`: per-spec-file wall time, slowest first, with the measuring method printed beside the numbers.
+- Lane membership lives in `test-lanes.json`, not in `package.json`. A new spec is fast unless the manifest (or a `*.slow.spec.js`, `*.perf.spec.js`, `*.e2e.spec.js` file name) says otherwise. A spec file that no test glob collects fails `cli/test-lanes-coverage.spec.js`.
+- A spec that asserts a wall-clock or CPU budget belongs in the slow lane (name it `*.perf.spec.js`), or its margin must hold on a machine running many agents.
+
+---
+
+## 11. Naming Conventions
+
+### A. Casing
+- Files: kebab-case (`m-user-card.controller.ts`).
+- Variables, functions, composables: camelCase (`isLoading`, `useAsyncData`).
+- Types, interfaces, components: PascalCase (`SessionState`, `UserCard`).
+- Constants meant to be immutable module-level config: SCREAMING_SNAKE_CASE (`MAX_RETRY_COUNT`).
+
+### B. Boolean & Predicate Prefixes
+- Booleans and predicates start with an assertion prefix from 3.F (`isLoading`, `hasItems`, `canCheckout`, `exceedsHookBudget`). Never name a boolean as a bare noun or adjective (`loading`, `valid`) that hides its type at the call site.
+
+### C. Event & Handler Naming
+- Emitted events describe what happened, not what to do (`item-selected`, not `select-item`).
+- Handler functions describe the action taken, prefixed `handle` (`handleCheckout`), matching Section 3.C.
+
+---
+
+## 12. Documentation Discipline
+
+### A. Derived Contract Synchronization
+- Derived contract fields (signatures, parameters, payload structures, return types) in capsule documentation must be extracted directly from `types.d.ts`, never manually duplicated or hand-typed.
+- Any change to `types.d.ts` must automatically propagate to or be validated against the capsule reference documentation.
+
+### B. Mandatory Doc-Touch CI Gate
+- A commit that modifies a capsule's implementation or controller without updating the corresponding documentation prose section must fail CI validation.
+- Refactors and behavioral changes are not complete until documentation accurately reflects updated semantics, mirroring Section 10.C.
+
+### C. "No Fake Doc-Sync" Anti-Pattern
+- Mirroring the "No Fake Green" testing rule in Section 10.D, superficial doc edits (whitespace tweaks, comment formatting, minor typo fixes) made merely to pass CI touch-checks without addressing substantive semantic changes are strictly prohibited.
+- Documentation reviews must verify substantive alignment between code behavior and documented contracts.
+
+## 13. Host Enforcement and Friction
+
+### A. Installed Hooks, Not Prose
+* Install the Claude Code integration with `chemx install-hooks --host=claude [--scope=local|project] [--dry-run]`. It adds the PreToolUse guard (`chemx hook claude-pre-tool`), the PostToolUse check (`claude-post-edit`), the SessionStart card and the statusline. The `.mcp.json` launch, the git pre-commit hook and the CI pin are opt-in: add `--write-mcp`, `--git-hooks` and `--pin-ci`; without them none of those files is written. Run `chemx doctor` when MCP answers look stale; `chemx doctor --fix` repairs hooks and the MCP launch only.
+* Alternatively install the Claude Code plugin (`plugins/claude-code`, marketplace `.claude-plugin/marketplace.json`): the same hooks, the chemical-x MCP server and a short chemx skill, resolving the kit from `CHEMX_KIT`, the project's node_modules or PATH. Use the plugin or install-hooks, not both, or every hook runs twice. The statusline comes only from install-hooks.
+* The guard tokenizes the shell command. Raw test/typecheck/lint/build runners, `git diff`/`git log` and reads of repo source files are routed through chemx, but a call is denied only where the chemx call covers its exact shape: `git -C <dir> log`, `git log A..B`, `grep -c`/`-o` and similar get a nudge with the closest chemx form (`chemx log --root <dir>`, `chemx log -n 50 A..B`, `chemx q -g ... -o --unique`), and shapes chemx cannot do (`grep -v`, `find -mtime`, `command -v tool`, `sleep 30`, `git rebase|push|worktree`) run silently. A denied compound command names the denied segment and says the rest did not run. `.chemxrc` `guard.allow` lists command prefixes to leave alone; `guard.plainGit: true` drops the git status/add/commit nudges. Native Read, Edit, Write and Grep on project text files are warned by default (`nativeFileTools` in `.chemxrc`, or `CHEMX_NATIVE_FILE_TOOLS`): `warn` names the chemx equivalent, `block` denies the call, `allow` is silent.
+
+### B. Bypass and Friction
+* When chemx truly cannot do the job, append `# chemx-bypass: <reason>` to the Bash command. The bypass and every guard denial are logged to `.chemx/friction.jsonl`.
+* `chemx friction` summarises that log; `chemx friction add "<note>"` records a gap by hand; `chemx friction export --to=<file.md>` appends new entries to a Markdown friction log.
+* Measure adoption with `chemx friction --usage <transcript dir>` (Claude Code agent JSONL transcripts): chemx vs raw calls per subcommand, bypass reasons, recursive grep vs `chemx q`, chemx output piped through filters, MCP calls and guard denials.
+
+<!-- chemx:protocol begin -->
+## Chemical X coordination protocol (generated)
+
+Shared-workspace protocol. Several agents edit this checkout at once, and chemx records claims, locks and messages in its team database. This host cannot run Claude Code hooks, so nothing blocks you: following these steps is up to you.
+
+1. Identity: Pass `--as=@<your session name>` on every `chemx team` command, or set `CHEMX_AGENT_ID`. Never act as the default `@agent`.
+2. Before choosing work: Run `chemx status`, `chemx team status`, `chemx team inbox @<you>` and `chemx team task list --status=in_progress` so you know what is claimed and locked.
+3. Claim: Find or create the task (`chemx team task add "<title>" --needs=light|standard|deep`; `chemx task` is short for `chemx team task`), then run `chemx team task claim <id> --as=@<you>`. Read a task cheaply with `chemx team task show <id> --brief`. An epic with children goes in one file: `chemx task add --from tasks.yaml --dry-run` checks it, the same command without `--dry-run` files it. A long brief is stored with `chemx team brief <id> --file <md>`.
+4. Lock before edit: Run `chemx team lock acquire <file> --as=@<you> --purpose="#<id>"` before the first edit of each file; several files go in one call (`chemx team lock acquire a.js b.js --as=@<you>`, one result line per path). If another handle holds the lock, do not edit that file: send `chemx team dm @<handle> "<msg>" --as=@<you>` or pick other work.
+5. Edit through chemx: Read with `chemx read <path> --outline`, `--symbol=<name>` or a line range (`chemx read <path>:N-M --bare`), search with `chemx q` (symbols) or `chemx q -g "<text>" -C 3 --bare` (text), find files with `chemx f`, and edit with `chemx patch` or `chemx write`. Avoid cat, sed, grep and direct file writes where chemx has an equivalent.
+6. Workspace: Keep one-off files and branches out of the shared tree. A script or scratch file: `chemx scratch <name>` prints a path in your own git-ignored directory (`.chemx/scratch/<handle>/`), so another agent's file of the same name never replaces yours. Work that needs its own branch: `chemx worktree add <path> -b <branch> --link-modules`, then `chemx worktree remove <path>` once the branch has merged (it refuses an unmerged one). Run `chemx team` commands from the main checkout or with `--board=<dir>`, because a worktree can resolve another board. A mutation check: `chemx mutate <file> --apply "s/old/new/" --then "<command>"` runs the command on a changed file and puts the original back byte for byte. A long non-chemx command: `chemx run -- <command>` renews your file leases while it runs.
+7. Test: Run targeted specs with `chemx test <spec files> [-t name]`. Run a full suite only after parallel editors have finished.
+8. Commit: Run `chemx commit <files> -m "<type>(<area>): <summary> (#<id>)"`. It stages and commits only the listed files, runs the repository pre-commit hook and refuses a file under another handle's lease. From a worktree add `--board=<dir>` (the main checkout) so the task id is checked and the commit recorded on the board you claimed on; add `--no-skip-ci` when the commit must run CI (a commit to the default branch otherwise gets `[skip ci]` where the project sets commit.skipCi). Do not use `git add -A`, `git commit -a` or `git stash`; make a branch or worktree only through the Workspace step.
+9. Pull request: Once a pull request is open, read its checks with `chemx ci <pr> --wait` instead of `gh pr checks --watch` or a sleep loop: exit 0 means every check passed, 1 a check failed, 3 still pending or none reported yet. `chemx ci --protection` warns when the default branch requires no status checks, because `gh pr merge --auto` then merges at once. If the project keeps `docs/changelog.d/`, write `docs/changelog.d/<ticket>.md` (a `###` heading line, then bullets citing `#<id>`) and leave `docs/CHANGELOG.md` alone: `chemx changelog --check` validates the fragments and `chemx changelog` folds them into Unreleased.
+10. Wait: Use `chemx wait --task=<id>`, `chemx wait --lock-free=<file>`, `chemx wait --verify-idle`, `chemx wait --job=<pid>` (a backgrounded `chemx test ... & chemx wait --job=$!`; it exits with the job's own code) or `chemx wait --post-matching=<text> [--from=@<handle>]` (until a feed post matches) instead of sleep loops (a plain `sleep` of up to 120 seconds is fine). `--timeout=<30s|5m|2h>` bounds any of them. The result is true as of the last poll only.
+11. Progress: Record progress with `chemx team task comment <id> "<msg>" --as=@<you>` and decisions with `chemx team post "<msg>" --type=decision --task=<id> --as=@<you>`.
+12. Inbox: Run `chemx team inbox @<you>` at every task boundary: after claiming, after committing, and before starting the next task.
+13. Handoff: To pass a task to another agent, run `chemx team task handoff <id> @<to> --as=@<you>`. Only the assignee or creator can hand off.
+14. Finish: Run the package gate (`chemx verify`), commit, release every lock with `chemx team lock release <file> --as=@<you>`, then run `chemx team task done <id> --target=<file> --as=@<you>`. If the gate refuses, mark the task blocked with a reason. Do not use `--force`.
+15. Friction: When a chemx command misbehaves, you bypass it, or a flag is missing, file `chemx team task add "Friction: <what happened>" --needs=light --desc="<exact command and output>"` and keep going.
+
+Regenerate with `chemx pillars --protocol --write`; edits inside this block are overwritten.
+<!-- chemx:protocol end -->
