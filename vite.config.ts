@@ -6,7 +6,7 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/",
+  base: process.env.VITE_BASE_URL || "/",
   plugins: [react(), tailwindcss()],
   define: {
     APP_VERSION: JSON.stringify(process.env.npm_package_version),
@@ -15,6 +15,9 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: "./__tests__/setup.ts",
+    // Matches CI (`vitest run --testTimeout=20000`): the GameFlow integration
+    // test legitimately takes 7-9s, over vitest's 5s default.
+    testTimeout: 20000,
     server: {
       deps: {
         inline: ["@exodus/bytes", "html-encoding-sniffer"],

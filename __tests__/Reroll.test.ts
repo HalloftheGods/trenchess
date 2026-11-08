@@ -72,18 +72,42 @@ describe("Bulk Setup Reroll Logic", () => {
     expect(firstTerrain).not.toBe(secondTerrain);
   });
 
+  // Seeded PRNG (mulberry32): randomizeUnits picks a deterministic formation
+  // 60% of the time, so unseeded rerolls can legitimately match.
+  const createSeededRandom = (seed: number) => {
+    let state = seed;
+    const next = () => {
+      state = (state + 0x6d2b79f5) | 0;
+      let t = Math.imul(state ^ (state >>> 15), 1 | state);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    return {
+      Number: next,
+      Shuffle: <T>(array: T[]): T[] => {
+        const copy = [...array];
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(next() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      },
+    };
+  };
+
   it("should regenerate units on repeated randomizeUnits calls", () => {
-    randomizeUnits({ G, ctx, random } as unknown as {
+    const seeded = createSeededRandom(12345);
+    randomizeUnits({ G, ctx, random: seeded } as unknown as {
       G: TrenchessState;
       ctx: Ctx;
-      random: typeof random;
+      random: typeof seeded;
     });
     const firstBoard = getBoardSnapshot(G);
 
-    randomizeUnits({ G, ctx, random } as unknown as {
+    randomizeUnits({ G, ctx, random: seeded } as unknown as {
       G: TrenchessState;
       ctx: Ctx;
-      random: typeof random;
+      random: typeof seeded;
     });
     const secondBoard = getBoardSnapshot(G);
 

@@ -14,6 +14,8 @@ const ROOM_ID =
 const MOVE_DELAY_MS = 2000;
 const MAX_TURNS = 100;
 
+// Skipped on purpose: needs the game server listening on http://localhost:3001
+// (otherwise ECONNREFUSED). Start the server, then change describe.skip to describe.
 describe.skip("Live Simulation Stream", () => {
   it("runs a simulation and streams it to the server", async () => {
     console.log(`🚀 Connecting to ${SERVER_URL}`);

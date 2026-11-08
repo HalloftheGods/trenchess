@@ -72,6 +72,8 @@ const createInitialTerrainStats = () => ({
   [TERRAIN_TYPES.DESERT]: { total: 0, captures: 0, rate: 0 },
 });
 
+// Skipped on purpose: a manual report generator, not a regression test.
+// Change describe.skip to describe to run it locally.
 describe.skip("Piece Statistics Generator", () => {
   it("generates piece capture threat surface statistics", () => {
     const pieceKeys = Object.values(PIECES) as PieceType[];

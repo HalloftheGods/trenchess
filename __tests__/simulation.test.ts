@@ -47,6 +47,8 @@ const calculateMaterialBalance = (board: (BoardPiece | null)[][]) => {
   return score;
 };
 
+// Skipped on purpose: a long CPU vs CPU simulation for manual balance checks.
+// Change describe.skip to describe to run it locally.
 describe.skip("CPU vs CPU Game Simulation", () => {
   const NUM_GAMES = 1;
   const MAX_TURNS = 300;
