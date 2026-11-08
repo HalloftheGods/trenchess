@@ -6,6 +6,7 @@ import {
   PlayLocalScreen,
   PlayLobbyScreen,
   PlaySetupScreen,
+  PlayPregameScreen,
 } from "./screens";
 
 export const playRoutes: RouteConfig[] = [
@@ -13,4 +14,5 @@ export const playRoutes: RouteConfig[] = [
   { path: getPath("play.local"), element: <PlayLocalScreen /> },
   { path: getPath("play.lobby"), element: <PlayLobbyScreen /> },
   { path: getPath("play.setup"), element: <PlaySetupScreen /> },
+  { path: getPath("play.pregame"), element: <PlayPregameScreen /> },
 ];

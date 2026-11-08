@@ -6,7 +6,7 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/",
+  base: process.env.VITE_BASE_URL || "/",
   plugins: [react(), tailwindcss()],
   define: {
     APP_VERSION: JSON.stringify(process.env.npm_package_version),

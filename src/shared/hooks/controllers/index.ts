@@ -3,6 +3,7 @@ export * from "./useLayoutActions";
 export * from "./useMoveExecution";
 export * from "./usePlacementManager";
 export * from "./usePlayBoardInteraction";
+export * from "./usePregameSetup";
 export * from "./useSetupActions";
 export * from "./useSetupBoardInteraction";
 export * from "./useZenGardenInteraction";

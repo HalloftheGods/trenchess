@@ -17,6 +17,7 @@ import {
   PlayLocalScreen,
   PlayLobbyScreen,
   PlaySetupScreen,
+  PlayPregameScreen,
 } from "@client/play/screens";
 import {
   LearnIndexScreen,
@@ -80,6 +81,11 @@ export const APP_ROUTES: AppRoute[] = [
                 id: "play.setup",
                 path: ":playMode/:players/setup/:step?",
                 element: <PlaySetupScreen />,
+              },
+              {
+                id: "play.pregame",
+                path: ":playMode/:players/pregame",
+                element: <PlayPregameScreen />,
               },
             ],
           },

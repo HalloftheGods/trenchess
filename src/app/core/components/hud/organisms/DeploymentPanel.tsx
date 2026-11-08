@@ -73,6 +73,7 @@ interface DeploymentPanelProps {
   startGame?: () => void;
   localPlayerName?: string;
   clientRef?: React.RefObject<BgioClient | undefined>;
+  isTerrainStageAvailable?: boolean;
 }
 
 export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
@@ -117,6 +118,7 @@ export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
   startGame,
   localPlayerName,
   clientRef,
+  isTerrainStageAvailable = true,
 }) => {
   const perspectiveTurn =
     gameState === PHASES.MAIN || gameState === PHASES.GENESIS
@@ -174,37 +176,46 @@ export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
           gameState === PHASES.GENESIS ||
           isZen) && (
           <div className="mb-6">
-            <SegmentedControl
-              options={[
-                {
-                  label: (
-                    <div className="flex items-center gap-2">
-                      <span className="text-red-400">Trench</span>
-                      <small className="opacity-60 text-[10px] font-bold">
-                        {placedCount}/{maxPlacement}
-                      </small>
-                    </div>
-                  ),
-                  value: "terrain",
-                  activeColor: "bg-slate-600 dark:bg-slate-700",
-                },
-                {
-                  label: (
-                    <div className="flex items-center gap-2">
-                      <span className="text-blue-400">Chess</span>
-                      <small className="opacity-60 text-[10px] font-bold">
-                        {16 - (inventory[turn] || []).length}/16
-                      </small>
-                    </div>
-                  ),
-                  value: "pieces",
-                  activeColor: "bg-slate-600 dark:bg-slate-700",
-                },
-              ]}
-              value={setupMode}
-              onChange={(val) => setSetupMode(val as SetupMode)}
-              className="w-full"
-            />
+            {isTerrainStageAvailable ? (
+              <SegmentedControl
+                options={[
+                  {
+                    label: (
+                      <div className="flex items-center gap-2">
+                        <span className="text-red-400">Trench</span>
+                        <small className="opacity-60 text-[10px] font-bold">
+                          {placedCount}/{maxPlacement}
+                        </small>
+                      </div>
+                    ),
+                    value: "terrain",
+                    activeColor: "bg-slate-600 dark:bg-slate-700",
+                  },
+                  {
+                    label: (
+                      <div className="flex items-center gap-2">
+                        <span className="text-blue-400">Chess</span>
+                        <small className="opacity-60 text-[10px] font-bold">
+                          {16 - (inventory[turn] || []).length}/16
+                        </small>
+                      </div>
+                    ),
+                    value: "pieces",
+                    activeColor: "bg-slate-600 dark:bg-slate-700",
+                  },
+                ]}
+                value={setupMode}
+                onChange={(val) => setSetupMode(val as SetupMode)}
+                className="w-full"
+              />
+            ) : (
+              <div className="flex items-center justify-center gap-2 py-2 px-4 bg-white/50 dark:bg-black/20 rounded-2xl border border-slate-200 dark:border-white/5 backdrop-blur-sm">
+                <span className="text-blue-400 font-black text-xs uppercase tracking-widest">Chess</span>
+                <small className="opacity-60 text-[10px] font-bold">
+                  {16 - (inventory[turn] || []).length}/16
+                </small>
+              </div>
+            )}
           </div>
         )}
 
@@ -212,7 +223,7 @@ export const DeploymentPanel: React.FC<DeploymentPanelProps> = ({
           gameState === PHASES.GENESIS ||
           isZen) && (
           <>
-            <div className={setupMode === "terrain" ? "mb-5 block" : "hidden"}>
+            <div className={setupMode === "terrain" && isTerrainStageAvailable ? "mb-5 block" : "hidden"}>
               <DeploymentTerrainPalette
                 turn={turn}
                 terrainInventory={terrainInventory}

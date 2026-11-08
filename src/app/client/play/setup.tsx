@@ -130,13 +130,24 @@ export const PlaySetupView: React.FC = () => {
       return;
     }
 
+    const isManualSetupPreset = preset === "custom" || preset === "terrainiffic";
+
+    if (isManualSetupPreset && selectedBoard) {
+      const presetParam = preset === "custom" ? "omega" : "chi";
+      navigate(
+        buildRoute(getPath("play.pregame"), {
+          playMode: playMode || "couch",
+          players: playersParam || "2",
+        }) + `?preset=${presetParam}`,
+      );
+      return;
+    }
+
     if (selectedBoard) {
-      // Auto-detect player configuration from URL
       let finalPlayerConfig = { ...playerConfig };
 
       if (playersParam) {
         const count = parseInt(playersParam, 10);
-        // Find which players are active for this board
         const activePids =
           selectedBoard === "2p-ns"
             ? ["red", "blue"]
@@ -144,7 +155,6 @@ export const PlaySetupView: React.FC = () => {
               ? ["green", "yellow"]
               : ["red", "yellow", "green", "blue"];
 
-        // Default all to computer first
         finalPlayerConfig = {
           red: "computer",
           yellow: "computer",
@@ -152,14 +162,12 @@ export const PlaySetupView: React.FC = () => {
           blue: "computer",
         };
 
-        // Set the first 'count' active players to human, others to computer
-        activePids.forEach((pid, index) => {
-          if (index < count) {
-            finalPlayerConfig[pid] = "human";
-          } else {
-            finalPlayerConfig[pid] = "computer";
-          }
-        });
+        const assignHumanSlots = (pid: string, index: number) => {
+          const isHumanSlot = index < count;
+          finalPlayerConfig[pid] = isHumanSlot ? "human" : "computer";
+        };
+
+        activePids.forEach(assignHumanSlots);
       }
 
       onStartGame(selectedBoard, preset, finalPlayerConfig, seed);
