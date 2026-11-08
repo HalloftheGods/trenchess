@@ -108,7 +108,7 @@ describe("PlaySetupView", () => {
     ).toBeInTheDocument();
   });
 
-  it("should call onStartGame when a preset is selected in step 2", () => {
+  it("should route to the pregame screen when Omega is selected in step 2", () => {
     currentParams = { step: "2" };
     mockRouteContext.selectedBoard = "2p-ns" as GameMode;
     renderSetup();
@@ -119,9 +119,26 @@ describe("PlaySetupView", () => {
     fireEvent.click(omegaCard);
 
     expect(mockRouteContext.setSelectedPreset).toHaveBeenCalledWith("custom");
+    expect(mockRouteContext.onStartGame).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(
+      expect.stringMatching(/\/pregame\?preset=omega$/),
+    );
+  });
+
+  it("should call onStartGame when Pi (classic) is selected in step 2", () => {
+    currentParams = { step: "2" };
+    mockRouteContext.selectedBoard = "2p-ns" as GameMode;
+    renderSetup();
+
+    const piCard = screen
+      .getByText((_c, el) => el?.textContent === "π Pi")
+      .closest("button")!;
+    fireEvent.click(piCard);
+
+    expect(mockRouteContext.setSelectedPreset).toHaveBeenCalledWith("classic");
     expect(mockRouteContext.onStartGame).toHaveBeenCalledWith(
       "2p-ns",
-      "custom",
+      "classic",
       expect.any(Object),
       undefined,
     );
